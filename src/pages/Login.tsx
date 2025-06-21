@@ -7,6 +7,15 @@ import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import GeometricBackground from '@/components/GeometricBackground';
 import { supabase } from '@/lib/supabaseClient';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 
 const Login = () => {
@@ -15,6 +24,56 @@ const Login = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  // State for password reset
+  const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [isResetting, setIsResetting] = useState(false);
+
+  const handlePasswordReset = async () => {
+    if (!resetEmail.trim()) {
+      toast({
+        title: "Correo electrónico requerido",
+        description: "Por favor, introduce tu correo electrónico.",
+        variant: "destructive",
+      });
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(resetEmail)) {
+      toast({
+        title: "Email no válido",
+        description: "Por favor, introduce una dirección de correo electrónico válida.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsResetting(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+        redirectTo: `${window.location.origin}/update-password`,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Enlace enviado",
+        description: "Si existe una cuenta con este correo, te hemos enviado un enlace para restablecer tu contraseña.",
+      });
+      setIsResetDialogOpen(false);
+      setResetEmail('');
+    } catch (error) {
+      toast({
+        title: "Error al enviar el enlace",
+        description: "No se pudo enviar el enlace de recuperación. Por favor, inténtalo de nuevo más tarde.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsResetting(false);
+    }
+  };
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -108,22 +167,58 @@ const Login = () => {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Introduce tu correo electrónico"
+                    placeholder="Introduce correo electrónico"
                     className="border-2 border-gray-200 focus:border-braini-blue transition-colors"
                     required
                   />
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="password" className="text-gray-700 font-medium">
-                    Contraseña *
-                  </Label>
+                  <div className="flex justify-between items-center">
+                    <Label htmlFor="password" className="text-gray-700 font-medium">
+                      Contraseña *
+                    </Label>
+                    <Dialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen}>
+                      <DialogTrigger asChild>
+                        <Button type="button" variant="link" className="text-sm px-0 font-normal h-auto py-1">
+                          ¿Has olvidado tu contraseña?
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader>
+                          <DialogTitle>Recuperar contraseña</DialogTitle>
+                          <DialogDescription>
+                            Introduce tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="reset-email">
+                              Email
+                            </Label>
+                            <Input
+                              id="reset-email"
+                              type="email"
+                              value={resetEmail}
+                              onChange={(e) => setResetEmail(e.target.value)}
+                              placeholder="tu@email.com"
+                            />
+                          </div>
+                        </div>
+                        <DialogFooter>
+                          <Button onClick={handlePasswordReset} disabled={isResetting}>
+                            {isResetting ? 'Enviando...' : 'Enviar enlace'}
+                          </Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
                   <Input
                     id="password"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Introduce tu contraseña"
+                    placeholder="Introduce contraseña"
                     className="border-2 border-gray-200 focus:border-braini-blue transition-colors"
                     required
                   />
