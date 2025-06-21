@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -22,19 +21,19 @@ const Login = () => {
     
     if (!email.trim() || !password.trim()) {
       toast({
-        title: "Missing Information",
-        description: "Please fill in all fields.",
+        title: "Información faltante",
+        description: "Por favor, rellena todos los campos.",
         variant: "destructive"
       });
       return;
     }
 
-    // Basic email validation
+    // Validación básica de email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       toast({
-        title: "Invalid Email",
-        description: "Please enter a valid email address.",
+        title: "Email no válido",
+        description: "Por favor, introduce una dirección de correo electrónico válida.",
         variant: "destructive"
       });
       return;
@@ -50,13 +49,13 @@ const Login = () => {
     });
 
     if (error) {
-        throw new Error(error.message || "Invalid email or password");
+        throw new Error(error.message || "Email o contraseña no válidos");
     }
 
       
       toast({
-        title: "Welcome back! 🎉",
-        description: "You have successfully logged in to Braini.",
+        title: "¡Bienvenido/a de vuelta! 🎉",
+        description: "Has iniciado sesión correctamente en Braini.",
       });
       
       // Reset form
@@ -68,8 +67,8 @@ const Login = () => {
       navigate('/home');
     } catch (error) {
       toast({
-        title: "Login Failed",
-        description: error instanceof Error ? error.message : "Invalid email or password. Please try again.",
+        title: "Inicio de sesión fallido",
+        description: error instanceof Error ? error.message : "Email o contraseña no válidos. Por favor, inténtalo de nuevo.",
         variant: "destructive"
       });
     } finally {
@@ -85,38 +84,31 @@ const Login = () => {
         <div className="max-w-md mx-auto">
           {/* Logo and Title Section */}
           <div className="text-center mb-8 animate-fade-in">
-            <div className="flex justify-center mb-4">
-              <img 
-                src="/lovable-uploads/fa0ca160-fc3a-4e28-b976-371888549499.png" 
-                alt="Braini Logo" 
-                className="w-20 h-20 object-contain"
-              />
-            </div>
             
             <h1 className="text-3xl font-bold text-gray-800 mb-2">
               <span className="text-braini-blue">Braini</span>
             </h1>
             <p className="text-sm text-gray-600 mb-4">
-              Mind and emotions in harmony. Welcome back to your journey.
+              Mente y emociones en armonía. Bienvenido/a de vuelta a tu viaje.
             </p>
           </div>
 
           {/* Login Form */}
           <Card className="w-full bg-white/95 backdrop-blur-sm shadow-xl border-0 relative z-10 animate-fade-in" style={{ animationDelay: '0.3s' }}>
             <CardContent className="p-8">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Sign In</h2>
+              <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Iniciar sesión</h2>
               
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-gray-700 font-medium">
-                    Email Address *
+                    Correo electrónico *
                   </Label>
                   <Input
                     id="email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email address"
+                    placeholder="Introduce tu correo electrónico"
                     className="border-2 border-gray-200 focus:border-braini-blue transition-colors"
                     required
                   />
@@ -124,14 +116,14 @@ const Login = () => {
                 
                 <div className="space-y-2">
                   <Label htmlFor="password" className="text-gray-700 font-medium">
-                    Password *
+                    Contraseña *
                   </Label>
                   <Input
                     id="password"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter your password"
+                    placeholder="Introduce tu contraseña"
                     className="border-2 border-gray-200 focus:border-braini-blue transition-colors"
                     required
                   />
@@ -142,18 +134,18 @@ const Login = () => {
                   className="w-full bg-gradient-to-r from-braini-blue to-braini-blue-light hover:from-braini-blue-dark hover:to-braini-blue text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? 'Signing In...' : 'Sign In'}
+                  {isSubmitting ? 'Iniciando sesión...' : 'Iniciar sesión'}
                 </Button>
               </form>
               
               <div className="mt-6 text-center">
                 <p className="text-gray-600">
-                  Don't have an account?{' '}
+                  ¿No tienes una cuenta?{' '}
                   <Link 
                     to="/register" 
                     className="text-braini-blue hover:text-braini-blue-dark font-medium hover:underline transition-colors"
                   >
-                    Create Account
+                    Crear cuenta
                   </Link>
                 </p>
               </div>

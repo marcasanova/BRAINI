@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -11,7 +10,7 @@ import { supabase } from '@/lib/supabaseClient';
 
 
 const Register = () => {
-  const [fullName, setFullName] = useState('');
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -20,31 +19,31 @@ const Register = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!fullName.trim() || !email.trim() || !password.trim()) {
+    if (!username.trim() || !email.trim() || !password.trim()) {
       toast({
-        title: "Missing Information",
-        description: "Please fill in all fields.",
+        title: "Información faltante",
+        description: "Por favor, rellena todos los campos.",
         variant: "destructive"
       });
       return;
     }
 
-    // Basic email validation
+    // Validación básica de email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       toast({
-        title: "Invalid Email",
-        description: "Please enter a valid email address.",
+        title: "Email no válido",
+        description: "Por favor, introduce una dirección de correo electrónico válida.",
         variant: "destructive"
       });
       return;
     }
 
-    // Basic password validation
+    // Validación básica de contraseña
     if (password.length < 6) {
       toast({
-        title: "Password Too Short",
-        description: "Password must be at least 6 characters long.",
+        title: "Contraseña demasiado corta",
+        description: "La contraseña debe tener al menos 6 caracteres.",
         variant: "destructive"
       });
       return;
@@ -58,40 +57,47 @@ const Register = () => {
         email,
         password,
         options: {
-        data: { full_name: fullName } // almacena fullName en metadata
+        data: { username: username } // almacena username en metadata
         }
-    });
+      });
 
-    if (error) {
-        // 💡 Controlar específicamente el error de email duplicado
-        if (error.message.includes('User already registered') || error.message.includes('User already exists')) {
-          toast({
-            title: "Email Already Registered",
-            description: "An account with this email already exists. Please log in instead.",
-            variant: "destructive"
-          });
-        } else {
-          toast({
-            title: "Registration Failed",
-            description: error.message,
-            variant: "destructive"
-          });
-        }
+      // Primero, manejar errores generales de Supabase (ej. contraseña débil)
+      if (error) {
+        toast({
+          title: "Registro fallido",
+          description: error.message,
+          variant: "destructive"
+        });
         return;
       }
 
+      // Ahora, comprobamos si el usuario ya existía.
+      // Esta es la forma recomendada por Supabase para manejar emails duplicados
+      // por motivos de seguridad, ya que no devuelven un error explícito.
+      const userExists = data.user && (data.user.identities?.length ?? 0) > 0;
+
+      if (userExists) {
+        toast({
+          title: "Email ya registrado",
+          description: "Ya existe una cuenta con este correo electrónico. Por favor, inicia sesión.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Si llegamos aquí, es un registro de un nuevo usuario.
       toast({
-        title: "Account Created! 🎉",
-        description: `Welcome to Braini, ${fullName}! Please check your email to verify your account.`,
+        title: "¡Cuenta creada! 🎉",
+        description: `Bienvenido/a a Braini, ${username}! Por favor, revisa tu correo electrónico para verificar tu cuenta.`,
       });
 
-      setFullName('');
+      setUsername('');
       setEmail('');
       setPassword('');
     } catch (error) {
       toast({
-        title: "Registration Failed",
-        description: "Please try again later.",
+        title: "Registro fallido",
+        description: "Por favor, inténtalo de nuevo más tarde.",
         variant: "destructive"
       });
     } finally {
@@ -107,38 +113,30 @@ const Register = () => {
         <div className="max-w-md mx-auto">
           {/* Logo and Title Section */}
           <div className="text-center mb-8 animate-fade-in">
-            <div className="flex justify-center mb-4">
-              <img 
-                src="/lovable-uploads/fa0ca160-fc3a-4e28-b976-371888549499.png" 
-                alt="Braini Logo" 
-                className="w-20 h-20 object-contain"
-              />
-            </div>
-            
             <h1 className="text-3xl font-bold text-gray-800 mb-2">
               <span className="text-braini-blue">Braini</span>
             </h1>
             <p className="text-sm text-gray-600 mb-4">
-              Mind and emotions in harmony. Join our community and unlock your potential with Braini.
+              Mente y emociones en armonía. Únete a nuestra comunidad y desbloquea tu potencial con Braini.
             </p>
           </div>
 
           {/* Register Form */}
           <Card className="w-full bg-white/95 backdrop-blur-sm shadow-xl border-0 relative z-10 animate-fade-in" style={{ animationDelay: '0.3s' }}>
             <CardContent className="p-8">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Create Account</h2>
+              <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Crear cuenta</h2>
               
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="fullName" className="text-gray-700 font-medium">
-                    Full Name *
+                  <Label htmlFor="username" className="text-gray-700 font-medium">
+                    Nombre de Usuario *
                   </Label>
                   <Input
-                    id="fullName"
+                    id="username"
                     type="text"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    placeholder="Enter your full name"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="Introduce nombre de usuario"
                     className="border-2 border-gray-200 focus:border-braini-blue transition-colors"
                     required
                   />
@@ -146,14 +144,14 @@ const Register = () => {
                 
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-gray-700 font-medium">
-                    Email Address *
+                    Correo electrónico *
                   </Label>
                   <Input
                     id="email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email address"
+                    placeholder="Introduce correo electrónico"
                     className="border-2 border-gray-200 focus:border-braini-blue transition-colors"
                     required
                   />
@@ -161,14 +159,14 @@ const Register = () => {
                 
                 <div className="space-y-2">
                   <Label htmlFor="password" className="text-gray-700 font-medium">
-                    Password *
+                    Contraseña *
                   </Label>
                   <Input
                     id="password"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Create a password (min. 6 characters)"
+                    placeholder="Crea una contraseña (mín. 6 caracteres)"
                     className="border-2 border-gray-200 focus:border-braini-blue transition-colors"
                     required
                   />
@@ -179,18 +177,18 @@ const Register = () => {
                   className="w-full bg-gradient-to-r from-braini-blue to-braini-blue-light hover:from-braini-blue-dark hover:to-braini-blue text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? 'Creating Account...' : 'Create Account'}
+                  {isSubmitting ? 'Creando cuenta...' : 'Crear cuenta'}
                 </Button>
               </form>
               
               <div className="mt-6 text-center">
                 <p className="text-gray-600">
-                  Already have an account?{' '}
+                  ¿Ya tienes una cuenta?{' '}
                   <Link 
                     to="/login" 
                     className="text-braini-blue hover:text-braini-blue-dark font-medium hover:underline transition-colors"
                   >
-                    Sign In
+                    Inicia sesión
                   </Link>
                 </p>
               </div>
