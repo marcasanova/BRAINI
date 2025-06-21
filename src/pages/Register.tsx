@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -15,6 +15,7 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -94,6 +95,9 @@ const Register = () => {
       setUsername('');
       setEmail('');
       setPassword('');
+
+      // Redirigir a la página de introducción
+      navigate('/intro');
     } catch (error) {
       toast({
         title: "Registro fallido",
@@ -116,9 +120,6 @@ const Register = () => {
             <h1 className="text-3xl font-bold text-gray-800 mb-2">
               <span className="text-braini-blue">Braini</span>
             </h1>
-            <p className="text-sm text-gray-600 mb-4">
-              Mente y emociones en armonía. Únete a nuestra comunidad y desbloquea tu potencial con Braini.
-            </p>
           </div>
 
           {/* Register Form */}

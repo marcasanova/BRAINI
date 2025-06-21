@@ -123,7 +123,7 @@ const Login = () => {
       
       // TODO: Redirect to dashboard or protected route
       // navigate('/dashboard');
-      navigate('/home');
+      navigate('/intro');
     } catch (error) {
       toast({
         title: "Inicio de sesión fallido",
@@ -147,9 +147,6 @@ const Login = () => {
             <h1 className="text-3xl font-bold text-gray-800 mb-2">
               <span className="text-braini-blue">Braini</span>
             </h1>
-            <p className="text-sm text-gray-600 mb-4">
-              Mente y emociones en armonía. Bienvenido/a de vuelta a tu viaje.
-            </p>
           </div>
 
           {/* Login Form */}
