@@ -1,10 +1,66 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import GeometricBackground from '@/components/GeometricBackground';
-import WaitlistForm from '@/components/WaitlistForm';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/lib/supabaseClient';
 
-const Index = () => {
+const WaitlistPage = () => {
+  const [email, setEmail] = React.useState('');
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const { toast } = useToast();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) {
+      toast({
+        title: 'Falta información',
+        description: 'Por favor, introduce tu email.',
+        variant: 'destructive',
+      });
+      return;
+    }
+    // Validación básica de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast({
+        title: 'Email inválido',
+        description: 'Introduce un email válido.',
+        variant: 'destructive',
+      });
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('handle-waitlist', {
+        body: { email }
+      });
+
+      // Mostrar mensaje de error personalizado si existe
+      if (data?.error) {
+        throw new Error(data.error);
+      }
+
+      if (error) {
+        throw error;
+      }
+
+      toast({
+        title: '¡Bienvenido a la lista de espera! 🎉',
+        description: `Te avisaremos a ${email} cuando Braini esté listo.`,
+      });
+      setEmail('');
+    } catch (error: any) {
+      toast({
+        title: 'Algo salió mal',
+        description: error?.message || 'Inténtalo de nuevo más tarde.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-pink-50 font-inter relative overflow-hidden">
       <GeometricBackground />
@@ -61,7 +117,27 @@ const Index = () => {
 
           {/* Waitlist Form */}
           <div className="animate-fade-in" style={{ animationDelay: '0.6s' }}>
-            <WaitlistForm />
+            <form onSubmit={handleSubmit} className="space-y-6 max-w-md mx-auto">
+              <div className="space-y-2">
+                <label htmlFor="email" className="text-gray-700 font-medium">Email *</label>
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  placeholder="Introduce tu email"
+                  className="border-2 border-gray-200 focus:border-braini-blue transition-colors w-full p-2 rounded"
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                className="w-full bg-gradient-to-r from-braini-blue to-braini-blue-light hover:from-braini-blue-dark hover:to-braini-blue text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Uniéndote...' : 'Únete a la lista de espera'}
+              </button>
+            </form>
           </div>
 
           {/* Additional Info */}
@@ -98,4 +174,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default WaitlistPage;
