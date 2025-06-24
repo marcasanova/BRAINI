@@ -12,6 +12,7 @@ const WaitlistPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('[DEBUG] Email introducido:', email);
     if (!email.trim()) {
       toast({
         title: 'Falta información',
@@ -32,25 +33,30 @@ const WaitlistPage = () => {
     }
     setIsSubmitting(true);
     try {
-      const { data, error } = await supabase.functions.invoke('handle-waitlist', {
-        body: { email }
+      console.log('[DEBUG] Enviando petición a Supabase Function...');
+      console.log('[DEBUG] Body que se enviará:', { email });
+      const response = await fetch('https://igwoavsazbycqmdweger.supabase.co/functions/v1/handle-waitlist', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email })
       });
-
+      const data = await response.json();
+      console.log('[DEBUG] Respuesta fetch:', data);
       // Mostrar mensaje de error personalizado si existe
       if (data?.error) {
+        console.error('[DEBUG] Error en data:', data.error);
         throw new Error(data.error);
       }
-
-      if (error) {
-        throw error;
-      }
-
       toast({
         title: '¡Bienvenido a la lista de espera! 🎉',
         description: `Te avisaremos a ${email} cuando Braini esté listo.`,
       });
       setEmail('');
     } catch (error: any) {
+      console.error('[DEBUG] Error en catch:', error);
       toast({
         title: 'Algo salió mal',
         description: error?.message || 'Inténtalo de nuevo más tarde.',
