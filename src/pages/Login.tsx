@@ -123,7 +123,7 @@ const Login = () => {
       
       // TODO: Redirect to dashboard or protected route
       // navigate('/dashboard');
-      navigate('/intro');
+      navigate('/welcome');
     } catch (error) {
       toast({
         title: "Inicio de sesión fallido",
@@ -234,10 +234,10 @@ const Login = () => {
                 <p className="text-gray-600">
                   ¿No tienes una cuenta?{' '}
                   <Link 
-                    to="/register" 
+                    to="/signup" 
                     className="text-braini-blue hover:text-braini-blue-dark font-medium hover:underline transition-colors"
                   >
-                    Crear cuenta
+                    Inicia sesión
                   </Link>
                 </p>
               </div>

@@ -3,7 +3,7 @@ import GeometricBackground from '@/components/GeometricBackground';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 
-const Intro = () => {
+const Welcome = () => {
   const navigate = useNavigate();
 
   return (
@@ -55,4 +55,4 @@ const Intro = () => {
   );
 };
 
-export default Intro; 
+export default Welcome; 
