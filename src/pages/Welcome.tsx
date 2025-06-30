@@ -46,7 +46,7 @@ const Welcome = () => {
               onClick={() => navigate('/home')}
               className="bg-gradient-to-r from-braini-blue to-braini-blue-light hover:from-braini-blue-dark hover:to-braini-blue text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 text-lg"
             >
-              Avanzar a la evaluación
+              Continuar
             </Button>
           </div>
         </main>
