@@ -100,30 +100,40 @@ const Login = () => {
 
     setIsSubmitting(true);
     
-    // TODO: Replace with Supabase Auth integration
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password
-    });
+      });
 
-    if (error) {
+      if (error) {
         throw new Error(error.message || "Email o contraseña no válidos");
-    }
+      }
 
-      
       toast({
         title: "¡Bienvenido/a de vuelta! 🎉",
         description: "Has iniciado sesión correctamente en Braini.",
       });
-      
+
       // Reset form
       setEmail('');
       setPassword('');
-      
-      // TODO: Redirect to dashboard or protected route
-      // navigate('/dashboard');
-      navigate('/welcome');
+
+      // Comprobar si el perfil está completo
+      const userId = data.user?.id;
+      if (!userId) throw new Error('No se pudo obtener el usuario autenticado.');
+      const { data: parentData, error: parentError } = await supabase
+        .from('parents')
+        .select('profile_completed')
+        .eq('id', userId)
+        .single();
+      if (parentError) throw parentError;
+      if (!parentData) throw new Error('No se encontró el perfil del usuario.');
+      if (parentData.profile_completed === false) {
+        navigate('/parents-profile');
+      } else {
+        navigate('/home');
+      }
     } catch (error) {
       toast({
         title: "Inicio de sesión fallido",

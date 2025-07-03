@@ -13,6 +13,8 @@ import Home from "./pages/Home";
 import VerifyEmail from './pages/support/VerifyEmail';
 import EmailVerified from './pages/support/EmailVerified';
 import Landing from './pages/Landing';
+import ParentsProfile from './pages/ParentsProfile';
+import ChildProfile from './pages/ChildProfile';
 
 const queryClient = new QueryClient();
 
@@ -31,6 +33,8 @@ const App = () => (
           <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/email-verified" element={<EmailVerified />} />
+          <Route path="/parents-profile" element={<ProtectedRoute><ParentsProfile /></ProtectedRoute>} />
+          <Route path="/child-profile" element={<ProtectedRoute><ChildProfile /></ProtectedRoute>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
