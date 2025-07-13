@@ -1,0 +1,11 @@
+export enum LEVEL_STATUS_ENUM {
+  LOCKED = 'locked',
+  CURRENT = 'current',
+  COMPLETED = 'completed',
+}
+
+export const LEVEL_STATUS = {
+  LOCKED: LEVEL_STATUS_ENUM.LOCKED,
+  CURRENT: LEVEL_STATUS_ENUM.CURRENT,
+  COMPLETED: LEVEL_STATUS_ENUM.COMPLETED,
+}; 

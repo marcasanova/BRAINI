@@ -247,7 +247,7 @@ const Login = () => {
                     to="/signup" 
                     className="text-braini-blue hover:text-braini-blue-dark font-medium hover:underline transition-colors"
                   >
-                    Inicia sesión
+                    Regístrate
                   </Link>
                 </p>
               </div>

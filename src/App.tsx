@@ -15,6 +15,7 @@ import EmailVerified from './pages/support/EmailVerified';
 import Landing from './pages/Landing';
 import ParentsProfile from './pages/ParentsProfile';
 import ChildProfile from './pages/ChildProfile';
+import Activities from './pages/Activities';
 
 const queryClient = new QueryClient();
 
@@ -35,6 +36,7 @@ const App = () => (
           <Route path="/email-verified" element={<EmailVerified />} />
           <Route path="/parents-profile" element={<ProtectedRoute><ParentsProfile /></ProtectedRoute>} />
           <Route path="/child-profile" element={<ProtectedRoute><ChildProfile /></ProtectedRoute>} />
+          <Route path="/nivel/:id" element={<ProtectedRoute><Activities /></ProtectedRoute>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
