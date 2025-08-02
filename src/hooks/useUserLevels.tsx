@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
+import { useLocation } from "react-router-dom";
 
 export interface UserLevel {
   level_id: number;
@@ -15,6 +16,13 @@ export function useUserLevels(userId: string | undefined) {
   const [levels, setLevels] = useState<UserLevel[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const location = useLocation();
+
+  // Función para forzar actualización
+  const refreshLevels = () => {
+    setRefreshTrigger(prev => prev + 1);
+  };
 
   useEffect(() => {
     if (!userId) {
@@ -55,7 +63,16 @@ export function useUserLevels(userId: string | undefined) {
         }
         setLoading(false);
       });
-  }, [userId]);
+  }, [userId, refreshTrigger]); // Añadido refreshTrigger como dependencia
 
-  return { levels, loading, error };
+  // Función para obtener niveles adyacentes
+  const getAdjacentLevels = (currentLevelId: number) => {
+    const currentIndex = levels.findIndex(l => l.levels.id === currentLevelId);
+    const previousLevel = currentIndex > 0 ? levels[currentIndex - 1] : null;
+    const nextLevel = currentIndex < levels.length - 1 ? levels[currentIndex + 1] : null;
+    
+    return { previousLevel, nextLevel, currentIndex, totalLevels: levels.length };
+  };
+
+  return { levels, loading, error, getAdjacentLevels, refreshLevels };
 } 
