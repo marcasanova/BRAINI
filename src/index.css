@@ -99,3 +99,79 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  /* Estilos personalizados para la sidebar */
+  .sidebar-transition {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .sidebar-hover {
+    @apply hover:bg-gray-50 hover:shadow-md transition-all duration-200;
+  }
+  
+  .sidebar-active {
+    @apply bg-braini-blue text-white shadow-lg transform scale-105;
+  }
+  
+  .sidebar-inactive {
+    @apply text-gray-700 hover:text-braini-blue;
+  }
+  
+  /* Animaciones para la sidebar móvil */
+  .sidebar-slide-in {
+    animation: slideInLeft 0.3s ease-out;
+  }
+  
+  .sidebar-slide-out {
+    animation: slideOutLeft 0.3s ease-in;
+  }
+}
+
+@layer utilities {
+  /* Animaciones personalizadas */
+  @keyframes slideInLeft {
+    from {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes slideOutLeft {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+  }
+  
+  /* Scrollbar personalizado para la sidebar */
+  .sidebar-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #E5E7EB transparent;
+  }
+  
+  .sidebar-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .sidebar-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .sidebar-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #E5E7EB;
+    border-radius: 3px;
+  }
+  
+  .sidebar-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: #D1D5DB;
+  }
+}

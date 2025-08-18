@@ -9,9 +9,12 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { User, Baby, Edit3, Save, X, Calendar, Phone, MapPin, GraduationCap, Heart } from 'lucide-react';
+import MedalShelf from '@/components/MedalShelf';
+import { useUserMedals } from '@/hooks/useUserMedals';
 
 const Profile = () => {
   const { toast } = useToast();
+  const { userMedals, loading: medalsLoading } = useUserMedals();
   const [parent, setParent] = useState<any>(null);
   const [child, setChild] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -100,7 +103,7 @@ const Profile = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-pink-50 font-inter relative overflow-hidden">
       <GeometricBackground />
       <Navbar />
-      <div className="container mx-auto px-4 py-12 pt-20 relative z-10">
+      <div className="container mx-auto px-4 py-12 md:pl-80 relative z-10">
         <div className="max-w-6xl mx-auto">
           {/* Header Section */}
           <div className="text-center mb-12 animate-fade-in">
@@ -490,6 +493,14 @@ const Profile = () => {
               </Card>
             </div>
           )}
+
+          {/* Sección de Medallas */}
+          <div className="mt-12">
+            <MedalShelf 
+              userMedals={userMedals} 
+              isLoading={medalsLoading}
+            />
+          </div>
         </div>
       </div>
     </div>

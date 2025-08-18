@@ -11,7 +11,7 @@ const MapDownload: React.FC<MapDownloadProps> = ({
 }) => {
   const handleMapOpen = () => {
     // URL del mapa en Supabase Storage
-    const mapUrl = 'https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/braini-map//tema1.pdf';
+    const mapUrl = 'https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/braini-map/Panel%20juego%20Rescate%20de%20Azon.jpg';
     
     // Abrir en nueva pestaña
     window.open(mapUrl, '_blank');

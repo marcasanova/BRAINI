@@ -150,7 +150,7 @@ const Activities: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-braini-blue/10 via-white to-braini-pink/10 font-inter relative overflow-hidden flex flex-col">
       <GeometricBackground />
       <Navbar />
-      <div className="flex-1 flex flex-col items-center justify-center px-2 py-12 md:py-20">
+      <div className="flex-1 flex flex-col items-center justify-center px-2 py-12 md:py-20 md:pl-80">
         <div className="bg-white/95 backdrop-blur-lg p-8 rounded-3xl shadow-2xl max-w-2xl w-full animate-fade-in border border-braini-blue/10">
           <h2 className="text-3xl font-extrabold text-braini-blue mb-2 text-left">
             Nivel {level.levels.id}: {level.levels.titulo}

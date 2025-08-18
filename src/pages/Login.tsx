@@ -119,18 +119,46 @@ const Login = () => {
       setEmail('');
       setPassword('');
 
-      // Comprobar si el perfil está completo
+      // Comprobar si el perfil está completo y si ha visto welcome
       const userId = data.user?.id;
       if (!userId) throw new Error('No se pudo obtener el usuario autenticado.');
+      
+      // Obtener datos del padre incluyendo has_seen_welcome
       const { data: parentData, error: parentError } = await supabase
         .from('parents')
-        .select('profile_completed')
+        .select('profile_completed, has_seen_welcome')
         .eq('id', userId)
         .single();
       if (parentError) throw parentError;
       if (!parentData) throw new Error('No se encontró el perfil del usuario.');
+      
+      // Verificar si el perfil del padre está completo
       if (parentData.profile_completed === false) {
         navigate('/parents-profile');
+        return;
+      }
+      
+      // Verificar si el perfil del hijo está completo
+      const { data: childData, error: childError } = await supabase
+        .from('children')
+        .select('id')
+        .eq('parent_id', userId)
+        .single();
+      
+      if (childError && childError.code !== 'PGRST116') {
+        // Error real, no solo "no encontrado"
+        throw childError;
+      }
+      
+      if (!childData) {
+        // No hay hijo registrado, ir a ChildProfile
+        navigate('/child-profile');
+        return;
+      }
+      
+      // Verificar si ha visto welcome
+      if (parentData.has_seen_welcome === false) {
+        navigate('/welcome');
       } else {
         navigate('/home');
       }

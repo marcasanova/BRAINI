@@ -116,7 +116,7 @@ const ChildProfile = () => {
       }
       setSuccess(true);
       toast({ title: 'Hijo/a registrado correctamente', description: 'Los datos han sido guardados.', variant: 'default' });
-      setTimeout(() => navigate('/home'), 1200);
+      setTimeout(() => navigate('/welcome'), 1200);
     } catch (err: any) {
       if (!err.message?.includes('dni_formato_valido') && !err.message?.includes('dni_unico') && !err.message?.includes('parent_unico')) {
         setError(err.message || 'Error al guardar los datos. Inténtalo de nuevo.');

@@ -17,6 +17,10 @@ import ParentsProfile from './pages/ParentsProfile';
 import ChildProfile from './pages/ChildProfile';
 import Activities from './pages/Activities';
 import Profile from './pages/Profile';
+import Recursos from './pages/Recursos';
+import DiarioEmocional from './pages/DiarioEmocional';
+import Tienda from './pages/Tienda';
+import InteligenciaEmocionalPadre from './pages/InteligenciaEmocionalPadre';
 
 const queryClient = new QueryClient();
 
@@ -39,6 +43,10 @@ const App = () => (
           <Route path="/child-profile" element={<ProtectedRoute><ChildProfile /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/nivel/:id" element={<ProtectedRoute><Activities /></ProtectedRoute>} />
+                         <Route path="/recursos" element={<ProtectedRoute><Recursos /></ProtectedRoute>} />
+               <Route path="/diario-emocional" element={<ProtectedRoute><DiarioEmocional /></ProtectedRoute>} />
+               <Route path="/tienda" element={<ProtectedRoute><Tienda /></ProtectedRoute>} />
+               <Route path="/inteligencia-emocional-padre" element={<ProtectedRoute><InteligenciaEmocionalPadre /></ProtectedRoute>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

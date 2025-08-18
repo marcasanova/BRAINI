@@ -35,7 +35,7 @@ const Home = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-pink-50 font-inter relative overflow-hidden">
       <GeometricBackground />
       <Navbar />
-      <div className="container mx-auto px-4 py-12 pt-20 relative z-10">
+      <div className="container mx-auto px-4 py-12 md:pl-80 relative z-10">
         <div className="max-w-4xl mx-auto bg-white/80 backdrop-blur-sm p-8 rounded-xl shadow-lg animate-fade-in">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
             <h1 className="text-3xl font-bold text-gray-800 mb-4 sm:mb-0">
