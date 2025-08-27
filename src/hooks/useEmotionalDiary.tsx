@@ -24,6 +24,14 @@ export const useEmotionalDiary = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Función para formatear fecha preservando zona horaria local
+  const formatDateToLocalString = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   // Configuración de las 5 emociones
   const EMOTIONS_CONFIG: EmotionConfig[] = [
     {
@@ -110,7 +118,7 @@ export const useEmotionalDiary = () => {
         p_child_id: finalChildId,
         p_emotion_name: emotionName,
         p_observations: observations || null,
-        p_entry_date: date.toISOString().split('T')[0] // Formato YYYY-MM-DD
+        p_entry_date: formatDateToLocalString(date) // Formato YYYY-MM-DD preservando zona horaria local
       });
 
       if (upsertError) throw upsertError;
@@ -144,8 +152,8 @@ export const useEmotionalDiary = () => {
         .from('emotional_diary')
         .select('*')
         .eq('user_id', user.id)
-        .gte('entry_date', startDate.toISOString().split('T')[0])
-        .lte('entry_date', endDate.toISOString().split('T')[0])
+        .gte('entry_date', formatDateToLocalString(startDate))
+        .lte('entry_date', formatDateToLocalString(endDate))
         .order('entry_date', { ascending: true });
 
       if (error) throw error;
@@ -175,7 +183,7 @@ export const useEmotionalDiary = () => {
         .from('emotional_diary')
         .select('*')
         .eq('user_id', user.id)
-        .eq('entry_date', date.toISOString().split('T')[0])
+        .eq('entry_date', formatDateToLocalString(date))
         .maybeSingle(); // Esto no lanza error si no hay datos
 
       if (error) throw error;

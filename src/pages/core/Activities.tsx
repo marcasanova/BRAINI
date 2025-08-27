@@ -5,10 +5,10 @@ import { LEVEL_STATUS } from "@/constants/levelStatus";
 import { UserLevel } from "@/hooks/useUserLevels";
 import { useUserLevels } from "@/hooks/useUserLevels";
 import GeometricBackground from '@/components/GeometricBackground';
-import Navbar from '@/components/Navbar';
-import LevelRating from '@/components/LevelRating';
-import LevelNavigation from '@/components/LevelNavigation';
-import MedalAnimation from '@/components/MedalAnimation';
+import Navbar from '@/components/navigation/Navbar';
+import LevelRating from '@/components/levels/LevelRating';
+import LevelNavigation from '@/components/levels/LevelNavigation';
+import MedalAnimation from '@/components/medals/MedalAnimation';
 
 interface Activity {
   id: number;

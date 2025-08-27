@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import GeometricBackground from '@/components/GeometricBackground';
-import Navbar from '@/components/Navbar';
+import Navbar from '@/components/navigation/Navbar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { Brain, Heart, TrendingUp, CheckCircle, AlertCircle, Info } from 'lucide-react';
+import { Brain, Heart, TrendingUp, CheckCircle, AlertCircle, Info, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface TMMSQuestion {
@@ -56,7 +56,7 @@ const TMMS_QUESTIONS: TMMSQuestion[] = [
   { id: 24, question: "Tengo mucha energía cuando me siento feliz", dimension: "reparacion", reverse: false }
 ];
 
-const InteligenciaEmocionalPadre = () => {
+const TestTMMSPadres = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -350,6 +350,18 @@ const InteligenciaEmocionalPadre = () => {
             </p>
           </div>
 
+          {/* Botón de regreso */}
+          <div className="mb-6 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+            <Button
+              onClick={() => navigate('/inteligencia-emocional')}
+              variant="outline"
+              className="border-2 border-gray-300 text-gray-700 hover:border-braini-blue hover:text-braini-blue hover:bg-white/50 font-semibold py-2 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Volver a Inteligencia Emocional
+            </Button>
+          </div>
+
           {/* Información del test */}
           <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0 mb-8 animate-fade-in" style={{ animationDelay: '0.1s' }}>
             <CardHeader>
@@ -460,4 +472,4 @@ const InteligenciaEmocionalPadre = () => {
   );
 };
 
-export default InteligenciaEmocionalPadre;
+export default TestTMMSPadres;

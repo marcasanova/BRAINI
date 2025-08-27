@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface EmotionalEntry {
   id: number;
@@ -52,13 +53,29 @@ const EmotionCalendar: React.FC<EmotionCalendarProps> = ({
   };
 
   const getEmotionColor = (emotionName: string) => {
-    const emotion = emotionsConfig.find(e => e.name === emotionName);
-    return emotion?.color || '#E5E7EB';
+    // Colores específicos para cada emoción (basados en la imagen)
+    const emotionColors: { [key: string]: string } = {
+      'Alegría': '#FFD93D',    // Amarillo vibrante
+      'Tristeza': '#6C5CE7',   // Azul claro
+      'Miedo': '#A8E6CF',      // Azul oscuro
+      'Pena': '#FF8B94',       // Azul medio
+      'Rabia': '#FF6B6B'       // Rojo intenso
+    };
+    
+    return emotionColors[emotionName] || '#E5E7EB';
   };
 
   const getEmotionForDate = (date: Date) => {
-    const dateString = date.toISOString().split('T')[0];
+    const dateString = formatDateToLocalString(date);
     return monthEntries.find(entry => entry.entry_date === dateString);
+  };
+
+  // Función para formatear fecha preservando zona horaria local
+  const formatDateToLocalString = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   };
 
   const navigateMonth = (direction: 'prev' | 'next') => {
@@ -101,38 +118,52 @@ const EmotionCalendar: React.FC<EmotionCalendarProps> = ({
       const hasEntry = !!entry;
       
       days.push(
-        <button
-          key={day}
-          onClick={() => onDateSelect(date)}
-          className={`
-            relative h-12 rounded-lg transition-all duration-200 text-sm font-medium
-            ${isSelected(date) 
-              ? 'ring-2 ring-braini-blue bg-braini-blue/10' 
-              : 'hover:bg-gray-50'
-            }
-            ${isToday(date) ? 'font-bold' : ''}
-          `}
-        >
-          <span className={`
-            absolute top-1 left-1 text-xs
-            ${isToday(date) ? 'text-braini-blue' : 'text-gray-700'}
-          `}>
-            {day}
-          </span>
-          
-          {/* Indicador de emoción */}
-          {hasEntry && (
-            <div 
-              className="absolute bottom-1 left-1 right-1 h-2 rounded-full"
-              style={{ backgroundColor: emotionColor }}
-            />
-          )}
-          
-          {/* Indicador de observaciones */}
-          {entry?.observations && (
-            <div className="absolute top-1 right-1 w-2 h-2 bg-blue-500 rounded-full" />
-          )}
-        </button>
+        <TooltipProvider key={day}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => onDateSelect(date)}
+                className={`
+                  relative h-12 rounded-lg transition-all duration-200 text-sm font-medium
+                  ${isSelected(date) 
+                    ? 'ring-2 ring-braini-blue bg-braini-blue/10' 
+                    : 'hover:bg-gray-50'
+                  }
+                  ${isToday(date) ? 'font-bold' : ''}
+                `}
+              >
+                <span className={`
+                  absolute top-1 left-1 text-xs
+                  ${isToday(date) ? 'text-braini-blue' : 'text-gray-700'}
+                `}>
+                  {day}
+                </span>
+                
+                {/* Indicador de emoción - más prominente */}
+                {hasEntry && (
+                  <div 
+                    className="absolute bottom-1 left-1 right-1 h-3 rounded-full shadow-sm"
+                    style={{ backgroundColor: emotionColor }}
+                  />
+                )}
+                
+                {/* Indicador de observaciones */}
+                {entry?.observations && (
+                  <div className="absolute top-1 right-1 w-2 h-2 bg-blue-500 rounded-full shadow-sm" />
+                )}
+              </button>
+            </TooltipTrigger>
+            
+            {/* Tooltip con información de la emoción */}
+            {hasEntry && (
+              <TooltipContent side="top" className="bg-gray-800 text-white text-sm px-3 py-2">
+                <div className="text-center">
+                  <div className="font-medium">{entry.emotion_name}</div>
+                </div>
+              </TooltipContent>
+            )}
+          </Tooltip>
+        </TooltipProvider>
       );
     }
     
@@ -189,21 +220,33 @@ const EmotionCalendar: React.FC<EmotionCalendarProps> = ({
           {renderCalendarDays()}
         </div>
         
-        {/* Leyenda */}
-        <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-          <h4 className="text-sm font-medium text-gray-700 mb-2">Leyenda:</h4>
-          <div className="flex flex-wrap gap-4 text-xs text-gray-600">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-blue-500 rounded-full" />
-              <span>Con observaciones</span>
+        {/* Leyenda Simplificada - Solo Emociones */}
+        <div className="mt-6 p-4 bg-gradient-to-r from-gray-50 to-blue-50 rounded-lg border border-gray-200">
+          <h4 className="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2">
+            <div className="w-2 h-2 bg-braini-blue rounded-full"></div>
+            Emociones del Calendario
+          </h4>
+          
+          <div className="grid grid-cols-2 gap-2">
+            <div className="flex items-center gap-2 p-2 bg-white rounded-lg border border-gray-100">
+              <div className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: '#FFD93D' }} />
+              <span className="text-xs text-gray-700 font-medium">Alegría</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-gray-400 rounded-full" />
-              <span>Sin registro</span>
+            <div className="flex items-center gap-2 p-2 bg-white rounded-lg border border-gray-100">
+              <div className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: '#6C5CE7' }} />
+              <span className="text-xs text-gray-700 font-medium">Tristeza</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-braini-blue rounded-full" />
-              <span>Hoy seleccionado</span>
+            <div className="flex items-center gap-2 p-2 bg-white rounded-lg border border-gray-100">
+              <div className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: '#A8E6CF' }} />
+              <span className="text-xs text-gray-700 font-medium">Miedo</span>
+            </div>
+            <div className="flex items-center gap-2 p-2 bg-white rounded-lg border border-gray-100">
+              <div className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: '#FF8B94' }} />
+              <span className="text-xs text-gray-700 font-medium">Pena</span>
+            </div>
+            <div className="flex items-center gap-2 p-2 bg-white rounded-lg border border-gray-100">
+              <div className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: '#FF6B6B' }} />
+              <span className="text-xs text-gray-700 font-medium">Rabia</span>
             </div>
           </div>
         </div>

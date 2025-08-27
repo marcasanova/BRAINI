@@ -119,14 +119,14 @@ const Login = () => {
       setEmail('');
       setPassword('');
 
-      // Comprobar si el perfil está completo y si ha visto welcome
+      // Comprobar si el perfil está completo
       const userId = data.user?.id;
       if (!userId) throw new Error('No se pudo obtener el usuario autenticado.');
       
-      // Obtener datos del padre incluyendo has_seen_welcome
+      // Obtener datos del padre
       const { data: parentData, error: parentError } = await supabase
         .from('parents')
-        .select('profile_completed, has_seen_welcome')
+        .select('profile_completed')
         .eq('id', userId)
         .single();
       if (parentError) throw parentError;
@@ -156,12 +156,8 @@ const Login = () => {
         return;
       }
       
-      // Verificar si ha visto welcome
-      if (parentData.has_seen_welcome === false) {
-        navigate('/welcome');
-      } else {
-        navigate('/home');
-      }
+      // Perfil completo, ir directamente a Home
+      navigate('/home');
     } catch (error) {
       toast({
         title: "Inicio de sesión fallido",

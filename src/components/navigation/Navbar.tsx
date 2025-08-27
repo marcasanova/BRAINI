@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { Home, BookOpen, User, Menu, X, Brain, Sparkles, ShoppingBag, FileText, Heart } from 'lucide-react';
+import { Home, BookOpen, User, Menu, X, Brain, Sparkles, Heart } from 'lucide-react';
 
 const NAV_ITEMS = [
   { label: 'Panel de Juego', icon: Home, path: '/home', description: 'Mapa con todos los niveles' },
   { label: 'Diario Emocional', icon: BookOpen, path: '/diario-emocional', description: 'Registra tus emociones' },
-  { label: 'Inteligencia Emocional', icon: Heart, path: '/inteligencia-emocional-padre', description: 'Test TMMS-24 para padres' },
-  { label: 'Recursos Adicionales', icon: FileText, path: '/recursos', description: 'Materiales de apoyo' },
-  { label: 'Tienda', icon: ShoppingBag, path: '/tienda', description: 'Productos y servicios' },
+  { label: 'Inteligencia Emocional', icon: Heart, path: '/inteligencia-emocional', description: 'Tests de inteligencia emocional' },
   { label: 'Perfil', icon: User, path: '/profile', description: 'Tu perfil personal' },
 ];
 

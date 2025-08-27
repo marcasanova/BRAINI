@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import GeometricBackground from '@/components/GeometricBackground';
 import { supabase } from '@/lib/supabaseClient';
 import { useUserLevels } from '@/hooks/useUserLevels';
-import LevelList from '@/components/LevelList';
-import Navbar from '@/components/Navbar';
+import LevelList from '@/components/levels/LevelList';
+import Navbar from '@/components/navigation/Navbar';
 import MapDownload from '@/components/MapDownload';
 import { useToast } from '@/hooks/use-toast';
 

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import GeometricBackground from '@/components/GeometricBackground';
-import Navbar from '@/components/Navbar';
-import EmotionSelector from '@/components/EmotionSelector';
-import EmotionEntry from '@/components/EmotionEntry';
-import EmotionCalendar from '@/components/EmotionCalendar';
+import Navbar from '@/components/navigation/Navbar';
+import EmotionSelector from '@/components/emotionalDiary/EmotionSelector';
+import EmotionEntry from '@/components/emotionalDiary/EmotionEntry';
+import EmotionCalendar from '@/components/emotionalDiary/EmotionCalendar';
 import { useEmotionalDiary } from '@/hooks/useEmotionalDiary';
 import { useToast } from '@/hooks/use-toast';
 import { Heart, Calendar } from 'lucide-react';

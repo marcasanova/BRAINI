@@ -3,24 +3,24 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "./pages/Login";
-import SignUp from "./pages/SignUp";
+import Login from "./pages/auth/Login";
+import SignUp from "./pages/auth/SignUp";
 import NotFound from "./pages/support/NotFound";
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "./components/navigation/ProtectedRoute";
 import UpdatePassword from "./pages/support/UpdatePassword";
-import Welcome from "./pages/Welcome";
-import Home from "./pages/Home";
+
+import Home from "./pages/core/Home";
 import VerifyEmail from './pages/support/VerifyEmail';
 import EmailVerified from './pages/support/EmailVerified';
 import Landing from './pages/Landing';
-import ParentsProfile from './pages/ParentsProfile';
-import ChildProfile from './pages/ChildProfile';
-import Activities from './pages/Activities';
-import Profile from './pages/Profile';
-import Recursos from './pages/Recursos';
-import DiarioEmocional from './pages/DiarioEmocional';
-import Tienda from './pages/Tienda';
-import InteligenciaEmocionalPadre from './pages/InteligenciaEmocionalPadre';
+import ParentsProfile from './pages/onboarding/ParentsProfile';
+import ChildProfile from './pages/onboarding/ChildProfile';
+import Activities from './pages/core/Activities';
+import Profile from './pages/auth/Profile';
+import DiarioEmocional from './pages/core/DiarioEmocional';
+import InteligenciaEmocional from './pages/intelligence/InteligenciaEmocional';
+import TestTMMSPadres from './pages/intelligence/tests/TestTMMSPadres';
+import TestEmocionalNinos from './pages/intelligence/tests/TestEmocionalNinos';
 
 const queryClient = new QueryClient();
 
@@ -35,7 +35,7 @@ const App = () => (
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
           <Route path="/update-password" element={<UpdatePassword />} />
-          <Route path="/welcome" element={<ProtectedRoute><Welcome /></ProtectedRoute>} />
+
           <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/email-verified" element={<EmailVerified />} />
@@ -43,10 +43,10 @@ const App = () => (
           <Route path="/child-profile" element={<ProtectedRoute><ChildProfile /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/nivel/:id" element={<ProtectedRoute><Activities /></ProtectedRoute>} />
-                         <Route path="/recursos" element={<ProtectedRoute><Recursos /></ProtectedRoute>} />
-               <Route path="/diario-emocional" element={<ProtectedRoute><DiarioEmocional /></ProtectedRoute>} />
-               <Route path="/tienda" element={<ProtectedRoute><Tienda /></ProtectedRoute>} />
-               <Route path="/inteligencia-emocional-padre" element={<ProtectedRoute><InteligenciaEmocionalPadre /></ProtectedRoute>} />
+          <Route path="/diario-emocional" element={<ProtectedRoute><DiarioEmocional /></ProtectedRoute>} />
+          <Route path="/inteligencia-emocional" element={<ProtectedRoute><InteligenciaEmocional /></ProtectedRoute>} />
+          <Route path="/test-tmms-padres" element={<ProtectedRoute><TestTMMSPadres /></ProtectedRoute>} />
+          <Route path="/test-emocional-ninos" element={<ProtectedRoute><TestEmocionalNinos /></ProtectedRoute>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
