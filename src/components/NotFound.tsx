@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import GeometricBackground from './GeometricBackground';
+import GeometricBackground from './EmotionBackground';
 import { Home, ArrowRight, Clock } from 'lucide-react';
 
 const NotFound = () => {
