@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/lib/supabaseClient";
 import { LEVEL_STATUS } from "@/constants/levelStatus";
 import { UserLevel } from "@/hooks/useUserLevels";
@@ -29,12 +29,14 @@ interface Medal {
 const Activities: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const [userId, setUserId] = useState<string | undefined>(undefined);
   const [level, setLevel] = useState<UserLevel | null>(null);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [earnedMedal, setEarnedMedal] = useState<Medal | null>(null); // Estado para la medalla ganada
+  const [isReturningFromActivity, setIsReturningFromActivity] = useState(false); // Control para evitar medallas al volver de actividades
 
   // Obtener el usuario logeado
   useEffect(() => {
@@ -42,6 +44,22 @@ const Activities: React.FC = () => {
       setUserId(user?.id);
     });
   }, []);
+
+  // Detectar si volvemos de una actividad
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const fromActivity = urlParams.get('fromActivity');
+    
+    if (fromActivity === 'true') {
+      setIsReturningFromActivity(true);
+      // Limpiar el parámetro de la URL
+      navigate(`/nivel/${id}`, { replace: true });
+      // Resetear después de un breve delay
+      setTimeout(() => {
+        setIsReturningFromActivity(false);
+      }, 2000);
+    }
+  }, [location.search, navigate, id]);
 
   // Obtener todos los niveles del usuario para navegación
   const { levels, loading: levelsLoading, getAdjacentLevels, refreshLevels } = useUserLevels(userId);
@@ -111,12 +129,19 @@ const Activities: React.FC = () => {
     navigate(`/nivel/${levelId}`);
   };
 
+  // Función para manejar click en actividad
+  const handleActivityClick = (activityId: number) => {
+    navigate(`/nivel/${id}/actividad/${activityId}`);
+  };
+
   // Función para manejar cuando se gana una medalla
   const handleMedalEarned = (medal: Medal) => {
-    setEarnedMedal(medal);
-    // Refrescar los niveles para mostrar el progreso actualizado
-    refreshLevels();
-    console.log('¡Medalla ganada!', medal);
+    // Solo mostrar medalla si no estamos volviendo de una actividad
+    if (!isReturningFromActivity) {
+      setEarnedMedal(medal);
+      // Refrescar los niveles para mostrar el progreso actualizado
+      refreshLevels();
+    }
   };
 
   // Función para cerrar la animación de medalla y navegar al siguiente nivel
@@ -178,9 +203,30 @@ const Activities: React.FC = () => {
           ) : (
             <ul className="space-y-6">
               {activities.map((activity) => (
-                <li key={activity.id} className="p-6 bg-white rounded-2xl shadow-md flex flex-col gap-2 border border-braini-blue/20 hover:shadow-lg transition-shadow">
-                  <div className="font-bold text-braini-blue text-xl mb-1">{activity.titulo}</div>
-                  <div className="text-gray-700 text-base leading-relaxed">{activity.descripcion}</div>
+                <li key={activity.id} 
+                    className="p-6 bg-white rounded-2xl shadow-md flex flex-col gap-2 border border-braini-blue/20 hover:shadow-lg hover:border-braini-blue/40 transition-all duration-300 cursor-pointer group"
+                    onClick={() => handleActivityClick(activity.id)}>
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="font-bold text-braini-blue text-xl mb-1 group-hover:text-braini-blue-dark transition-colors">
+                        {activity.titulo}
+                      </div>
+                      <div className="text-gray-700 text-base leading-relaxed group-hover:text-gray-800 transition-colors">
+                        {activity.descripcion}
+                      </div>
+                    </div>
+                    <div className="ml-4 flex-shrink-0">
+                      <div className="w-10 h-10 bg-braini-blue/10 rounded-full flex items-center justify-center group-hover:bg-braini-blue/20 transition-colors">
+                        <svg className="w-5 h-5 text-braini-blue group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-sm text-braini-blue mt-2 flex items-center gap-2 group-hover:text-braini-blue-dark transition-colors">
+                    <div className="w-2 h-2 bg-braini-blue rounded-full group-hover:scale-125 transition-transform"></div>
+                    <span className="font-medium">Hacer actividad</span>
+                  </div>
                 </li>
               ))}
             </ul>

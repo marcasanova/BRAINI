@@ -21,6 +21,7 @@ import DiarioEmocional from './pages/core/DiarioEmocional';
 import InteligenciaEmocional from './pages/intelligence/InteligenciaEmocional';
 import TestTMMSPadres from './pages/intelligence/tests/TestTMMSPadres';
 import TestEmocionalNinos from './pages/intelligence/tests/TestEmocionalNinos';
+import ActivityDetail from './pages/core/ActivityDetail';
 
 const queryClient = new QueryClient();
 
@@ -43,6 +44,7 @@ const App = () => (
           <Route path="/child-profile" element={<ProtectedRoute><ChildProfile /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/nivel/:id" element={<ProtectedRoute><Activities /></ProtectedRoute>} />
+          <Route path="/nivel/:levelId/actividad/:activityId" element={<ProtectedRoute><ActivityDetail /></ProtectedRoute>} />
           <Route path="/diario-emocional" element={<ProtectedRoute><DiarioEmocional /></ProtectedRoute>} />
           <Route path="/inteligencia-emocional" element={<ProtectedRoute><InteligenciaEmocional /></ProtectedRoute>} />
           <Route path="/test-tmms-padres" element={<ProtectedRoute><TestTMMSPadres /></ProtectedRoute>} />

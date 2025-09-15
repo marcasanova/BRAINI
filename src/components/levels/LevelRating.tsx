@@ -31,7 +31,6 @@ const LevelRating: React.FC<LevelRatingProps> = ({ levelId, userId, onMedalEarne
           .single();
 
         if (error && error.code !== 'PGRST116') {
-          console.error('Error loading rating:', error);
           return;
         }
 
@@ -45,7 +44,6 @@ const LevelRating: React.FC<LevelRatingProps> = ({ levelId, userId, onMedalEarne
           }
         }
       } catch (error) {
-        console.error('Error loading existing rating:', error);
       }
     };
 
@@ -84,7 +82,6 @@ const LevelRating: React.FC<LevelRatingProps> = ({ levelId, userId, onMedalEarne
         description: "Gracias por compartir tu opinión sobre este nivel.",
       });
 
-      console.log('Valoración guardada, verificando medalla inmediatamente...');
 
       // Verificar inmediatamente si se ganó una medalla
       const checkMedalImmediately = async () => {
@@ -97,16 +94,13 @@ const LevelRating: React.FC<LevelRatingProps> = ({ levelId, userId, onMedalEarne
             .eq('level_id', levelId)
             .single();
 
-          console.log('Estado del nivel después de valorar:', levelData);
 
           if (levelError) {
-            console.log('Error obteniendo estado del nivel:', levelError);
             return false;
           }
 
           // Si el nivel se completó, obtener la medalla
           if (levelData.status === 'completed' && levelData.completed_at) {
-            console.log('Nivel completado, obteniendo medalla...');
             
             // Obtener la medalla que corresponde a este nivel
             const { data: medalData, error: medalError } = await supabase
@@ -116,21 +110,17 @@ const LevelRating: React.FC<LevelRatingProps> = ({ levelId, userId, onMedalEarne
               .single();
 
             if (medalError) {
-              console.log('Error obteniendo datos de medalla:', medalError);
               return false;
             }
 
-            console.log('¡Medalla encontrada!', medalData);
             if (onMedalEarned) {
               onMedalEarned(medalData);
             }
             return true;
           } else {
-            console.log('Nivel no se completó aún');
             return false;
           }
         } catch (err) {
-          console.log('Error verificando medalla:', err);
           return false;
         }
       };
@@ -151,13 +141,11 @@ const LevelRating: React.FC<LevelRatingProps> = ({ levelId, userId, onMedalEarne
         setTimeout(() => {
           clearInterval(checkInterval);
           if (!medalFound) {
-            console.log('No se encontró medalla después de 3 segundos');
           }
         }, 3000);
       }
 
     } catch (error) {
-      console.error('Error saving rating:', error);
       toast({
         title: "Error al guardar",
         description: "No se pudo guardar tu valoración. Inténtalo de nuevo.",

@@ -54,7 +54,6 @@ const MedalShelf: React.FC<MedalShelfProps> = ({ userMedals, isLoading }) => {
 
   const handleMedalClick = (levelNumber: number) => {
     // Aquí puedes agregar la lógica para navegar al nivel o mostrar más información
-    console.log(`Click en nivel ${levelNumber}`);
   };
 
   if (isLoading) {
