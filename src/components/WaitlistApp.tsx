@@ -4,8 +4,8 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/lib/supabaseClient';
-import GeometricBackground from './GeometricBackground';
-import { CheckCircle, Mail, ArrowRight, Gift } from 'lucide-react';
+import { CheckCircle, Mail, ArrowRight, Gift, Home } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const WaitlistApp = () => {
   const [email, setEmail] = useState('');
@@ -13,7 +13,9 @@ const WaitlistApp = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [acceptTerms, setAcceptTerms] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   // Animación de entrada
   useEffect(() => {
@@ -22,8 +24,6 @@ const WaitlistApp = () => {
     }, 100);
     return () => clearTimeout(timer);
   }, []);
-
-
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,6 +42,15 @@ const WaitlistApp = () => {
       toast({
         title: "Email inválido",
         description: "Por favor, introduce una dirección de email válida.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!acceptTerms) {
+      toast({
+        title: "Términos requeridos",
+        description: "Por favor, acepta la Política de Privacidad.",
         variant: "destructive"
       });
       return;
@@ -85,115 +94,88 @@ const WaitlistApp = () => {
   const handleReset = () => {
     setEmail('');
     setIsSubmitted(false);
+    setAcceptTerms(false);
   };
-
-  // Colores fijos para modo claro
-  const bgColor = 'bg-white';
-  const textColor = 'text-slate-800';
-  const textSecondaryColor = 'text-slate-600';
-  const cardBg = 'bg-white/90';
-  const cardBorder = 'border-white/20';
-  const inputBg = 'bg-white';
-  const inputBorder = 'border-slate-200';
 
   return (
     <div 
-      className={`min-h-screen ${bgColor} font-inter relative overflow-hidden transition-colors duration-300 flex flex-col`}
+      className="min-h-screen bg-white font-montserrat relative overflow-hidden transition-colors duration-300 flex flex-col"
       role="main"
       aria-label="Página de waitlist de Braini Emotions"
     >
-      <div className={`transition-opacity duration-2000 ease-out ${
-        isLoaded ? 'opacity-100' : 'opacity-0'
-      }`}>
-        <GeometricBackground />
+
+      {/* Navigation Button */}
+      <div className="absolute top-4 left-4 z-20">
+        <Button 
+          onClick={() => navigate('/')}
+          variant="outline"
+          className="bg-white/90 hover:bg-white text-gray-700 border-gray-300"
+        >
+          <Home className="w-4 h-4 mr-2" />
+          Ver landing page
+        </Button>
       </div>
 
-
-
-      {/* Main Content - Layout Vertical */}
-      <main className="relative z-10 flex-1 px-4 sm:px-6 lg:px-8 pb-8 flex items-center justify-center">
-        <div className="w-full max-w-2xl mx-auto text-center space-y-8">
+      {/* Main Content - Centrado */}
+      <main className="relative z-10 flex-1 flex items-center justify-center px-2 sm:px-4 py-4 sm:py-8">
+        <div className={`w-full max-w-7xl mx-auto transition-all duration-1000 ease-out ${
+          isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+        }`}>
           
-
-
-          {/* Logo BRAINI */}
-          <div className={`space-y-4 transition-all duration-1000 ease-out ${
-            isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}>
-            <div className="flex flex-col items-center space-y-2">
-              <img 
-                src="/logo/BRAINI_black.png"
-                alt="Braini Emotions Logo" 
-                className="w-20 h-20 sm:w-25 sm:h-25∫ object-contain"
+          {/* Tarjeta Principal con Degradado */}
+          <div 
+            className="relative rounded-xl sm:rounded-2xl p-4 sm:p-8 lg:p-12 shadow-4xl min-h-[95vh] sm:min-h-[90vh] flex flex-col overflow-hidden"
+            style={{
+              background: 'linear-gradient(135deg,rgb(56, 144, 191) 0%, #7ED3BE 100%)',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1)'
+            }}
+          >
+            {/* Figuras Geométricas Circulares */}
+            <div className="absolute inset-0 pointer-events-none">
+              {/* Círculo grande superior izquierdo */}
+              <div 
+                className="absolute -top-20 sm:-top-40 -left-5 sm:-left-10 w-40 h-40 sm:w-80 sm:h-80 bg-white/15 rounded-full"
+              />
+              {/* Círculo grande inferior derecho */}
+              <div 
+                className="absolute -bottom-40 sm:-bottom-80 -right-30 sm:-right-60 w-[300px] h-[300px] sm:w-[700px] sm:h-[700px] bg-white/15 rounded-full"
               />
             </div>
-          </div>
 
-          {/* Título Principal */}
-          <h1 
-            className={`text-4xl sm:text-5xl md:text-6xl leading-tight ${textColor} transition-all duration-1000 ease-out delay-200 ${
-              isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-            }`} 
-            style={{ fontWeight: 1000, letterSpacing: '-0.02em' }}
-            aria-label="Braini Emotions - Acompañamiento emocional infantil"
-          >
-            <span className="text-blue-500">Braini Emotions</span>
-          </h1>
-
-          {/* Tres cajas informativas */}
-          <div className={`space-y-4 max-w-lg mx-auto transition-all duration-1000 ease-out delay-400 ${
-            isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`} role="region" aria-label="Características del programa">
-            {/* Caja 1 - Amarilla */}
-            <div 
-              className="bg-yellow-200 rounded-xl p-5 text-center shadow-sm"
-              role="article"
-              aria-label="Duración del programa"
-            >
-              <p className="text-slate-900 font-semibold text-base">
-                <span className="block">25 Sesiones de 20 Minutos</span>
-                <span className="block">Para transformar la vida de tu hijo</span>
+            {/* Logo BRAINI */}
+            <div className="text-center mb-6 sm:mb-8 relative z-10">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 flex items-center justify-center">
+                <img 
+                  src="/logo/logoBraini.png"
+                  alt="Braini Emotions Logo" 
+                  className="w-16 h-16 sm:w-20 sm:h-20 object-contain"
+                />
+              </div>
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white mb-3 sm:mb-4" style={{ fontWeight: 900 }}>
+                Braini Emotions
+              </h1>
+              <p className="text-white font-bold text-xl sm:text-2xl lg:text-4xl mb-2 sm:mb-3 px-2" style={{ fontWeight: 700 }}>
+                Bienestar emocional infantil, fácil y divertido
+              </p>
+              <p className="text-white text-sm sm:text-base lg:text-xl font-normal px-4" style={{ fontWeight: 400 }}>
+                25 sesiones de 20' basadas en evidencias científicas para niños/as de 4 - 10 años
               </p>
             </div>
 
-            {/* Caja 2 - Verde */}
+            {/* Tarjeta Blanca Interna con Formulario */}
             <div 
-              className="bg-green-200 rounded-xl p-5 text-center shadow-sm"
-              role="article"
-              aria-label="Base científica del programa"
+              className="bg-white rounded-xl p-4 sm:p-6 shadow-2xl relative z-10 max-w-xs sm:max-w-lg lg:max-w-2xl mx-auto"
+              style={{
+                boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.05)'
+              }}
             >
-              <p className="text-slate-900 font-semibold text-base">
-                Basado en evidencias científicas
-              </p>
-            </div>
-
-            {/* Caja 3 - Roja */}
-            <div 
-              className="bg-red-200 rounded-xl p-5 text-center shadow-sm"
-              role="article"
-              aria-label="Inversión en bienestar emocional"
-            >
-              <p className="text-slate-900 font-semibold text-base">
-                <span className="block">Invierte en bienestar emocional</span>
-                <span className="block">¡Tu mejor elección!</span>
-              </p>
-            </div>
-          </div>
-
-
-
-          {/* 5. Formulario de Waitlist Horizontal */}
-          <div className={`transition-all duration-1000 ease-out delay-600 ${
-            isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}>
-            {isSubmitted ? (
-              <Card className={`${cardBg} backdrop-blur-md shadow-xl border ${cardBorder}`}>
-                <CardContent className="p-8 text-center">
+              {isSubmitted ? (
+                <div className="text-center">
                   <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-                  <h3 className={`text-2xl font-bold mb-3 ${textColor}`}>
+                  <h3 className="text-2xl font-bold text-gray-800 mb-3">
                     ¡Bienvenido a Braini Emotions! 🎉
                   </h3>
-                  <p className={`mb-6 ${textSecondaryColor}`}>
+                  <p className="text-gray-600 mb-6">
                     Te hemos enviado un email de confirmación.
                   </p>
                   <Button 
@@ -202,128 +184,108 @@ const WaitlistApp = () => {
                   >
                     Unirse con otro email
                   </Button>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="bg-blue-500 rounded-xl p-8 shadow-xl">
-                <div className="text-center mb-6">
-                  <h3 className="text-2xl font-bold text-white mb-2">Acceso Exclusivo: ¡Únete a la Waitlist!</h3>
-                  <p className="text-white/90 font-medium">Sé el primero en descubrir Braini</p>
                 </div>
-                
-                <form 
-                  onSubmit={handleSubmit} 
-                  className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto"
-                  role="form"
-                  aria-label="Formulario de suscripción a la waitlist"
-                >
-                  <div className="flex-1 relative">
-                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                    <Input
-                      id="email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      onFocus={() => setIsFocused(true)}
-                      onBlur={() => setIsFocused(false)}
-                      placeholder="tu@email.com"
-                      className={`bg-white border-0 text-lg py-3 pl-12 pr-4 rounded-lg shadow-lg ${
-                        isFocused 
-                          ? 'ring-4 ring-white/30 shadow-2xl' 
-                          : ''
-                      }`}
-                      required
-                      disabled={isSubmitting}
-                      aria-label="Dirección de email"
-                      aria-describedby="email-help"
-                    />
-                  </div>
+              ) : (
+                <>
+                  <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 mb-4 sm:mb-6 text-center" style={{ fontWeight: 700 }}>
+                    Acceso Exclusivo: ¡Únete a la lista!
+                  </h3>
                   
-                  <Button 
-                    type="submit" 
-                    className="bg-white hover:bg-gray-100 text-blue-600 font-bold py-3 px-6 rounded-lg shadow-lg flex items-center space-x-2 whitespace-nowrap"
-                    disabled={isSubmitting}
-                    aria-label="Suscribirse a la waitlist"
-                  >
-                    {isSubmitting ? (
-                      <div className="w-5 h-5 border-2 border-blue-600/30 border-t-blue-600 rounded-full animate-spin"></div>
-                    ) : (
-                      <>
-                        <span>Suscríbete</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </>
-                    )}
-                  </Button>
-                </form>
+                  <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                      <div className="flex-1 relative">
+                        <Input
+                          id="email"
+                          type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          onFocus={() => setIsFocused(true)}
+                          onBlur={() => setIsFocused(false)}
+                          placeholder="tu@email.com"
+                          className={`border-cyan-200 focus:border-cyan-400 focus:ring-cyan-400 text-base sm:text-lg py-3 ${
+                            isFocused ? 'ring-2 ring-cyan-100' : ''
+                          }`}
+                          required
+                          disabled={isSubmitting}
+                        />
+                      </div>
+                      <Button 
+                        type="submit" 
+                        className="text-white px-6 py-3 sm:py-2 font-bold hover:opacity-90 transition-opacity text-base w-full sm:w-auto"
+                        style={{ 
+                          background: 'linear-gradient(135deg, #6AC0E0 0%, #7ED3BE 100%)',
+                          border: 'none'
+                        }}
+                        disabled={isSubmitting}
+                      >
+                        {isSubmitting ? (
+                          <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        ) : (
+                          '¡Quiero entrar!'
+                        )}
+                      </Button>
+                    </div>
 
-                {/* Incentivo más prominente */}
-                <div className="bg-white/10 rounded-lg p-4 mt-6 border border-white/20">
-                  <div className="flex items-center justify-center space-x-2 text-white">
-                    <Gift className="w-5 h-5" />
-                    <span className="font-semibold text-base">
-                      Acceso anticipado y descuentos especiales para los primeros en unirse
-                    </span>
-                  </div>
+                    <p className="text-gray-600 text-sm text-center" style={{ fontWeight: 400 }}>
+                      Acceso anticipado y descuentos especiales para los primeros en unirse.
+                    </p>
+
+                    <div className="flex items-start space-x-3">
+                      <input
+                        type="checkbox"
+                        id="terms"
+                        checked={acceptTerms}
+                        onChange={(e) => setAcceptTerms(e.target.checked)}
+                        className="mt-1 h-5 w-5 text-cyan-600 focus:ring-cyan-500 border-gray-300 rounded"
+                      />
+                      <label htmlFor="terms" className="text-sm text-gray-700 leading-6" style={{ fontWeight: 400 }}>
+                        Acepto la <span className="font-bold" style={{ fontWeight: 700 }}>Política de Privacidad</span> y recibir comunicaciones de Braini.
+                      </label>
+                    </div>
+                  </form>
+                </>
+              )}
+            </div>
+
+            {/* Social Proof - Dentro de la tarjeta */}
+            <div 
+              className={`mt-6 sm:mt-8 transition-all duration-1000 ease-out delay-200 relative z-10 ${
+                isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+              }`}
+              role="region"
+              aria-label="Testimonios de familias que confían en Braini"
+            >
+              <div className="flex flex-col sm:flex-row items-center justify-center space-y-3 sm:space-y-0 sm:space-x-3">
+                <div className="flex -space-x-2" role="img" aria-label="Avatares de familias satisfechas">
+                  <img 
+                    src="/avatars/profile1.jpeg" 
+                    alt="María - Madre satisfecha con Braini" 
+                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-3 border-white object-cover shadow-md"
+                  />
+                  <img 
+                    src="/avatars/profile2.jpg" 
+                    alt="Carlos - Padre satisfecho con Braini" 
+                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-3 border-white object-cover shadow-md"
+                  />
+                  <img 
+                    src="/avatars/profile3.jpg" 
+                    alt="Ana - Madre satisfecha con Braini" 
+                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-3 border-white object-cover shadow-md"
+                  />
                 </div>
-              </div>
-            )}
-          </div>
-
-          {/* Social Proof Visual - Mejorado */}
-          <div 
-            className={`flex flex-col items-center space-y-3 transition-all duration-1000 ease-out delay-800 ${
-              isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-            }`}
-            role="region"
-            aria-label="Testimonios de familias que confían en Braini"
-          >
-            <div className="flex items-center space-x-3">
-              <div className="flex -space-x-2" role="img" aria-label="Avatares de familias satisfechas">
-                <img 
-                  src="/avatars/profile1.jpeg" 
-                  alt="María - Madre satisfecha con Braini" 
-                  className="w-12 h-12 rounded-full border-3 border-white object-cover shadow-md"
-                />
-                <img 
-                  src="/avatars/profile2.jpg" 
-                  alt="Carlos - Padre satisfecho con Braini" 
-                  className="w-12 h-12 rounded-full border-3 border-white object-cover shadow-md"
-                />
-                <img 
-                  src="/avatars/profile3.jpg" 
-                  alt="Ana - Madre satisfecha con Braini" 
-                  className="w-12 h-12 rounded-full border-3 border-white object-cover shadow-md"
-                />
-              </div>
-              <div className="text-left">
-                <p className={`text-base font-semibold ${textColor}`}>
-                  Con la confianza de <span className="text-blue-500 font-bold text-lg">+50</span> familias
-                </p>
-                <p className={`text-sm ${textSecondaryColor} italic`}>
-                  "Transformando vidas, una emoción a la vez"
-                </p>
+                <div className="text-center sm:text-left">
+                  <p className="text-sm sm:text-base font-bold text-white" style={{ fontWeight: 700 }}>
+                    Con la confianza de <span className="font-black text-base sm:text-lg" style={{ fontWeight: 900 }}>+50</span> familias
+                  </p>
+                  <p className="text-xs sm:text-sm text-white/90" style={{ fontWeight: 400 }}>
+                    "Transformando vidas, una emoción a la vez"
+                  </p>
+                </div>
               </div>
             </div>
           </div>
-
-
         </div>
       </main>
-
-      {/* Footer Compacto */}
-      <footer 
-        className={`relative z-10 py-6 px-4 text-center border-t border-slate-200/30 bg-white/80 backdrop-blur-sm mt-auto transition-all duration-1000 ease-out delay-1000 ${
-          isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-        }`}
-        role="contentinfo"
-        aria-label="Información de copyright de Braini Emotions"
-      >
-        <div className="container mx-auto">
-          <p className={`font-medium text-sm ${textSecondaryColor}`}>
-            © 2025 Braini Emotions. Acompañamiento emocional infantil en armonía.
-          </p>
-        </div>
-      </footer>
     </div>
   );
 };

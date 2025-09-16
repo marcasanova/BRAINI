@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import GeometricBackground from './EmotionBackground';
 import { Home, ArrowRight, Clock } from 'lucide-react';
 
 const NotFound = () => {
@@ -23,7 +22,6 @@ const NotFound = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-pink-50 font-inter relative overflow-hidden">
-      <GeometricBackground />
       
       <div className="container mx-auto px-4 py-12 relative z-10">
         <div className="max-w-2xl mx-auto text-center">
