@@ -8,11 +8,10 @@ import SignUp from "./pages/auth/SignUp";
 import NotFound from "./pages/support/NotFound";
 import ProtectedRoute from "./components/navigation/ProtectedRoute";
 import UpdatePassword from "./pages/support/UpdatePassword";
-
 import Home from "./pages/core/Home";
 import VerifyEmail from './pages/support/VerifyEmail';
 import EmailVerified from './pages/support/EmailVerified';
-import Landing from './pages/Landing';
+import LandingPage from './pages/LandingPage';
 import ParentsProfile from './pages/onboarding/ParentsProfile';
 import ChildProfile from './pages/onboarding/ChildProfile';
 import Activities from './pages/core/Activities';
@@ -32,7 +31,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Landing />} />
+          <Route path="/" element={<LandingPage />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
           <Route path="/update-password" element={<UpdatePassword />} />
