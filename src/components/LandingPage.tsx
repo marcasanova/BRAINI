@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/lib/supabaseClient';
 import { CheckCircle, Mail, ArrowRight, Gift, Heart, Brain, Users, Clock, Shield, Star, Check, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useHref } from 'react-router-dom';
 
 const LandingPage = () => {
   const [email, setEmail] = useState('');
@@ -15,10 +16,9 @@ const LandingPage = () => {
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const { toast } = useToast();
-
   // Datos de testimonios
   const testimonials = [
-    {
+    { 
       id: 1,
       name: "María González",
       rating: 5,
