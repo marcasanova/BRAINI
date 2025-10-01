@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/lib/supabaseClient";
-import { LEVEL_STATUS } from "@/constants/levelStatus";
-import { UserLevel } from "@/hooks/useUserLevels";
-import { useUserLevels } from "@/hooks/useUserLevels";
+import { SESSION_STATUS } from "@/constants/levelStatus";
+import { UserSession } from "@/hooks/useUserLevels";
+import { useUserSessions } from "@/hooks/useUserLevels";
 import GeometricBackground from '@/components/GeometricBackground';
 import Navbar from '@/components/navigation/Navbar';
-import LevelRating from '@/components/levels/LevelRating';
-import LevelNavigation from '@/components/levels/LevelNavigation';
+import SessionRating from '@/components/levels/LevelRating';
+import SessionNavigation from '@/components/levels/LevelNavigation';
 import MedalAnimation from '@/components/medals/MedalAnimation';
 
 interface Activity {
@@ -31,7 +31,7 @@ const Activities: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [userId, setUserId] = useState<string | undefined>(undefined);
-  const [level, setLevel] = useState<UserLevel | null>(null);
+  const [session, setSession] = useState<UserSession | null>(null);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -53,7 +53,7 @@ const Activities: React.FC = () => {
     if (fromActivity === 'true') {
       setIsReturningFromActivity(true);
       // Limpiar el parámetro de la URL
-      navigate(`/nivel/${id}`, { replace: true });
+      navigate(`/sesion/${id}`, { replace: true });
       // Resetear después de un breve delay
       setTimeout(() => {
         setIsReturningFromActivity(false);
@@ -61,10 +61,10 @@ const Activities: React.FC = () => {
     }
   }, [location.search, navigate, id]);
 
-  // Obtener todos los niveles del usuario para navegación
-  const { levels, loading: levelsLoading, getAdjacentLevels, refreshLevels } = useUserLevels(userId);
+  // Obtener todas las sesiones del usuario para navegación
+  const { sessions, loading: sessionsLoading, getAdjacentSessions, refreshSessions } = useUserSessions(userId);
 
-  // Obtener el nivel del usuario
+  // Obtener la sesión del usuario
   useEffect(() => {
     if (!userId || !id) return;
     setLoading(true);
@@ -87,27 +87,27 @@ const Activities: React.FC = () => {
       .single()
       .then(({ data, error }) => {
         if (error || !data) {
-          setError("No se encontró el nivel o no tienes acceso.");
-          setLevel(null);
+          setError("No se encontró la sesión o no tienes acceso.");
+          setSession(null);
           setLoading(false);
         } else {
           const mapped = {
             ...data,
             levels: Array.isArray(data.levels) ? data.levels[0] : data.levels,
-          } as UserLevel;
-          setLevel(mapped);
+          } as UserSession;
+          setSession(mapped);
           setLoading(false);
         }
       });
   }, [userId, id]);
 
-  // Obtener actividades del nivel (corregido)
+  // Obtener actividades de la sesión (corregido)
   useEffect(() => {
-    if (!level) return;
+    if (!session) return;
     supabase
       .from("activities")
       .select("id, titulo_actividad, descripcion_actividad, level_id")
-      .eq("level_id", level.levels.id)
+      .eq("level_id", session.levels.id)
       .then(({ data, error }) => {
         if (error) {
           setActivities([]);
@@ -122,16 +122,16 @@ const Activities: React.FC = () => {
           );
         }
       });
-  }, [level]);
+  }, [session]);
 
-  // Función para navegar entre niveles
+  // Función para navegar entre sesiones
   const handleNavigate = (levelId: number) => {
-    navigate(`/nivel/${levelId}`);
+    navigate(`/sesion/${levelId}`);
   };
 
   // Función para manejar click en actividad
   const handleActivityClick = (activityId: number) => {
-    navigate(`/nivel/${id}/actividad/${activityId}`);
+    navigate(`/sesion/${id}/actividad/${activityId}`);
   };
 
   // Función para manejar cuando se gana una medalla
@@ -139,37 +139,37 @@ const Activities: React.FC = () => {
     // Solo mostrar medalla si no estamos volviendo de una actividad
     if (!isReturningFromActivity) {
       setEarnedMedal(medal);
-      // Refrescar los niveles para mostrar el progreso actualizado
-      refreshLevels();
+      // Refrescar las sesiones para mostrar el progreso actualizado
+      refreshSessions();
     }
   };
 
-  // Función para cerrar la animación de medalla y navegar al siguiente nivel
+  // Función para cerrar la animación de medalla y navegar a la siguiente sesión
   const handleMedalClose = () => {
     setEarnedMedal(null);
-    // Obtener el siguiente nivel y navegar
-    const { nextLevel } = getAdjacentLevels(parseInt(id!));
-    if (nextLevel) {
-      navigate(`/nivel/${nextLevel.levels.id}`);
+    // Obtener la siguiente sesión y navegar
+    const { nextSession } = getAdjacentSessions(parseInt(id!));
+    if (nextSession) {
+      navigate(`/sesion/${nextSession.levels.id}`);
     } else {
-      // Si es el último nivel, ir a home
+      // Si es la última sesión, ir a home
       navigate('/home');
     }
   };
 
-  if (loading || levelsLoading) {
-    return <div className="text-center py-12">Cargando nivel...</div>;
+  if (loading || sessionsLoading) {
+    return <div className="text-center py-12">Cargando sesión...</div>;
   }
   if (error) {
     return <div className="text-center text-red-600 py-12">{error}</div>;
   }
-  if (!level) {
+  if (!session) {
     return null;
   }
 
-  // Obtener niveles adyacentes para navegación
-  const { previousLevel, nextLevel, currentIndex, totalLevels } = getAdjacentLevels(parseInt(id!));
-  const isLastLevel = currentIndex === totalLevels - 1;
+  // Obtener sesiones adyacentes para navegación
+  const { previousSession, nextSession, currentIndex, totalSessions } = getAdjacentSessions(parseInt(id!));
+  const isLastSession = currentIndex === totalSessions - 1;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-braini-blue/10 via-white to-braini-pink/10 font-inter relative overflow-hidden flex flex-col">
@@ -178,28 +178,28 @@ const Activities: React.FC = () => {
       <div className="flex-1 flex flex-col items-center justify-center px-2 py-12 md:py-20 md:pl-80">
         <div className="bg-white/95 backdrop-blur-lg p-8 rounded-3xl shadow-2xl max-w-2xl w-full animate-fade-in border border-braini-blue/10">
           <h2 className="text-3xl font-extrabold text-braini-blue mb-2 text-left">
-            Nivel {level.levels.id}: {level.levels.titulo}
+            Sesión {session.levels.id}: {session.levels.titulo}
           </h2>
           
-          {/* Navegación entre niveles */}
-          <LevelNavigation
+          {/* Navegación entre sesiones */}
+          <SessionNavigation
             currentLevelId={parseInt(id!)}
-            previousLevel={previousLevel}
-            nextLevel={nextLevel}
+            previousSession={previousSession}
+            nextSession={nextSession}
             currentIndex={currentIndex}
-            totalLevels={totalLevels}
+            totalSessions={totalSessions}
             onNavigate={handleNavigate}
           />
           
-          <div className="text-lg text-gray-700 mb-6 text-left">{level.levels.descripcion}</div>
+          <div className="text-lg text-gray-700 mb-6 text-left">{session.levels.descripcion}</div>
           <div className="mb-8 text-left">
             <span className="font-semibold text-gray-700">Estado: </span>
-            {level.status === LEVEL_STATUS.CURRENT && <span className="text-blue-700 font-bold">Actual</span>}
-            {level.status === LEVEL_STATUS.COMPLETED && <span className="text-green-700 font-bold">Completado</span>}
+            {session.status === SESSION_STATUS.CURRENT && <span className="text-blue-700 font-bold">Actual</span>}
+            {session.status === SESSION_STATUS.COMPLETED && <span className="text-green-700 font-bold">Completada</span>}
           </div>
-          <h3 className="text-2xl font-bold mb-6 text-braini-blue-dark text-left">Actividades de este nivel</h3>
+          <h3 className="text-2xl font-bold mb-6 text-braini-blue-dark text-left">Actividades de esta sesión</h3>
           {activities.length === 0 ? (
-            <div className="text-gray-400 text-left">No hay actividades para este nivel.</div>
+            <div className="text-gray-400 text-left">No hay actividades para esta sesión.</div>
           ) : (
             <ul className="space-y-6">
               {activities.map((activity) => (
@@ -233,9 +233,9 @@ const Activities: React.FC = () => {
           )}
 
           {/* Componente de Valoración */}
-          {userId && level.levels.id && (
-            <LevelRating 
-              levelId={level.levels.id} 
+          {userId && session.levels.id && (
+            <SessionRating 
+              levelId={session.levels.id} 
               userId={userId} 
               onMedalEarned={handleMedalEarned}
             />
@@ -247,7 +247,7 @@ const Activities: React.FC = () => {
       {earnedMedal && (
         <MedalAnimation
           medal={earnedMedal}
-          isLastLevel={isLastLevel}
+          isLastLevel={isLastSession}
           onClose={handleMedalClose}
         />
       )}

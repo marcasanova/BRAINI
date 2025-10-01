@@ -61,7 +61,7 @@ const ActivityNavigation: React.FC<ActivityNavigationProps> = ({
           onClick={onBackToLevel}
           className="text-xs text-gray-500 hover:text-braini-blue mt-1"
         >
-          ← Volver al nivel
+          ← Volver a la sesión
         </Button>
       </div>
 

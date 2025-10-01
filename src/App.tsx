@@ -42,8 +42,8 @@ const App = () => (
           <Route path="/parents-profile" element={<ProtectedRoute><ParentsProfile /></ProtectedRoute>} />
           <Route path="/child-profile" element={<ProtectedRoute><ChildProfile /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-          <Route path="/nivel/:id" element={<ProtectedRoute><Activities /></ProtectedRoute>} />
-          <Route path="/nivel/:levelId/actividad/:activityId" element={<ProtectedRoute><ActivityDetail /></ProtectedRoute>} />
+          <Route path="/sesion/:id" element={<ProtectedRoute><Activities /></ProtectedRoute>} />
+          <Route path="/sesion/:levelId/actividad/:activityId" element={<ProtectedRoute><ActivityDetail /></ProtectedRoute>} />
           <Route path="/diario-emocional" element={<ProtectedRoute><DiarioEmocional /></ProtectedRoute>} />
           <Route path="/inteligencia-emocional" element={<ProtectedRoute><InteligenciaEmocional /></ProtectedRoute>} />
           <Route path="/test-tmms-padres" element={<ProtectedRoute><TestTMMSPadres /></ProtectedRoute>} />

@@ -121,10 +121,10 @@ const MedalShelf: React.FC<MedalShelfProps> = ({ userMedals, isLoading }) => {
         {earnedMedals < totalMedals && (
           <div className="text-center p-4 bg-blue-50 rounded-xl border border-blue-200">
             <p className="text-blue-800 font-medium">
-              ¡Continúa completando niveles para llenar tu estantería de medallas! 🚀
+              ¡Continúa completando sesiones para llenar tu estantería de medallas! 🚀
             </p>
             <p className="text-blue-600 text-sm mt-1">
-              Te faltan {totalMedals - earnedMedals} medallas para completar todos los niveles
+              Te faltan {totalMedals - earnedMedals} medallas para completar todas las sesiones
             </p>
           </div>
         )}
@@ -132,7 +132,7 @@ const MedalShelf: React.FC<MedalShelfProps> = ({ userMedals, isLoading }) => {
         {earnedMedals === totalMedals && (
           <div className="text-center p-4 bg-green-50 rounded-xl border border-green-200">
             <p className="text-green-800 font-medium">
-              🎉 ¡Felicidades! Has completado todos los niveles y conseguido todas las medallas
+              🎉 ¡Felicidades! Has completado todas las sesiones y conseguido todas las medallas
             </p>
             <p className="text-green-600 text-sm mt-1">
               Eres un experto en inteligencia emocional

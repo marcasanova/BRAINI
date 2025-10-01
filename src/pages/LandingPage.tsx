@@ -30,7 +30,7 @@ const LandingPage = () => {
     {
       icon: BookOpen,
       title: "Aprendizaje Lúdico",
-      description: "25 niveles de actividades divertidas y educativas",
+      description: "25 sesiones de actividades divertidas y educativas",
       color: "text-green-600",
       bgColor: "bg-green-50"
     },

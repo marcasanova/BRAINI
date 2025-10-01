@@ -4,7 +4,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { Home, BookOpen, User, Menu, X, Brain, Sparkles, Heart } from 'lucide-react';
 
 const NAV_ITEMS = [
-  { label: 'Panel de Juego', icon: Home, path: '/home', description: 'Mapa con todos los niveles' },
+  { label: 'Panel de Juego', icon: Home, path: '/home', description: 'Mapa con todas las sesiones' },
   { label: 'Diario Emocional', icon: BookOpen, path: '/diario-emocional', description: 'Registra tus emociones' },
   { label: 'Inteligencia Emocional', icon: Heart, path: '/inteligencia-emocional', description: 'Tests de inteligencia emocional' },
   { label: 'Perfil', icon: User, path: '/profile', description: 'Tu perfil personal' },

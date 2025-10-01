@@ -6,13 +6,13 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/lib/supabaseClient';
 // Removed medalUtils import - now using SQL function
 
-interface LevelRatingProps {
+interface SessionRatingProps {
   levelId: number;
   userId: string;
   onMedalEarned?: (medal: any) => void; // Callback para cuando se gana una medalla
 }
 
-const LevelRating: React.FC<LevelRatingProps> = ({ levelId, userId, onMedalEarned }) => {
+const SessionRating: React.FC<SessionRatingProps> = ({ levelId, userId, onMedalEarned }) => {
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -79,7 +79,7 @@ const LevelRating: React.FC<LevelRatingProps> = ({ levelId, userId, onMedalEarne
       setHasRated(true);
       toast({
         title: "¡Valoración guardada! ⭐",
-        description: "Gracias por compartir tu opinión sobre este nivel.",
+        description: "Gracias por compartir tu opinión sobre esta sesión.",
       });
 
 
@@ -185,7 +185,7 @@ const LevelRating: React.FC<LevelRatingProps> = ({ levelId, userId, onMedalEarne
   return (
     <div className="mt-8 pt-6 border-t border-gray-200">
       <h3 className="text-xl font-bold text-gray-700 mb-4">
-        ¿Qué te pareció este nivel?
+        ¿Qué te pareció esta sesión?
       </h3>
       
       <div className="space-y-4">
@@ -216,7 +216,7 @@ const LevelRating: React.FC<LevelRatingProps> = ({ levelId, userId, onMedalEarne
             id="comment"
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            placeholder="Comparte tu experiencia con este nivel, qué te gustó, qué mejorarías..."
+            placeholder="Comparte tu experiencia con esta sesión, qué te gustó, qué mejorarías..."
             className="resize-none"
             rows={3}
           />
@@ -244,4 +244,4 @@ const LevelRating: React.FC<LevelRatingProps> = ({ levelId, userId, onMedalEarne
   );
 };
 
-export default LevelRating; 
+export default SessionRating; 

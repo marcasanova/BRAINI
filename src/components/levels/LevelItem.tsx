@@ -1,17 +1,17 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { LEVEL_STATUS } from "@/constants/levelStatus";
+import { SESSION_STATUS } from "@/constants/levelStatus";
 
-export interface LevelItemProps {
+export interface SessionItemProps {
   levelId: number;
   titulo: string;
   descripcion: string;
   status: string;
 }
 
-const LevelItem: React.FC<LevelItemProps> = ({ levelId, titulo, descripcion, status }) => {
-  const isLocked = status === LEVEL_STATUS.LOCKED;
-  const isAccessible = status === LEVEL_STATUS.CURRENT || status === LEVEL_STATUS.COMPLETED;
+const SessionItem: React.FC<SessionItemProps> = ({ levelId, titulo, descripcion, status }) => {
+  const isLocked = status === SESSION_STATUS.LOCKED;
+  const isAccessible = status === SESSION_STATUS.CURRENT || status === SESSION_STATUS.COMPLETED;
 
   return (
     <li
@@ -19,17 +19,17 @@ const LevelItem: React.FC<LevelItemProps> = ({ levelId, titulo, descripcion, sta
     >
       <div>
         <div className="font-semibold text-lg flex items-center gap-2">
-          Nivel {levelId}
-          {status === LEVEL_STATUS.LOCKED && <span className="ml-2 text-xs bg-gray-300 text-gray-600 px-2 py-0.5 rounded">Bloqueado</span>}
-          {status === LEVEL_STATUS.CURRENT && <span className="ml-2 text-xs bg-blue-200 text-blue-800 px-2 py-0.5 rounded">Actual</span>}
-          {status === LEVEL_STATUS.COMPLETED && <span className="ml-2 text-xs bg-green-200 text-green-800 px-2 py-0.5 rounded">Completado</span>}
+          Sesión {levelId}
+          {status === SESSION_STATUS.LOCKED && <span className="ml-2 text-xs bg-gray-300 text-gray-600 px-2 py-0.5 rounded">Bloqueada</span>}
+          {status === SESSION_STATUS.CURRENT && <span className="ml-2 text-xs bg-blue-200 text-blue-800 px-2 py-0.5 rounded">Actual</span>}
+          {status === SESSION_STATUS.COMPLETED && <span className="ml-2 text-xs bg-green-200 text-green-800 px-2 py-0.5 rounded">Completada</span>}
         </div>
         <div className="text-braini-blue font-bold text-xl">{titulo}</div>
         <div className="text-gray-600 mt-1">{descripcion}</div>
       </div>
       {isAccessible ? (
         <Link
-          to={`/nivel/${levelId}`}
+          to={`/sesion/${levelId}`}
           className="mt-4 md:mt-0 md:ml-8 inline-block px-4 py-2 bg-braini-blue text-white rounded-lg shadow hover:bg-braini-blue-dark transition disabled:opacity-50"
         >
           Acceder
@@ -46,4 +46,4 @@ const LevelItem: React.FC<LevelItemProps> = ({ levelId, titulo, descripcion, sta
   );
 };
 
-export default LevelItem; 
+export default SessionItem; 

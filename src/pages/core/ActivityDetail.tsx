@@ -47,25 +47,25 @@ const ActivityDetail: React.FC = () => {
   }, [levelId]);
 
   const handlePuzzleComplete = () => {
-    // Navegar a la siguiente actividad si existe, sino volver al nivel
+    // Navegar a la siguiente actividad si existe, sino volver a la sesión
     const currentIndex = activities.findIndex(a => a.id === parseInt(activityId!));
     const nextActivity = currentIndex < activities.length - 1 ? activities[currentIndex + 1] : null;
     
     if (nextActivity) {
-      navigate(`/nivel/${levelId}/actividad/${nextActivity.id}`);
+      navigate(`/sesion/${levelId}/actividad/${nextActivity.id}`);
     } else {
-      navigate(`/nivel/${levelId}?fromActivity=true`);
+      navigate(`/sesion/${levelId}?fromActivity=true`);
     }
   };
 
   // Función para navegar entre actividades
   const handleActivityNavigate = (newActivityId: number) => {
-    navigate(`/nivel/${levelId}/actividad/${newActivityId}`);
+    navigate(`/sesion/${levelId}/actividad/${newActivityId}`);
   };
 
-  // Función para volver al nivel
-  const handleBackToLevel = () => {
-    navigate(`/nivel/${levelId}`);
+  // Función para volver a la sesión
+  const handleBackToSession = () => {
+    navigate(`/sesion/${levelId}`);
   };
 
   // Obtener información de navegación
@@ -112,7 +112,7 @@ const ActivityDetail: React.FC = () => {
                 currentIndex={currentIndex}
                 totalActivities={totalActivities}
                 onNavigate={handleActivityNavigate}
-                onBackToLevel={handleBackToLevel}
+                onBackToLevel={handleBackToSession}
               />
               
               <EmotionPuzzle onComplete={() => {}} />
@@ -137,7 +137,7 @@ const ActivityDetail: React.FC = () => {
               currentIndex={currentIndex}
               totalActivities={totalActivities}
               onNavigate={handleActivityNavigate}
-              onBackToLevel={handleBackToLevel}
+              onBackToLevel={handleBackToSession}
             />
             
             <h2 className="text-3xl font-extrabold text-braini-blue mb-4 text-center">

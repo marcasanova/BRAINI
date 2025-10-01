@@ -1,25 +1,25 @@
 import React from "react";
-import LevelItem from "./LevelItem";
-import { UserLevel } from "@/hooks/useUserLevels";
+import SessionItem from "./LevelItem";
+import { UserSession } from "@/hooks/useUserLevels";
 
-interface LevelListProps {
-  levels: UserLevel[];
+interface SessionListProps {
+  sessions: UserSession[];
 }
 
-const LevelList: React.FC<LevelListProps> = ({ levels }) => {
+const SessionList: React.FC<SessionListProps> = ({ sessions }) => {
   return (
     <ul className="space-y-4">
-      {levels.map((level) => (
-        <LevelItem
-          key={level.level_id}
-          levelId={level.levels.id}
-          titulo={level.levels.titulo}
-          descripcion={level.levels.descripcion}
-          status={level.status}
+      {sessions.map((session) => (
+        <SessionItem
+          key={session.level_id}
+          levelId={session.levels.id}
+          titulo={session.levels.titulo}
+          descripcion={session.levels.descripcion}
+          status={session.status}
         />
       ))}
     </ul>
   );
 };
 
-export default LevelList; 
+export default SessionList; 

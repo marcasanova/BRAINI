@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import GeometricBackground from '@/components/GeometricBackground';
 import { supabase } from '@/lib/supabaseClient';
-import { useUserLevels } from '@/hooks/useUserLevels';
-import LevelList from '@/components/levels/LevelList';
+import { useUserSessions } from '@/hooks/useUserLevels';
+import SessionList from '@/components/levels/LevelList';
 import Navbar from '@/components/navigation/Navbar';
 import MapDownload from '@/components/MapDownload';
 import { useToast } from '@/hooks/use-toast';
@@ -29,7 +29,7 @@ const Home = () => {
     });
   }, []);
 
-  const { levels, loading, error } = useUserLevels(userId);
+  const { sessions, loading, error } = useUserSessions(userId);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-pink-50 font-inter relative overflow-hidden">
@@ -40,17 +40,17 @@ const Home = () => {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
             <h1 className="text-3xl font-bold text-gray-800 mb-4 sm:mb-0">
               <span className="text-braini-blue">
-                {userName ? `Estos son tus niveles, ${userName}` : 'Tus Niveles'}
+                {userName ? `Estas son tus sesiones, ${userName}` : 'Tus Sesiones'}
               </span>
             </h1>
             <MapDownload />
           </div>
           {loading ? (
-            <div className="text-center text-gray-500 py-8">Cargando niveles...</div>
+            <div className="text-center text-gray-500 py-8">Cargando sesiones...</div>
           ) : error ? (
             <div className="text-center text-red-600 py-8">{error}</div>
           ) : (
-            <LevelList levels={levels} />
+            <SessionList sessions={sessions} />
           )}
         </div>
       </div>
