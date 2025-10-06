@@ -7,9 +7,25 @@ import { supabase } from '@/lib/supabaseClient';
 import { CheckCircle, Mail, ArrowRight, Gift, Heart, Brain, Users, Clock, Shield, Check } from 'lucide-react';
 import { useHref } from 'react-router-dom';
 
-// Importar assets de logo
-import logoBraini from '/public/logo/LogoBraini.png';
-import logoBrainiEnfadado from '/public/logo/LogoBrainiEnfadado.png';
+// Importar assets de logo usando ?url para archivos en public
+import logoBraini from '/logo/LogoBraini.png?url';
+import logoBrainiEnfadado from '/logo/LogoBrainiEnfadado.png?url';
+
+// Importar avatares
+import profile1 from '/avatars/profile1.jpeg?url';
+import profile2 from '/avatars/profile2.jpg?url';
+import profile3 from '/avatars/profile3.jpg?url';
+
+// Importar emociones
+import alegria from '/emotions/1. Alegria.jpg?url';
+import tranquilidad from '/emotions/12. Tranquilidad.jpg?url';
+import ternura from '/emotions/49. Ternura.jpg?url';
+import verguenza from '/emotions/7. Vergueza.jpg?url';
+import sorpresa from '/emotions/9. Sorpresa.jpg?url';
+import aburrimiento from '/emotions/35. Aburrimiento.jpg?url';
+
+// Importar otros assets
+import logoInstagram from '/LogoInstagram.svg?url';
 
 const LandingPage = () => {
   const [email, setEmail] = useState('');
@@ -241,17 +257,17 @@ const LandingPage = () => {
             <div className="flex flex-col sm:flex-row items-center justify-center space-y-3 sm:space-y-0 sm:space-x-3">
               <div className="flex -space-x-2" role="img" aria-label="Avatares de familias satisfechas">
                 <img 
-                  src="/avatars/profile1.jpeg" 
+                  src={profile1} 
                   alt="María - Madre satisfecha con Braini" 
                   className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-3 border-white object-cover shadow-md"
                 />
                 <img 
-                  src="/avatars/profile2.jpg" 
+                  src={profile2} 
                   alt="Carlos - Padre satisfecho con Braini" 
                   className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-3 border-white object-cover shadow-md"
                 />
                 <img 
-                  src="/avatars/profile3.jpg" 
+                  src={profile3} 
                   alt="Ana - Madre satisfecha con Braini" 
                   className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-3 border-white object-cover shadow-md"
                 />
@@ -292,7 +308,7 @@ const LandingPage = () => {
               <div className="text-center">
                 <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6 rounded-full overflow-hidden">
                   <img 
-                    src="/emotions/1. Alegria.jpg" 
+                    src={alegria} 
                     alt="Alegría - Basado en Evidencias" 
                     className="w-full h-full object-cover"
                   />
@@ -311,7 +327,7 @@ const LandingPage = () => {
               <div className="text-center">
                 <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6 rounded-full overflow-hidden">
                   <img 
-                    src="/emotions/12. Tranquilidad.jpg" 
+                    src={tranquilidad} 
                     alt="Tranquilidad - Solo 20 Minutos" 
                     className="w-full h-full object-cover"
                   />
@@ -330,7 +346,7 @@ const LandingPage = () => {
               <div className="text-center">
                 <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6 rounded-full overflow-hidden">
                   <img 
-                    src="/emotions/49. Ternura.jpg" 
+                    src={ternura} 
                     alt="Ternura - Divertido y Atractivo" 
                     className="w-full h-full object-cover"
                   />
@@ -349,7 +365,7 @@ const LandingPage = () => {
               <div className="text-center">
                 <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6 rounded-full overflow-hidden">
                   <img 
-                    src="/emotions/7. Vergueza.jpg" 
+                    src={verguenza} 
                     alt="Vergüenza - Para Toda la Familia" 
                     className="w-full h-full object-cover"
                   />
@@ -368,7 +384,7 @@ const LandingPage = () => {
               <div className="text-center">
                 <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6 rounded-full overflow-hidden">
                   <img 
-                    src="/emotions/9. Sorpresa.jpg" 
+                    src={sorpresa} 
                     alt="Sorpresa - Seguro y Confiable" 
                     className="w-full h-full object-cover"
                   />
@@ -387,7 +403,7 @@ const LandingPage = () => {
               <div className="text-center">
                 <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6 rounded-full overflow-hidden">
                   <img 
-                    src="/emotions/35. Aburrimiento.jpg" 
+                    src={aburrimiento} 
                     alt="Aburrimiento - Resultados Comprobados" 
                     className="w-full h-full object-cover"
                   />
@@ -629,7 +645,7 @@ const LandingPage = () => {
                     className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center transition-colors md:hover:bg-white/30"
                   >
                     <img 
-                      src="/LogoInstagram.svg" 
+                      src={logoInstagram} 
                       alt="Instagram" 
                       className="w-8 h-8"
                     />
