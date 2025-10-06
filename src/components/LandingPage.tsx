@@ -7,6 +7,10 @@ import { supabase } from '@/lib/supabaseClient';
 import { CheckCircle, Mail, ArrowRight, Gift, Heart, Brain, Users, Clock, Shield, Check } from 'lucide-react';
 import { useHref } from 'react-router-dom';
 
+// Importar assets de logo
+import logoBraini from '/public/logo/LogoBraini.png';
+import logoBrainiEnfadado from '/public/logo/LogoBrainiEnfadado.png';
+
 const LandingPage = () => {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -124,7 +128,7 @@ const LandingPage = () => {
           <div className="text-center mb-8 sm:mb-12 relative z-10">
             <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 flex items-center justify-center">
               <img 
-                src="/logo/LogoBraini.png"
+                src={logoBraini}
                 alt="Braini Emotions Logo" 
                 className="w-16 h-16 sm:w-20 sm:h-20 object-contain"
               />
@@ -429,7 +433,7 @@ const LandingPage = () => {
               <div className="flex flex-col sm:flex-row items-center sm:items-start mb-6 sm:mb-8">
                 <div className="w-12 h-12 sm:w-16 sm:h-16 mb-3 sm:mb-0 sm:mr-4 flex items-center justify-center">
                   <img 
-                    src="/logo/LogoBraini.png"
+                    src={logoBraini}
                     alt="Braini Emotions Logo" 
                     className="w-12 h-12 sm:w-16 sm:h-16 object-contain"
                   />
@@ -488,7 +492,7 @@ const LandingPage = () => {
               <div className="flex flex-col sm:flex-row items-center sm:items-start mb-6 sm:mb-8">
                 <div className="w-12 h-12 sm:w-16 sm:h-16 mb-3 sm:mb-0 sm:mr-4 flex items-center justify-center">
                   <img 
-                    src="/logo/LogoBrainiEnfadado.png"
+                    src={logoBrainiEnfadado}
                     alt="Braini Emotions Logo" 
                     className="w-12 h-12 sm:w-16 sm:h-16 object-contain"
                   />
@@ -552,7 +556,7 @@ const LandingPage = () => {
             <div>
               <div className="flex items-center mb-4">
                 <img 
-                  src="/logo/LogoBraini.png"
+                  src={logoBraini}
                   alt="Braini Emotions Logo" 
                   className="w-8 h-8 object-contain mr-3"
                 />
