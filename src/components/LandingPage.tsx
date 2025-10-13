@@ -8,7 +8,7 @@ import { CheckCircle, Mail, ArrowRight, Gift, Heart, Brain, Users, Clock, Shield
 import { useHref } from 'react-router-dom';
 
 // Rutas de assets públicos (archivos en public/)
-const logoBraini = '/logo/LogoBraini.png';
+const logoBraini = '/logo/BRAINI_white.png';
 const logoBrainiEnfadado = '/logo/LogoBrainiEnfadado.png';
 
 // Avatares
@@ -17,12 +17,12 @@ const profile2 = '/avatars/profile2.jpg';
 const profile3 = '/avatars/profile3.jpg';
 
 // Emociones
-const alegria = '/emotions/1. Alegria.jpg';
-const tranquilidad = '/emotions/12. Tranquilidad.jpg';
-const ternura = '/emotions/49. Ternura.jpg';
-const verguenza = '/emotions/7. Vergueza.jpg';
-const sorpresa = '/emotions/9. Sorpresa.jpg';
-const aburrimiento = '/emotions/35. Aburrimiento.jpg';
+const alegria = '/emotions/1_Alegria.jpg';
+const tranquilidad = '/emotions/12_Tranquilidad.jpg';
+const ternura = '/emotions/49_Ternura.jpg';
+const verguenza = '/emotions/7_Vergueza.jpg';
+const sorpresa = '/emotions/9_Sorpresa.jpg';
+const aburrimiento = '/emotions/35_Aburrimiento.jpg';
 
 // Otros assets
 const logoInstagram = '/LogoInstagram.svg';
