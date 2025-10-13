@@ -7,25 +7,25 @@ import { supabase } from '@/lib/supabaseClient';
 import { CheckCircle, Mail, ArrowRight, Gift, Heart, Brain, Users, Clock, Shield, Check } from 'lucide-react';
 import { useHref } from 'react-router-dom';
 
-// Importar assets de logo usando ?url para archivos en public
-import logoBraini from '/logo/LogoBraini.png?url';
-import logoBrainiEnfadado from '/logo/LogoBrainiEnfadado.png?url';
+// Rutas de assets públicos (archivos en public/)
+const logoBraini = '/logo/LogoBraini.png';
+const logoBrainiEnfadado = '/logo/LogoBrainiEnfadado.png';
 
-// Importar avatares
-import profile1 from '/avatars/profile1.jpeg?url';
-import profile2 from '/avatars/profile2.jpg?url';
-import profile3 from '/avatars/profile3.jpg?url';
+// Avatares
+const profile1 = '/avatars/profile1.jpeg';
+const profile2 = '/avatars/profile2.jpg';
+const profile3 = '/avatars/profile3.jpg';
 
-// Importar emociones
-import alegria from '/emotions/1. Alegria.jpg?url';
-import tranquilidad from '/emotions/12. Tranquilidad.jpg?url';
-import ternura from '/emotions/49. Ternura.jpg?url';
-import verguenza from '/emotions/7. Vergueza.jpg?url';
-import sorpresa from '/emotions/9. Sorpresa.jpg?url';
-import aburrimiento from '/emotions/35. Aburrimiento.jpg?url';
+// Emociones
+const alegria = '/emotions/1. Alegria.jpg';
+const tranquilidad = '/emotions/12. Tranquilidad.jpg';
+const ternura = '/emotions/49. Ternura.jpg';
+const verguenza = '/emotions/7. Vergueza.jpg';
+const sorpresa = '/emotions/9. Sorpresa.jpg';
+const aburrimiento = '/emotions/35. Aburrimiento.jpg';
 
-// Importar otros assets
-import logoInstagram from '/LogoInstagram.svg?url';
+// Otros assets
+const logoInstagram = '/LogoInstagram.svg';
 
 const LandingPage = () => {
   const [email, setEmail] = useState('');
