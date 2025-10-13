@@ -8,7 +8,7 @@ import { CheckCircle, Mail, ArrowRight, Gift, Heart, Brain, Users, Clock, Shield
 import { useHref } from 'react-router-dom';
 
 // Rutas de assets públicos (archivos en public/)
-const logoBraini = '/logo/BRAINI_white.png';
+const logoBraini = '/logo/LogoBraini_new.png';
 const logoBrainiEnfadado = '/logo/LogoBrainiEnfadado.png';
 
 // Avatares
