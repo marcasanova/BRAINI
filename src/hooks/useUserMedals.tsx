@@ -22,7 +22,7 @@ export const useUserMedals = () => {
 
       // Obtener solo las medallas del usuario (medal_id y fecha)
       const { data: userMedalsData, error: userMedalsError } = await supabase
-        .from('user_medals')
+        .from('parents_medals')
         .select('id, user_id, medal_id, fecha_obtencion')
         .eq('user_id', user.id);
 

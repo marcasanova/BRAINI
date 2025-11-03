@@ -4,18 +4,14 @@ import { supabase } from "@/lib/supabaseClient";
 import { SESSION_STATUS } from "@/constants/levelStatus";
 import { UserSession } from "@/hooks/useUserLevels";
 import { useUserSessions } from "@/hooks/useUserLevels";
+import { useUserActivitiesByLevel } from "@/hooks/useUserActivities";
+import { UserActivity } from "@/hooks/useUserActivities";
 import GeometricBackground from '@/components/GeometricBackground';
 import Navbar from '@/components/navigation/Navbar';
 import SessionRating from '@/components/levels/LevelRating';
 import SessionNavigation from '@/components/levels/LevelNavigation';
 import MedalAnimation from '@/components/medals/MedalAnimation';
-
-interface Activity {
-  id: number;
-  titulo: string;
-  descripcion: string;
-  level_id: number;
-}
+import ActivityList from '@/components/activities/ActivityList';
 
 interface Medal {
   id: number;
@@ -32,11 +28,10 @@ const Activities: React.FC = () => {
   const location = useLocation();
   const [userId, setUserId] = useState<string | undefined>(undefined);
   const [session, setSession] = useState<UserSession | null>(null);
-  const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [earnedMedal, setEarnedMedal] = useState<Medal | null>(null); // Estado para la medalla ganada
-  const [isReturningFromActivity, setIsReturningFromActivity] = useState(false); // Control para evitar medallas al volver de actividades
+  const [earnedMedal, setEarnedMedal] = useState<Medal | null>(null);
+  const [isReturningFromActivity, setIsReturningFromActivity] = useState(false);
 
   // Obtener el usuario logeado
   useEffect(() => {
@@ -101,28 +96,8 @@ const Activities: React.FC = () => {
       });
   }, [userId, id]);
 
-  // Obtener actividades de la sesión (corregido)
-  useEffect(() => {
-    if (!session) return;
-    supabase
-      .from("activities")
-      .select("id, titulo_actividad, descripcion_actividad, level_id")
-      .eq("level_id", session.levels.id)
-      .then(({ data, error }) => {
-        if (error) {
-          setActivities([]);
-        } else {
-          setActivities(
-            (data || []).map((a: any) => ({
-              id: a.id,
-              titulo: a.titulo_actividad,
-              descripcion: a.descripcion_actividad,
-              level_id: a.level_id,
-            }))
-          );
-        }
-      });
-  }, [session]);
+  // Obtener actividades del usuario para este nivel
+  const { activities, loading: activitiesLoading, error: activitiesError } = useUserActivitiesByLevel(userId, session?.levels.id || 0);
 
   // Función para navegar entre sesiones
   const handleNavigate = (levelId: number) => {
@@ -157,11 +132,11 @@ const Activities: React.FC = () => {
     }
   };
 
-  if (loading || sessionsLoading) {
+  if (loading || sessionsLoading || activitiesLoading) {
     return <div className="text-center py-12">Cargando sesión...</div>;
   }
-  if (error) {
-    return <div className="text-center text-red-600 py-12">{error}</div>;
+  if (error || activitiesError) {
+    return <div className="text-center text-red-600 py-12">{error || activitiesError}</div>;
   }
   if (!session) {
     return null;
@@ -198,39 +173,11 @@ const Activities: React.FC = () => {
             {session.status === SESSION_STATUS.COMPLETED && <span className="text-green-700 font-bold">Completada</span>}
           </div>
           <h3 className="text-2xl font-bold mb-6 text-braini-blue-dark text-left">Actividades de esta sesión</h3>
-          {activities.length === 0 ? (
-            <div className="text-gray-400 text-left">No hay actividades para esta sesión.</div>
-          ) : (
-            <ul className="space-y-6">
-              {activities.map((activity) => (
-                <li key={activity.id} 
-                    className="p-6 bg-white rounded-2xl shadow-md flex flex-col gap-2 border border-braini-blue/20 hover:shadow-lg hover:border-braini-blue/40 transition-all duration-300 cursor-pointer group"
-                    onClick={() => handleActivityClick(activity.id)}>
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="font-bold text-braini-blue text-xl mb-1 group-hover:text-braini-blue-dark transition-colors">
-                        {activity.titulo}
-                      </div>
-                      <div className="text-gray-700 text-base leading-relaxed group-hover:text-gray-800 transition-colors">
-                        {activity.descripcion}
-                      </div>
-                    </div>
-                    <div className="ml-4 flex-shrink-0">
-                      <div className="w-10 h-10 bg-braini-blue/10 rounded-full flex items-center justify-center group-hover:bg-braini-blue/20 transition-colors">
-                        <svg className="w-5 h-5 text-braini-blue group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-sm text-braini-blue mt-2 flex items-center gap-2 group-hover:text-braini-blue-dark transition-colors">
-                    <div className="w-2 h-2 bg-braini-blue rounded-full group-hover:scale-125 transition-transform"></div>
-                    <span className="font-medium">Hacer actividad</span>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
+          <ActivityList 
+            activities={activities} 
+            onActivityClick={handleActivityClick}
+            loading={activitiesLoading}
+          />
 
           {/* Componente de Valoración */}
           {userId && session.levels.id && (

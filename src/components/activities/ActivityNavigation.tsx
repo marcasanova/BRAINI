@@ -1,23 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, Lock, Play } from 'lucide-react';
-
-interface Activity {
-  id: number;
-  titulo: string;
-  descripcion: string;
-  level_id: number;
-}
-
-interface ActivityNavigationProps {
-  currentActivityId: number;
-  previousActivity: Activity | null;
-  nextActivity: Activity | null;
-  currentIndex: number;
-  totalActivities: number;
-  onNavigate: (activityId: number) => void;
-  onBackToLevel: () => void;
-}
+import { ActivityNavigationProps } from '@/hooks/useUserActivities';
 
 const ActivityNavigation: React.FC<ActivityNavigationProps> = ({
   currentActivityId,
