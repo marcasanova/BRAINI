@@ -86,7 +86,7 @@ const LandingPage = () => {
       if (error) {
         if (error.code === '23505') {
           toast({
-            title: "¡Ya estás en la lista! 🎉",
+            title: "¡Ya estás en la lista!",
             description: "Este email ya está registrado en nuestra waitlist.",
           });
         } else {
@@ -95,7 +95,7 @@ const LandingPage = () => {
       } else {
         setIsSubmitted(true);
         toast({
-          title: "¡Bienvenido a Braini Emotions! 🎉",
+          title: "¡Bienvenido a Braini Emotions!",
           description: `Te hemos enviado un email de confirmación a ${email}.`,
         });
       }
@@ -153,10 +153,13 @@ const LandingPage = () => {
               Braini Emotions
             </h1>
             <p className="text-white font-bold text-lg sm:text-xl lg:text-3xl mb-2 sm:mb-3 px-4" style={{ fontWeight: 700 }}>
-              Bienestar emocional infantil, fácil y divertido
+              Braini ayuda a tu hijo a desarrollar habilidades emocionales esenciales <br />para crecer feliz en un mundo de grandes cambios.
             </p>
-            <p className="text-white text-sm sm:text-base lg:text-lg font-normal px-4 max-w-4xl mx-auto" style={{ fontWeight: 400 }}>
-              25 sesiones de 20' basadas en evidencias científicas para niños/as de 4 - 10 años
+            <p className="text-white text-base sm:text-lg lg:text-xl italic mb-4 sm:mb-5 px-4 max-w-4xl mx-auto" style={{ fontWeight: 400 }}>
+              "Educar sus emociones hoy es asegurar su bienestar de mañana."
+            </p>
+            <p className="text-white text-base sm:text-lg lg:text-xl font-bold px-4 max-w-4xl mx-auto" style={{ fontWeight: 700 }}>
+              25 sesiones de 20' basadas en evidencias científicas para niños/as de 3 a 7 años
             </p>
           </div>
 
@@ -172,7 +175,7 @@ const LandingPage = () => {
               <div className="text-center">
                 <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
                 <h3 className="text-2xl font-bold text-gray-800 mb-3">
-                  ¡Bienvenido a Braini Emotions! 🎉
+                  ¡Bienvenido a Braini Emotions!
                 </h3>
                 <p className="text-gray-600 mb-6">
                   Te hemos enviado un email de confirmación.
@@ -186,12 +189,24 @@ const LandingPage = () => {
               </div>
             ) : (
               <>
-                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 mb-4 sm:mb-6 text-center" style={{ fontWeight: 700 }}>
-                  Acceso Exclusivo: ¡Únete a la lista!
-                </h3>
-                
                 <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-                  <div className="flex flex-col gap-3 sm:gap-4">
+                  {/* Texto de introducción */}
+                  <p className="text-gray-700 text-sm sm:text-base mb-4" style={{ fontWeight: 400 }}>
+                    Apúntate a la lista para no perderte novedades de Braini Emotions y recibir regalos como:
+                  </p>
+
+                  {/* Lista de regalos */}
+                  <div className="bg-gray-50 rounded-lg p-4 mb-4 space-y-2">
+                    <p className="text-gray-700 text-sm sm:text-base" style={{ fontWeight: 400 }}>
+                      1- <span className="font-bold" style={{ fontWeight: 700, color: '#0891b2' }}>Evaluar</span> la <span className="font-bold" style={{ fontWeight: 700, color: '#0891b2' }}>Inteligencia Emocional</span> de tu hijo.
+                    </p>
+                    <p className="text-gray-700 text-sm sm:text-base" style={{ fontWeight: 400 }}>
+                      2- Disfrutar de <span className="font-bold" style={{ fontWeight: 700, color: '#0891b2' }}>3 sesiones</span> emocionales completamente <span className="font-bold" style={{ fontWeight: 700, color: '#0891b2' }}>GRATIS</span>.
+                    </p>
+                  </div>
+
+                  {/* Campo de email y botón en línea */}
+                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-2">
                     <div className="flex-1 relative">
                       <Input
                         id="email"
@@ -200,7 +215,7 @@ const LandingPage = () => {
                         onChange={(e) => setEmail(e.target.value)}
                         onFocus={() => setIsFocused(true)}
                         onBlur={() => setIsFocused(false)}
-                        placeholder="tu@email.com"
+                        placeholder="[tu@email.com]"
                         className={`border-cyan-200 focus:border-cyan-400 focus:ring-cyan-400 text-base sm:text-lg py-3 ${
                           isFocused ? 'ring-2 ring-cyan-100' : ''
                         }`}
@@ -210,7 +225,7 @@ const LandingPage = () => {
                     </div>
                     <Button 
                       type="submit" 
-                      className="text-white px-6 py-3 font-bold transition-opacity text-base w-full md:hover:opacity-90"
+                      className="text-white px-4 sm:px-6 py-3 font-bold transition-opacity text-sm sm:text-base whitespace-nowrap md:hover:opacity-90"
                       style={{ 
                         background: 'linear-gradient(135deg, #6AC0E0 0%, #7ED3BE 100%)',
                         border: 'none'
@@ -220,16 +235,13 @@ const LandingPage = () => {
                       {isSubmitting ? (
                         <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                       ) : (
-                        '¡Quiero entrar!'
+                        '¡Quiero cuidar sus emociones!'
                       )}
                     </Button>
                   </div>
 
-                  <p className="text-gray-600 text-sm text-center" style={{ fontWeight: 400 }}>
-                    Acceso anticipado y descuentos especiales para los primeros en unirse.
-                  </p>
-
-                  <div className="flex items-start space-x-3">
+                  {/* Checkbox de privacidad */}
+                  <div className="flex items-start space-x-3 pt-2">
                     <input
                       type="checkbox"
                       id="terms"
@@ -238,7 +250,7 @@ const LandingPage = () => {
                       className="mt-1 h-5 w-5 text-cyan-600 focus:ring-cyan-500 border-gray-300 rounded"
                     />
                     <label htmlFor="terms" className="text-sm text-gray-700 leading-6" style={{ fontWeight: 400 }}>
-                      Acepto la <span className="font-bold" style={{ fontWeight: 700 }}>Política de Privacidad</span> y recibir comunicaciones de Braini.
+                      Acepto la <span className="font-bold" style={{ fontWeight: 700 }}>Política de Privacidad</span> y recibir las novedades de Braini.
                     </label>
                   </div>
                 </form>
@@ -639,7 +651,7 @@ const LandingPage = () => {
                 <div className="flex space-x-2">
                   {/* Instagram - AQUÍ PON TU ENLACE DE INSTAGRAM */}
                   <a 
-                    href="https://instagram.com/tu_usuario_instagram" 
+                    href="https://www.instagram.com/brainiemotions?igsh=MXB1OXcza3NnZjh2Yw%3D%3D&utm_source=qr" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center transition-colors md:hover:bg-white/30"
