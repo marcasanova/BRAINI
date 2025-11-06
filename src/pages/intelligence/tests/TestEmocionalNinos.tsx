@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import GeometricBackground from '@/components/GeometricBackground';
+import Backgrounds from '@/components/Backgrounds';
 import Navbar from '@/components/navigation/Navbar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,8 +10,8 @@ const TestEmocionalNinos = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-pink-50 font-inter relative overflow-hidden">
-      <GeometricBackground />
+    <div className="min-h-screen bg-white font-montserrat relative overflow-hidden">
+      <Backgrounds />
       <Navbar />
       <div className="container mx-auto px-4 py-12 md:pl-80 relative z-10">
         <div className="max-w-4xl mx-auto">
@@ -20,12 +20,12 @@ const TestEmocionalNinos = () => {
             <div className="w-24 h-24 bg-gradient-to-br from-pink-400 via-orange-400 to-yellow-400 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl">
               <Baby className="w-12 h-12 text-white" />
             </div>
-            <h1 className="text-5xl font-bold text-gray-800 mb-4">
+            <h1 className="text-5xl sm:text-6xl font-black text-gray-800 mb-4" style={{ fontWeight: 900 }}>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-orange-400">
                 Test Emocional para Niños
               </span>
             </h1>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl sm:text-2xl text-gray-700 max-w-2xl mx-auto font-medium">
               Evaluación adaptada para el desarrollo emocional infantil
             </p>
           </div>

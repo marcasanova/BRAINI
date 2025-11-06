@@ -6,7 +6,7 @@ import { UserSession } from "@/hooks/useUserLevels";
 import { useUserSessions } from "@/hooks/useUserLevels";
 import { useUserActivitiesByLevel } from "@/hooks/useUserActivities";
 import { UserActivity } from "@/hooks/useUserActivities";
-import GeometricBackground from '@/components/GeometricBackground';
+import Backgrounds from '@/components/Backgrounds';
 import Navbar from '@/components/navigation/Navbar';
 import SessionRating from '@/components/levels/LevelRating';
 import SessionNavigation from '@/components/levels/LevelNavigation';
@@ -147,12 +147,12 @@ const Activities: React.FC = () => {
   const isLastSession = currentIndex === totalSessions - 1;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-braini-blue/10 via-white to-braini-pink/10 font-inter relative overflow-hidden flex flex-col">
-      <GeometricBackground />
+    <div className="min-h-screen bg-white font-montserrat relative overflow-hidden flex flex-col">
+      <Backgrounds />
       <Navbar />
-      <div className="flex-1 flex flex-col items-center justify-center px-2 py-12 md:py-20 md:pl-80">
-        <div className="bg-white/95 backdrop-blur-lg p-8 rounded-3xl shadow-2xl max-w-2xl w-full animate-fade-in border border-braini-blue/10">
-          <h2 className="text-3xl font-extrabold text-braini-blue mb-2 text-left">
+      <div className="flex-1 flex flex-col items-center justify-center px-2 py-12 md:py-20 md:pl-80 relative z-10">
+        <div className="bg-white/95 backdrop-blur-lg p-8 rounded-2xl shadow-xl border-0 max-w-2xl w-full animate-fade-in">
+          <h2 className="text-3xl sm:text-4xl font-black text-braini-blue mb-2 text-left" style={{ fontWeight: 900 }}>
             Sesión {session.levels.id}: {session.levels.titulo}
           </h2>
           
@@ -166,13 +166,13 @@ const Activities: React.FC = () => {
             onNavigate={handleNavigate}
           />
           
-          <div className="text-lg text-gray-700 mb-6 text-left">{session.levels.descripcion}</div>
+          <div className="text-lg sm:text-xl text-gray-700 mb-6 text-left font-medium">{session.levels.descripcion}</div>
           <div className="mb-8 text-left">
-            <span className="font-semibold text-gray-700">Estado: </span>
-            {session.status === SESSION_STATUS.CURRENT && <span className="text-blue-700 font-bold">Actual</span>}
-            {session.status === SESSION_STATUS.COMPLETED && <span className="text-green-700 font-bold">Completada</span>}
+            <span className="font-bold text-gray-700">Estado: </span>
+            {session.status === SESSION_STATUS.CURRENT && <span className="text-blue-700 font-black">Actual</span>}
+            {session.status === SESSION_STATUS.COMPLETED && <span className="text-green-700 font-black">Completada</span>}
           </div>
-          <h3 className="text-2xl font-bold mb-6 text-braini-blue-dark text-left">Actividades de esta sesión</h3>
+          <h3 className="text-2xl sm:text-3xl font-black mb-6 text-braini-blue-dark text-left" style={{ fontWeight: 800 }}>Actividades de esta sesión</h3>
           <ActivityList 
             activities={activities} 
             onActivityClick={handleActivityClick}

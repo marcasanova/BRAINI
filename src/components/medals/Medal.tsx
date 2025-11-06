@@ -1,5 +1,5 @@
 import React from 'react';
-import { Trophy, Circle } from 'lucide-react';
+import { Circle } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface MedalProps {
@@ -8,6 +8,9 @@ interface MedalProps {
   earnedAt?: string;
   onClick?: () => void;
 }
+
+// URL de la emoción de orgullo
+const PRIDE_EMOTION_IMAGE = "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/23.%20Orgullo.jpg";
 
 const Medal: React.FC<MedalProps> = ({ levelNumber, isEarned, earnedAt, onClick }) => {
   const formatDate = (dateString: string) => {
@@ -29,15 +32,19 @@ const Medal: React.FC<MedalProps> = ({ levelNumber, isEarned, earnedAt, onClick 
           <button
             onClick={onClick}
             className={`
-              w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110
+              w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110
               ${isEarned 
-                ? 'bg-gradient-to-br from-yellow-400 to-yellow-600 shadow-lg hover:shadow-xl cursor-pointer' 
+                ? 'bg-white shadow-lg hover:shadow-xl cursor-pointer border-2 border-gray-200' 
                 : 'border-2 border-dashed border-gray-300 bg-gray-50 hover:border-gray-400 hover:bg-gray-100 cursor-pointer'
               }
             `}
           >
             {isEarned ? (
-              <Trophy className="w-8 h-8 text-white" />
+              <img 
+                src={PRIDE_EMOTION_IMAGE} 
+                alt="Orgullo" 
+                className="w-16 h-16 md:w-20 md:h-20 rounded-full object-cover"
+              />
             ) : (
               <Circle className="w-6 h-6 text-gray-400" />
             )}

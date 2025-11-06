@@ -26,13 +26,13 @@ const ActivityList: React.FC<ActivityListProps> = ({
   const getActivityTypeColor = (type: string) => {
     switch (type) {
       case 'inteligencia_emocional':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
+        return 'bg-braini-blue/10 text-braini-blue-dark border-braini-blue/20';
       case 'actividad_tecnica':
-        return 'bg-green-100 text-green-800 border-green-200';
+        return 'bg-braini-turquoise/10 text-braini-turquoise-dark border-braini-turquoise/20';
       case 'vinculo_afectivo':
-        return 'bg-pink-100 text-pink-800 border-pink-200';
+        return 'bg-braini-pink/10 text-braini-pink-dark border-braini-pink/20';
       case 'acompañamiento_emocional':
-        return 'bg-purple-100 text-purple-800 border-purple-200';
+        return 'bg-braini-yellow/10 text-braini-yellow-dark border-braini-yellow/20';
       default:
         return 'bg-gray-100 text-gray-800 border-gray-200';
     }
@@ -91,11 +91,11 @@ const ActivityList: React.FC<ActivityListProps> = ({
                   </div>
                 </div>
 
-                <h3 className="font-bold text-braini-blue text-xl mb-2 group-hover:text-braini-blue-dark transition-colors">
+                <h3 className="font-black text-braini-blue text-xl sm:text-2xl mb-2 group-hover:text-braini-blue-dark transition-colors" style={{ fontWeight: 900 }}>
                   {activity.titulo_actividad}
                 </h3>
                 
-                <p className="text-gray-700 text-base leading-relaxed group-hover:text-gray-800 transition-colors">
+                <p className="text-gray-700 text-base sm:text-lg leading-relaxed group-hover:text-gray-800 transition-colors font-medium">
                   {activity.objetivo || 'Sin descripción disponible'}
                 </p>
 
@@ -116,7 +116,7 @@ const ActivityList: React.FC<ActivityListProps> = ({
                           key={star}
                           className={`w-4 h-4 ${
                             star <= userActivity.puntuacion! 
-                              ? 'text-yellow-400 fill-current' 
+                              ? 'text-braini-yellow fill-current' 
                               : 'text-gray-300'
                           }`}
                         />

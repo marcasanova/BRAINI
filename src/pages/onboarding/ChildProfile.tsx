@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import GeometricBackground from '@/components/GeometricBackground';
+import Backgrounds from '@/components/Backgrounds';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/lib/supabaseClient';
 import { useNavigate } from 'react-router-dom';
@@ -190,11 +190,11 @@ const ChildProfile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-pink-50 font-inter relative overflow-hidden">
-      <GeometricBackground />
+    <div className="min-h-screen bg-white font-montserrat relative overflow-hidden">
+      <Backgrounds />
       <div className="container mx-auto px-4 py-12 relative z-10 flex flex-col items-center justify-center min-h-screen">
         <div className="bg-white/95 backdrop-blur-sm shadow-xl rounded-2xl p-12 max-w-4xl w-full animate-fade-in">
-          <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+          <h1 className="text-3xl sm:text-4xl font-black text-gray-800 mb-6 text-center" style={{ fontWeight: 900 }}>
             Completa el perfil del Niño/Niña
           </h1>
           

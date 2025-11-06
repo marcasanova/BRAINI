@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import GeometricBackground from '@/components/GeometricBackground';
+import Backgrounds from '@/components/Backgrounds';
 import Navbar from '@/components/navigation/Navbar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -193,8 +193,8 @@ const TestTMMSPadres = () => {
 
   if (showResults && results) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-pink-50 font-inter relative overflow-hidden">
-        <GeometricBackground />
+      <div className="min-h-screen bg-white font-montserrat relative overflow-hidden">
+        <Backgrounds />
         <Navbar />
         <div className="container mx-auto px-4 py-12 md:pl-80 relative z-10">
           <div className="max-w-4xl mx-auto">
@@ -203,10 +203,10 @@ const TestTMMSPadres = () => {
               <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
                 <CheckCircle className="w-10 h-10 text-white" />
               </div>
-              <h1 className="text-4xl font-bold text-gray-800 mb-2">
+              <h1 className="text-4xl sm:text-5xl font-black text-gray-800 mb-2" style={{ fontWeight: 900 }}>
                 <span className="text-green-600">Resultados del Test TMMS-24</span>
               </h1>
-              <p className="text-xl text-gray-600">
+              <p className="text-xl sm:text-2xl text-gray-700 font-medium">
                 Tu perfil de Inteligencia Emocional
               </p>
             </div>
@@ -332,8 +332,8 @@ const TestTMMSPadres = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-pink-50 font-inter relative overflow-hidden">
-      <GeometricBackground />
+    <div className="min-h-screen bg-white font-montserrat relative overflow-hidden">
+      <Backgrounds />
       <Navbar />
       <div className="container mx-auto px-4 py-12 md:pl-80 relative z-10">
         <div className="max-w-4xl mx-auto">
@@ -342,10 +342,10 @@ const TestTMMSPadres = () => {
             <div className="w-20 h-20 bg-gradient-to-br from-braini-blue to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
               <Brain className="w-10 h-10 text-white" />
             </div>
-            <h1 className="text-4xl font-bold text-gray-800 mb-2">
+            <h1 className="text-4xl sm:text-5xl font-black text-gray-800 mb-2" style={{ fontWeight: 900 }}>
               <span className="text-braini-blue">Test TMMS-24</span>
             </h1>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl sm:text-2xl text-gray-700 font-medium">
               Evaluación de Inteligencia Emocional para Padres
             </p>
           </div>

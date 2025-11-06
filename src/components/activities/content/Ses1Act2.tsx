@@ -32,11 +32,11 @@ const Ses1Act2: React.FC<Ses1Act2Props> = ({
     <div className="space-y-6">
       {/* Instrucciones con datos del backend */}
       {activityData && (
-        <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-xl border border-blue-200">
+        <div className="bg-gradient-to-r from-braini-blue/10 to-braini-turquoise/10 p-6 rounded-xl border border-braini-blue/20">
           {/* Duración del backend */}
           {activityData.duracion_min && activityData.duracion_max && (
             <p className="text-gray-700 leading-relaxed mb-3">
-              <strong className="text-blue-700">Duración:</strong> {activityData.duracion_min} - {activityData.duracion_max} minutos
+              <strong className="text-braini-blue-dark">Duración:</strong> {activityData.duracion_min} - {activityData.duracion_max} minutos
             </p>
           )}
           {/* ¿Cómo se juega? del backend - Con formateo */}
@@ -51,22 +51,22 @@ const Ses1Act2: React.FC<Ses1Act2Props> = ({
       {/* Área principal de la actividad */}
       <div className="grid md:grid-cols-2 gap-6">
         {/* Ejercicio principal: Piernas y pies */}
-        <div className="bg-orange-50 p-6 rounded-xl border-2 border-orange-300">
+        <div className="bg-braini-yellow/10 p-6 rounded-xl border-2 border-braini-yellow/30">
           <div className="flex items-center gap-3 mb-4">
-            <Footprints className="w-8 h-8 text-orange-600" />
-            <h3 className="text-2xl font-bold text-orange-800">
+            <Footprints className="w-8 h-8 text-braini-yellow-dark" />
+            <h3 className="text-2xl font-bold text-braini-yellow-dark">
               Ejercicio: Piernas y Pies
             </h3>
           </div>
           
           <div className="space-y-4">
             {/* Paso 1 */}
-            <div className="bg-white p-4 rounded-lg border border-orange-200">
+            <div className="bg-white p-4 rounded-lg border border-braini-yellow/20">
               <div className="flex items-start gap-3 mb-2">
-                <span className="bg-orange-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg">
+                <span className="bg-braini-yellow text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg">
                   1
                 </span>
-                <h4 className="text-lg font-semibold text-orange-800">Gigantes</h4>
+                <h4 className="text-lg font-semibold text-braini-yellow-dark">Gigantes</h4>
               </div>
               <p className="text-gray-700 ml-11 italic">
                 "Vamos a dar patadas contra el suelo todo lo fuerte que podamos… ¿escuchas los golpes de los gigantes?"
@@ -74,12 +74,12 @@ const Ses1Act2: React.FC<Ses1Act2Props> = ({
             </div>
 
             {/* Paso 2 */}
-            <div className="bg-white p-4 rounded-lg border border-orange-200">
+            <div className="bg-white p-4 rounded-lg border border-braini-yellow/20">
               <div className="flex items-start gap-3 mb-2">
-                <span className="bg-orange-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg">
+                <span className="bg-braini-yellow text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg">
                   2
                 </span>
-                <h4 className="text-lg font-semibold text-orange-800">Hormigas</h4>
+                <h4 className="text-lg font-semibold text-braini-yellow-dark">Hormigas</h4>
               </div>
               <p className="text-gray-700 ml-11 italic">
                 "Nuestras patadas son suaves, lentas y delicadas como sus patitas… y sus pasos casi no se oyen."
@@ -87,12 +87,12 @@ const Ses1Act2: React.FC<Ses1Act2Props> = ({
             </div>
 
             {/* Paso 3 */}
-            <div className="bg-white p-4 rounded-lg border border-orange-200">
+            <div className="bg-white p-4 rounded-lg border border-braini-yellow/20">
               <div className="flex items-start gap-3 mb-2">
-                <span className="bg-orange-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg">
+                <span className="bg-braini-yellow text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg">
                   3
                 </span>
-                <h4 className="text-lg font-semibold text-orange-800">Alternar</h4>
+                <h4 className="text-lg font-semibold text-braini-yellow-dark">Alternar</h4>
               </div>
               <p className="text-gray-700 ml-11 italic">
                 "Caminamos como un gigante… ahora como una hormiga."
@@ -100,30 +100,30 @@ const Ses1Act2: React.FC<Ses1Act2Props> = ({
             </div>
           </div>
 
-          <div className="mt-4 bg-orange-100 p-3 rounded-lg border border-orange-300">
-            <p className="text-sm font-semibold text-orange-800">
+          <div className="mt-4 bg-braini-yellow/20 p-3 rounded-lg border border-braini-yellow/30">
+            <p className="text-sm font-semibold text-braini-yellow-dark">
               💡 Realiza varias repeticiones
             </p>
           </div>
         </div>
 
         {/* Variante: Brazos y manos */}
-        <div className="bg-purple-50 p-6 rounded-xl border-2 border-purple-300">
+        <div className="bg-braini-pink/10 p-6 rounded-xl border-2 border-braini-pink/30">
           <div className="flex items-center gap-3 mb-4">
-            <Hand className="w-8 h-8 text-purple-600" />
-            <h3 className="text-2xl font-bold text-purple-800">
+            <Hand className="w-8 h-8 text-braini-pink-dark" />
+            <h3 className="text-2xl font-bold text-braini-pink-dark">
               Variante: Brazos y Manos
             </h3>
           </div>
           
           <div className="space-y-4">
             {/* Paso 1 */}
-            <div className="bg-white p-4 rounded-lg border border-purple-200">
+            <div className="bg-white p-4 rounded-lg border border-braini-pink/20">
               <div className="flex items-start gap-3 mb-2">
-                <span className="bg-purple-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg">
+                <span className="bg-braini-pink text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg">
                   1
                 </span>
-                <h4 className="text-lg font-semibold text-purple-800">Gigantes</h4>
+                <h4 className="text-lg font-semibold text-braini-pink-dark">Gigantes</h4>
               </div>
               <p className="text-gray-700 ml-11 italic">
                 Palmadas de gigante, ¡fuertes!
@@ -131,12 +131,12 @@ const Ses1Act2: React.FC<Ses1Act2Props> = ({
             </div>
 
             {/* Paso 2 */}
-            <div className="bg-white p-4 rounded-lg border border-purple-200">
+            <div className="bg-white p-4 rounded-lg border border-braini-pink/20">
               <div className="flex items-start gap-3 mb-2">
-                <span className="bg-purple-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg">
+                <span className="bg-braini-pink text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg">
                   2
                 </span>
-                <h4 className="text-lg font-semibold text-purple-800">Hormiguitas</h4>
+                <h4 className="text-lg font-semibold text-braini-pink-dark">Hormiguitas</h4>
               </div>
               <p className="text-gray-700 ml-11 italic">
                 Palmadas flojitas como de hormiguitas
@@ -144,12 +144,12 @@ const Ses1Act2: React.FC<Ses1Act2Props> = ({
             </div>
 
             {/* Paso 3 */}
-            <div className="bg-white p-4 rounded-lg border border-purple-200">
+            <div className="bg-white p-4 rounded-lg border border-braini-pink/20">
               <div className="flex items-start gap-3 mb-2">
-                <span className="bg-purple-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg">
+                <span className="bg-braini-pink text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg">
                   3
                 </span>
-                <h4 className="text-lg font-semibold text-purple-800">Alternar</h4>
+                <h4 className="text-lg font-semibold text-braini-pink-dark">Alternar</h4>
               </div>
               <p className="text-gray-700 ml-11 italic">
                 Cambiar entre gigante y hormiguita varias veces
@@ -157,8 +157,8 @@ const Ses1Act2: React.FC<Ses1Act2Props> = ({
             </div>
           </div>
 
-          <div className="mt-4 bg-purple-100 p-3 rounded-lg border border-purple-300">
-            <p className="text-sm font-semibold text-purple-800">
+          <div className="mt-4 bg-braini-pink/20 p-3 rounded-lg border border-braini-pink/30">
+            <p className="text-sm font-semibold text-braini-pink-dark">
               💡 ¡Repite varias veces!
             </p>
           </div>
@@ -166,11 +166,11 @@ const Ses1Act2: React.FC<Ses1Act2Props> = ({
       </div>
 
       {/* Mensaje motivacional */}
-      <div className="bg-yellow-50 p-6 rounded-xl border-2 border-yellow-300">
+      <div className="bg-braini-yellow/10 p-6 rounded-xl border-2 border-braini-yellow/30">
         <div className="flex items-center gap-3">
           <span className="text-3xl">🤗</span>
           <div>
-            <h4 className="text-lg font-bold text-yellow-800 mb-1">
+            <h4 className="text-lg font-bold text-braini-yellow-dark mb-1">
               ¡Disfruta de la relajación!
             </h4>
             <p className="text-gray-700">
@@ -182,14 +182,14 @@ const Ses1Act2: React.FC<Ses1Act2Props> = ({
 
       {/* Retroalimentación - del backend */}
       {activityData?.retroalimentacion && (
-        <div className="bg-green-50 p-6 rounded-xl border-2 border-green-500">
+        <div className="bg-braini-turquoise/10 p-6 rounded-xl border-2 border-braini-turquoise">
           <div className="flex items-center gap-3 mb-2">
             <span className="text-4xl">✨</span>
-            <h3 className="text-2xl font-bold text-green-800">
+            <h3 className="text-2xl font-bold text-braini-turquoise-dark">
               ¡GENIAL!
             </h3>
           </div>
-          <p className="text-green-700 text-lg font-semibold">
+          <p className="text-braini-turquoise-dark text-lg font-semibold">
             {activityData.retroalimentacion}
           </p>
         </div>

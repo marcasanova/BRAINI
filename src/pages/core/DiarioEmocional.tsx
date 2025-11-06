@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import GeometricBackground from '@/components/GeometricBackground';
-import Navbar from '@/components/navigation/Navbar';
+import Backgrounds from '@/components/Backgrounds';
 import EmotionSelector from '@/components/emotionalDiary/EmotionSelector';
 import EmotionEntry from '@/components/emotionalDiary/EmotionEntry';
 import EmotionCalendar from '@/components/emotionalDiary/EmotionCalendar';
 import { useEmotionalDiary } from '@/hooks/useEmotionalDiary';
 import { useToast } from '@/hooks/use-toast';
-import { Heart, Calendar } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 
 const DiarioEmocional = () => {
   const { toast } = useToast();
@@ -127,73 +126,79 @@ const DiarioEmocional = () => {
   }, [error, toast, clearError]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-pink-50 font-inter relative overflow-hidden">
-      <GeometricBackground />
-      <Navbar />
-      
-      <div className="container mx-auto px-4 py-12 md:pl-80 relative z-10">
-        <div className="max-w-6xl mx-auto">
-          {/* Header */}
-          <div className="text-center mb-8 animate-fade-in">
-            <div className="w-20 h-20 bg-gradient-to-br from-braini-blue to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-              <Heart className="w-10 h-10 text-white" />
+    <Backgrounds 
+      wrapWithCard={true}
+      customGradient="linear-gradient(135deg, rgba(53, 189, 177, 1) 25%, rgba(248, 205, 80, 1) 75%)"
+    >
+      <div className="container mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-6 relative z-10">
+        <div className="max-w-7xl mx-auto">
+          {/* Header con título y fecha alineados */}
+          <div className="mb-6 md:mb-8 animate-fade-in">
+            <div className="flex flex-col md:flex-row md:items-start md:justify-between md:items-center gap-4 mb-4">
+              <div className="flex-1">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-2" style={{ fontWeight: 900 }}>
+                  Diario Emocional
+                </h1>
+                <p className="text-lg sm:text-xl md:text-2xl text-white/90 font-medium">
+                  Registra y observa las emociones de tu hijo/a día a día
+                </p>
+              </div>
+              
+              {/* Fecha seleccionada - alineada a la derecha */}
+              <div className="flex-shrink-0">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg border border-gray-200">
+                  <Calendar className="w-5 h-5 text-braini-turquoise" />
+                  <span className="font-semibold text-gray-700 whitespace-nowrap">
+                    {selectedDate.toLocaleDateString('es-ES', {
+                      weekday: 'long',
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    })}
+                  </span>
+                </div>
+              </div>
             </div>
-            <h1 className="text-4xl font-bold text-gray-800 mb-2">
-              <span className="text-braini-blue">Diario Emocional</span>
-            </h1>
-            <p className="text-xl text-gray-600">
-              Registra y observa las emociones de tu hijo/a día a día
-            </p>
           </div>
 
-          {/* Fecha seleccionada */}
-          <div className="text-center mb-6">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full shadow-md border border-gray-200">
-              <Calendar className="w-5 h-5 text-braini-blue" />
-              <span className="font-medium text-gray-700">
-                {selectedDate.toLocaleDateString('es-ES', {
-                  weekday: 'long',
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                })}
-              </span>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          {/* Grid simétrico de dos columnas */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
             {/* Columna izquierda: Selector de emociones y observaciones */}
-            <div className="space-y-6">
+            <div className="flex flex-col space-y-6">
               {/* Selector de emociones */}
-              <EmotionSelector
-                emotions={EMOTIONS_CONFIG}
-                selectedEmotion={selectedEmotion}
-                onEmotionSelect={handleEmotionSelect}
-                disabled={loading}
-              />
+              <div className="flex-shrink-0">
+                <EmotionSelector
+                  emotions={EMOTIONS_CONFIG}
+                  selectedEmotion={selectedEmotion}
+                  onEmotionSelect={handleEmotionSelect}
+                  disabled={loading}
+                />
+              </div>
 
               {/* Formulario de observaciones */}
-              <EmotionEntry
-                observations={observations}
-                onObservationsChange={handleObservationsChange}
-                disabled={!selectedEmotion}
-              />
+              <div className="flex-1">
+                <EmotionEntry
+                  observations={observations}
+                  onObservationsChange={handleObservationsChange}
+                  disabled={!selectedEmotion}
+                />
+              </div>
 
               {/* Botón de guardar */}
-              <div className="flex justify-center">
+              <div className="flex-shrink-0 flex justify-center pt-2">
                 <button
                   onClick={handleSave}
                   disabled={!selectedEmotion || loading}
                   className={`
-                    px-8 py-3 rounded-xl font-semibold text-lg transition-all duration-300 transform
+                    w-full max-w-md px-8 py-3 rounded-xl font-semibold text-lg transition-all duration-300 transform
                     ${selectedEmotion && !loading
-                      ? 'bg-gradient-to-r from-braini-blue to-purple-600 hover:from-braini-blue-dark hover:to-purple-700 text-white shadow-lg hover:shadow-xl hover:scale-105'
+                      ? 'bg-gradient-to-r from-braini-pink to-braini-yellow hover:from-braini-pink-dark hover:to-braini-yellow-dark text-white shadow-lg hover:shadow-xl hover:scale-105'
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                     }
                   `}
                 >
                   {loading ? (
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center justify-center gap-2">
                       <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                       Guardando...
                     </div>
@@ -205,20 +210,22 @@ const DiarioEmocional = () => {
             </div>
 
             {/* Columna derecha: Calendario */}
-            <div>
-              <EmotionCalendar
-                currentDate={new Date(currentMonth.year, currentMonth.month - 1)}
-                monthEntries={monthEntries}
-                emotionsConfig={EMOTIONS_CONFIG}
-                onDateSelect={handleDateSelect}
-                onMonthChange={handleMonthChange}
-                selectedDate={selectedDate}
-              />
+            <div className="flex flex-col">
+              <div className="h-full">
+                <EmotionCalendar
+                  currentDate={new Date(currentMonth.year, currentMonth.month - 1)}
+                  monthEntries={monthEntries}
+                  emotionsConfig={EMOTIONS_CONFIG}
+                  onDateSelect={handleDateSelect}
+                  onMonthChange={handleMonthChange}
+                  selectedDate={selectedDate}
+                />
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </Backgrounds>
   );
 };
 

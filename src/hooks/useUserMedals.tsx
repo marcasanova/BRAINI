@@ -10,6 +10,7 @@ interface UserMedal {
 
 export const useUserMedals = () => {
   const [userMedals, setUserMedals] = useState<UserMedal[]>([]);
+  const [totalMedals, setTotalMedals] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -20,7 +21,7 @@ export const useUserMedals = () => {
       
       if (!user) throw new Error('Usuario no autenticado');
 
-      // Obtener solo las medallas del usuario (medal_id y fecha)
+      // Obtener las medallas del usuario
       const { data: userMedalsData, error: userMedalsError } = await supabase
         .from('parents_medals')
         .select('id, user_id, medal_id, fecha_obtencion')
@@ -28,8 +29,15 @@ export const useUserMedals = () => {
 
       if (userMedalsError) throw userMedalsError;
 
+      // Obtener el total de medallas disponibles en la tabla medals
+      const { count, error: medalsCountError } = await supabase
+        .from('medals')
+        .select('*', { count: 'exact', head: true });
+
+      if (medalsCountError) throw medalsCountError;
 
       setUserMedals(userMedalsData || []);
+      setTotalMedals(count || 0);
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -41,5 +49,5 @@ export const useUserMedals = () => {
     fetchUserMedals();
   }, [fetchUserMedals]);
 
-  return { userMedals, loading, error, refetch: fetchUserMedals };
+  return { userMedals, totalMedals, loading, error, refetch: fetchUserMedals };
 };

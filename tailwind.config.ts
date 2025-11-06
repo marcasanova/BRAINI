@@ -65,16 +65,23 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				braini: {
-					blue: '#4A90E2',
-					'blue-light': '#87CEEB',
-					'blue-dark': '#2E5984',
-					pink: '#FF69B4',
-					'pink-light': '#FFB6C1',
-					yellow: '#FFD700',
-					'yellow-light': '#FFEB3B',
-					green: '#40E0D0',
-					'green-light': '#7FFFD4',
-					turquoise: '#40E0D0'
+					// Colores corporativos
+					yellow: '#f8cd50',
+					'yellow-light': '#fad97a',
+					'yellow-dark': '#d4a842',
+					pink: '#f5827b',
+					'pink-light': '#f8a8a3',
+					'pink-dark': '#d15a52',
+					blue: '#7ea4df',
+					'blue-light': '#a0c0e8',
+					'blue-dark': '#5d7ba8',
+					turquoise: '#35bdb1',
+					'turquoise-light': '#5dd1c7',
+					'turquoise-dark': '#2a968b',
+					// Mantener green como alias de turquoise para compatibilidad
+					green: '#35bdb1',
+					'green-light': '#5dd1c7',
+					'green-dark': '#2a968b'
 				}
 			},
 			borderRadius: {
@@ -127,10 +134,10 @@ export default {
 				},
 				'medal-glow': {
 					'0%, 100%': {
-						boxShadow: '0 0 20px rgba(255, 215, 0, 0.3)'
+						boxShadow: '0 0 20px rgba(248, 205, 80, 0.3)'
 					},
 					'50%': {
-						boxShadow: '0 0 40px rgba(255, 215, 0, 0.6)'
+						boxShadow: '0 0 40px rgba(248, 205, 80, 0.6)'
 					}
 				},
 				'sparkle-twinkle': {
@@ -177,6 +184,7 @@ export default {
 			},
 			fontFamily: {
 				'inter': ['Inter', 'sans-serif'],
+				'montserrat': ['Montserrat', 'sans-serif'],
 			}
 		}
 	},

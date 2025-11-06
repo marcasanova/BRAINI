@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import GeometricBackground from '@/components/GeometricBackground';
+import Backgrounds from '@/components/Backgrounds';
 import { supabase } from '@/lib/supabaseClient';
 import {
   Dialog,
@@ -170,8 +170,8 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-pink-50 font-inter relative overflow-hidden">
-      <GeometricBackground />
+    <div className="min-h-screen bg-white font-montserrat relative overflow-hidden">
+      <Backgrounds />
       
       <div className="container mx-auto px-4 py-12 relative z-10">
         <div className="max-w-md mx-auto">

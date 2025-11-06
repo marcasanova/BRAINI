@@ -95,8 +95,12 @@
     @apply border-border;
   }
 
+  html {
+    @apply bg-gray-50;
+  }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-gray-50 text-foreground;
   }
 }
 

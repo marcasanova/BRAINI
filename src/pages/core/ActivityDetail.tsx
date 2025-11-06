@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabaseClient';
 import { useUserActivitiesByLevel } from '@/hooks/useUserActivities';
 import { UserActivity } from '@/hooks/useUserActivities';
-import GeometricBackground from '@/components/GeometricBackground';
+import Backgrounds from '@/components/Backgrounds';
 import Navbar from '@/components/navigation/Navbar';
 import ActivityNavigation from '@/components/activities/ActivityNavigation';
 import ActivityRating from '@/components/activities/ActivityRating';
@@ -67,11 +67,11 @@ const ActivityDetail: React.FC = () => {
   const renderActivity = () => {
     if (loading || activitiesLoading) {
       return (
-        <div className="min-h-screen bg-gradient-to-br from-braini-blue/10 via-white to-braini-pink/10 font-inter relative overflow-hidden flex flex-col">
-          <GeometricBackground />
+        <div className="min-h-screen bg-white font-montserrat relative overflow-hidden flex flex-col">
+          <Backgrounds />
           <Navbar />
-          <div className="flex-1 flex flex-col items-center justify-center px-2 py-12 md:py-20 md:pl-80">
-            <div className="text-center text-gray-500 py-8">Cargando actividad...</div>
+          <div className="flex-1 flex flex-col items-center justify-center px-2 py-12 md:py-20 md:pl-80 relative z-10">
+            <div className="text-center text-gray-500 py-8 font-medium">Cargando actividad...</div>
           </div>
         </div>
       );
@@ -84,11 +84,11 @@ const ActivityDetail: React.FC = () => {
     
     if (!currentActivity) {
       return (
-        <div className="min-h-screen bg-gradient-to-br from-braini-blue/10 via-white to-braini-pink/10 font-inter relative overflow-hidden flex flex-col">
-          <GeometricBackground />
+        <div className="min-h-screen bg-white font-montserrat relative overflow-hidden flex flex-col">
+          <Backgrounds />
           <Navbar />
-          <div className="flex-1 flex flex-col items-center justify-center px-2 py-12 md:py-20 md:pl-80">
-            <div className="text-center text-red-600 py-8">Actividad no encontrada</div>
+          <div className="flex-1 flex flex-col items-center justify-center px-2 py-12 md:py-20 md:pl-80 relative z-10">
+            <div className="text-center text-red-600 py-8 font-medium">Actividad no encontrada</div>
           </div>
         </div>
       );
@@ -96,11 +96,11 @@ const ActivityDetail: React.FC = () => {
 
     const activity = currentActivity.activities;
     return (
-      <div className="min-h-screen bg-gradient-to-br from-braini-blue/10 via-white to-braini-pink/10 font-inter relative overflow-hidden flex flex-col">
-        <GeometricBackground />
+      <div className="min-h-screen bg-white font-montserrat relative overflow-hidden flex flex-col">
+        <Backgrounds />
         <Navbar />
-        <div className="flex-1 flex flex-col items-center justify-center px-2 py-12 md:py-20 md:pl-80">
-          <div className="bg-white/95 backdrop-blur-lg p-8 rounded-3xl shadow-2xl max-w-4xl w-full animate-fade-in border border-braini-blue/10">
+        <div className="flex-1 flex flex-col items-center justify-center px-2 py-12 md:py-20 md:pl-80 relative z-10">
+          <div className="bg-white/95 backdrop-blur-lg p-8 rounded-2xl shadow-xl border-0 max-w-4xl w-full animate-fade-in">
             {/* Navegación entre actividades */}
             <ActivityNavigation
               currentActivityId={parseInt(activityId!)}
@@ -154,15 +154,15 @@ const ActivityDetail: React.FC = () => {
                 <>
                   {/* Contenido específico según el tipo de actividad */}
                   {activity.tipo_actividad === 'vinculo_afectivo' && activity.contenido_vinculo && (
-                    <div className="bg-pink-50 p-6 rounded-xl border border-pink-200">
-                      <h3 className="text-xl font-bold text-pink-800 mb-4">Actividad de Vínculo Afectivo</h3>
+                    <div className="bg-braini-pink/10 p-6 rounded-xl border border-braini-pink/20">
+                      <h3 className="text-xl font-bold text-braini-pink-dark mb-4">Actividad de Vínculo Afectivo</h3>
                       <div className="space-y-4">
-                        <div className="bg-white p-4 rounded-lg border border-pink-300">
-                          <h4 className="font-semibold text-pink-700 mb-2">Acción:</h4>
+                        <div className="bg-white p-4 rounded-lg border border-braini-pink/30">
+                          <h4 className="font-semibold text-braini-pink-dark mb-2">Acción:</h4>
                           <p className="text-gray-700">{activity.contenido_vinculo.accion}</p>
                         </div>
-                        <div className="bg-white p-4 rounded-lg border border-pink-300">
-                          <h4 className="font-semibold text-pink-700 mb-2">Frase:</h4>
+                        <div className="bg-white p-4 rounded-lg border border-braini-pink/30">
+                          <h4 className="font-semibold text-braini-pink-dark mb-2">Frase:</h4>
                           <p className="text-gray-700 italic">"{activity.contenido_vinculo.frase}"</p>
                         </div>
                       </div>
@@ -170,9 +170,9 @@ const ActivityDetail: React.FC = () => {
                   )}
 
                   {activity.tipo_actividad === 'acompañamiento_emocional' && activity.contenido_apoyo && (
-                    <div className="bg-purple-50 p-6 rounded-xl border border-purple-200">
-                      <h3 className="text-xl font-bold text-purple-800 mb-4">Acompañamiento Emocional</h3>
-                      <div className="bg-white p-4 rounded-lg border border-purple-300">
+                    <div className="bg-braini-yellow/10 p-6 rounded-xl border border-braini-yellow/20">
+                      <h3 className="text-xl font-bold text-braini-yellow-dark mb-4">Acompañamiento Emocional</h3>
+                      <div className="bg-white p-4 rounded-lg border border-braini-yellow/30">
                         <p className="text-gray-700 leading-relaxed">{activity.contenido_apoyo}</p>
                       </div>
                     </div>
@@ -180,16 +180,16 @@ const ActivityDetail: React.FC = () => {
 
                   {/* Instrucciones generales */}
                   {activity.como_se_juega && (
-                    <div className="bg-blue-50 p-6 rounded-xl border border-blue-200 mt-6">
-                      <h3 className="text-xl font-bold text-blue-800 mb-4">¿Cómo se juega?</h3>
+                    <div className="bg-braini-blue/10 p-6 rounded-xl border border-braini-blue/20 mt-6">
+                      <h3 className="text-xl font-bold text-braini-blue-dark mb-4">¿Cómo se juega?</h3>
                       <p className="text-gray-700 leading-relaxed">{activity.como_se_juega}</p>
                     </div>
                   )}
 
                   {/* Retroalimentación */}
                   {activity.retroalimentacion && (
-                    <div className="bg-green-50 p-6 rounded-xl border border-green-200 mt-6">
-                      <h3 className="text-xl font-bold text-green-800 mb-4">¡Excelente trabajo!</h3>
+                    <div className="bg-braini-turquoise/10 p-6 rounded-xl border border-braini-turquoise/20 mt-6">
+                      <h3 className="text-xl font-bold text-braini-turquoise-dark mb-4">¡Excelente trabajo!</h3>
                       <p className="text-gray-700 leading-relaxed">{activity.retroalimentacion}</p>
                     </div>
                   )}

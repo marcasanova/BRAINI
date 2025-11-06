@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import GeometricBackground from '@/components/GeometricBackground';
+import Backgrounds from '@/components/Backgrounds';
 import { supabase } from '@/lib/supabaseClient';
 import { Session } from '@supabase/supabase-js';
 
@@ -84,23 +84,23 @@ const UpdatePassword = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-pink-50 font-inter relative overflow-hidden">
-      <GeometricBackground />
+    <div className="min-h-screen bg-white font-montserrat relative overflow-hidden">
+      <Backgrounds />
       
       <div className="container mx-auto px-4 py-12 relative z-10">
         <div className="max-w-md mx-auto">
           <div className="text-center mb-8 animate-fade-in">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">
+            <h1 className="text-3xl sm:text-4xl font-black text-gray-800 mb-2" style={{ fontWeight: 900 }}>
               <span className="text-braini-blue">Braini</span>
             </h1>
-            <p className="text-sm text-gray-600 mb-4">
+            <p className="text-sm sm:text-base text-gray-700 mb-4 font-medium">
               Establece tu nueva contraseña para acceder a tu cuenta.
             </p>
           </div>
 
           <Card className="w-full bg-white/95 backdrop-blur-sm shadow-xl border-0 relative z-10 animate-fade-in" style={{ animationDelay: '0.3s' }}>
             <CardContent className="p-8">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Actualizar contraseña</h2>
+              <h2 className="text-2xl sm:text-3xl font-black text-gray-800 mb-6 text-center" style={{ fontWeight: 800 }}>Actualizar contraseña</h2>
               
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">

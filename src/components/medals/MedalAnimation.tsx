@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Trophy, Sparkles, Star } from 'lucide-react';
+import { Sparkles, Star } from 'lucide-react';
+
+// URL de la emoción de orgullo
+const PRIDE_EMOTION_IMAGE = "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/23.%20Orgullo.jpg";
 
 interface Medal {
   id: number;
@@ -52,7 +55,7 @@ const Sparkle: React.FC<{
     }}
   >
     <Sparkles 
-      className="text-yellow-400" 
+      className="text-braini-yellow" 
       style={{ width: size, height: size }}
     />
   </div>
@@ -67,16 +70,16 @@ const MedalAnimation: React.FC<MedalAnimationProps> = ({
   const [showContent, setShowContent] = useState(false);
   const [showButton, setShowButton] = useState(false);
 
-  // Colores para el confeti
+  // Colores para el confeti - Colores corporativos
   const confettiColors = [
-    '#FFD700', // Dorado
-    '#FF69B4', // Rosa
-    '#4A90E2', // Azul BRAINI
-    '#40E0D0', // Turquesa
-    '#FF6B6B', // Rojo
-    '#9B59B6', // Púrpura
-    '#E67E22', // Naranja
-    '#1ABC9C', // Verde
+    '#f8cd50', // Amarillo/Dorado corporativo
+    '#f5827b', // Rosa/Corral corporativo
+    '#7ea4df', // Azul corporativo
+    '#35bdb1', // Turquesa corporativo
+    '#f8cd50', // Amarillo (duplicado para más presencia)
+    '#f5827b', // Rosa (duplicado para más presencia)
+    '#7ea4df', // Azul (duplicado para más presencia)
+    '#35bdb1', // Turquesa (duplicado para más presencia)
   ];
 
   useEffect(() => {
@@ -129,23 +132,27 @@ const MedalAnimation: React.FC<MedalAnimationProps> = ({
 
       {/* Modal principal */}
       <div 
-        className={`relative bg-white/95 backdrop-blur-md rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl border-2 border-yellow-400/30 transition-all duration-700 transform animate-medal-glow ${
+        className={`relative bg-white/95 backdrop-blur-md rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl border-2 border-gray-200 transition-all duration-700 transform ${
           isVisible ? 'scale-100 opacity-100' : 'scale-75 opacity-0'
         }`}
       >
         {/* Efecto de brillo alrededor */}
-        <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-yellow-400/20 via-transparent to-yellow-400/20 animate-pulse" />
+        <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-braini-blue/10 via-transparent to-braini-turquoise/10 animate-pulse" />
         
         {/* Contenido */}
         <div className="relative z-10 text-center">
-          {/* Icono de trofeo animado */}
+          {/* Icono de emoción de orgullo animado */}
           <div className="mb-6">
             <div 
               className={`inline-block transition-all duration-1000 transform ${
                 showContent ? 'scale-100 rotate-0' : 'scale-0 rotate-180'
               }`}
             >
-              <Trophy className="w-16 h-16 text-yellow-500 mx-auto mb-4 animate-bounce" />
+              <img 
+                src={PRIDE_EMOTION_IMAGE} 
+                alt="Orgullo" 
+                className="w-28 h-28 md:w-32 md:h-32 rounded-full object-cover mx-auto mb-4 animate-bounce shadow-lg border-2 border-gray-200"
+              />
             </div>
           </div>
 
@@ -185,11 +192,11 @@ const MedalAnimation: React.FC<MedalAnimationProps> = ({
             }`}
           >
             <div className="flex items-center justify-center gap-2 mb-2">
-              <Star className="w-5 h-5 text-yellow-400 fill-current animate-sparkle-twinkle" />
+              <Star className="w-5 h-5 text-braini-blue fill-current animate-sparkle-twinkle" />
               <span className="text-lg font-medium text-gray-700">
                 ¡Enhorabuena!
               </span>
-              <Star className="w-5 h-5 text-yellow-400 fill-current animate-sparkle-twinkle" style={{ animationDelay: '0.5s' }} />
+              <Star className="w-5 h-5 text-braini-turquoise fill-current animate-sparkle-twinkle" style={{ animationDelay: '0.5s' }} />
             </div>
             <p className="text-gray-600">
               Has completado la sesión {medal.level_id} y obtenido esta medalla
@@ -208,7 +215,11 @@ const MedalAnimation: React.FC<MedalAnimationProps> = ({
             >
               {isLastLevel ? (
                 <>
-                  <Trophy className="w-5 h-5 mr-2" />
+                  <img 
+                    src={PRIDE_EMOTION_IMAGE} 
+                    alt="Orgullo" 
+                    className="w-6 h-6 rounded-full object-cover mr-2"
+                  />
                   Ver Todos los Niveles
                 </>
               ) : (
@@ -222,7 +233,7 @@ const MedalAnimation: React.FC<MedalAnimationProps> = ({
         </div>
 
         {/* Efecto de brillo en los bordes */}
-        <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-transparent via-yellow-400/10 to-transparent animate-pulse" />
+        <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-transparent via-braini-blue/5 to-transparent animate-pulse" />
       </div>
     </div>
   );

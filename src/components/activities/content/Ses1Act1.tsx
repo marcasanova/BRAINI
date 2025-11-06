@@ -194,11 +194,11 @@ const Ses1Act1: React.FC<Ses1Act1Props> = ({
     <div className="space-y-6">
       {/* Instrucciones con datos del backend */}
       {activityData && (
-        <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-xl border border-blue-200">
+        <div className="bg-gradient-to-r from-braini-blue/10 to-braini-turquoise/10 p-6 rounded-xl border border-braini-blue/20">
           {/* Duración del backend */}
           {activityData.duracion_min && activityData.duracion_max && (
             <p className="text-gray-700 leading-relaxed mb-3">
-              <strong className="text-blue-700">Duración:</strong> {activityData.duracion_min} - {activityData.duracion_max} minutos
+              <strong className="text-braini-blue-dark">Duración:</strong> {activityData.duracion_min} - {activityData.duracion_max} minutos
             </p>
           )}
           {/* ¿Cómo se juega? del backend - Con formateo */}
@@ -310,7 +310,7 @@ const Ses1Act1: React.FC<Ses1Act1Props> = ({
                   const emocion = EMOCIONES.find(e => e.id === emocionId);
                   return emocion && emocion.fraseId === frase.id;
                 }) && (
-                  <div className="mt-2 flex items-center gap-2 text-green-600">
+                  <div className="mt-2 flex items-center gap-2 text-braini-turquoise">
                     <CheckCircle className="w-4 h-4" />
                     <span className="text-xs">Completada</span>
                   </div>
@@ -322,19 +322,19 @@ const Ses1Act1: React.FC<Ses1Act1Props> = ({
       </div>
 
       {/* Progreso */}
-      <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-200">
+      <div className="bg-braini-yellow/10 p-4 rounded-xl border border-braini-yellow/20">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-yellow-800">
+            <p className="text-sm font-medium text-braini-yellow-dark">
               Parejas Completadas
             </p>
-            <p className="text-2xl font-bold text-yellow-600">
+            <p className="text-2xl font-bold text-braini-yellow-dark">
               {completadas.length} / {EMOCIONES.length}
             </p>
           </div>
-          <div className="w-full max-w-xs ml-4 bg-yellow-100 rounded-full h-3">
+          <div className="w-full max-w-xs ml-4 bg-braini-yellow/20 rounded-full h-3">
             <div
-              className="bg-yellow-500 h-3 rounded-full transition-all duration-300"
+              className="bg-braini-yellow h-3 rounded-full transition-all duration-300"
               style={{ width: `${(completadas.length / EMOCIONES.length) * 100}%` }}
             />
           </div>
@@ -343,14 +343,14 @@ const Ses1Act1: React.FC<Ses1Act1Props> = ({
 
       {/* Retroalimentación final - del backend */}
       {juegoCompletado && activityData?.retroalimentacion && (
-        <div className="bg-green-50 p-6 rounded-xl border-2 border-green-500 animate-fade-in">
+        <div className="bg-braini-turquoise/10 p-6 rounded-xl border-2 border-braini-turquoise animate-fade-in">
           <div className="flex items-center gap-3 mb-2">
-            <Sparkles className="w-8 h-8 text-green-600" />
-            <h3 className="text-2xl font-bold text-green-800">
+            <Sparkles className="w-8 h-8 text-braini-turquoise" />
+            <h3 className="text-2xl font-bold text-braini-turquoise-dark">
               ¡Fantástico!
             </h3>
           </div>
-          <p className="text-green-700">
+            <p className="text-braini-turquoise-dark">
             {activityData.retroalimentacion}
           </p>
         </div>
