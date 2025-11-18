@@ -23,21 +23,6 @@ const ActivityList: React.FC<ActivityListProps> = ({
     );
   }
 
-  const getActivityTypeColor = (type: string) => {
-    switch (type) {
-      case 'inteligencia_emocional':
-        return 'bg-braini-blue/10 text-braini-blue-dark border-braini-blue/20';
-      case 'actividad_tecnica':
-        return 'bg-braini-turquoise/10 text-braini-turquoise-dark border-braini-turquoise/20';
-      case 'vinculo_afectivo':
-        return 'bg-braini-pink/10 text-braini-pink-dark border-braini-pink/20';
-      case 'acompañamiento_emocional':
-        return 'bg-braini-yellow/10 text-braini-yellow-dark border-braini-yellow/20';
-      default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
-    }
-  };
-
   const getActivityTypeLabel = (type: string) => {
     switch (type) {
       case 'inteligencia_emocional':
@@ -53,37 +38,193 @@ const ActivityList: React.FC<ActivityListProps> = ({
     }
   };
 
+  // Función para obtener el número de actividad según tipo
+  const getActivityNumber = (type: string): number | null => {
+    switch (type) {
+      case 'inteligencia_emocional':
+        return 1;
+      case 'actividad_tecnica':
+        return 2;
+      case 'vinculo_afectivo':
+        return 3;
+      case 'acompañamiento_emocional':
+        return 4;
+      default:
+        return null;
+    }
+  };
+
+  // Función para obtener clases del número según tipo
+  const getNumberClasses = (type: string) => {
+    const baseClasses = 'w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 font-black text-sm';
+    
+    switch (type) {
+      case 'inteligencia_emocional':
+        return `${baseClasses} bg-braini-blue/20 text-braini-blue-dark`;
+      case 'actividad_tecnica':
+        return `${baseClasses} bg-braini-turquoise/20 text-braini-turquoise-dark`;
+      case 'vinculo_afectivo':
+        return `${baseClasses} bg-braini-pink/20 text-braini-pink-dark`;
+      case 'acompañamiento_emocional':
+        return `${baseClasses} bg-braini-yellow/20 text-braini-yellow-dark`;
+      default:
+        return `${baseClasses} bg-gray-100 text-gray-800`;
+    }
+  };
+
+  // Calcular progreso
+  const completedCount = activities.filter(a => a.puntuacion && a.puntuacion > 0).length;
+  const totalCount = activities.length;
+  const allCompleted = completedCount === totalCount && totalCount > 0;
+
+  // Función para obtener clases de card según tipo
+  const getCardClasses = (type: string) => {
+    const baseClasses = 'p-6 rounded-2xl shadow-md flex flex-col gap-3 border-2 transition-all duration-300 cursor-pointer group';
+    
+    switch (type) {
+      case 'inteligencia_emocional':
+        return `${baseClasses} bg-gradient-to-br from-braini-blue/5 to-braini-blue/10 border-braini-blue/30 hover:shadow-xl hover:border-braini-blue/50`;
+      case 'actividad_tecnica':
+        return `${baseClasses} bg-gradient-to-br from-braini-turquoise/5 to-braini-turquoise/10 border-braini-turquoise/30 hover:shadow-xl hover:border-braini-turquoise/50`;
+      case 'vinculo_afectivo':
+        return `${baseClasses} bg-gradient-to-br from-braini-pink/5 to-braini-pink/10 border-braini-pink/30 hover:shadow-xl hover:border-braini-pink/50`;
+      case 'acompañamiento_emocional':
+        return `${baseClasses} bg-gradient-to-br from-braini-yellow/5 to-braini-yellow/10 border-braini-yellow/30 hover:shadow-xl hover:border-braini-yellow/50`;
+      default:
+        return `${baseClasses} bg-white border-gray-200 hover:shadow-lg hover:border-gray-300`;
+    }
+  };
+
+  // Función para obtener clases de badge según tipo
+  const getBadgeClasses = (type: string) => {
+    const baseClasses = 'px-3 py-1.5 rounded-full text-xs font-bold border-2';
+    
+    switch (type) {
+      case 'inteligencia_emocional':
+        return `${baseClasses} bg-braini-blue/20 text-braini-blue-dark border-braini-blue/40`;
+      case 'actividad_tecnica':
+        return `${baseClasses} bg-braini-turquoise/20 text-braini-turquoise-dark border-braini-turquoise/40`;
+      case 'vinculo_afectivo':
+        return `${baseClasses} bg-braini-pink/20 text-braini-pink-dark border-braini-pink/40`;
+      case 'acompañamiento_emocional':
+        return `${baseClasses} bg-braini-yellow/20 text-braini-yellow-dark border-braini-yellow/40`;
+      default:
+        return `${baseClasses} bg-gray-100 text-gray-800 border-gray-200`;
+    }
+  };
+
+  // Función para obtener clases de título según tipo
+  const getTitleClasses = (type: string) => {
+    const baseClasses = 'font-black text-xl sm:text-2xl mb-2 transition-colors';
+    
+    switch (type) {
+      case 'inteligencia_emocional':
+        return `${baseClasses} text-braini-blue-dark group-hover:text-braini-blue`;
+      case 'actividad_tecnica':
+        return `${baseClasses} text-braini-turquoise-dark group-hover:text-braini-turquoise`;
+      case 'vinculo_afectivo':
+        return `${baseClasses} text-braini-pink-dark group-hover:text-braini-pink`;
+      case 'acompañamiento_emocional':
+        return `${baseClasses} text-braini-yellow-dark group-hover:text-braini-yellow`;
+      default:
+        return `${baseClasses} text-gray-800 group-hover:text-gray-900`;
+    }
+  };
+
+  // Función para obtener clases de icono según tipo
+  const getIconClasses = (type: string) => {
+    const baseClasses = 'w-10 h-10 rounded-full flex items-center justify-center transition-colors';
+    const iconBaseClasses = 'w-5 h-5 group-hover:scale-110 transition-transform';
+    
+    switch (type) {
+      case 'inteligencia_emocional':
+        return {
+          container: `${baseClasses} bg-braini-blue/20 group-hover:bg-braini-blue/30`,
+          icon: `${iconBaseClasses} text-braini-blue`
+        };
+      case 'actividad_tecnica':
+        return {
+          container: `${baseClasses} bg-braini-turquoise/20 group-hover:bg-braini-turquoise/30`,
+          icon: `${iconBaseClasses} text-braini-turquoise`
+        };
+      case 'vinculo_afectivo':
+        return {
+          container: `${baseClasses} bg-braini-pink/20 group-hover:bg-braini-pink/30`,
+          icon: `${iconBaseClasses} text-braini-pink`
+        };
+      case 'acompañamiento_emocional':
+        return {
+          container: `${baseClasses} bg-braini-yellow/20 group-hover:bg-braini-yellow/30`,
+          icon: `${iconBaseClasses} text-braini-yellow`
+        };
+      default:
+        return {
+          container: `${baseClasses} bg-gray-100 group-hover:bg-gray-200`,
+          icon: `${iconBaseClasses} text-gray-600`
+        };
+    }
+  };
+
   return (
     <div className="space-y-4">
+      {/* Indicador de progreso */}
+      <div className="mb-6 p-4 bg-gradient-to-r from-braini-blue/10 to-braini-turquoise/10 rounded-xl border border-braini-blue/20">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-sm font-semibold text-gray-700">Progreso de la sesión</span>
+          <span className="text-sm font-bold text-braini-blue">{completedCount} / {totalCount}</span>
+        </div>
+        <div className="w-full bg-gray-200 rounded-full h-2.5 mb-2">
+          <div 
+            className={`h-2.5 rounded-full transition-all duration-500 ${
+              allCompleted 
+                ? 'bg-gradient-to-r from-braini-turquoise to-braini-turquoise-dark' 
+                : 'bg-gradient-to-r from-braini-blue to-braini-turquoise'
+            }`}
+            style={{ width: `${(completedCount / totalCount) * 100}%` }}
+          ></div>
+        </div>
+        {allCompleted && (
+          <div className="flex items-center gap-2 text-braini-turquoise-dark font-semibold text-sm">
+            <CheckCircle className="w-5 h-5" />
+            <span>¡Todas las actividades completadas! 🎉</span>
+          </div>
+        )}
+      </div>
+
       {activities.map((userActivity) => {
         const activity = userActivity.activities;
         const isCompleted = !!userActivity.completed_at;
         const isRated = !!userActivity.puntuacion;
+        const activityType = activity.tipo_actividad || '';
+        const iconClasses = getIconClasses(activityType);
 
         return (
           <div
             key={activity.id}
             onClick={() => onActivityClick(activity.id)}
-            className="p-6 bg-white rounded-2xl shadow-md flex flex-col gap-3 border border-braini-blue/20 hover:shadow-lg hover:border-braini-blue/40 transition-all duration-300 cursor-pointer group"
+            className={getCardClasses(activityType)}
           >
             {/* Header con tipo y estado */}
             <div className="flex items-start justify-between">
               <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2">
-                  <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getActivityTypeColor(activity.tipo_actividad || '')}`}>
-                    {getActivityTypeLabel(activity.tipo_actividad || '')}
+                <div className="flex items-center gap-3 mb-3">
+                  <span className={getBadgeClasses(activityType)}>
+                    {getActivityNumber(activityType) !== null && (
+                      <span className="mr-1.5">{getActivityNumber(activityType)}.</span>
+                    )}
+                    {getActivityTypeLabel(activityType)}
                   </span>
                   
                   {/* Indicadores de estado */}
                   <div className="flex items-center gap-2">
                     {isCompleted && (
-                      <div className="flex items-center gap-1 text-green-600">
+                      <div className="flex items-center gap-1 text-braini-turquoise-dark">
                         <CheckCircle className="w-4 h-4" />
                         <span className="text-xs font-medium">Completada</span>
                       </div>
                     )}
                     {isRated && (
-                      <div className="flex items-center gap-1 text-yellow-600">
+                      <div className="flex items-center gap-1 text-braini-yellow-dark">
                         <Star className="w-4 h-4 fill-current" />
                         <span className="text-xs font-medium">Valorada</span>
                       </div>
@@ -91,7 +232,7 @@ const ActivityList: React.FC<ActivityListProps> = ({
                   </div>
                 </div>
 
-                <h3 className="font-black text-braini-blue text-xl sm:text-2xl mb-2 group-hover:text-braini-blue-dark transition-colors" style={{ fontWeight: 900 }}>
+                <h3 className={getTitleClasses(activityType)} style={{ fontWeight: 900 }}>
                   {activity.titulo_actividad}
                 </h3>
                 
@@ -131,20 +272,12 @@ const ActivityList: React.FC<ActivityListProps> = ({
 
               {/* Flecha de navegación */}
               <div className="ml-4 flex-shrink-0">
-                <div className="w-10 h-10 bg-braini-blue/10 rounded-full flex items-center justify-center group-hover:bg-braini-blue/20 transition-colors">
-                  <svg className="w-5 h-5 text-braini-blue group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className={iconClasses.container}>
+                  <svg className={iconClasses.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </div>
               </div>
-            </div>
-
-            {/* Acción */}
-            <div className="text-sm text-braini-blue mt-2 flex items-center gap-2 group-hover:text-braini-blue-dark transition-colors">
-              <div className="w-2 h-2 bg-braini-blue rounded-full group-hover:scale-125 transition-transform"></div>
-              <span className="font-medium">
-                {isCompleted ? 'Ver actividad' : 'Hacer actividad'}
-              </span>
             </div>
           </div>
         );

@@ -9,7 +9,6 @@ export interface Activity {
   duracion_min?: number;
   duracion_max?: number;
   como_se_juega?: string;
-  retroalimentacion?: string;
   investigacion_beneficios?: string;
   tipo_actividad?: 'inteligencia_emocional' | 'actividad_tecnica' | 'vinculo_afectivo' | 'acompañamiento_emocional';
   contenido_vinculo?: {
@@ -55,7 +54,9 @@ export interface ActivityNavigationProps {
 export interface ActivityRatingProps {
   activityId: number;
   userId: string;
+  levelId?: number;
   onRatingSubmitted?: () => void;
+  onMedalEarned?: (medal: any) => void;
 }
 
 export interface ActivityListProps {
@@ -102,7 +103,6 @@ export function useUserActivities(userId: string | undefined) {
           duracion_min,
           duracion_max,
           como_se_juega,
-          retroalimentacion,
           investigacion_beneficios,
           activity_type,
           contenido_vinculo,
@@ -183,7 +183,6 @@ export function useUserActivitiesByLevel(userId: string | undefined, levelId: nu
               duracion_min,
               duracion_max,
               como_se_juega,
-              retroalimentacion,
               investigacion_beneficios,
               tipo_actividad,
               contenido_vinculo,

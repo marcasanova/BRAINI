@@ -4,11 +4,16 @@ import { supabase } from '@/lib/supabaseClient';
 import { useUserActivitiesByLevel } from '@/hooks/useUserActivities';
 import { UserActivity } from '@/hooks/useUserActivities';
 import Backgrounds from '@/components/Backgrounds';
-import Navbar from '@/components/navigation/Navbar';
 import ActivityNavigation from '@/components/activities/ActivityNavigation';
 import ActivityRating from '@/components/activities/ActivityRating';
 import Ses1Act1 from '@/components/activities/content/Ses1Act1';
 import Ses1Act2 from '@/components/activities/content/Ses1Act2';
+import Ses2Act1 from '@/components/activities/content/Ses2Act1';
+import Ses2Act2 from '@/components/activities/content/Ses2Act2';
+import Ses3Act1 from '@/components/activities/content/Ses3Act1';
+import Ses3Act2 from '@/components/activities/content/Ses3Act2';
+import Ses4Act1 from '@/components/activities/content/Ses4Act1';
+import Ses4Act2 from '@/components/activities/content/Ses4Act2';
 import { formatearTexto } from '@/components/activities/utils/textFormatter';
 
 const ActivityDetail: React.FC = () => {
@@ -64,173 +69,257 @@ const ActivityDetail: React.FC = () => {
     };
   };
 
-  const renderActivity = () => {
-    if (loading || activitiesLoading) {
-      return (
-        <div className="min-h-screen bg-white font-montserrat relative overflow-hidden flex flex-col">
-          <Backgrounds />
-          <Navbar />
-          <div className="flex-1 flex flex-col items-center justify-center px-2 py-12 md:py-20 md:pl-80 relative z-10">
-            <div className="text-center text-gray-500 py-8 font-medium">Cargando actividad...</div>
-          </div>
-        </div>
-      );
-    }
+  const { currentIndex, previousActivity, nextActivity, totalActivities } = getNavigationInfo();
+  const currentActivity = activities.find(a => a.activities.id === parseInt(activityId!));
 
-    const { currentIndex, previousActivity, nextActivity, totalActivities } = getNavigationInfo();
+  return (
+    <Backgrounds 
+      wrapWithCard={true} 
+      enableInternalScroll={true}
+      customGradient="linear-gradient(135deg, rgba(126, 164, 223, 1) 25%, rgba(53, 189, 177, 1) 75%)"
+    >
+      <div className="h-full flex flex-col relative z-10">
+        <div className="container mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-6 flex-1 flex flex-col min-h-0">
+          <div className="max-w-5xl mx-auto w-full flex flex-col min-h-0">
+            {/* Header fijo - No hace scroll */}
+            <div className="mb-4 md:mb-6 animate-fade-in flex-shrink-0 space-y-4">
+              {/* Navegación entre actividades - Arriba del todo */}
+              {!loading && !activitiesLoading && currentActivity && (
+                <div className="mb-4">
+                  <ActivityNavigation
+                    currentActivityId={parseInt(activityId!)}
+                    previousActivity={previousActivity}
+                    nextActivity={nextActivity}
+                    currentIndex={currentIndex}
+                    totalActivities={totalActivities}
+                    onNavigate={handleActivityNavigate}
+                    onBackToLevel={handleBackToSession}
+                  />
+                </div>
+              )}
 
-    // Encontrar la actividad actual
-    const currentActivity = activities.find(a => a.activities.id === parseInt(activityId!));
-    
-    if (!currentActivity) {
-      return (
-        <div className="min-h-screen bg-white font-montserrat relative overflow-hidden flex flex-col">
-          <Backgrounds />
-          <Navbar />
-          <div className="flex-1 flex flex-col items-center justify-center px-2 py-12 md:py-20 md:pl-80 relative z-10">
-            <div className="text-center text-red-600 py-8 font-medium">Actividad no encontrada</div>
-          </div>
-        </div>
-      );
-    }
-
-    const activity = currentActivity.activities;
-    return (
-      <div className="min-h-screen bg-white font-montserrat relative overflow-hidden flex flex-col">
-        <Backgrounds />
-        <Navbar />
-        <div className="flex-1 flex flex-col items-center justify-center px-2 py-12 md:py-20 md:pl-80 relative z-10">
-          <div className="bg-white/95 backdrop-blur-lg p-8 rounded-2xl shadow-xl border-0 max-w-4xl w-full animate-fade-in">
-            {/* Navegación entre actividades */}
-            <ActivityNavigation
-              currentActivityId={parseInt(activityId!)}
-              previousActivity={previousActivity}
-              nextActivity={nextActivity}
-              currentIndex={currentIndex}
-              totalActivities={totalActivities}
-              onNavigate={handleActivityNavigate}
-              onBackToLevel={handleBackToSession}
-            />
-            
-            {/* Contenido de la actividad */}
-            <div className="mb-8">
-              <h2 className="text-3xl font-extrabold text-braini-blue mb-4 text-center">
-                {activity.titulo_actividad}
-              </h2>
-              
-              <div className="text-lg text-gray-700 mb-6 text-center">
-                {activity.objetivo || 'Sin descripción disponible'}
-              </div>
-
-              {/* Detectar si es Sesión 1, Actividad 1 o 2 y renderizar componente específico */}
-              {parseInt(levelId!) === 1 && parseInt(activityId!) === 1 ? (
-                <Ses1Act1 
-                  userProgress={currentActivity}
-                  activityId={parseInt(activityId!)}
-                  levelId={levelId!}
-                  userId={userId!}
-                  activityData={{
-                    duracion_min: activity.duracion_min,
-                    duracion_max: activity.duracion_max,
-                    como_se_juega: activity.como_se_juega,
-                    retroalimentacion: activity.retroalimentacion
-                  }}
-                />
-              ) : parseInt(levelId!) === 1 && parseInt(activityId!) === 2 ? (
-                <Ses1Act2 
-                  userProgress={currentActivity}
-                  activityId={parseInt(activityId!)}
-                  levelId={levelId!}
-                  userId={userId!}
-                  activityData={{
-                    duracion_min: activity.duracion_min,
-                    duracion_max: activity.duracion_max,
-                    como_se_juega: activity.como_se_juega,
-                    retroalimentacion: activity.retroalimentacion
-                  }}
-                />
+              {/* Título y subtítulo de la actividad */}
+              {loading || activitiesLoading ? (
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white" style={{ fontWeight: 900 }}>
+                  Cargando actividad...
+                </h1>
+              ) : !currentActivity ? (
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white" style={{ fontWeight: 900 }}>
+                  Actividad no encontrada
+                </h1>
               ) : (
-                // Contenido genérico para el resto de actividades
                 <>
-                  {/* Contenido específico según el tipo de actividad */}
-                  {activity.tipo_actividad === 'vinculo_afectivo' && activity.contenido_vinculo && (
-                    <div className="bg-braini-pink/10 p-6 rounded-xl border border-braini-pink/20">
-                      <h3 className="text-xl font-bold text-braini-pink-dark mb-4">Actividad de Vínculo Afectivo</h3>
-                      <div className="space-y-4">
-                        <div className="bg-white p-4 rounded-lg border border-braini-pink/30">
-                          <h4 className="font-semibold text-braini-pink-dark mb-2">Acción:</h4>
-                          <p className="text-gray-700">{activity.contenido_vinculo.accion}</p>
-                        </div>
-                        <div className="bg-white p-4 rounded-lg border border-braini-pink/30">
-                          <h4 className="font-semibold text-braini-pink-dark mb-2">Frase:</h4>
-                          <p className="text-gray-700 italic">"{activity.contenido_vinculo.frase}"</p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {activity.tipo_actividad === 'acompañamiento_emocional' && activity.contenido_apoyo && (
-                    <div className="bg-braini-yellow/10 p-6 rounded-xl border border-braini-yellow/20">
-                      <h3 className="text-xl font-bold text-braini-yellow-dark mb-4">Acompañamiento Emocional</h3>
-                      <div className="bg-white p-4 rounded-lg border border-braini-yellow/30">
-                        <p className="text-gray-700 leading-relaxed">{activity.contenido_apoyo}</p>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Instrucciones generales */}
-                  {activity.como_se_juega && (
-                    <div className="bg-braini-blue/10 p-6 rounded-xl border border-braini-blue/20 mt-6">
-                      <h3 className="text-xl font-bold text-braini-blue-dark mb-4">¿Cómo se juega?</h3>
-                      <p className="text-gray-700 leading-relaxed">{activity.como_se_juega}</p>
-                    </div>
-                  )}
-
-                  {/* Retroalimentación */}
-                  {activity.retroalimentacion && (
-                    <div className="bg-braini-turquoise/10 p-6 rounded-xl border border-braini-turquoise/20 mt-6">
-                      <h3 className="text-xl font-bold text-braini-turquoise-dark mb-4">¡Excelente trabajo!</h3>
-                      <p className="text-gray-700 leading-relaxed">{activity.retroalimentacion}</p>
-                    </div>
-                  )}
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-2" style={{ fontWeight: 900 }}>
+                    {currentActivity.activities.titulo_actividad}
+                  </h1>
+                  <p className="text-lg sm:text-xl md:text-2xl text-white/90 font-medium">
+                    {currentActivity.activities.objetivo || 'Sin descripción disponible'}
+                  </p>
                 </>
               )}
             </div>
 
-            {/* Investigación y beneficios - del backend */}
-            {activity.investigacion_beneficios && (
-              <div className="bg-indigo-50 p-6 rounded-xl border border-indigo-200 mb-6">
-                <div className="flex items-center gap-2 mb-3">
-                  <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                  </svg>
-                  <h3 className="text-xl font-bold text-indigo-800">
-                    Base Científica
-                  </h3>
-                </div>
-                <div className="text-gray-700 leading-relaxed">
-                  {formatearTexto(activity.investigacion_beneficios)}
-                </div>
-              </div>
-            )}
+            {/* Área de contenido con scroll */}
+            <div className="flex-1 overflow-y-auto min-h-0">
+              {loading || activitiesLoading ? (
+                <div className="text-center text-white/90 py-8 font-medium">Cargando actividad...</div>
+              ) : !currentActivity ? (
+                <div className="text-center text-red-200 py-8 font-medium">Actividad no encontrada</div>
+              ) : (
+                <div className="space-y-4 md:space-y-5 pb-4">
+                  {/* Card principal con contenido de la actividad */}
+                  <div className="bg-white/95 backdrop-blur-lg p-4 md:p-6 rounded-xl md:rounded-2xl shadow-xl border-0 animate-fade-in">
+                    {/* Contenido de la actividad */}
+                    <div className="mb-8">
+                      {/* 
+                        Detectar actividades específicas por su ID real de la base de datos:
+                        - ID 1: Sesión 1, Actividad 1 (Ses1Act1)
+                        - ID 2: Sesión 1, Actividad 2 (Ses1Act2)
+                        - ID 3: Sesión 2, Actividad 1 (Ses2Act1)
+                        - ID 4: Sesión 2, Actividad 2 (Ses2Act2)
+                        - ID 6: Sesión 3, Actividad 1 (Ses3Act1)
+                        - ID 7: Sesión 3, Actividad 2 (Ses3Act2)
+                        - ID 8: Sesión 4, Actividad 1 (Ses4Act1)
+                        - ID 9: Sesión 4, Actividad 2 (Ses4Act2)
+                      */}
+                      {currentActivity.activities.id === 1 ? (
+                        <Ses1Act1 
+                          userProgress={currentActivity}
+                          activityId={currentActivity.activities.id}
+                          levelId={levelId!}
+                          userId={userId!}
+                          activityData={{
+                            duracion_min: currentActivity.activities.duracion_min,
+                            duracion_max: currentActivity.activities.duracion_max,
+                            como_se_juega: currentActivity.activities.como_se_juega,
+                            investigacion_beneficios: currentActivity.activities.investigacion_beneficios
+                          }}
+                          onPuzzleComplete={handleBackToSession}
+                        />
+                      ) : currentActivity.activities.id === 2 ? (
+                        <Ses1Act2 
+                          userProgress={currentActivity}
+                          activityId={currentActivity.activities.id}
+                          levelId={levelId!}
+                          userId={userId!}
+                          activityData={{
+                            duracion_min: currentActivity.activities.duracion_min,
+                            duracion_max: currentActivity.activities.duracion_max,
+                            como_se_juega: currentActivity.activities.como_se_juega,
+                            investigacion_beneficios: currentActivity.activities.investigacion_beneficios
+                          }}
+                        />
+                      ) : currentActivity.activities.id === 3 ? (
+                        <Ses2Act1 
+                          userProgress={currentActivity}
+                          activityId={currentActivity.activities.id}
+                          levelId={levelId!}
+                          userId={userId!}
+                          activityData={{
+                            duracion_min: currentActivity.activities.duracion_min,
+                            duracion_max: currentActivity.activities.duracion_max,
+                            como_se_juega: currentActivity.activities.como_se_juega,
+                            investigacion_beneficios: currentActivity.activities.investigacion_beneficios
+                          }}
+                          onPuzzleComplete={handleBackToSession}
+                        />
+                      ) : currentActivity.activities.id === 4 ? (
+                        <Ses2Act2 
+                          userProgress={currentActivity}
+                          activityId={currentActivity.activities.id}
+                          levelId={levelId!}
+                          userId={userId!}
+                          activityData={{
+                            duracion_min: currentActivity.activities.duracion_min,
+                            duracion_max: currentActivity.activities.duracion_max,
+                            como_se_juega: currentActivity.activities.como_se_juega,
+                            investigacion_beneficios: currentActivity.activities.investigacion_beneficios
+                          }}
+                          onPuzzleComplete={handleBackToSession}
+                        />
+                      ) : currentActivity.activities.id === 6 ? (
+                        <Ses3Act1 
+                          userProgress={currentActivity}
+                          activityId={currentActivity.activities.id}
+                          levelId={levelId!}
+                          userId={userId!}
+                          activityData={{
+                            duracion_min: currentActivity.activities.duracion_min,
+                            duracion_max: currentActivity.activities.duracion_max,
+                            como_se_juega: currentActivity.activities.como_se_juega,
+                            investigacion_beneficios: currentActivity.activities.investigacion_beneficios
+                          }}
+                          onPuzzleComplete={handleBackToSession}
+                        />
+                      ) : currentActivity.activities.id === 7 ? (
+                        <Ses3Act2 
+                          userProgress={currentActivity}
+                          activityId={currentActivity.activities.id}
+                          levelId={levelId!}
+                          userId={userId!}
+                          activityData={{
+                            duracion_min: currentActivity.activities.duracion_min,
+                            duracion_max: currentActivity.activities.duracion_max,
+                            como_se_juega: currentActivity.activities.como_se_juega,
+                            investigacion_beneficios: currentActivity.activities.investigacion_beneficios
+                          }}
+                          onPuzzleComplete={handleBackToSession}
+                        />
+                      ) : currentActivity.activities.id === 8 ? (
+                        <Ses4Act1 
+                          userProgress={currentActivity}
+                          activityId={currentActivity.activities.id}
+                          levelId={levelId!}
+                          userId={userId!}
+                          activityData={{
+                            duracion_min: currentActivity.activities.duracion_min,
+                            duracion_max: currentActivity.activities.duracion_max,
+                            como_se_juega: currentActivity.activities.como_se_juega,
+                            investigacion_beneficios: currentActivity.activities.investigacion_beneficios
+                          }}
+                          onPuzzleComplete={handleBackToSession}
+                        />
+                      ) : currentActivity.activities.id === 9 ? (
+                        <Ses4Act2 
+                          userProgress={currentActivity}
+                          activityId={currentActivity.activities.id}
+                          levelId={levelId!}
+                          userId={userId!}
+                          activityData={{
+                            duracion_min: currentActivity.activities.duracion_min,
+                            duracion_max: currentActivity.activities.duracion_max,
+                            como_se_juega: currentActivity.activities.como_se_juega,
+                            investigacion_beneficios: currentActivity.activities.investigacion_beneficios
+                          }}
+                          onPuzzleComplete={handleBackToSession}
+                        />
+                      ) : (
+                        // Contenido genérico para el resto de actividades
+                        <>
+                          {/* Contenido específico según el tipo de actividad */}
+                          {currentActivity.activities.tipo_actividad === 'vinculo_afectivo' && currentActivity.activities.contenido_vinculo && (
+                            <div className="bg-braini-pink/10 p-6 rounded-xl border border-braini-pink/20">
+                              <h3 className="text-xl font-bold text-braini-pink-dark mb-4">Actividad de Vínculo Afectivo</h3>
+                              <div className="space-y-4">
+                                <div className="bg-white p-4 rounded-lg border border-braini-pink/30">
+                                  <h4 className="font-semibold text-braini-pink-dark mb-2">Acción:</h4>
+                                  <p className="text-gray-700">{currentActivity.activities.contenido_vinculo.accion}</p>
+                                </div>
+                                <div className="bg-white p-4 rounded-lg border border-braini-pink/30">
+                                  <h4 className="font-semibold text-braini-pink-dark mb-2">Frase:</h4>
+                                  <p className="text-gray-700 italic">"{currentActivity.activities.contenido_vinculo.frase}"</p>
+                                </div>
+                              </div>
+                            </div>
+                          )}
 
-            {/* Componente de valoración */}
-            {userId && (
-              <ActivityRating 
-                activityId={parseInt(activityId!)} 
-                userId={userId}
-                onRatingSubmitted={() => {
-                  // Opcional: refrescar datos o mostrar mensaje
-                }}
-              />
-            )}
+                          {currentActivity.activities.tipo_actividad === 'acompañamiento_emocional' && currentActivity.activities.contenido_apoyo && (
+                            <div className="bg-braini-yellow/10 p-6 rounded-xl border border-braini-yellow/20">
+                              <h3 className="text-xl font-bold text-braini-yellow-dark mb-4">Acompañamiento Emocional</h3>
+                              <div className="bg-white p-4 rounded-lg border border-braini-yellow/30">
+                                <p className="text-gray-700 leading-relaxed">{currentActivity.activities.contenido_apoyo}</p>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Instrucciones generales */}
+                          {currentActivity.activities.como_se_juega && (
+                            <div className="bg-braini-blue/10 p-6 rounded-xl border border-braini-blue/20 mt-6">
+                              <h3 className="text-xl font-bold text-braini-blue-dark mb-4">¿Cómo se juega?</h3>
+                              <p className="text-gray-700 leading-relaxed">{currentActivity.activities.como_se_juega}</p>
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
+
+                    {/* Componente de valoración */}
+                    {userId && (
+                      <ActivityRating 
+                        activityId={parseInt(activityId!)} 
+                        userId={userId}
+                        levelId={parseInt(levelId!)}
+                        onRatingSubmitted={() => {
+                          // Opcional: refrescar datos o mostrar mensaje
+                        }}
+                        onMedalEarned={(medal) => {
+                          // Cuando se gana medalla, navegar de vuelta a la sesión
+                          // La medalla se mostrará desde Activities.tsx
+                          setTimeout(() => {
+                            navigate(`/sesion/${levelId}?medalEarned=true`);
+                          }, 1000);
+                        }}
+                      />
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
-    );
-  };
-
-  return renderActivity();
+    </Backgrounds>
+  );
 };
 
 export default ActivityDetail;

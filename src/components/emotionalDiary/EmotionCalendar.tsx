@@ -41,7 +41,11 @@ const EmotionCalendar: React.FC<EmotionCalendarProps> = ({
   selectedDate
 }) => {
   const getMonthName = (date: Date) => {
-    return date.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+    const month = date.toLocaleDateString('es-ES', { month: 'long' });
+    const year = date.getFullYear();
+    // Capitalizar solo la primera letra del mes
+    const capitalizedMonth = month.charAt(0).toUpperCase() + month.slice(1);
+    return `${capitalizedMonth} ${year}`;
   };
 
   const getDaysInMonth = (year: number, month: number) => {
@@ -180,18 +184,18 @@ const EmotionCalendar: React.FC<EmotionCalendarProps> = ({
       </CardHeader>
       <CardContent>
         {/* Navegación del mes */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-6 gap-2">
           <Button
             onClick={() => navigateMonth('prev')}
             variant="outline"
             size="sm"
-            className="border-gray-300 text-gray-700 hover:border-braini-blue"
+            className="border-gray-300 text-gray-700 hover:border-braini-blue flex-shrink-0"
           >
             <ChevronLeft className="w-4 h-4 mr-1" />
-            Mes anterior
+            Anterior
           </Button>
           
-          <h3 className="text-lg font-semibold text-gray-800 capitalize">
+          <h3 className="text-lg font-semibold text-gray-800 text-center flex-1 min-w-0 px-2">
             {getMonthName(currentDate)}
           </h3>
           
@@ -199,9 +203,9 @@ const EmotionCalendar: React.FC<EmotionCalendarProps> = ({
             onClick={() => navigateMonth('next')}
             variant="outline"
             size="sm"
-            className="border-gray-300 text-gray-700 hover:border-braini-blue"
+            className="border-gray-300 text-gray-700 hover:border-braini-blue flex-shrink-0"
           >
-            Mes siguiente
+            Siguiente
             <ChevronRight className="w-4 h-4 ml-1" />
           </Button>
         </div>

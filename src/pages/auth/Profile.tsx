@@ -116,31 +116,35 @@ const Profile = () => {
   return (
     <Backgrounds 
       wrapWithCard={true}
+      enableInternalScroll={true}
       customGradient="linear-gradient(135deg, rgba(245, 130, 123, 1) 25%, rgba(126, 164, 223, 1) 75%)"
     >
-      <div className="container mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-6 relative z-10">
-        <div className="max-w-4xl mx-auto">
-          {/* Header Section */}
-          <div className="mb-4 md:mb-6 animate-fade-in">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-2" style={{ fontWeight: 900 }}>
+      <div className="h-full flex flex-col relative z-10">
+        <div className="container mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-6 flex-1 flex flex-col min-h-0">
+          <div className="max-w-4xl mx-auto w-full flex flex-col min-h-0">
+            {/* Header Section - Fijo en la parte superior */}
+            <div className="mb-4 md:mb-6 animate-fade-in flex-shrink-0">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-2" style={{ fontWeight: 900 }}>
               Mi Perfil
             </h1>
-            {parent?.nombre && (
-              <p className="text-lg sm:text-xl md:text-2xl text-white/90 font-medium">
-                Hola, <span className="font-semibold text-braini-blue">{parent.nombre}</span>
-              </p>
-            )}
-          </div>
-
-          {loading ? (
-            <div className="text-center py-12">
-              <div className="inline-flex items-center gap-2 text-gray-500">
-                <div className="w-6 h-6 border-2 border-braini-blue border-t-transparent rounded-full animate-spin"></div>
-                Cargando datos...
-              </div>
+              {parent?.nombre && (
+                <p className="text-lg sm:text-xl md:text-2xl text-white/90 font-medium">
+                  Hola, <span className="font-semibold text-braini-blue">{parent.nombre}</span>
+                </p>
+              )}
             </div>
-          ) : (
-            <div className="space-y-6">
+
+          {/* Área de contenido con scroll */}
+          <div className="flex-1 overflow-y-auto min-h-0">
+            {loading ? (
+              <div className="text-center py-12">
+                <div className="inline-flex items-center gap-2 text-gray-500">
+                  <div className="w-6 h-6 border-2 border-braini-blue border-t-transparent rounded-full animate-spin"></div>
+                  Cargando datos...
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-6 pb-4">
               {/* 1. Desplegable - Datos del Usuario (Padre) */}
               <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0">
                 <Accordion type="single" collapsible className="w-full">
@@ -876,9 +880,11 @@ const Profile = () => {
                 </CardContent>
               </Card>
 
-            </div>
-          )}
+              </div>
+            )}
+          </div>
         </div>
+      </div>
       </div>
     </Backgrounds>
   );

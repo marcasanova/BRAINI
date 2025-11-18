@@ -8,8 +8,10 @@ import { ActivityRatingProps } from '@/hooks/useUserActivities';
 
 const ActivityRating: React.FC<ActivityRatingProps> = ({ 
   activityId, 
-  userId, 
-  onRatingSubmitted 
+  userId,
+  levelId,
+  onRatingSubmitted,
+  onMedalEarned
 }) => {
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState<string>('');
@@ -41,6 +43,56 @@ const ActivityRating: React.FC<ActivityRatingProps> = ({
 
   const handleStarClick = (starValue: number) => {
     setRating(starValue);
+  };
+
+  // Función para verificar si el nivel se completó y se ganó medalla
+  const checkLevelCompletion = async (currentLevelId: number) => {
+    try {
+      // Esperar un poco para que el trigger se ejecute
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      // Verificar si el nivel se completó
+      const { data: levelData, error: levelError } = await supabase
+        .from('parents_levels')
+        .select('status, completed_at')
+        .eq('user_id', userId)
+        .eq('level_id', currentLevelId)
+        .single();
+
+      if (levelError) {
+        return;
+      }
+
+      // Si el nivel se completó, obtener la medalla
+      if (levelData.status === 'completed' && levelData.completed_at) {
+        // Obtener la medalla que corresponde a este nivel
+        const { data: medalData, error: medalError } = await supabase
+          .from('medals')
+          .select('id, level_id, nombre, descripcion, icono, color')
+          .eq('level_id', currentLevelId)
+          .single();
+
+        if (medalError || !medalData) {
+          return;
+        }
+
+        // Verificar si la medalla ya existe antes de mostrarla
+        const { data: existingMedal, error: checkError } = await supabase
+          .from('parents_medals')
+          .select('medal_id')
+          .eq('user_id', userId)
+          .eq('medal_id', medalData.id)
+          .single();
+
+        // Solo mostrar medalla si no existe (es nueva)
+        if (!checkError && !existingMedal && onMedalEarned) {
+          onMedalEarned(medalData);
+        }
+      }
+    } catch (error) {
+      // Silenciar errores en la verificación
+      console.error('Error al verificar completado del nivel:', error);
+    }
   };
 
   const renderStars = () => {
@@ -101,6 +153,11 @@ const ActivityRating: React.FC<ActivityRatingProps> = ({
         title: "¡Valoración guardada! ⭐",
         description: "Gracias por compartir tu opinión sobre esta actividad.",
       });
+
+      // Verificar si se completó el nivel y se ganó medalla
+      if (levelId) {
+        await checkLevelCompletion(levelId);
+      }
 
       if (onRatingSubmitted) {
         onRatingSubmitted();
@@ -170,7 +227,7 @@ const ActivityRating: React.FC<ActivityRatingProps> = ({
 
         {/* Mensaje de confirmación */}
         {hasRated && (
-          <div className="text-sm text-green-600 bg-green-50 p-3 rounded-lg">
+          <div className="text-sm text-braini-turquoise-dark bg-braini-turquoise/10 p-3 rounded-lg">
             ✅ Tu valoración ha sido guardada correctamente
           </div>
         )}

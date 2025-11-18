@@ -17,20 +17,27 @@ serve(async (req: Request) => {
     // 2. Extraemos el email del cuerpo de la petición que nos envía el frontend.
     const { email } = await req.json()
 
-    if (!email) {
-      throw new Error('Email is required')
+    // 3. Normalizamos el email: convertimos a minúsculas y eliminamos espacios en blanco
+    const normalizedEmail = email ? email.trim().toLowerCase() : ''
+
+    // 4. Validamos que el email exista y no esté vacío después de normalizar
+    if (!normalizedEmail) {
+      return new Response(JSON.stringify({ error: 'Email is required' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 400, // Bad Request - error de validación del cliente
+      })
     }
 
-    // 3. Creamos un cliente de Supabase estándar. Solo necesita la URL y la clave anónima (pública).
+    // 5. Creamos un cliente de Supabase estándar. Solo necesita la URL y la clave anónima (pública).
     // Es seguro porque la lógica de permisos ya la hemos definido en la base de datos.
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? ''
     )
 
-    // 4. Hacemos una llamada a un Procedimiento Remoto (RPC) para ejecutar nuestra función de PostgreSQL.
+    // 6. Hacemos una llamada a un Procedimiento Remoto (RPC) para ejecutar nuestra función de PostgreSQL.
     const { data, error } = await supabaseClient.rpc('email_exists', {
-      p_email: email,
+      p_email: normalizedEmail,
     })
 
     if (error) {
@@ -38,7 +45,7 @@ serve(async (req: Request) => {
       throw error
     }
 
-    // 5. El `data` que devuelve la RPC es directamente el booleano (true/false) de nuestra función SQL.
+    // 7. El `data` que devuelve la RPC es directamente el booleano (true/false) de nuestra función SQL.
     // Lo enviamos de vuelta al frontend en un objeto JSON.
     return new Response(JSON.stringify({ exists: data }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -46,12 +53,13 @@ serve(async (req: Request) => {
     })
 
   } catch (err) {
-    // 6. Si algo falla en cualquier punto (ej. el JSON está mal formado), capturamos el error aquí.
+    // 8. Si algo falla en cualquier punto (errores del servidor, JSON mal formado, errores de BD), 
+    // capturamos el error aquí y devolvemos un 500.
     const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred'
     console.error('Error checking email:', errorMessage)
     return new Response(JSON.stringify({ error: errorMessage }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      status: 500,
+      status: 500, // Internal Server Error - error del servidor
     })
   }
 }) 

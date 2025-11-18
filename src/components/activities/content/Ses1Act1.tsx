@@ -1,8 +1,17 @@
 import React, { useState } from 'react';
 import { UserActivity } from '@/hooks/useUserActivities';
-import { CheckCircle, X, Sparkles } from 'lucide-react';
+import { CheckCircle, X, Sparkles, BookOpen } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { formatearTexto } from '@/components/activities/utils/textFormatter';
+import SuccessPopup from '@/components/activities/utils/SuccessPopup';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 
 interface Ses1Act1Props {
   userProgress?: UserActivity;
@@ -13,8 +22,9 @@ interface Ses1Act1Props {
     duracion_min?: number;
     duracion_max?: number;
     como_se_juega?: string;
-    retroalimentacion?: string;
+    investigacion_beneficios?: string;
   };
+  onPuzzleComplete?: () => void;
 }
 
 interface Emocion {
@@ -43,7 +53,8 @@ const Ses1Act1: React.FC<Ses1Act1Props> = ({
   activityId, 
   levelId, 
   userId,
-  activityData
+  activityData,
+  onPuzzleComplete
 }) => {
   const { toast } = useToast();
   
@@ -93,6 +104,8 @@ const Ses1Act1: React.FC<Ses1Act1Props> = ({
   const [error, setError] = useState(false);
   const [juegoCompletado, setJuegoCompletado] = useState(false);
   const [parIncorrecto, setParIncorrecto] = useState<{emocionId?: number, fraseId?: number} | null>(null);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [showScientificBase, setShowScientificBase] = useState(false);
 
   // ====================================================
   // FUNCIONES DE LÓGICA
@@ -155,11 +168,7 @@ const Ses1Act1: React.FC<Ses1Act1Props> = ({
       // Si completó todas las parejas
       if (nuevasCompletadas.length === EMOCIONES.length) {
         setJuegoCompletado(true);
-
-        toast({
-          title: "¡Fantástico! 🏆",
-          description: "Has completado todas las parejas",
-        });
+        setShowSuccessPopup(true);
       }
     } else {
       // ❌ ERROR - Mostrar feedback visual
@@ -187,6 +196,46 @@ const Ses1Act1: React.FC<Ses1Act1Props> = ({
   const estaSeleccionadaFrase = (fraseId: number) => 
     seleccion?.tipo === 'frase' && (seleccion.elemento as Frase).id === fraseId;
 
+  // Función para renderizar frase con emoción en negrita
+  const renderFraseConEmocion = (frase: Frase) => {
+    // Mapeo de fraseId a nombre de emoción (como aparece en el texto)
+    const emocionMap: { [key: number]: string } = {
+      1: 'alegría',
+      2: 'triste',
+      3: 'miedo',
+      5: 'rabia',
+      7: 'vergüenza',
+      9: 'sorpresa',
+      13: 'feliz',
+      15: 'asusta',
+      18: 'contento',
+      20: 'enfadé'
+    };
+
+    const emocionNombre = emocionMap[frase.id];
+    if (!emocionNombre) {
+      // Si no hay emoción mapeada, devolver texto normal
+      return <span className="font-normal">{frase.texto}</span>;
+    }
+
+    // Buscar la emoción en el texto (case insensitive)
+    const texto = frase.texto;
+    const regex = new RegExp(`(${emocionNombre})`, 'gi');
+    const partes = texto.split(regex);
+
+    return (
+      <span className="font-normal">
+        {partes.map((parte, index) => {
+          // Si la parte coincide con el nombre de la emoción (case insensitive)
+          if (parte.toLowerCase() === emocionNombre.toLowerCase()) {
+            return <strong key={index} className="font-bold">{parte}</strong>;
+          }
+          return <span key={index}>{parte}</span>;
+        })}
+      </span>
+    );
+  };
+
   // ====================================================
   // RENDERIZADO
   // ====================================================
@@ -203,28 +252,41 @@ const Ses1Act1: React.FC<Ses1Act1Props> = ({
           )}
           {/* ¿Cómo se juega? del backend - Con formateo */}
           {activityData.como_se_juega && (
-            <div className="text-gray-700 leading-relaxed">
+            <div className="text-gray-700 leading-relaxed mb-4">
               {formatearTexto(activityData.como_se_juega)}
+            </div>
+          )}
+          {/* Botón para ver base científica */}
+          {activityData.investigacion_beneficios && (
+            <div className="mt-4 pt-4 border-t border-braini-blue/20">
+              <Button
+                onClick={() => setShowScientificBase(true)}
+                variant="outline"
+                className="w-full sm:w-auto bg-white/80 hover:bg-white border-braini-blue/30 text-braini-blue hover:text-braini-blue-dark hover:border-braini-blue transition-all duration-300"
+              >
+                <BookOpen className="w-4 h-4 mr-2" />
+                Ver Base Científica
+              </Button>
             </div>
           )}
         </div>
       )}
 
-      {/* Área de juego - Grid con altura equilibrada */}
-      <div className="grid md:grid-cols-2 gap-6 items-start min-h-[600px]">
-        {/* Columna izquierda: Imágenes */}
-        <div className="space-y-3 h-full flex flex-col">
+      {/* Área de juego - Dos filas horizontales */}
+      <div className="space-y-6">
+        {/* Primera fila: Imágenes de Emociones */}
+        <div className="flex flex-col">
           <h4 className="text-lg font-semibold text-gray-700 mb-3">
             Imágenes de Emociones
           </h4>
-          <div className="grid grid-cols-2 gap-3 flex-1">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
             {EMOCIONES.map((emocion) => (
               <button
                 key={emocion.id}
                 onClick={() => handleImagenClick(emocion)}
                 disabled={estaCompletada(emocion.id)}
                 className={`
-                  relative p-4 rounded-xl border-2 transition-all duration-200
+                  relative p-2 rounded-xl border-2 transition-all duration-200
                   ${estaCompletada(emocion.id)
                     ? 'bg-green-50 border-green-300 opacity-75 cursor-not-allowed'
                     : parIncorrecto?.emocionId === emocion.id
@@ -236,31 +298,33 @@ const Ses1Act1: React.FC<Ses1Act1Props> = ({
                 `}
               >
                 {emocion.imagen ? (
-                  <img
-                    src={emocion.imagen}
-                    alt={emocion.nombre}
-                    className="w-full h-32 object-cover rounded-lg mb-2"
-                    onError={(e) => {
-                      // Fallback si la imagen no carga
-                      e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2VlZSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj57ZW1vY2lvbi5ub21icmV9PC90ZXh0Pjwvc3ZnPg==';
-                    }}
-                  />
+                  <div className="w-full h-32 mb-1.5 flex items-center justify-center bg-gray-50 rounded-lg overflow-hidden">
+                    <img
+                      src={emocion.imagen}
+                      alt={emocion.nombre}
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        // Fallback si la imagen no carga
+                        e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2VlZSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj57ZW1vY2lvbi5ub21icmV9PC90ZXh0Pjwvc3ZnPg==';
+                      }}
+                    />
+                  </div>
                 ) : (
-                  <div className="w-full h-32 bg-gray-100 rounded-lg flex items-center justify-center">
-                    <span className="text-4xl">{emocion.nombre.charAt(0)}</span>
+                  <div className="w-full h-32 bg-gray-100 rounded-lg flex items-center justify-center mb-1.5">
+                    <span className="text-2xl">{emocion.nombre.charAt(0)}</span>
                   </div>
                 )}
-                <p className="text-sm font-medium text-gray-700">{emocion.nombre}</p>
+                <p className="text-xs font-medium text-gray-700 text-center leading-tight">{emocion.nombre}</p>
                 
                 {parIncorrecto?.emocionId === emocion.id && (
-                  <div className="absolute top-2 right-2 bg-red-500 rounded-full p-1 animate-pulse">
-                    <X className="w-5 h-5 text-white" />
+                  <div className="absolute top-1 right-1 bg-red-500 rounded-full p-1 animate-pulse">
+                    <X className="w-4 h-4 text-white" />
                   </div>
                 )}
                 
                 {estaCompletada(emocion.id) && (
-                  <div className="absolute top-2 right-2 bg-green-500 rounded-full p-1">
-                    <CheckCircle className="w-5 h-5 text-white" />
+                  <div className="absolute top-1 right-1 bg-green-500 rounded-full p-1">
+                    <CheckCircle className="w-4 h-4 text-white" />
                   </div>
                 )}
               </button>
@@ -268,12 +332,12 @@ const Ses1Act1: React.FC<Ses1Act1Props> = ({
           </div>
         </div>
 
-        {/* Columna derecha: Frases */}
-        <div className="space-y-3 h-full flex flex-col">
+        {/* Segunda fila: Frases de Reflexión */}
+        <div className="flex flex-col">
           <h4 className="text-lg font-semibold text-gray-700 mb-3">
             Frases de Reflexión
           </h4>
-          <div className="space-y-2 flex-1 overflow-y-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
             {FRASES.map((frase) => (
               <button
                 key={frase.id}
@@ -283,7 +347,8 @@ const Ses1Act1: React.FC<Ses1Act1Props> = ({
                   return emocion && emocion.fraseId === frase.id;
                 })}
                 className={`
-                  w-full p-4 rounded-xl border-2 text-left transition-all duration-200
+                  relative p-4 rounded-xl border-2 text-left transition-all duration-200
+                  min-h-[80px] flex flex-col justify-center
                   ${completadas.some(emocionId => {
                     const emocion = EMOCIONES.find(e => e.id === emocionId);
                     return emocion && emocion.fraseId === frase.id;
@@ -292,70 +357,61 @@ const Ses1Act1: React.FC<Ses1Act1Props> = ({
                     : parIncorrecto?.fraseId === frase.id
                     ? 'bg-red-50 border-red-500 shadow-lg animate-shake'
                     : estaSeleccionadaFrase(frase.id)
-                    ? 'bg-blue-100 border-blue-500 shadow-lg transform scale-102'
+                    ? 'bg-blue-100 border-blue-500 shadow-lg transform scale-105'
                     : 'bg-white border-gray-300 hover:border-blue-400 hover:shadow-md cursor-pointer'
                   }
                 `}
               >
-                <p className="text-sm text-gray-700 font-medium">{frase.texto}</p>
-                
-                {parIncorrecto?.fraseId === frase.id && (
-                  <div className="mt-2 flex items-center gap-2 text-red-600">
-                    <X className="w-4 h-4" />
-                    <span className="text-xs font-bold">Inténtalo de nuevo</span>
-                  </div>
-                )}
-                
-                {completadas.some(emocionId => {
-                  const emocion = EMOCIONES.find(e => e.id === emocionId);
-                  return emocion && emocion.fraseId === frase.id;
-                }) && (
-                  <div className="mt-2 flex items-center gap-2 text-braini-turquoise">
-                    <CheckCircle className="w-4 h-4" />
-                    <span className="text-xs">Completada</span>
-                  </div>
-                )}
+                <p className="text-sm text-gray-800 leading-relaxed">
+                  {renderFraseConEmocion(frase)}
+                </p>
               </button>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Progreso */}
-      <div className="bg-braini-yellow/10 p-4 rounded-xl border border-braini-yellow/20">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium text-braini-yellow-dark">
-              Parejas Completadas
-            </p>
-            <p className="text-2xl font-bold text-braini-yellow-dark">
-              {completadas.length} / {EMOCIONES.length}
-            </p>
-          </div>
-          <div className="w-full max-w-xs ml-4 bg-braini-yellow/20 rounded-full h-3">
-            <div
-              className="bg-braini-yellow h-3 rounded-full transition-all duration-300"
-              style={{ width: `${(completadas.length / EMOCIONES.length) * 100}%` }}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Retroalimentación final - del backend */}
-      {juegoCompletado && activityData?.retroalimentacion && (
-        <div className="bg-braini-turquoise/10 p-6 rounded-xl border-2 border-braini-turquoise animate-fade-in">
-          <div className="flex items-center gap-3 mb-2">
-            <Sparkles className="w-8 h-8 text-braini-turquoise" />
-            <h3 className="text-2xl font-bold text-braini-turquoise-dark">
-              ¡Fantástico!
-            </h3>
-          </div>
-            <p className="text-braini-turquoise-dark">
-            {activityData.retroalimentacion}
-          </p>
-        </div>
+      {/* Popup de éxito */}
+      {showSuccessPopup && (
+        <SuccessPopup
+          onClose={() => {
+            setShowSuccessPopup(false);
+            // Al cerrar el popup, nos quedamos en la misma página para poder valorar la actividad
+          }}
+        />
       )}
 
+      {/* Dialog de Base Científica */}
+      <Dialog open={showScientificBase} onOpenChange={setShowScientificBase}>
+        <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto bg-white/95 backdrop-blur-lg">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold text-indigo-800 flex items-center gap-2">
+              <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
+              Base Científica
+            </DialogTitle>
+            <DialogDescription className="text-gray-600">
+              Información respaldada por investigaciones científicas
+            </DialogDescription>
+          </DialogHeader>
+          <div className="mt-4">
+            {activityData?.investigacion_beneficios && (
+              <div className="text-gray-700 leading-relaxed">
+                {formatearTexto(activityData.investigacion_beneficios)}
+              </div>
+            )}
+          </div>
+          <div className="mt-6 flex justify-end">
+            <Button
+              onClick={() => setShowScientificBase(false)}
+              className="bg-gradient-to-r from-braini-blue to-braini-turquoise hover:from-braini-blue-dark hover:to-braini-turquoise-dark text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+            >
+              Cerrar
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

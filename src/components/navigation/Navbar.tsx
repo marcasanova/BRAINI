@@ -5,9 +5,9 @@ import { Home, BookOpen, User, Menu, X, Heart } from 'lucide-react';
 
 const NAV_ITEMS = [
   { label: 'Panel de Juego', icon: Home, path: '/home' },
-  { label: 'Diario Emocional', icon: BookOpen, path: '/diario-emocional' },
-  { label: 'Tests', icon: Heart, path: '/inteligencia-emocional' },
-  { label: 'Perfil', icon: User, path: '/profile' },
+  { label: 'Así me siento hoy', icon: BookOpen, path: '/diario-emocional' },
+  { label: 'Evaluar y Crecer', icon: Heart, path: '/inteligencia-emocional' },
+  { label: 'Mi familia', icon: User, path: '/profile' },
 ];
 
 const Navbar: React.FC = () => {

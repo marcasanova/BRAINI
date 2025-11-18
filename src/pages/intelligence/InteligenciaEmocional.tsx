@@ -19,23 +19,27 @@ const InteligenciaEmocional = () => {
   return (
     <Backgrounds 
       wrapWithCard={true}
+      enableInternalScroll={true}
       customGradient="linear-gradient(135deg, rgba(248, 205, 80, 1) 25%, rgba(245, 130, 123, 1) 75%)"
     >
-      <div className="container mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-6 relative z-10">
-        <div className="max-w-6xl mx-auto">
-          {/* Header Principal */}
-          <div className="mb-4 md:mb-6 animate-fade-in">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-2" style={{ fontWeight: 900 }}>
+      <div className="h-full flex flex-col relative z-10">
+        <div className="container mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-6 flex-1 flex flex-col min-h-0">
+          <div className="max-w-6xl mx-auto w-full flex flex-col min-h-0">
+            {/* Header Principal - Fijo en la parte superior */}
+            <div className="mb-4 md:mb-6 animate-fade-in flex-shrink-0">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-2" style={{ fontWeight: 900 }}>
               Inteligencia Emocional
             </h1>
-            <p className="text-lg sm:text-xl md:text-2xl text-white/90 font-medium">
-              Evalúa tu inteligencia emocional y la de tu hijo o hija a través de nuestros tests especializados.
-            </p>
-          </div>
+              <p className="text-lg sm:text-xl md:text-2xl text-white/90 font-medium">
+                Evalúa tu inteligencia emocional y la de tu hijo o hija a través de nuestros tests especializados.
+              </p>
+            </div>
 
-          {/* Opciones de Test */}
-          <div className="grid lg:grid-cols-2 gap-8">
-            {/* Test para Padres */}
+          {/* Área de contenido con scroll */}
+          <div className="flex-1 overflow-y-auto min-h-0">
+            {/* Opciones de Test */}
+            <div className="grid lg:grid-cols-2 gap-8 pb-4">
+              {/* Test para Padres */}
             <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0 hover:shadow-2xl transition-all duration-300 transform hover:scale-105 animate-fade-in" style={{ animationDelay: '0.1s' }}>
               <CardHeader className="text-center pb-4">
                 <div className="w-20 h-20 bg-gradient-to-br from-braini-blue to-braini-blue-light rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
@@ -98,8 +102,10 @@ const InteligenciaEmocional = () => {
                 </Button>
               </CardContent>
             </Card>
+            </div>
           </div>
         </div>
+      </div>
       </div>
     </Backgrounds>
   );

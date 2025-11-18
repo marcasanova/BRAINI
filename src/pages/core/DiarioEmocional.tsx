@@ -5,7 +5,6 @@ import EmotionEntry from '@/components/emotionalDiary/EmotionEntry';
 import EmotionCalendar from '@/components/emotionalDiary/EmotionCalendar';
 import { useEmotionalDiary } from '@/hooks/useEmotionalDiary';
 import { useToast } from '@/hooks/use-toast';
-import { Calendar } from 'lucide-react';
 
 const DiarioEmocional = () => {
   const { toast } = useToast();
@@ -128,41 +127,30 @@ const DiarioEmocional = () => {
   return (
     <Backgrounds 
       wrapWithCard={true}
+      enableInternalScroll={true}
       customGradient="linear-gradient(135deg, rgba(53, 189, 177, 1) 25%, rgba(248, 205, 80, 1) 75%)"
     >
-      <div className="container mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-6 relative z-10">
-        <div className="max-w-7xl mx-auto">
-          {/* Header con título y fecha alineados */}
-          <div className="mb-6 md:mb-8 animate-fade-in">
-            <div className="flex flex-col md:flex-row md:items-start md:justify-between md:items-center gap-4 mb-4">
-              <div className="flex-1">
-                <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-2" style={{ fontWeight: 900 }}>
-                  Diario Emocional
-                </h1>
-                <p className="text-lg sm:text-xl md:text-2xl text-white/90 font-medium">
-                  Registra y observa las emociones de tu hijo/a día a día
-                </p>
-              </div>
-              
-              {/* Fecha seleccionada - alineada a la derecha */}
-              <div className="flex-shrink-0">
-                <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg border border-gray-200">
-                  <Calendar className="w-5 h-5 text-braini-turquoise" />
-                  <span className="font-semibold text-gray-700 whitespace-nowrap">
-                    {selectedDate.toLocaleDateString('es-ES', {
-                      weekday: 'long',
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    })}
-                  </span>
+      <div className="h-full flex flex-col relative z-10">
+        <div className="container mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-6 flex-1 flex flex-col min-h-0">
+          <div className="max-w-7xl mx-auto w-full flex flex-col min-h-0">
+            {/* Header con título - Fijo en la parte superior */}
+            <div className="mb-6 md:mb-8 animate-fade-in flex-shrink-0">
+              <div className="flex flex-col gap-4 mb-4">
+                <div className="flex-1">
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-2" style={{ fontWeight: 900 }}>
+                    Diario Emocional
+                  </h1>
+                  <p className="text-lg sm:text-xl md:text-2xl text-white/90 font-medium">
+                    Registra y observa las emociones de tu hijo/a día a día
+                  </p>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Grid simétrico de dos columnas */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+          {/* Área de contenido con scroll */}
+          <div className="flex-1 overflow-y-auto min-h-0">
+            {/* Grid simétrico de dos columnas */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 pb-4">
             {/* Columna izquierda: Selector de emociones y observaciones */}
             <div className="flex flex-col space-y-6">
               {/* Selector de emociones */}
@@ -221,6 +209,8 @@ const DiarioEmocional = () => {
                   selectedDate={selectedDate}
                 />
               </div>
+            </div>
+          </div>
             </div>
           </div>
         </div>
