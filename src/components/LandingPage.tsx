@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
@@ -34,6 +34,10 @@ const LandingPage = () => {
   const [isFocused, setIsFocused] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
+  const [featuresVisible, setFeaturesVisible] = useState(false);
+  const featuresTitleRef = useRef<HTMLHeadingElement>(null);
+  const [benefitsVisible, setBenefitsVisible] = useState(false);
+  const benefitsTitleRef = useRef<HTMLHeadingElement>(null);
   const { toast } = useToast();
 
   // Animación de entrada
@@ -42,6 +46,62 @@ const LandingPage = () => {
       setIsLoaded(true);
     }, 100);
     return () => clearTimeout(timer);
+  }, []);
+
+  // Intersection Observer para el título de Features
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          // Cuando el título es visible en pantalla
+          if (entry.isIntersecting) {
+            setFeaturesVisible(true);
+          }
+        });
+      },
+      {
+        threshold: 0.1, // Se activa cuando el 10% del título es visible
+        rootMargin: '0px'
+      }
+    );
+
+    if (featuresTitleRef.current) {
+      observer.observe(featuresTitleRef.current);
+    }
+
+    return () => {
+      if (featuresTitleRef.current) {
+        observer.unobserve(featuresTitleRef.current);
+      }
+    };
+  }, []);
+
+  // Intersection Observer para el título de Benefits
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          // Cuando el título es visible en pantalla
+          if (entry.isIntersecting) {
+            setBenefitsVisible(true);
+          }
+        });
+      },
+      {
+        threshold: 0.1, // Se activa cuando el 10% del título es visible
+        rootMargin: '0px'
+      }
+    );
+
+    if (benefitsTitleRef.current) {
+      observer.observe(benefitsTitleRef.current);
+    }
+
+    return () => {
+      if (benefitsTitleRef.current) {
+        observer.unobserve(benefitsTitleRef.current);
+      }
+    };
   }, []);
 
 
@@ -127,7 +187,7 @@ const LandingPage = () => {
       <section 
         className="relative min-h-screen flex items-center justify-center px-2 sm:px-4 py-4 sm:py-8"
         style={{
-          background: 'linear-gradient(135deg,rgb(56, 144, 191) 0%, #7ED3BE 100%)'
+          background: '#7ea4df'
         }}
       >
         {/* Figuras Geométricas Circulares */}
@@ -142,24 +202,24 @@ const LandingPage = () => {
           
           {/* Contenido Principal */}
           <div className="text-center mb-8 sm:mb-12 relative z-10">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 flex items-center justify-center">
+            <div className="w-16 h-16 sm:w-24 sm:h-24 lg:w-28 lg:h-28 mx-auto mb-4 sm:mb-6 flex items-center justify-center">
               <img 
                 src={logoBraini}
                 alt="Braini Emotions Logo" 
-                className="w-16 h-16 sm:w-20 sm:h-20 object-contain"
+                className="w-16 h-16 sm:w-24 sm:h-24 lg:w-28 lg:h-28 object-contain"
               />
             </div>
-            <h1 className="text-3xl sm:text-4xl lg:text-6xl font-black text-white mb-3 sm:mb-4 px-2" style={{ fontWeight: 900 }}>
-              Braini Emotions
+            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black text-white mb-3 sm:mb-4 px-2" style={{ fontWeight: 900 }}>
+              Braini Emotions Family
             </h1>
-            <p className="text-white font-bold text-lg sm:text-xl lg:text-3xl mb-2 sm:mb-3 px-4" style={{ fontWeight: 700 }}>
-              Braini ayuda a tu hijo a desarrollar habilidades emocionales esenciales <br />para crecer feliz en un mundo de grandes cambios.
+            <h2 className="text-white text-2xl sm:text-3xl lg:text-4xl mb-2 sm:mb-3 px-4" style={{ fontWeight: 700 }}>
+              Programa de Neurobienestar Emocional
+            </h2>
+            <p className="text-white text-base sm:text-lg lg:text-xl mb-2 sm:mb-3 px-4" style={{ fontWeight: 400 }}>
+              25 sesiones de 20' basadas en evidencias científicas
             </p>
-            <p className="text-white text-base sm:text-lg lg:text-xl italic mb-4 sm:mb-5 px-4 max-w-4xl mx-auto" style={{ fontWeight: 400 }}>
-              "Educar sus emociones hoy es asegurar su bienestar de mañana."
-            </p>
-            <p className="text-white text-base sm:text-lg lg:text-xl font-bold px-4 max-w-4xl mx-auto" style={{ fontWeight: 700 }}>
-              25 sesiones de 20' basadas en evidencias científicas para niños/as de 3 a 7 años
+            <p className="text-white text-base sm:text-lg lg:text-xl mb-4 sm:mb-5 px-4" style={{ fontWeight: 400 }}>
+              Level Kids: Niños de 3 a 7 años
             </p>
           </div>
 
@@ -191,17 +251,17 @@ const LandingPage = () => {
               <>
                 <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                   {/* Texto de introducción */}
-                  <p className="text-gray-700 text-sm sm:text-base mb-4" style={{ fontWeight: 400 }}>
-                    Apúntate a la lista para no perderte novedades de Braini Emotions y recibir regalos como:
+                  <p className="text-gray-700 text-sm sm:text-base mb-4 text-center" style={{ fontWeight: 400 }}>
+                    ¡Apúntate a la lista y aprovecha nuestra promoción!
                   </p>
 
                   {/* Lista de regalos */}
-                  <div className="bg-gray-50 rounded-lg p-4 mb-4 space-y-2">
+                  <div className="mb-4 space-y-3">
                     <p className="text-gray-700 text-sm sm:text-base" style={{ fontWeight: 400 }}>
-                      1- <span className="font-bold" style={{ fontWeight: 700, color: '#0891b2' }}>Evaluar</span> la <span className="font-bold" style={{ fontWeight: 700, color: '#0891b2' }}>Inteligencia Emocional</span> de tu hijo.
+                      1- <span className="font-bold" style={{ fontWeight: 700, color: '#7ea4df' }}>Evaluar</span> la <span className="font-bold" style={{ fontWeight: 700, color: '#7ea4df' }}>Inteligencia Emocional</span> de tu hijo.
                     </p>
                     <p className="text-gray-700 text-sm sm:text-base" style={{ fontWeight: 400 }}>
-                      2- Disfrutar de <span className="font-bold" style={{ fontWeight: 700, color: '#0891b2' }}>3 sesiones</span> emocionales completamente <span className="font-bold" style={{ fontWeight: 700, color: '#0891b2' }}>GRATIS</span>.
+                      2- Disfrutar de <span className="font-bold" style={{ fontWeight: 700, color: '#7ea4df' }}>3</span> <span className="font-bold" style={{ fontWeight: 700, color: '#7ea4df' }}>sesiones</span> emocionales completamente <span className="font-bold" style={{ fontWeight: 700, color: '#7ea4df' }}>GRATIS</span>.
                     </p>
                   </div>
 
@@ -215,10 +275,14 @@ const LandingPage = () => {
                         onChange={(e) => setEmail(e.target.value)}
                         onFocus={() => setIsFocused(true)}
                         onBlur={() => setIsFocused(false)}
-                        placeholder="[tu@email.com]"
-                        className={`border-cyan-200 focus:border-cyan-400 focus:ring-cyan-400 text-base sm:text-lg py-3 ${
-                          isFocused ? 'ring-2 ring-cyan-100' : ''
-                        }`}
+                        placeholder="tu@email.com"
+                        className="text-base sm:text-lg py-3"
+                        style={{
+                          borderColor: isFocused ? '#7ea4df' : 'rgba(126, 164, 223, 0.5)',
+                          ...(isFocused && {
+                            boxShadow: '0 0 0 2px rgba(126, 164, 223, 0.2)'
+                          })
+                        }}
                         required
                         disabled={isSubmitting}
                       />
@@ -227,7 +291,7 @@ const LandingPage = () => {
                       type="submit" 
                       className="text-white px-4 sm:px-6 py-3 font-bold transition-opacity text-sm sm:text-base whitespace-nowrap md:hover:opacity-90"
                       style={{ 
-                        background: 'linear-gradient(135deg, #6AC0E0 0%, #7ED3BE 100%)',
+                        background: '#7ea4df',
                         border: 'none'
                       }}
                       disabled={isSubmitting}
@@ -286,10 +350,10 @@ const LandingPage = () => {
               </div>
               <div className="text-center sm:text-left">
                 <p className="text-sm sm:text-base font-bold text-white" style={{ fontWeight: 700 }}>
-                  Con la confianza de <span className="font-black text-base sm:text-lg" style={{ fontWeight: 900 }}>+50</span> familias
+                  Con la confianza de <span className="font-black text-base sm:text-lg" style={{ fontWeight: 900 }}>+100</span> familias
                 </p>
                 <p className="text-xs sm:text-sm text-white/90" style={{ fontWeight: 400 }}>
-                  "Más de 50 familias ya confían en nosotros"
+                  "Más de 100 familias ya confían en nosotros"
                 </p>
               </div>
             </div>
@@ -301,31 +365,52 @@ const LandingPage = () => {
       <section 
         className="py-16 sm:py-24 relative overflow-hidden"
         style={{
-          background: 'linear-gradient(180deg, #F5827B 0%, #FFDB8B 100%)'
+          background: '#35bdb1'
         }}
       >
+        {/* Figuras Geométricas Circulares */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute -top-20 sm:-top-40 -left-5 sm:-left-10 w-40 h-40 sm:w-80 sm:h-80 bg-white/15 rounded-full" />
+          <div className="absolute -bottom-40 sm:-bottom-80 -right-30 sm:-right-60 w-[300px] h-[300px] sm:w-[700px] sm:h-[700px] bg-white/15 rounded-full" />
+        </div>
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-12 sm:mb-16">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4 px-4" style={{ fontWeight: 800 }}>
-              ¿Qué es Braini Emotions?
+            <h2 
+              ref={featuresTitleRef}
+              className="text-white text-3xl sm:text-4xl lg:text-5xl mb-2 sm:mb-3 px-4" 
+              style={{ fontWeight: 800 }}
+            >
+              ¿Qué es Braini Emotions Family?
             </h2>
-            <p className="text-base sm:text-lg text-white/90 max-w-3xl mx-auto px-4">
-              Una herramienta online creada para ayudar a madres, padres y educadores en el desarrollo emocional de sus hijos mediante sesiones breves, lúdicas y efectivas.
+            <p className="text-white text-base sm:text-lg lg:text-xl mb-2 sm:mb-3 px-4 max-w-3xl mx-auto" style={{ fontWeight: 700 }}>
+              Un espacio creado para el desarrollo del neurobienestar emocional.
             </p>
+            <p className="text-white text-base sm:text-lg lg:text-xl mb-2 sm:mb-3 px-4 max-w-3xl mx-auto" style={{ fontWeight: 400 }}>
+              Aprende a acompañar sus rabietas, miedos e inseguridades jugando.
+            </p>
+            
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {/* Feature 1 */}
-            <div className="bg-white rounded-xl p-6 shadow-lg transition-all duration-300 md:hover:shadow-xl md:hover:scale-105">
+            <div 
+              className={`bg-white rounded-xl p-4 shadow-lg transition-all duration-1000 ease-out ${
+                featuresVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+              }`} 
+              style={{
+                transitionDelay: featuresVisible ? '0ms' : '0ms'
+              }}
+            >
               <div className="text-center">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6 rounded-full overflow-hidden">
+                <div className="w-28 h-28 sm:w-32 sm:h-32 mx-auto mb-3 sm:mb-4 rounded-full overflow-hidden">
                   <img 
                     src={alegria} 
                     alt="Alegría - Basado en Evidencias" 
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <h3 className="text-xl sm:text-2xl font-bold mb-3" style={{ fontWeight: 700, color: '#f59e0b' }}>
+                <h3 className="text-xl sm:text-2xl font-bold mb-2" style={{ fontWeight: 700, color: '#f59e0b' }}>
                   Basado en Evidencias
                 </h3>
                 <p className="text-gray-600 text-sm sm:text-base">
@@ -335,16 +420,20 @@ const LandingPage = () => {
             </div>
 
             {/* Feature 2 */}
-            <div className="bg-white rounded-xl p-6 shadow-lg transition-all duration-300 md:hover:shadow-xl md:hover:scale-105">
+            <div className={`bg-white rounded-xl p-4 shadow-lg transition-all duration-1000 ease-out ${
+              featuresVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`} style={{
+              transitionDelay: featuresVisible ? '100ms' : '0ms'
+            }}>
               <div className="text-center">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6 rounded-full overflow-hidden">
+                <div className="w-28 h-28 sm:w-32 sm:h-32 mx-auto mb-3 sm:mb-4 rounded-full overflow-hidden">
                   <img 
                     src={tranquilidad} 
                     alt="Tranquilidad - Solo 20 Minutos" 
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <h3 className="text-xl sm:text-2xl font-bold mb-3" style={{ fontWeight: 700, color: '#10b981' }}>
+                <h3 className="text-xl sm:text-2xl font-bold mb-2" style={{ fontWeight: 700, color: '#10b981' }}>
                   Solo 20 Minutos
                 </h3>
                 <p className="text-gray-600 text-sm sm:text-base">
@@ -354,16 +443,20 @@ const LandingPage = () => {
             </div>
 
             {/* Feature 3 */}
-            <div className="bg-white rounded-xl p-6 shadow-lg transition-all duration-300 md:hover:shadow-xl md:hover:scale-105">
+            <div className={`bg-white rounded-xl p-4 shadow-lg transition-all duration-1000 ease-out ${
+              featuresVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`} style={{
+              transitionDelay: featuresVisible ? '200ms' : '0ms'
+            }}>
               <div className="text-center">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6 rounded-full overflow-hidden">
+                <div className="w-28 h-28 sm:w-32 sm:h-32 mx-auto mb-3 sm:mb-4 rounded-full overflow-hidden">
                   <img 
                     src={ternura} 
                     alt="Ternura - Divertido y Atractivo" 
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <h3 className="text-xl sm:text-2xl font-bold mb-3" style={{ fontWeight: 700, color: '#ec4899' }}>
+                <h3 className="text-xl sm:text-2xl font-bold mb-2" style={{ fontWeight: 700, color: '#ec4899' }}>
                   Divertido y Atractivo
                 </h3>
                 <p className="text-gray-600 text-sm sm:text-base">
@@ -373,16 +466,20 @@ const LandingPage = () => {
             </div>
 
             {/* Feature 4 */}
-            <div className="bg-white rounded-xl p-6 shadow-lg transition-all duration-300 md:hover:shadow-xl md:hover:scale-105">
+            <div className={`bg-white rounded-xl p-4 shadow-lg transition-all duration-1000 ease-out ${
+              featuresVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`} style={{
+              transitionDelay: featuresVisible ? '300ms' : '0ms'
+            }}>
               <div className="text-center">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6 rounded-full overflow-hidden">
+                <div className="w-28 h-28 sm:w-32 sm:h-32 mx-auto mb-3 sm:mb-4 rounded-full overflow-hidden">
                   <img 
                     src={verguenza} 
                     alt="Vergüenza - Para Toda la Familia" 
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <h3 className="text-xl sm:text-2xl font-bold mb-3" style={{ fontWeight: 700, color: '#f97316' }}>
+                <h3 className="text-xl sm:text-2xl font-bold mb-2" style={{ fontWeight: 700, color: '#f97316' }}>
                   Para Toda la Familia
                 </h3>
                 <p className="text-gray-600 text-sm sm:text-base">
@@ -392,16 +489,20 @@ const LandingPage = () => {
             </div>
 
             {/* Feature 5 */}
-            <div className="bg-white rounded-xl p-6 shadow-lg transition-all duration-300 md:hover:shadow-xl md:hover:scale-105">
+            <div className={`bg-white rounded-xl p-4 shadow-lg transition-all duration-1000 ease-out ${
+              featuresVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`} style={{
+              transitionDelay: featuresVisible ? '400ms' : '0ms'
+            }}>
               <div className="text-center">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6 rounded-full overflow-hidden">
+                <div className="w-28 h-28 sm:w-32 sm:h-32 mx-auto mb-3 sm:mb-4 rounded-full overflow-hidden">
                   <img 
                     src={sorpresa} 
                     alt="Sorpresa - Seguro y Confiable" 
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <h3 className="text-xl sm:text-2xl font-bold mb-3" style={{ fontWeight: 700, color: '#8b5cf6' }}>
+                <h3 className="text-xl sm:text-2xl font-bold mb-2" style={{ fontWeight: 700, color: '#8b5cf6' }}>
                   Seguro y Confiable
                 </h3>
                 <p className="text-gray-600 text-sm sm:text-base">
@@ -411,20 +512,24 @@ const LandingPage = () => {
             </div>
 
             {/* Feature 6 */}
-            <div className="bg-white rounded-xl p-6 shadow-lg transition-all duration-300 md:hover:shadow-xl md:hover:scale-105">
+            <div className={`bg-white rounded-xl p-4 shadow-lg transition-all duration-1000 ease-out ${
+              featuresVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`} style={{
+              transitionDelay: featuresVisible ? '500ms' : '0ms'
+            }}>
               <div className="text-center">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6 rounded-full overflow-hidden">
+                <div className="w-28 h-28 sm:w-32 sm:h-32 mx-auto mb-3 sm:mb-4 rounded-full overflow-hidden">
                   <img 
                     src={aburrimiento} 
                     alt="Aburrimiento - Resultados Comprobados" 
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <h3 className="text-xl sm:text-2xl font-bold mb-3" style={{ fontWeight: 700, color: '#3b82f6' }}>
+                <h3 className="text-xl sm:text-2xl font-bold mb-2" style={{ fontWeight: 700, color: '#3b82f6' }}>
                   Resultados Comprobados
                 </h3>
                 <p className="text-gray-600 text-sm sm:text-base">
-                  Más de 50 familias ya han transformado la vida emocional de sus hijos
+                  Más de 100 familias ya han transformado la vida emocional de sus hijos
                 </p>
               </div>
             </div>
@@ -436,7 +541,7 @@ const LandingPage = () => {
       <section 
         className="py-16 sm:py-24 relative overflow-hidden"
         style={{
-          background: 'linear-gradient(135deg,rgb(56, 144, 191) 0%, #7ED3BE 100%)'
+          background: '#f8cd50'
         }}
       >
         {/* Figuras Geométricas Circulares */}
@@ -447,17 +552,25 @@ const LandingPage = () => {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-12 sm:mb-16">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4 px-4" style={{ fontWeight: 800 }}>
+            <h2 
+              ref={benefitsTitleRef}
+              className="text-white text-3xl sm:text-4xl lg:text-5xl mb-2 sm:mb-3 px-4" 
+              style={{ fontWeight: 800 }}
+            >
               Beneficios y Riesgos de la Gestión Emocional
             </h2>
-            <p className="text-base sm:text-lg text-white/90 max-w-3xl mx-auto px-4">
-              Los primeros años son fundamentales para el desarrollo emocional de los niños
+            <p className="text-white text-base sm:text-lg lg:text-xl mb-2 sm:mb-3 px-4 max-w-3xl mx-auto" style={{ fontWeight: 700 }}>
+              Los primeros años son fundamentales para el desarrollo emocional
             </p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12">
             {/* Tarjeta Izquierda - Beneficios Inmediatos */}
-            <div className="bg-white rounded-xl p-6 sm:p-8 shadow-lg transition-all duration-300 md:hover:shadow-xl md:hover:scale-105">
+            <div className={`bg-white rounded-xl p-6 sm:p-8 shadow-lg transition-all duration-1000 ease-out ${
+              benefitsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`} style={{
+              transitionDelay: benefitsVisible ? '0ms' : '0ms'
+            }}>
               <div className="flex flex-col sm:flex-row items-center sm:items-start mb-6 sm:mb-8">
                 <div className="w-12 h-12 sm:w-16 sm:h-16 mb-3 sm:mb-0 sm:mr-4 flex items-center justify-center">
                   <img 
@@ -516,7 +629,11 @@ const LandingPage = () => {
             </div>
 
             {/* Tarjeta Derecha - Riesgos de No Actuar */}
-            <div className="bg-white rounded-xl p-6 sm:p-8 shadow-lg transition-all duration-300 md:hover:shadow-xl md:hover:scale-105">
+            <div className={`bg-white rounded-xl p-6 sm:p-8 shadow-lg transition-all duration-1000 ease-out ${
+              benefitsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`} style={{
+              transitionDelay: benefitsVisible ? '200ms' : '0ms'
+            }}>
               <div className="flex flex-col sm:flex-row items-center sm:items-start mb-6 sm:mb-8">
                 <div className="w-12 h-12 sm:w-16 sm:h-16 mb-3 sm:mb-0 sm:mr-4 flex items-center justify-center">
                   <img 
@@ -573,12 +690,18 @@ const LandingPage = () => {
 
       {/* Footer */}
       <footer 
-        className="py-12 sm:py-16"
+        className="py-12 sm:py-16 relative overflow-hidden"
         style={{
-          background: 'linear-gradient(180deg, #F5827B 0%, #FFDB8B 100%)'
+          background: '#f5827b'
         }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Figuras Geométricas Circulares */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute -top-20 sm:-top-40 -left-5 sm:-left-10 w-40 h-40 sm:w-80 sm:h-80 bg-white/15 rounded-full" />
+          <div className="absolute -bottom-40 sm:-bottom-80 -right-30 sm:-right-60 w-[300px] h-[300px] sm:w-[700px] sm:h-[700px] bg-white/15 rounded-full" />
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 mb-6">
             {/* Columna 1 - Branding y Contacto */}
             <div>
@@ -589,14 +712,14 @@ const LandingPage = () => {
                   className="w-8 h-8 object-contain mr-3"
                 />
                 <h3 className="text-lg font-bold text-white" style={{ fontWeight: 700 }}>
-                  Braini Emotions
+                  Braini Emotions Family
                 </h3>
               </div>
               <p className="text-white text-sm mb-3 font-medium">
-                Más de 50 familias ya confían en nosotros
+                Más de 100 familias ya confían en nosotros
               </p>
               <p className="text-white text-sm mb-4">
-                Bienestar emocional infantil, fácil y divertido
+                Neurobienestar emocional fácil y divertido
               </p>
               
               {/* Información de Contacto */}
@@ -614,8 +737,8 @@ const LandingPage = () => {
                   <svg className="w-4 h-4 text-white mr-2" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/>
                   </svg>
-                  <a href="tel:+34612345678" className="text-white text-sm hover:text-white/80 transition-colors">
-                    +34 612 345 678
+                  <a href="tel:+34646982440" className="text-white text-sm hover:text-white/80 transition-colors">
+                    +34 646 982 440
                   </a>
                 </div>
               </div>
@@ -628,9 +751,6 @@ const LandingPage = () => {
                 <h4 className="text-lg font-bold text-white mb-3" style={{ fontWeight: 700 }}>
                   Suscríbete
                 </h4>
-                <p className="text-white text-sm mb-4 font-medium">
-                  Novedades y mini retos
-                </p>
                 <div className="flex">
                   <input
                     type="email"
