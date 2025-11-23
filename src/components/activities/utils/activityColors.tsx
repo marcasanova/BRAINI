@@ -2,7 +2,7 @@
  * Utilidades para obtener los colores corporativos según el tipo de actividad
  */
 
-export type ActivityType = 'inteligencia_emocional' | 'actividad_tecnica' | 'vinculo_afectivo' | 'acompañamiento_emocional';
+export type ActivityType = 'inteligencia_emocional' | 'regulacion_emocional' | 'vinculo_afectivo' | 'acompañamiento_emocional';
 
 /**
  * Obtiene las clases CSS para el botón principal "Empezar Actividad"
@@ -13,7 +13,7 @@ export const getPrimaryButtonClasses = (activityType?: string): string => {
   switch (activityType) {
     case 'inteligencia_emocional':
       return `${baseClasses} bg-gradient-to-r from-braini-blue to-braini-blue-light hover:from-braini-blue-dark hover:to-braini-blue`;
-    case 'actividad_tecnica':
+    case 'regulacion_emocional':
       return `${baseClasses} bg-gradient-to-r from-braini-turquoise to-braini-turquoise-light hover:from-braini-turquoise-dark hover:to-braini-turquoise`;
     case 'vinculo_afectivo':
       return `${baseClasses} bg-gradient-to-r from-braini-pink to-braini-pink-light hover:from-braini-pink-dark hover:to-braini-pink`;
@@ -33,7 +33,7 @@ export const getSecondaryButtonClasses = (activityType?: string): string => {
   switch (activityType) {
     case 'inteligencia_emocional':
       return `${baseClasses} border-braini-blue/30 text-braini-blue hover:text-braini-blue-dark hover:border-braini-blue`;
-    case 'actividad_tecnica':
+    case 'regulacion_emocional':
       return `${baseClasses} border-braini-turquoise/30 text-braini-turquoise hover:text-braini-turquoise-dark hover:border-braini-turquoise`;
     case 'vinculo_afectivo':
       return `${baseClasses} border-braini-pink/30 text-braini-pink hover:text-braini-pink-dark hover:border-braini-pink`;
@@ -53,7 +53,7 @@ export const getInstructionsContainerClasses = (activityType?: string): string =
   switch (activityType) {
     case 'inteligencia_emocional':
       return `${baseClasses} bg-gradient-to-r from-braini-blue/10 to-braini-blue/5 border-braini-blue/20`;
-    case 'actividad_tecnica':
+    case 'regulacion_emocional':
       return `${baseClasses} bg-gradient-to-r from-braini-turquoise/10 to-braini-turquoise/5 border-braini-turquoise/20`;
     case 'vinculo_afectivo':
       return `${baseClasses} bg-gradient-to-r from-braini-pink/10 to-braini-pink/5 border-braini-pink/20`;
@@ -71,7 +71,7 @@ export const getDurationTextClasses = (activityType?: string): string => {
   switch (activityType) {
     case 'inteligencia_emocional':
       return 'text-braini-blue-dark';
-    case 'actividad_tecnica':
+    case 'regulacion_emocional':
       return 'text-braini-turquoise-dark';
     case 'vinculo_afectivo':
       return 'text-braini-pink-dark';
@@ -91,7 +91,7 @@ export const getSimpleButtonClasses = (activityType?: string): string => {
   switch (activityType) {
     case 'inteligencia_emocional':
       return `${baseClasses} bg-braini-blue hover:bg-braini-blue-dark`;
-    case 'actividad_tecnica':
+    case 'regulacion_emocional':
       return `${baseClasses} bg-braini-turquoise hover:bg-braini-turquoise-dark`;
     case 'vinculo_afectivo':
       return `${baseClasses} bg-braini-pink hover:bg-braini-pink-dark`;
@@ -109,7 +109,7 @@ export const getTitleTextClasses = (activityType?: string): string => {
   switch (activityType) {
     case 'inteligencia_emocional':
       return 'text-braini-blue-dark';
-    case 'actividad_tecnica':
+    case 'regulacion_emocional':
       return 'text-braini-turquoise-dark';
     case 'vinculo_afectivo':
       return 'text-braini-pink-dark';
@@ -127,7 +127,7 @@ export const getBorderClasses = (activityType?: string): string => {
   switch (activityType) {
     case 'inteligencia_emocional':
       return 'border-braini-blue/20';
-    case 'actividad_tecnica':
+    case 'regulacion_emocional':
       return 'border-braini-turquoise/20';
     case 'vinculo_afectivo':
       return 'border-braini-pink/20';
@@ -145,7 +145,7 @@ export const getLightBgClasses = (activityType?: string): string => {
   switch (activityType) {
     case 'inteligencia_emocional':
       return 'bg-braini-blue/10';
-    case 'actividad_tecnica':
+    case 'regulacion_emocional':
       return 'bg-braini-turquoise/10';
     case 'vinculo_afectivo':
       return 'bg-braini-pink/10';
@@ -165,7 +165,7 @@ export const getOutlineButtonClasses = (activityType?: string): string => {
   switch (activityType) {
     case 'inteligencia_emocional':
       return `${baseClasses} border-braini-blue text-braini-blue hover:bg-braini-blue/10`;
-    case 'actividad_tecnica':
+    case 'regulacion_emocional':
       return `${baseClasses} border-braini-turquoise text-braini-turquoise hover:bg-braini-turquoise/10`;
     case 'vinculo_afectivo':
       return `${baseClasses} border-braini-pink text-braini-pink hover:bg-braini-pink/10`;
@@ -183,7 +183,7 @@ export const getTimerColorClasses = (activityType?: string): string => {
   switch (activityType) {
     case 'inteligencia_emocional':
       return 'text-braini-blue';
-    case 'actividad_tecnica':
+    case 'regulacion_emocional':
       return 'text-braini-turquoise';
     case 'vinculo_afectivo':
       return 'text-braini-pink';

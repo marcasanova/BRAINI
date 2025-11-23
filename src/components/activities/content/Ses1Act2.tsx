@@ -19,7 +19,8 @@ import {
   getTitleTextClasses,
   getSimpleButtonClasses,
   getOutlineButtonClasses,
-  getTimerColorClasses
+  getTimerColorClasses,
+  getBorderClasses
 } from '@/components/activities/utils/activityColors';
 
 interface Ses1Act2Props {
@@ -112,7 +113,6 @@ const Ses1Act2: React.FC<Ses1Act2Props> = ({
   const [timeRemaining, setTimeRemaining] = useState(10); // Preparación: 10 segundos
   const [isPaused, setIsPaused] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
-  const [showActivityDialog, setShowActivityDialog] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [showScientificBase, setShowScientificBase] = useState(false);
   const [alternateMode, setAlternateMode] = useState<'giant' | 'ant'>('giant');
@@ -155,7 +155,6 @@ const Ses1Act2: React.FC<Ses1Act2Props> = ({
           // Actividad completamente terminada
           setPhase('completed');
           setIsRunning(false);
-          setShowActivityDialog(false);
           setShowSuccessPopup(true);
         }
       }
@@ -192,20 +191,6 @@ const Ses1Act2: React.FC<Ses1Act2Props> = ({
     return () => clearInterval(alternateInterval);
   }, [currentStep, isRunning, isPaused]);
 
-
-  const openActivityDialog = () => {
-    // Resetear todo al abrir el dialog
-    setPhase('preparation');
-    setStepIndex(0);
-    setCurrentStep('giant');
-    setTimeRemaining(10);
-    setRepetition(1);
-    setIsRunning(false);
-    setIsPaused(false);
-    setAlternateMode('giant');
-    setAlternateCount(0);
-    setShowActivityDialog(true);
-  };
 
   const startActivity = () => {
     if (phase === 'preparation') {
@@ -350,57 +335,46 @@ const Ses1Act2: React.FC<Ses1Act2Props> = ({
               {formatearTexto(activityData.como_se_juega)}
             </div>
           )}
-          {/* Botones de acción */}
-          <div className="mt-6 flex flex-wrap gap-4">
-            <Button
-              onClick={openActivityDialog}
-              className={getPrimaryButtonClasses(activityType)}
-            >
-              <Play className="w-5 h-5 mr-2" />
-              Empezar Actividad
-            </Button>
-            {activityData.investigacion_beneficios && (
+          {/* Botón para ver base científica */}
+          {activityData.investigacion_beneficios && (
+            <div className={`mt-4 pt-4 border-t ${getBorderClasses(activityType)}`}>
               <Button
                 onClick={() => setShowScientificBase(true)}
                 variant="outline"
-                className={getSecondaryButtonClasses(activityType)}
+                className={`w-full sm:w-auto ${getSecondaryButtonClasses(activityType)}`}
               >
                 <BookOpen className="w-4 h-4 mr-2" />
                 Ver Base Científica
               </Button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       )}
 
-      {/* Dialog de la actividad interactiva */}
-      <Dialog open={showActivityDialog} onOpenChange={setShowActivityDialog}>
-        <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto bg-white/95 backdrop-blur-lg p-0">
-          <div className="p-6 md:p-8">
-            {/* Área principal de la actividad */}
-            {phase === 'preparation' && (
-              <div className="text-center">
-                <div className="text-6xl mb-6">🚶</div>
-                <h2 className={`text-3xl font-black ${getTitleTextClasses(activityType)} mb-4`}>
-                  ¡Prepárate!
-                </h2>
-                <p className="text-xl text-gray-700 mb-8">
-                  Vamos a relajar nuestras piernas y nuestros pies.
-                  <br />
-                  <strong>¡Ponte de pie y prepárate para jugar!</strong>
-                </p>
-                <Button
-                  onClick={startActivity}
-                  className={getPrimaryButtonClasses(activityType)}
-                >
-                  <Play className="w-5 h-5 mr-2" />
-                  Empezar
-                </Button>
-              </div>
-            )}
+      {/* Área principal de la actividad */}
+      {phase === 'preparation' && (
+        <div className="text-center bg-white/95 backdrop-blur-lg p-6 md:p-8 rounded-xl border-2 border-gray-200">
+          <div className="text-6xl mb-6">🚶</div>
+          <h2 className={`text-3xl font-black ${getTitleTextClasses(activityType)} mb-4`}>
+            ¡Prepárate!
+          </h2>
+          <p className="text-xl text-gray-700 mb-8">
+            Vamos a relajar nuestras piernas y nuestros pies.
+            <br />
+            <strong>¡Ponte de pie y prepárate para jugar!</strong>
+          </p>
+          <Button
+            onClick={startActivity}
+            className={getPrimaryButtonClasses(activityType)}
+          >
+            <Play className="w-5 h-5 mr-2" />
+            Empezar
+          </Button>
+        </div>
+      )}
 
-            {/* Fase de piernas */}
-            {phase === 'legs' && (
+      {/* Fase de piernas */}
+      {phase === 'legs' && (
         <div className="bg-white/95 backdrop-blur-lg p-6 md:p-8 rounded-2xl shadow-xl border-0">
           {/* Header */}
           <div className="flex items-center gap-3 mb-6">
@@ -509,9 +483,9 @@ const Ses1Act2: React.FC<Ses1Act2Props> = ({
         </div>
       )}
 
-            {/* Transición entre fases */}
-            {phase === 'arms' && !isRunning && stepIndex === 0 && repetition === 1 && (
-              <div className="bg-white/95 backdrop-blur-lg p-8 rounded-2xl shadow-xl border-0 text-center">
+      {/* Transición entre fases */}
+      {phase === 'arms' && !isRunning && stepIndex === 0 && repetition === 1 && (
+        <div className="bg-white/95 backdrop-blur-lg p-8 rounded-2xl shadow-xl border-0 text-center">
           <div className="text-6xl mb-6">🎉</div>
           <h2 className="text-3xl font-black text-braini-pink-dark mb-4">
             ¡Fase de Piernas Completada!
@@ -530,7 +504,6 @@ const Ses1Act2: React.FC<Ses1Act2Props> = ({
             <Button
               onClick={() => {
                 setPhase('completed');
-                setShowActivityDialog(false);
                 setShowSuccessPopup(true);
               }}
               variant="outline"
@@ -636,9 +609,6 @@ const Ses1Act2: React.FC<Ses1Act2Props> = ({
           </div>
         </div>
       )}
-          </div>
-        </DialogContent>
-      </Dialog>
 
       {/* Popup de éxito */}
       {showSuccessPopup && (

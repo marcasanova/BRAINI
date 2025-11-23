@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { UserActivity } from '@/hooks/useUserActivities';
-import { CheckCircle, X, BookOpen, Play } from 'lucide-react';
+import { CheckCircle, X, BookOpen } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { formatearTexto } from '@/components/activities/utils/textFormatter';
 import SuccessPopup from '@/components/activities/utils/SuccessPopup';
@@ -115,36 +115,33 @@ const Ses2Act1: React.FC<Ses2Act1Props> = ({
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [showScientificBase, setShowScientificBase] = useState(false);
-  const [showActivityDialog, setShowActivityDialog] = useState(false);
 
-  // Estados para adivinanzas y opciones (se randomizan cada vez que se abre el Dialog)
+  // Estados para adivinanzas y opciones (se randomizan al montar el componente)
   const [adivinanzas, setAdivinanzas] = useState<Adivinanza[]>([]);
   const [currentOptions, setCurrentOptions] = useState<string[][]>([]);
 
-  // Randomizar adivinanzas y opciones cada vez que se abre el Dialog
+  // Randomizar adivinanzas y opciones al montar el componente
   useEffect(() => {
-    if (showActivityDialog) {
-      // Randomizar el orden de las adivinanzas
-      const shuffled = [...ADIVINANZAS_ORIGINALES].sort(() => Math.random() - 0.5);
-      setAdivinanzas(shuffled);
-      
-      // Generar opciones aleatorias para cada adivinanza
-      const options = shuffled.map(q => {
-        const opts = [q.emocionCorrecta, q.opcion1, q.opcion2];
-        return [...opts].sort(() => Math.random() - 0.5);
-      });
-      setCurrentOptions(options);
-      
-      // Resetear el estado del juego
-      setCurrentQuestionIndex(0);
-      setSelectedAnswer(null);
-      setShowFeedback(false);
-      setCorrectAnswers(0);
-      setAnsweredQuestions([]);
-      setQuizCompleted(false);
-      setShowSuccessPopup(false);
-    }
-  }, [showActivityDialog]);
+    // Randomizar el orden de las adivinanzas
+    const shuffled = [...ADIVINANZAS_ORIGINALES].sort(() => Math.random() - 0.5);
+    setAdivinanzas(shuffled);
+    
+    // Generar opciones aleatorias para cada adivinanza
+    const options = shuffled.map(q => {
+      const opts = [q.emocionCorrecta, q.opcion1, q.opcion2];
+      return [...opts].sort(() => Math.random() - 0.5);
+    });
+    setCurrentOptions(options);
+    
+    // Resetear el estado del juego
+    setCurrentQuestionIndex(0);
+    setSelectedAnswer(null);
+    setShowFeedback(false);
+    setCorrectAnswers(0);
+    setAnsweredQuestions([]);
+    setQuizCompleted(false);
+    setShowSuccessPopup(false);
+  }, []);
 
   // Obtener pregunta actual
   const currentQuestion = adivinanzas.length > 0 && currentQuestionIndex < adivinanzas.length 
@@ -227,35 +224,24 @@ const Ses2Act1: React.FC<Ses2Act1Props> = ({
               {formatearTexto(activityData.como_se_juega)}
             </div>
           )}
-          {/* Botones de acción */}
-          <div className="mt-6 flex flex-wrap gap-4">
-            <Button
-              onClick={() => setShowActivityDialog(true)}
-              className="bg-braini-blue hover:bg-braini-blue-dark text-white font-semibold px-8 py-3 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 text-lg"
-            >
-              <Play className="w-5 h-5 mr-2" />
-              Empezar Actividad
-            </Button>
-            {activityData.investigacion_beneficios && (
+          {/* Botón para ver base científica */}
+          {activityData.investigacion_beneficios && (
+            <div className={`mt-4 pt-4 border-t border-braini-blue/20`}>
               <Button
                 onClick={() => setShowScientificBase(true)}
                 variant="outline"
-                className="bg-white/80 hover:bg-white border-braini-blue/30 text-braini-blue hover:text-braini-blue-dark hover:border-braini-blue transition-all duration-300 px-6 py-3 text-lg"
+                className={`w-full sm:w-auto bg-white/80 hover:bg-white border-braini-blue/30 text-braini-blue hover:text-braini-blue-dark hover:border-braini-blue transition-all duration-300 px-6 py-3 text-lg`}
               >
                 <BookOpen className="w-4 h-4 mr-2" />
                 Ver Base Científica
               </Button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       )}
 
-      {/* Dialog de la actividad interactiva */}
-      <Dialog open={showActivityDialog} onOpenChange={setShowActivityDialog}>
-        <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto bg-white/95 backdrop-blur-lg p-0">
-          <div className="p-6 md:p-8">
-            {/* Área del quiz - Mostrar siempre que haya adivinanzas y no esté completado */}
-            {adivinanzas.length > 0 && !quizCompleted && (
+      {/* Área del quiz - Mostrar siempre que haya adivinanzas y no esté completado */}
+      {adivinanzas.length > 0 && !quizCompleted && (
               <div className="space-y-6">
                 {/* Indicador de progreso */}
                 <div className="bg-white/95 backdrop-blur-lg p-4 rounded-xl shadow-md border border-braini-blue/20">
@@ -347,38 +333,33 @@ const Ses2Act1: React.FC<Ses2Act1Props> = ({
             </div>
           )}
 
-            {/* Pantalla de resultados */}
-            {quizCompleted && (
-              <div className="bg-white/95 backdrop-blur-lg p-8 rounded-2xl shadow-xl border-0 text-center">
-                <h2 className="text-3xl font-black text-braini-blue-dark mb-4">
-                  ¡Quiz Completado!
-                </h2>
-                <div className="bg-braini-blue/10 p-6 rounded-xl border border-braini-blue/20 mb-6">
-                  <p className="text-2xl font-bold text-braini-blue-dark mb-2">
-                    {correctAnswers} de {totalQuestions} correctas
-                  </p>
-                  <p className="text-lg text-gray-700">
-                    {correctAnswers === totalQuestions 
-                      ? "¡Perfecto! Has acertado todas las adivinanzas"
-                      : correctAnswers >= totalQuestions * 0.7
-                      ? "¡Muy bien! Has demostrado un gran conocimiento emocional"
-                      : "¡Bien hecho! Sigue practicando para mejorar"
-                    }
-                  </p>
-                </div>
-              </div>
-            )}
+      {/* Pantalla de resultados */}
+      {quizCompleted && (
+        <div className="bg-white/95 backdrop-blur-lg p-8 rounded-2xl shadow-xl border-0 text-center">
+          <h2 className="text-3xl font-black text-braini-blue-dark mb-4">
+            ¡Quiz Completado!
+          </h2>
+          <div className="bg-braini-blue/10 p-6 rounded-xl border border-braini-blue/20 mb-6">
+            <p className="text-2xl font-bold text-braini-blue-dark mb-2">
+              {correctAnswers} de {totalQuestions} correctas
+            </p>
+            <p className="text-lg text-gray-700">
+              {correctAnswers === totalQuestions 
+                ? "¡Perfecto! Has acertado todas las adivinanzas"
+                : correctAnswers >= totalQuestions * 0.7
+                ? "¡Muy bien! Has demostrado un gran conocimiento emocional"
+                : "¡Bien hecho! Sigue practicando para mejorar"
+              }
+            </p>
           </div>
-        </DialogContent>
-      </Dialog>
+        </div>
+      )}
 
-      {/* Popup de éxito - Fuera del Dialog para que se muestre encima */}
+      {/* Popup de éxito */}
       {showSuccessPopup && (
         <SuccessPopup
           onClose={() => {
             setShowSuccessPopup(false);
-            setShowActivityDialog(false);
-            // Al cerrar el popup, cerramos también el dialog de la actividad
           }}
         />
       )}

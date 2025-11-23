@@ -27,7 +27,7 @@ const ActivityRating: React.FC<ActivityRatingProps> = ({
     switch (activityType) {
       case 'inteligencia_emocional':
         return `${baseClasses} bg-braini-blue hover:bg-braini-blue-dark`;
-      case 'actividad_tecnica':
+      case 'regulacion_emocional':
         return `${baseClasses} bg-braini-turquoise hover:bg-braini-turquoise-dark`;
       case 'vinculo_afectivo':
         return `${baseClasses} bg-braini-pink hover:bg-braini-pink-dark`;

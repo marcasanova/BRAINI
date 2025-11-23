@@ -91,7 +91,6 @@ const Ses2Act2: React.FC<Ses2Act2Props> = ({
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(STEP_TRANSITION_TIME);
-  const [showActivityDialog, setShowActivityDialog] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [showScientificBase, setShowScientificBase] = useState(false);
   const [currentCook, setCurrentCook] = useState<'parent' | 'child'>('parent');
@@ -117,7 +116,6 @@ const Ses2Act2: React.FC<Ses2Act2Props> = ({
     } else {
       // Actividad completada
       setIsRunning(false);
-      setShowActivityDialog(false);
       setShowSuccessPopup(true);
     }
   }, [currentStepIndex, totalSteps]);
@@ -161,12 +159,6 @@ const Ses2Act2: React.FC<Ses2Act2Props> = ({
   // Función para cambiar de cocinero
   const toggleCook = () => {
     setCurrentCook((prev) => prev === 'parent' ? 'child' : 'parent');
-  };
-
-  // Función para abrir el dialog
-  const openActivityDialog = () => {
-    resetActivity();
-    setShowActivityDialog(true);
   };
 
   // Componente de cronómetro circular para transición
@@ -223,35 +215,24 @@ const Ses2Act2: React.FC<Ses2Act2Props> = ({
               {formatearTexto(activityData.como_se_juega)}
             </div>
           )}
-          {/* Botones de acción */}
-          <div className="mt-6 flex flex-wrap gap-4">
-            <Button
-              onClick={openActivityDialog}
-              className="bg-gradient-to-r from-braini-turquoise to-braini-turquoise-light hover:from-braini-turquoise-dark hover:to-braini-turquoise text-white font-semibold px-8 py-3 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 text-lg"
-            >
-              <Play className="w-5 h-5 mr-2" />
-              Empezar Actividad
-            </Button>
-            {activityData.investigacion_beneficios && (
+          {/* Botón para ver base científica */}
+          {activityData.investigacion_beneficios && (
+            <div className={`mt-4 pt-4 border-t border-braini-turquoise/20`}>
               <Button
                 onClick={() => setShowScientificBase(true)}
                 variant="outline"
-                className="bg-white/80 hover:bg-white border-braini-turquoise/30 text-braini-turquoise hover:text-braini-turquoise-dark hover:border-braini-turquoise transition-all duration-300 px-6 py-3 text-lg"
+                className={`w-full sm:w-auto bg-white/80 hover:bg-white border-braini-turquoise/30 text-braini-turquoise hover:text-braini-turquoise-dark hover:border-braini-turquoise transition-all duration-300 px-6 py-3 text-lg`}
               >
                 <BookOpen className="w-4 h-4 mr-2" />
                 Ver Base Científica
               </Button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       )}
 
-      {/* Dialog de la actividad interactiva */}
-      <Dialog open={showActivityDialog} onOpenChange={setShowActivityDialog}>
-        <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto bg-white/95 backdrop-blur-lg p-0">
-          <div className="p-6 md:p-8">
-            {/* Pantalla de transición entre pasos */}
-            {isTransitioning && (
+      {/* Pantalla de transición entre pasos */}
+      {isTransitioning && (
               <div className="bg-white/95 backdrop-blur-lg p-8 rounded-2xl shadow-xl border-0 text-center">
                 <div className="mb-6">
                   <TransitionTimer timeRemaining={timeRemaining} />
@@ -268,9 +249,9 @@ const Ses2Act2: React.FC<Ses2Act2Props> = ({
               </div>
             )}
 
-            {/* Contenido principal de la actividad */}
-            {!isTransitioning && (
-              <div className="bg-white/95 backdrop-blur-lg p-6 md:p-8 rounded-2xl shadow-xl border-0">
+      {/* Contenido principal de la actividad */}
+      {!isTransitioning && (
+        <div className="bg-white/95 backdrop-blur-lg p-6 md:p-8 rounded-2xl shadow-xl border-0">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-3">
@@ -418,9 +399,6 @@ const Ses2Act2: React.FC<Ses2Act2Props> = ({
                 </div>
               </div>
             )}
-          </div>
-        </DialogContent>
-      </Dialog>
 
       {/* Popup de éxito */}
       {showSuccessPopup && (

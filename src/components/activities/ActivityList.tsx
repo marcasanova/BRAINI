@@ -27,8 +27,8 @@ const ActivityList: React.FC<ActivityListProps> = ({
     switch (type) {
       case 'inteligencia_emocional':
         return 'Inteligencia Emocional';
-      case 'actividad_tecnica':
-        return 'Actividad Técnica';
+      case 'regulacion_emocional':
+        return 'Regulación Emocional';
       case 'vinculo_afectivo':
         return 'Vínculo Afectivo';
       case 'acompañamiento_emocional':
@@ -43,7 +43,7 @@ const ActivityList: React.FC<ActivityListProps> = ({
     switch (type) {
       case 'inteligencia_emocional':
         return 1;
-      case 'actividad_tecnica':
+      case 'regulacion_emocional':
         return 2;
       case 'vinculo_afectivo':
         return 3;
@@ -61,7 +61,7 @@ const ActivityList: React.FC<ActivityListProps> = ({
     switch (type) {
       case 'inteligencia_emocional':
         return `${baseClasses} bg-braini-blue/20 text-braini-blue-dark`;
-      case 'actividad_tecnica':
+      case 'regulacion_emocional':
         return `${baseClasses} bg-braini-turquoise/20 text-braini-turquoise-dark`;
       case 'vinculo_afectivo':
         return `${baseClasses} bg-braini-pink/20 text-braini-pink-dark`;
@@ -84,7 +84,7 @@ const ActivityList: React.FC<ActivityListProps> = ({
     switch (type) {
       case 'inteligencia_emocional':
         return `${baseClasses} bg-gradient-to-br from-braini-blue/5 to-braini-blue/10 border-braini-blue/30 hover:shadow-xl hover:border-braini-blue/50`;
-      case 'actividad_tecnica':
+      case 'regulacion_emocional':
         return `${baseClasses} bg-gradient-to-br from-braini-turquoise/5 to-braini-turquoise/10 border-braini-turquoise/30 hover:shadow-xl hover:border-braini-turquoise/50`;
       case 'vinculo_afectivo':
         return `${baseClasses} bg-gradient-to-br from-braini-pink/5 to-braini-pink/10 border-braini-pink/30 hover:shadow-xl hover:border-braini-pink/50`;
@@ -102,7 +102,7 @@ const ActivityList: React.FC<ActivityListProps> = ({
     switch (type) {
       case 'inteligencia_emocional':
         return `${baseClasses} bg-braini-blue/20 text-braini-blue-dark border-braini-blue/40`;
-      case 'actividad_tecnica':
+      case 'regulacion_emocional':
         return `${baseClasses} bg-braini-turquoise/20 text-braini-turquoise-dark border-braini-turquoise/40`;
       case 'vinculo_afectivo':
         return `${baseClasses} bg-braini-pink/20 text-braini-pink-dark border-braini-pink/40`;
@@ -120,7 +120,7 @@ const ActivityList: React.FC<ActivityListProps> = ({
     switch (type) {
       case 'inteligencia_emocional':
         return `${baseClasses} text-braini-blue-dark group-hover:text-braini-blue`;
-      case 'actividad_tecnica':
+      case 'regulacion_emocional':
         return `${baseClasses} text-braini-turquoise-dark group-hover:text-braini-turquoise`;
       case 'vinculo_afectivo':
         return `${baseClasses} text-braini-pink-dark group-hover:text-braini-pink`;
@@ -142,7 +142,7 @@ const ActivityList: React.FC<ActivityListProps> = ({
           container: `${baseClasses} bg-braini-blue/20 group-hover:bg-braini-blue/30`,
           icon: `${iconBaseClasses} text-braini-blue`
         };
-      case 'actividad_tecnica':
+      case 'regulacion_emocional':
         return {
           container: `${baseClasses} bg-braini-turquoise/20 group-hover:bg-braini-turquoise/30`,
           icon: `${iconBaseClasses} text-braini-turquoise`

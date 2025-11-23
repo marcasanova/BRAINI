@@ -10,7 +10,7 @@ export interface Activity {
   duracion_max?: number;
   como_se_juega?: string;
   investigacion_beneficios?: string;
-  tipo_actividad?: 'inteligencia_emocional' | 'actividad_tecnica' | 'vinculo_afectivo' | 'acompañamiento_emocional';
+  tipo_actividad?: 'inteligencia_emocional' | 'regulacion_emocional' | 'vinculo_afectivo' | 'acompañamiento_emocional';
   contenido_vinculo?: {
     accion: string;
     frase: string;
@@ -105,7 +105,7 @@ export function useUserActivities(userId: string | undefined) {
           duracion_max,
           como_se_juega,
           investigacion_beneficios,
-          activity_type,
+          tipo_actividad,
           contenido_vinculo,
           contenido_apoyo
         )

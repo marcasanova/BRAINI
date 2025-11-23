@@ -148,14 +148,14 @@ const Home = () => {
                                 </div>
                               </div>
 
-                              {/* 2. Actividad Técnica */}
+                              {/* 2. Regulación Emocional */}
                               <div className="p-4 rounded-xl bg-gradient-to-br from-braini-turquoise/5 to-braini-turquoise/10 border-2 border-braini-turquoise/30 flex items-start gap-3">
                                 <div className="w-12 h-12 rounded-lg bg-braini-turquoise/20 flex items-center justify-center flex-shrink-0">
                                   <span className="text-xl font-black text-braini-turquoise-dark">2</span>
                                 </div>
                                 <div className="flex-1">
                                   <h4 className="font-bold text-braini-turquoise-dark text-base md:text-lg mb-1">
-                                    Actividad Técnica
+                                    Regulación Emocional
                                   </h4>
                                   <p className="text-sm text-gray-700 font-medium">
                                     Ejercicios prácticos de relajación, respiración y técnicas corporales.

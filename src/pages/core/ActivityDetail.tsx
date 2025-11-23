@@ -77,7 +77,7 @@ const ActivityDetail: React.FC = () => {
     switch (activityType) {
       case 'inteligencia_emocional':
         return '#7ea4df'; // Azul
-      case 'actividad_tecnica':
+      case 'regulacion_emocional':
         return '#35bdb1'; // Turquesa
       case 'vinculo_afectivo':
         return '#f5827b'; // Rosa
