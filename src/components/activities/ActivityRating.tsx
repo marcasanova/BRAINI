@@ -10,6 +10,7 @@ const ActivityRating: React.FC<ActivityRatingProps> = ({
   activityId, 
   userId,
   levelId,
+  activityType,
   onRatingSubmitted,
   onMedalEarned
 }) => {
@@ -18,6 +19,24 @@ const ActivityRating: React.FC<ActivityRatingProps> = ({
   const [hasRated, setHasRated] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const { toast } = useToast();
+
+  // Función para obtener las clases del botón según el tipo de actividad
+  const getButtonClasses = () => {
+    const baseClasses = "text-white font-semibold px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-200";
+    
+    switch (activityType) {
+      case 'inteligencia_emocional':
+        return `${baseClasses} bg-braini-blue hover:bg-braini-blue-dark`;
+      case 'actividad_tecnica':
+        return `${baseClasses} bg-braini-turquoise hover:bg-braini-turquoise-dark`;
+      case 'vinculo_afectivo':
+        return `${baseClasses} bg-braini-pink hover:bg-braini-pink-dark`;
+      case 'acompañamiento_emocional':
+        return `${baseClasses} bg-braini-yellow hover:bg-braini-yellow-dark`;
+      default:
+        return `${baseClasses} bg-braini-blue hover:bg-braini-blue-dark`;
+    }
+  };
 
   // Cargar valoración existente
   useEffect(() => {
@@ -219,7 +238,7 @@ const ActivityRating: React.FC<ActivityRatingProps> = ({
           <Button
             onClick={handleRatingSubmit}
             disabled={isSubmitting || rating === 0}
-            className="bg-braini-blue hover:bg-braini-blue-dark text-white font-semibold px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
+            className={getButtonClasses()}
           >
             {isSubmitting ? 'Guardando...' : hasRated ? 'Actualizar Valoración' : 'Enviar Valoración'}
           </Button>

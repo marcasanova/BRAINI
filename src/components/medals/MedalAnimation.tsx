@@ -135,7 +135,7 @@ const MedalAnimation: React.FC<MedalAnimationProps> = ({
         }`}
       >
         {/* Efecto de brillo alrededor */}
-        <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-braini-blue/10 via-transparent to-braini-turquoise/10 animate-pulse" />
+        <div className="absolute inset-0 rounded-3xl bg-braini-blue/10 animate-pulse" />
         
         {/* Contenido */}
         <div className="relative z-10 text-center">

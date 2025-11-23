@@ -55,6 +55,7 @@ export interface ActivityRatingProps {
   activityId: number;
   userId: string;
   levelId?: number;
+  activityType?: string;
   onRatingSubmitted?: () => void;
   onMedalEarned?: (medal: any) => void;
 }

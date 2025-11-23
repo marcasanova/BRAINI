@@ -128,7 +128,8 @@ const DiarioEmocional = () => {
     <Backgrounds 
       wrapWithCard={true}
       enableInternalScroll={true}
-      customGradient="linear-gradient(135deg, rgba(53, 189, 177, 1) 25%, rgba(248, 205, 80, 1) 75%)"
+      customColor="#35bdb1"
+      showCircles={true}
     >
       <div className="h-full flex flex-col relative z-10">
         <div className="container mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-6 flex-1 flex flex-col min-h-0">
@@ -177,10 +178,10 @@ const DiarioEmocional = () => {
                 <button
                   onClick={handleSave}
                   disabled={!selectedEmotion || loading}
-                  className={`
+                    className={`
                     w-full max-w-md px-8 py-3 rounded-xl font-semibold text-lg transition-all duration-300 transform
                     ${selectedEmotion && !loading
-                      ? 'bg-gradient-to-r from-braini-pink to-braini-yellow hover:from-braini-pink-dark hover:to-braini-yellow-dark text-white shadow-lg hover:shadow-xl hover:scale-105'
+                      ? 'bg-braini-turquoise hover:bg-braini-turquoise-dark text-white shadow-lg hover:shadow-xl hover:scale-105'
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                     }
                   `}

@@ -16,19 +16,19 @@ const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // Función para obtener el color del gradiente según la ruta activa
+  // Función para obtener el color sólido según la ruta activa
   const getActiveColor = (path: string) => {
     switch (path) {
       case '/home':
-        return 'from-braini-blue to-braini-blue-light'; // Azul
+        return 'bg-braini-blue'; // Azul #7ea4df
       case '/diario-emocional':
-        return 'from-braini-turquoise to-braini-turquoise-light'; // Verde/Turquesa
+        return 'bg-braini-turquoise'; // Verde/Turquesa #35bdb1
       case '/inteligencia-emocional':
-        return 'from-braini-yellow to-braini-yellow-light'; // Amarillo
+        return 'bg-braini-yellow'; // Amarillo #f8cd50
       case '/profile':
-        return 'from-braini-pink to-braini-pink-light'; // Rosa
+        return 'bg-braini-pink'; // Rojo/Coral #f5827b
       default:
-        return 'from-braini-blue to-braini-blue-light';
+        return 'bg-braini-blue';
     }
   };
 
@@ -124,7 +124,7 @@ const Navbar: React.FC = () => {
                       }}
                       className={`w-full flex items-center gap-4 p-4 rounded-xl text-left transition-all duration-200 ${
                         isActive 
-                          ? `bg-gradient-to-r ${activeColor} text-white shadow-lg` 
+                          ? `${activeColor} text-white shadow-lg` 
                           : 'text-gray-700 hover:bg-gray-50 hover:text-braini-blue hover:shadow-md'
                       }`}
                     >
@@ -203,7 +203,7 @@ const Navbar: React.FC = () => {
                 onClick={() => navigate(item.path)}
                 className={`w-full flex items-center gap-4 p-4 rounded-xl text-left transition-all duration-200 ${
                   isActive 
-                    ? `bg-gradient-to-r ${activeColor} text-white shadow-lg` 
+                    ? `${activeColor} text-white shadow-lg` 
                     : 'text-gray-700 hover:bg-gray-50 hover:text-braini-blue hover:shadow-md'
                 }`}
               >

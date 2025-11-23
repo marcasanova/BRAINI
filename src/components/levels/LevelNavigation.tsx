@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, Lock, Trophy, Home } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Lock, Trophy, Home, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { UserSession } from '@/hooks/useUserLevels';
 
@@ -27,80 +27,88 @@ const SessionNavigation: React.FC<SessionNavigationProps> = ({
   const isNextSessionLocked = nextSession?.status === 'locked';
 
   return (
-    <div className="mb-6 p-4 bg-gradient-to-r from-braini-blue/10 to-braini-turquoise/10 rounded-xl border border-braini-blue/20 shadow-sm">
-      {/* Fila superior: Botones de navegación */}
-      <div className="flex justify-between items-center mb-3">
-        {/* Botón Anterior */}
-        <Button
-          variant="outline"
-          onClick={() => previousSession && onNavigate(previousSession.levels.id)}
-          disabled={isFirstSession}
-          className={`flex items-center gap-2 transition-all duration-200 ${
-            isFirstSession 
-              ? 'opacity-50 cursor-not-allowed border-gray-300' 
-              : 'hover:bg-braini-blue hover:text-white border-braini-blue text-braini-blue hover:shadow-md'
-          }`}
-        >
-          <ChevronLeft className="w-4 h-4" />
-          Anterior
-        </Button>
+    <div className="bg-white/10 backdrop-blur-md rounded-lg border border-white/20 p-3 md:p-4 shadow-lg">
+      {/* Fila principal: Navegación y progreso */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 md:gap-4">
+        {/* Lado izquierdo: Botón Volver + Botón Anterior */}
+        <div className="flex items-center gap-2 w-full sm:w-auto justify-center sm:justify-start">
+          <Button
+            variant="ghost"
+            onClick={() => navigate('/home')}
+            size="sm"
+            className="flex items-center gap-1.5 text-xs md:text-sm text-white hover:text-white hover:bg-white/20 transition-all duration-200 px-2 md:px-3 font-medium"
+          >
+            <ArrowLeft className="w-3.5 h-3.5 md:w-4 md:h-4" />
+            <span className="hidden sm:inline">Volver</span>
+          </Button>
+          
+          <div className="h-5 w-px bg-white/30"></div>
+          
+          <Button
+            variant="ghost"
+            onClick={() => previousSession && onNavigate(previousSession.levels.id)}
+            disabled={isFirstSession}
+            size="sm"
+            className={`flex items-center gap-1.5 text-xs md:text-sm transition-all duration-200 px-2 md:px-3 font-medium ${
+              isFirstSession 
+                ? 'opacity-40 cursor-not-allowed text-white/50' 
+                : 'text-white hover:text-white hover:bg-white/20'
+            }`}
+          >
+            <ChevronLeft className="w-3.5 h-3.5 md:w-4 md:h-4" />
+            <span className="hidden sm:inline">Anterior</span>
+          </Button>
+        </div>
 
-        {/* Indicador de Progreso */}
-        <div className="text-center flex-1 mx-4">
-          <div className="text-base font-bold text-braini-blue mb-1">
-            Sesión {currentLevelId} de {totalSessions}
+        {/* Centro: Indicador de progreso compacto */}
+        <div className="flex-1 flex flex-col sm:flex-row items-center gap-2 md:gap-3 min-w-0 w-full sm:w-auto">
+          <div className="text-center sm:text-left min-w-0 flex-1 sm:flex-initial">
+            <div className="text-xs md:text-sm font-bold text-white mb-1.5">
+              Sesión {currentLevelId} de {totalSessions}
+            </div>
+            <div className="w-full sm:w-48 bg-white/30 rounded-full h-2 overflow-hidden backdrop-blur-sm">
+              <div 
+                className="bg-white h-2 rounded-full transition-all duration-500 shadow-md"
+                style={{ width: `${((currentIndex + 1) / totalSessions) * 100}%` }}
+              ></div>
+            </div>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2 max-w-xs mx-auto">
-            <div 
-              className="bg-gradient-to-r from-braini-blue to-braini-turquoise h-2 rounded-full transition-all duration-500"
-              style={{ width: `${((currentIndex + 1) / totalSessions) * 100}%` }}
-            ></div>
-          </div>
-          <div className="text-xs text-gray-600 mt-1 font-medium">
-            {Math.round(((currentIndex + 1) / totalSessions) * 100)}% completado
+          <div className="text-xs md:text-sm text-white/90 font-semibold whitespace-nowrap">
+            {Math.round(((currentIndex + 1) / totalSessions) * 100)}%
           </div>
         </div>
 
-        {/* Botón Siguiente */}
-        <Button
-          variant="outline"
-          onClick={() => nextSession && onNavigate(nextSession.levels.id)}
-          disabled={isNextSessionLocked || isLastSession}
-          className={`flex items-center gap-2 transition-all duration-200 ${
-            isNextSessionLocked || isLastSession
-              ? 'opacity-50 cursor-not-allowed border-gray-300 text-gray-500'
-              : 'hover:bg-braini-blue hover:text-white border-braini-blue text-braini-blue hover:shadow-md'
-          }`}
-        >
-          {isLastSession ? (
-            <>
-              ¡Completado!
-              <Trophy className="w-4 h-4" />
-            </>
-          ) : isNextSessionLocked ? (
-            <>
-              Siguiente bloqueada
-              <Lock className="w-4 h-4" />
-            </>
-          ) : (
-            <>
-              Siguiente
-              <ChevronRight className="w-4 h-4" />
-            </>
-          )}
-        </Button>
-      </div>
-
-      {/* Fila inferior: Botón Volver a Home */}
-      <div className="flex justify-center pt-2 border-t border-braini-blue/20">
-        <Button
-          variant="ghost"
-          onClick={() => navigate('/home')}
-          className="flex items-center gap-2 text-sm text-gray-600 hover:text-braini-blue hover:bg-braini-blue/10 transition-all duration-200"
-        >
-          <Home className="w-4 h-4" />
-          Volver a mis sesiones
-        </Button>
+        {/* Lado derecho: Botón Siguiente */}
+        <div className="w-full sm:w-auto flex justify-center sm:justify-end">
+          <Button
+            variant="ghost"
+            onClick={() => nextSession && onNavigate(nextSession.levels.id)}
+            disabled={isNextSessionLocked || isLastSession}
+            size="sm"
+            className={`flex items-center gap-1.5 text-xs md:text-sm transition-all duration-200 px-2 md:px-3 font-medium ${
+              isNextSessionLocked || isLastSession
+                ? 'opacity-40 cursor-not-allowed text-white/50'
+                : 'text-white hover:text-white hover:bg-white/20'
+            }`}
+          >
+            {isLastSession ? (
+              <>
+                <span className="hidden sm:inline">Completado</span>
+                <Trophy className="w-3.5 h-3.5 md:w-4 md:h-4" />
+              </>
+            ) : isNextSessionLocked ? (
+              <>
+                <span className="hidden sm:inline">Bloqueada</span>
+                <Lock className="w-3.5 h-3.5 md:w-4 md:h-4" />
+              </>
+            ) : (
+              <>
+                <span className="hidden sm:inline">Siguiente</span>
+                <ChevronRight className="w-3.5 h-3.5 md:w-4 md:h-4" />
+              </>
+            )}
+          </Button>
+        </div>
       </div>
     </div>
   );

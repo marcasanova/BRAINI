@@ -6,7 +6,8 @@ interface BackgroundsProps {
   children?: React.ReactNode;
   wrapWithCard?: boolean; // Si true, envuelve en card con Navbar
   enableInternalScroll?: boolean; // Si true, habilita scroll interno en el área de contenido
-  customGradient?: string; // Gradiente personalizado para la card (opcional)
+  customColor?: string; // Color sólido personalizado para la card (opcional)
+  showCircles?: boolean; // Si true, muestra los círculos decorativos (opcional, default: false)
 }
 
 const Backgrounds: React.FC<BackgroundsProps> = ({ 
@@ -14,7 +15,8 @@ const Backgrounds: React.FC<BackgroundsProps> = ({
   children,
   wrapWithCard = false,
   enableInternalScroll = false,
-  customGradient
+  customColor,
+  showCircles = false
 }) => {
   
   // Renderizar el fondo único (igual que la primera sección de LandingPage)
@@ -62,7 +64,7 @@ const Backgrounds: React.FC<BackgroundsProps> = ({
             <Navbar />
           </div>
           
-          {/* Área de contenido principal - CON GRADIENTE aquí */}
+          {/* Área de contenido principal - CON COLOR SÓLIDO aquí */}
           <div 
             className={`${
               enableInternalScroll
@@ -70,14 +72,16 @@ const Backgrounds: React.FC<BackgroundsProps> = ({
                 : 'relative md:ml-72 min-h-[calc(100vh-200px)] md:min-h-[calc(100vh-100px)]'
             }`}
             style={{
-              background: customGradient || 'linear-gradient(135deg, #7ea4df 0%, #35bdb1 100%)'
+              background: customColor || '#7ea4df'
             }}
           >
-            {/* Círculos decorativos dentro del área de contenido con gradiente */}
-            <div className="absolute inset-0 pointer-events-none overflow-hidden">
-              <div className="absolute -top-20 sm:-top-40 -left-5 sm:-left-10 w-60 h-60 sm:w-96 sm:h-96 md:w-[500px] md:h-[500px] lg:w-[600px] lg:h-[600px] bg-white/15 rounded-full" />
-              <div className="absolute -bottom-40 sm:-bottom-80 -right-30 sm:-right-60 w-[300px] h-[300px] sm:w-[700px] sm:h-[700px] bg-white/15 rounded-full" />
-            </div>
+            {/* Círculos decorativos dentro del área de contenido - solo si showCircles es true */}
+            {showCircles && (
+              <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                <div className="absolute -top-20 sm:-top-40 -left-5 sm:-left-10 w-60 h-60 sm:w-96 sm:h-96 md:w-[500px] md:h-[500px] lg:w-[600px] lg:h-[600px] bg-white/15 rounded-full" />
+                <div className="absolute -bottom-40 sm:-bottom-80 -right-30 sm:-right-60 w-[300px] h-[300px] sm:w-[700px] sm:h-[700px] bg-white/15 rounded-full" />
+              </div>
+            )}
             
             {/* Contenido de la página */}
             <div className="relative z-10 min-h-full pb-20 md:pb-0">

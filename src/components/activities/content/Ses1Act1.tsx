@@ -12,12 +12,20 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { 
+  getSecondaryButtonClasses, 
+  getInstructionsContainerClasses, 
+  getDurationTextClasses,
+  getSimpleButtonClasses,
+  getBorderClasses
+} from '@/components/activities/utils/activityColors';
 
 interface Ses1Act1Props {
   userProgress?: UserActivity;
   activityId: number;
   levelId: string;
   userId: string;
+  activityType?: string;
   activityData?: {
     duracion_min?: number;
     duracion_max?: number;
@@ -53,6 +61,7 @@ const Ses1Act1: React.FC<Ses1Act1Props> = ({
   activityId, 
   levelId, 
   userId,
+  activityType,
   activityData,
   onPuzzleComplete
 }) => {
@@ -243,11 +252,11 @@ const Ses1Act1: React.FC<Ses1Act1Props> = ({
     <div className="space-y-6">
       {/* Instrucciones con datos del backend */}
       {activityData && (
-        <div className="bg-gradient-to-r from-braini-blue/10 to-braini-turquoise/10 p-6 rounded-xl border border-braini-blue/20">
+        <div className={getInstructionsContainerClasses(activityType)}>
           {/* Duración del backend */}
           {activityData.duracion_min && activityData.duracion_max && (
             <p className="text-gray-700 leading-relaxed mb-3">
-              <strong className="text-braini-blue-dark">Duración:</strong> {activityData.duracion_min} - {activityData.duracion_max} minutos
+              <strong className={getDurationTextClasses(activityType)}>Duración:</strong> {activityData.duracion_min} - {activityData.duracion_max} minutos
             </p>
           )}
           {/* ¿Cómo se juega? del backend - Con formateo */}
@@ -258,11 +267,11 @@ const Ses1Act1: React.FC<Ses1Act1Props> = ({
           )}
           {/* Botón para ver base científica */}
           {activityData.investigacion_beneficios && (
-            <div className="mt-4 pt-4 border-t border-braini-blue/20">
+            <div className={`mt-4 pt-4 border-t ${getBorderClasses(activityType)}`}>
               <Button
                 onClick={() => setShowScientificBase(true)}
                 variant="outline"
-                className="w-full sm:w-auto bg-white/80 hover:bg-white border-braini-blue/30 text-braini-blue hover:text-braini-blue-dark hover:border-braini-blue transition-all duration-300"
+                className={`w-full sm:w-auto ${getSecondaryButtonClasses(activityType)}`}
               >
                 <BookOpen className="w-4 h-4 mr-2" />
                 Ver Base Científica
@@ -405,7 +414,7 @@ const Ses1Act1: React.FC<Ses1Act1Props> = ({
           <div className="mt-6 flex justify-end">
             <Button
               onClick={() => setShowScientificBase(false)}
-              className="bg-gradient-to-r from-braini-blue to-braini-turquoise hover:from-braini-blue-dark hover:to-braini-turquoise-dark text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+              className="bg-braini-blue hover:bg-braini-blue-dark text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
             >
               Cerrar
             </Button>

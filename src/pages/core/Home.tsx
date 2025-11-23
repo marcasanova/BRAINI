@@ -59,7 +59,8 @@ const Home = () => {
     <Backgrounds 
       wrapWithCard={true} 
       enableInternalScroll={true}
-      customGradient="linear-gradient(135deg, rgba(126, 164, 223, 1) 25%, rgba(53, 189, 177, 1) 75%)"
+      customColor="#7ea4df"
+      showCircles={true}
     >
       <div className="h-full flex flex-col relative z-10">
         <div className="container mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-6 flex-1 flex flex-col min-h-0">
@@ -91,109 +92,111 @@ const Home = () => {
                   {/* Sesión 0 - Tutorial - Hardcodeado */}
                   <div className="bg-white/95 backdrop-blur-lg p-4 md:p-6 rounded-xl md:rounded-2xl shadow-xl border-0 animate-fade-in">
                     <ul className="space-y-0">
-                      <li className="flex flex-col md:flex-row items-start md:items-center justify-between p-4 md:p-5 rounded-xl border-2 border-dashed border-braini-blue bg-gradient-to-br from-braini-blue/10 to-braini-turquoise/10 shadow-md hover:shadow-lg transition-all">
-                        <div className="flex-1">
-                          <div className="font-semibold text-base md:text-lg flex items-center gap-2 mb-2">
-                            Sesión 0. Descubre como aprender con Braini Emotions
-                            <span className="ml-2 text-xs bg-braini-blue/20 text-braini-blue-dark px-2 py-0.5 rounded">Tutorial</span>
-                          </div>
-                          <div className="text-gray-700 mt-2 text-sm md:text-base font-medium leading-relaxed">
-                            En esta sesión aprenderás a usar la app, en qué consisten los retos y desafíos, los aprendizajes, formación y acompañamiento emocional para tu día a día.
+                      <li>
+                        <div className="mb-4">
+                          <div className="text-braini-blue font-bold text-2xl md:text-3xl flex items-center gap-2 mb-2" style={{ fontWeight: 700 }}>
+                            Sesión0: <span className="text-xl md:text-2xl" style={{ fontWeight: 700 }}>Tutorial</span>
                           </div>
                         </div>
-                        <div className="mt-3 md:mt-0 md:ml-6 flex items-center gap-3">
-                          <MapDownload />
+                        
+                        {/* Layout: Mapa a la izquierda, Tipos de actividades a la derecha */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-start">
+                          {/* Columna izquierda: Mapa y botón */}
+                          <div className="flex flex-col gap-4">
+                            <div className="w-full">
+                              <h3 className="text-lg md:text-xl font-bold text-gray-800 mb-3 flex items-center gap-2">
+                                Mapa con las actividades
+                              </h3>
+                              <p className="text-sm md:text-base text-gray-600 mb-4 font-medium">
+                                Descarga el mapa físico para seguir el progreso de las actividades en cada sesión.
+                              </p>
+                            </div>
+                            <div className="w-full rounded-lg overflow-hidden flex items-center justify-center">
+                              <img 
+                                src="https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/braini-map/Panel%20juego%20Rescate%20de%20Azon.jpg"
+                                alt="Mapa Físico"
+                                className="w-full h-auto object-contain"
+                              />
+                            </div>
+                            <div className="flex justify-center">
+                              <MapDownload />
+                            </div>
+                          </div>
+
+                          {/* Columna derecha: Tipos de actividades en columna */}
+                          <div className="flex flex-col">
+                            <h3 className="text-lg md:text-xl font-bold text-gray-800 mb-3 flex items-center gap-2">
+                              Tipos de actividades
+                            </h3>
+                            <p className="text-sm md:text-base text-gray-600 mb-4 font-medium">
+                              Cada sesión contiene <span className="font-bold">4 actividades</span> diferentes, cada una con su propio color para que las identifiques fácilmente:
+                            </p>
+                            
+                            <div className="flex flex-col gap-3 md:gap-4">
+                              {/* 1. Inteligencia Emocional */}
+                              <div className="p-4 rounded-xl bg-gradient-to-br from-braini-blue/5 to-braini-blue/10 border-2 border-braini-blue/30 flex items-start gap-3">
+                                <div className="w-12 h-12 rounded-lg bg-braini-blue/20 flex items-center justify-center flex-shrink-0">
+                                  <span className="text-xl font-black text-braini-blue-dark">1</span>
+                                </div>
+                                <div className="flex-1">
+                                  <h4 className="font-bold text-braini-blue-dark text-base md:text-lg mb-1">
+                                    Inteligencia Emocional
+                                  </h4>
+                                  <p className="text-sm text-gray-700 font-medium">
+                                    Actividades para desarrollar habilidades emocionales y reconocer emociones.
+                                  </p>
+                                </div>
+                              </div>
+
+                              {/* 2. Actividad Técnica */}
+                              <div className="p-4 rounded-xl bg-gradient-to-br from-braini-turquoise/5 to-braini-turquoise/10 border-2 border-braini-turquoise/30 flex items-start gap-3">
+                                <div className="w-12 h-12 rounded-lg bg-braini-turquoise/20 flex items-center justify-center flex-shrink-0">
+                                  <span className="text-xl font-black text-braini-turquoise-dark">2</span>
+                                </div>
+                                <div className="flex-1">
+                                  <h4 className="font-bold text-braini-turquoise-dark text-base md:text-lg mb-1">
+                                    Actividad Técnica
+                                  </h4>
+                                  <p className="text-sm text-gray-700 font-medium">
+                                    Ejercicios prácticos de relajación, respiración y técnicas corporales.
+                                  </p>
+                                </div>
+                              </div>
+
+                              {/* 3. Vínculo Afectivo */}
+                              <div className="p-4 rounded-xl bg-gradient-to-br from-braini-pink/5 to-braini-pink/10 border-2 border-braini-pink/30 flex items-start gap-3">
+                                <div className="w-12 h-12 rounded-lg bg-braini-pink/20 flex items-center justify-center flex-shrink-0">
+                                  <span className="text-xl font-black text-braini-pink-dark">3</span>
+                                </div>
+                                <div className="flex-1">
+                                  <h4 className="font-bold text-braini-pink-dark text-base md:text-lg mb-1">
+                                    Vínculo Afectivo
+                                  </h4>
+                                  <p className="text-sm text-gray-700 font-medium">
+                                    Momentos de conexión y fortalecimiento del vínculo familiar.
+                                  </p>
+                                </div>
+                              </div>
+
+                              {/* 4. Acompañamiento Emocional */}
+                              <div className="p-4 rounded-xl bg-gradient-to-br from-braini-yellow/5 to-braini-yellow/10 border-2 border-braini-yellow/30 flex items-start gap-3">
+                                <div className="w-12 h-12 rounded-lg bg-braini-yellow/20 flex items-center justify-center flex-shrink-0">
+                                  <span className="text-xl font-black text-braini-yellow-dark">4</span>
+                                </div>
+                                <div className="flex-1">
+                                  <h4 className="font-bold text-braini-yellow-dark text-base md:text-lg mb-1">
+                                    Acompañamiento Emocional
+                                  </h4>
+                                  <p className="text-sm text-gray-700 font-medium">
+                                    Herramientas y recursos para el apoyo emocional en el día a día.
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </li>
                     </ul>
-
-                    {/* Explicación de tipos de actividades */}
-                    <div className="mt-6 p-4 md:p-6 rounded-xl bg-gradient-to-br from-gray-50 to-white border border-gray-200">
-                      <h3 className="text-lg md:text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                        Tipos de actividades en cada sesión
-                      </h3>
-                      <p className="text-sm md:text-base text-gray-600 mb-4 font-medium">
-                        Cada sesión contiene 4 actividades diferentes, cada una con su propio color para que las identifiques fácilmente:
-                      </p>
-                      
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-                        {/* 1. Inteligencia Emocional */}
-                        <div className="p-4 rounded-xl bg-gradient-to-br from-braini-blue/5 to-braini-blue/10 border-2 border-braini-blue/30 flex items-start gap-3">
-                          <div className="w-12 h-12 rounded-lg bg-braini-blue/20 flex items-center justify-center flex-shrink-0">
-                            <span className="text-xl font-black text-braini-blue-dark">1</span>
-                          </div>
-                          <div className="flex-1">
-                            <h4 className="font-bold text-braini-blue-dark text-base md:text-lg mb-1">
-                              Inteligencia Emocional
-                            </h4>
-                            <p className="text-sm text-gray-700 font-medium">
-                              Actividades para desarrollar habilidades emocionales y reconocer emociones.
-                            </p>
-                            <div className="mt-2 flex items-center gap-2">
-                              <div className="w-6 h-6 rounded border-2 border-braini-blue/40 bg-braini-blue/20"></div>
-                              <span className="text-xs font-semibold text-braini-blue-dark">Color Azul</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* 2. Actividad Técnica */}
-                        <div className="p-4 rounded-xl bg-gradient-to-br from-braini-turquoise/5 to-braini-turquoise/10 border-2 border-braini-turquoise/30 flex items-start gap-3">
-                          <div className="w-12 h-12 rounded-lg bg-braini-turquoise/20 flex items-center justify-center flex-shrink-0">
-                            <span className="text-xl font-black text-braini-turquoise-dark">2</span>
-                          </div>
-                          <div className="flex-1">
-                            <h4 className="font-bold text-braini-turquoise-dark text-base md:text-lg mb-1">
-                              Actividad Técnica
-                            </h4>
-                            <p className="text-sm text-gray-700 font-medium">
-                              Ejercicios prácticos de relajación, respiración y técnicas corporales.
-                            </p>
-                            <div className="mt-2 flex items-center gap-2">
-                              <div className="w-6 h-6 rounded border-2 border-braini-turquoise/40 bg-braini-turquoise/20"></div>
-                              <span className="text-xs font-semibold text-braini-turquoise-dark">Color Verde</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* 3. Vínculo Afectivo */}
-                        <div className="p-4 rounded-xl bg-gradient-to-br from-braini-pink/5 to-braini-pink/10 border-2 border-braini-pink/30 flex items-start gap-3">
-                          <div className="w-12 h-12 rounded-lg bg-braini-pink/20 flex items-center justify-center flex-shrink-0">
-                            <span className="text-xl font-black text-braini-pink-dark">3</span>
-                          </div>
-                          <div className="flex-1">
-                            <h4 className="font-bold text-braini-pink-dark text-base md:text-lg mb-1">
-                              Vínculo Afectivo
-                            </h4>
-                            <p className="text-sm text-gray-700 font-medium">
-                              Momentos de conexión y fortalecimiento del vínculo familiar.
-                            </p>
-                            <div className="mt-2 flex items-center gap-2">
-                              <div className="w-6 h-6 rounded border-2 border-braini-pink/40 bg-braini-pink/20"></div>
-                              <span className="text-xs font-semibold text-braini-pink-dark">Color Rosa</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* 4. Acompañamiento Emocional */}
-                        <div className="p-4 rounded-xl bg-gradient-to-br from-braini-yellow/5 to-braini-yellow/10 border-2 border-braini-yellow/30 flex items-start gap-3">
-                          <div className="w-12 h-12 rounded-lg bg-braini-yellow/20 flex items-center justify-center flex-shrink-0">
-                            <span className="text-xl font-black text-braini-yellow-dark">4</span>
-                          </div>
-                          <div className="flex-1">
-                            <h4 className="font-bold text-braini-yellow-dark text-base md:text-lg mb-1">
-                              Acompañamiento Emocional
-                            </h4>
-                            <p className="text-sm text-gray-700 font-medium">
-                              Herramientas y recursos para el apoyo emocional en el día a día.
-                            </p>
-                            <div className="mt-2 flex items-center gap-2">
-                              <div className="w-6 h-6 rounded border-2 border-braini-yellow/40 bg-braini-yellow/20"></div>
-                              <span className="text-xs font-semibold text-braini-yellow-dark">Color Amarillo</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
                   </div>
 
                   {/* Resto de sesiones */}

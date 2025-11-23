@@ -117,7 +117,8 @@ const Profile = () => {
     <Backgrounds 
       wrapWithCard={true}
       enableInternalScroll={true}
-      customGradient="linear-gradient(135deg, rgba(245, 130, 123, 1) 25%, rgba(126, 164, 223, 1) 75%)"
+      customColor="#f5827b"
+      showCircles={true}
     >
       <div className="h-full flex flex-col relative z-10">
         <div className="container mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-6 flex-1 flex flex-col min-h-0">
@@ -153,7 +154,7 @@ const Profile = () => {
                       <div className="flex items-center justify-between">
                         <AccordionTrigger className="hover:no-underline py-0 px-0">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-gradient-to-br from-braini-blue to-braini-blue-light rounded-lg flex items-center justify-center">
+                            <div className="w-10 h-10 bg-braini-pink rounded-lg flex items-center justify-center">
                               <User className="w-5 h-5 text-white" />
                             </div>
                             <CardTitle className="text-xl text-gray-800">
@@ -388,7 +389,7 @@ const Profile = () => {
                               </Button>
                               <Button
                                 type="submit"
-                                className="bg-gradient-to-r from-braini-blue to-braini-blue-light hover:from-braini-blue-dark hover:to-braini-blue text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+                                className="bg-braini-pink hover:bg-braini-pink-dark text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
                               >
                                 <Save className="w-4 h-4 mr-2" />
                                 Guardar cambios
@@ -553,7 +554,7 @@ const Profile = () => {
                       <div className="flex items-center justify-between">
                         <AccordionTrigger className="hover:no-underline py-0 px-0">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-gradient-to-br from-braini-pink to-braini-pink-light rounded-lg flex items-center justify-center">
+                            <div className="w-10 h-10 bg-braini-pink rounded-lg flex items-center justify-center">
                               <Baby className="w-5 h-5 text-white" />
                             </div>
                             <CardTitle className="text-xl text-gray-800">
@@ -735,7 +736,7 @@ const Profile = () => {
                                 </Button>
                                 <Button
                                   type="submit"
-                                  className="bg-gradient-to-r from-braini-pink to-braini-pink-light hover:from-braini-pink-dark hover:to-braini-pink text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+                                  className="bg-braini-pink hover:bg-braini-pink-dark text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
                                 >
                                   <Save className="w-4 h-4 mr-2" />
                                   Guardar cambios
@@ -863,7 +864,7 @@ const Profile = () => {
               <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3 text-xl text-gray-800">
-                    <div className="w-10 h-10 bg-gradient-to-br from-braini-turquoise to-braini-turquoise-light rounded-lg flex items-center justify-center">
+                    <div className="w-10 h-10 bg-braini-pink rounded-lg flex items-center justify-center">
                       <Brain className="w-5 h-5 text-white" />
                     </div>
                     Resultados de Tests

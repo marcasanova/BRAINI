@@ -22,17 +22,15 @@ const MedalShelf: React.FC<MedalShelfProps> = ({ userMedals, totalMedals, isLoad
 
   if (isLoading) {
     return (
-      <div className="bg-white/95 rounded-lg p-3 border border-gray-200">
-        <div className="flex items-center justify-center gap-2">
-          <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
-          <span className="text-xs text-gray-500">Cargando medallas...</span>
-        </div>
+      <div className="flex items-center justify-center gap-2">
+        <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+        <span className="text-xs text-gray-500">Cargando medallas...</span>
       </div>
     );
   }
 
   return (
-    <div className="bg-white/95 rounded-lg p-3 border border-gray-200">
+    <div>
       <div className="flex items-center justify-between gap-3">
         {/* Sección izquierda - Icono y número */}
         <div className="flex items-center gap-2">
@@ -56,7 +54,7 @@ const MedalShelf: React.FC<MedalShelfProps> = ({ userMedals, totalMedals, isLoad
             <div className="text-xs text-gray-500 font-medium uppercase">
               Progreso
             </div>
-            <div className="text-lg font-black bg-gradient-to-r from-braini-blue to-braini-turquoise bg-clip-text text-transparent" style={{ fontWeight: 900 }}>
+            <div className="text-lg font-black text-braini-blue" style={{ fontWeight: 900 }}>
               {Math.round(progressPercentage)}%
             </div>
           </div>
@@ -67,7 +65,7 @@ const MedalShelf: React.FC<MedalShelfProps> = ({ userMedals, totalMedals, isLoad
       <div className="mt-2">
         <div className="flex-1 h-1.5 bg-gray-200 rounded-full overflow-hidden">
           <div 
-            className="h-full bg-gradient-to-r from-braini-blue to-braini-turquoise rounded-full transition-all duration-500 ease-out"
+            className="h-full bg-braini-blue rounded-full transition-all duration-500 ease-out"
             style={{ width: `${progressPercentage}%` }}
           />
         </div>

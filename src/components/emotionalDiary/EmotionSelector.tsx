@@ -107,9 +107,9 @@ const EmotionSelector: React.FC<EmotionSelectorProps> = ({
           </div>
           
           {selectedEmotion && (
-            <div className="mt-4 p-3 bg-gradient-to-r from-braini-blue/10 to-braini-turquoise/10 rounded-xl border border-braini-blue/20">
+            <div className="mt-4 p-3 bg-braini-turquoise/10 rounded-xl border border-braini-turquoise/20">
               <p className="text-center text-sm text-gray-700">
-                <span className="font-semibold text-braini-blue">
+                <span className="font-semibold text-braini-turquoise">
                   {selectedEmotion.name}
                 </span> seleccionada
               </p>

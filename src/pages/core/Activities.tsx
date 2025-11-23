@@ -172,13 +172,29 @@ const Activities: React.FC = () => {
     <Backgrounds 
       wrapWithCard={true} 
       enableInternalScroll={true}
-      customGradient="linear-gradient(135deg, rgba(126, 164, 223, 1) 25%, rgba(53, 189, 177, 1) 75%)"
+      customColor="#7ea4df"
+      showCircles={true}
     >
       <div className="h-full flex flex-col relative z-10">
         <div className="container mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-6 flex-1 flex flex-col min-h-0">
           <div className="max-w-5xl mx-auto w-full flex flex-col min-h-0">
-            {/* Header con título - Fijo en la parte superior */}
-            <div className="mb-4 md:mb-6 animate-fade-in flex-shrink-0">
+            {/* Header fijo - No hace scroll */}
+            <div className="mb-4 md:mb-6 animate-fade-in flex-shrink-0 space-y-4">
+              {/* Navegación entre sesiones - Arriba del todo */}
+              {!loading && !sessionsLoading && !activitiesLoading && session && (
+                <div className="mb-4">
+                  <SessionNavigation
+                    currentLevelId={parseInt(id!)}
+                    previousSession={previousSession}
+                    nextSession={nextSession}
+                    currentIndex={currentIndex}
+                    totalSessions={totalSessions}
+                    onNavigate={handleNavigate}
+                  />
+                </div>
+              )}
+
+              {/* Título y subtítulo de la sesión */}
               {loading || sessionsLoading || activitiesLoading ? (
                 <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white" style={{ fontWeight: 900 }}>
                   Cargando sesión...
@@ -211,18 +227,6 @@ const Activities: React.FC = () => {
                 <div className="space-y-4 md:space-y-5 pb-4">
                   {/* Card principal con información de la sesión */}
                   <div className="bg-white/95 backdrop-blur-lg p-4 md:p-6 rounded-xl md:rounded-2xl shadow-xl border-0 animate-fade-in">
-                    {/* Navegación entre sesiones */}
-                    <div className="mb-6">
-                      <SessionNavigation
-                        currentLevelId={parseInt(id!)}
-                        previousSession={previousSession}
-                        nextSession={nextSession}
-                        currentIndex={currentIndex}
-                        totalSessions={totalSessions}
-                        onNavigate={handleNavigate}
-                      />
-                    </div>
-                    
                     {/* Estado de la sesión */}
                     <div className="mb-6 text-left">
                       <span className="font-bold text-gray-700">Estado: </span>

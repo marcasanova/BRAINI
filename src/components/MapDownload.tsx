@@ -20,11 +20,10 @@ const MapDownload: React.FC<MapDownloadProps> = ({
   return (
     <Button 
       onClick={handleMapOpen}
-      className={`bg-gradient-to-r from-braini-blue to-braini-blue-light hover:from-braini-blue-dark hover:to-braini-blue text-white font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 ${className}`}
+      className={`bg-braini-blue hover:bg-braini-blue-dark text-white font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 ${className}`}
     >
       <MapIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-      <span className="hidden sm:inline">Descargar Mapa Físico</span>
-      <span className="sm:hidden">Mapa</span>
+      <span>Descarga el mapa</span>
     </Button>
   );
 };

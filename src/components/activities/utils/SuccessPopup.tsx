@@ -140,7 +140,7 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({ onClose }) => {
         }`}
       >
         {/* Efecto de brillo alrededor */}
-        <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-braini-blue/10 via-transparent to-braini-turquoise/10 animate-pulse" />
+        <div className="absolute inset-0 rounded-3xl bg-braini-blue/10 animate-pulse" />
         
         {/* Contenido */}
         <div className="relative z-10 text-center">
@@ -151,7 +151,7 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({ onClose }) => {
                 showContent ? 'scale-100 rotate-0' : 'scale-0 rotate-180'
               }`}
             >
-              <div className="w-28 h-28 md:w-32 md:h-32 rounded-full bg-gradient-to-r from-braini-blue to-braini-turquoise flex items-center justify-center mx-auto mb-4 animate-bounce shadow-lg border-2 border-gray-200">
+              <div className="w-28 h-28 md:w-32 md:h-32 rounded-full bg-braini-blue flex items-center justify-center mx-auto mb-4 animate-bounce shadow-lg border-2 border-gray-200">
                 <Sparkles className="w-16 h-16 md:w-20 md:h-20 text-white" />
               </div>
             </div>

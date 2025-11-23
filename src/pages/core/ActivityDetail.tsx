@@ -72,11 +72,33 @@ const ActivityDetail: React.FC = () => {
   const { currentIndex, previousActivity, nextActivity, totalActivities } = getNavigationInfo();
   const currentActivity = activities.find(a => a.activities.id === parseInt(activityId!));
 
+  // Función para obtener el color según el tipo de actividad
+  const getActivityColor = (activityType?: string): string => {
+    switch (activityType) {
+      case 'inteligencia_emocional':
+        return '#7ea4df'; // Azul
+      case 'actividad_tecnica':
+        return '#35bdb1'; // Turquesa
+      case 'vinculo_afectivo':
+        return '#f5827b'; // Rosa
+      case 'acompañamiento_emocional':
+        return '#f8cd50'; // Amarillo
+      default:
+        return '#7ea4df'; // Azul por defecto
+    }
+  };
+
+  // Obtener el color de la actividad actual
+  const activityColor = currentActivity 
+    ? getActivityColor(currentActivity.activities.tipo_actividad)
+    : '#7ea4df';
+
   return (
     <Backgrounds 
       wrapWithCard={true} 
       enableInternalScroll={true}
-      customGradient="linear-gradient(135deg, rgba(126, 164, 223, 1) 25%, rgba(53, 189, 177, 1) 75%)"
+      customColor={activityColor}
+      showCircles={true}
     >
       <div className="h-full flex flex-col relative z-10">
         <div className="container mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-6 flex-1 flex flex-col min-h-0">
@@ -148,6 +170,7 @@ const ActivityDetail: React.FC = () => {
                           activityId={currentActivity.activities.id}
                           levelId={levelId!}
                           userId={userId!}
+                          activityType={currentActivity.activities.tipo_actividad}
                           activityData={{
                             duracion_min: currentActivity.activities.duracion_min,
                             duracion_max: currentActivity.activities.duracion_max,
@@ -162,6 +185,7 @@ const ActivityDetail: React.FC = () => {
                           activityId={currentActivity.activities.id}
                           levelId={levelId!}
                           userId={userId!}
+                          activityType={currentActivity.activities.tipo_actividad}
                           activityData={{
                             duracion_min: currentActivity.activities.duracion_min,
                             duracion_max: currentActivity.activities.duracion_max,
@@ -175,6 +199,7 @@ const ActivityDetail: React.FC = () => {
                           activityId={currentActivity.activities.id}
                           levelId={levelId!}
                           userId={userId!}
+                          activityType={currentActivity.activities.tipo_actividad}
                           activityData={{
                             duracion_min: currentActivity.activities.duracion_min,
                             duracion_max: currentActivity.activities.duracion_max,
@@ -189,6 +214,7 @@ const ActivityDetail: React.FC = () => {
                           activityId={currentActivity.activities.id}
                           levelId={levelId!}
                           userId={userId!}
+                          activityType={currentActivity.activities.tipo_actividad}
                           activityData={{
                             duracion_min: currentActivity.activities.duracion_min,
                             duracion_max: currentActivity.activities.duracion_max,
@@ -203,6 +229,7 @@ const ActivityDetail: React.FC = () => {
                           activityId={currentActivity.activities.id}
                           levelId={levelId!}
                           userId={userId!}
+                          activityType={currentActivity.activities.tipo_actividad}
                           activityData={{
                             duracion_min: currentActivity.activities.duracion_min,
                             duracion_max: currentActivity.activities.duracion_max,
@@ -217,6 +244,7 @@ const ActivityDetail: React.FC = () => {
                           activityId={currentActivity.activities.id}
                           levelId={levelId!}
                           userId={userId!}
+                          activityType={currentActivity.activities.tipo_actividad}
                           activityData={{
                             duracion_min: currentActivity.activities.duracion_min,
                             duracion_max: currentActivity.activities.duracion_max,
@@ -231,6 +259,7 @@ const ActivityDetail: React.FC = () => {
                           activityId={currentActivity.activities.id}
                           levelId={levelId!}
                           userId={userId!}
+                          activityType={currentActivity.activities.tipo_actividad}
                           activityData={{
                             duracion_min: currentActivity.activities.duracion_min,
                             duracion_max: currentActivity.activities.duracion_max,
@@ -245,6 +274,7 @@ const ActivityDetail: React.FC = () => {
                           activityId={currentActivity.activities.id}
                           levelId={levelId!}
                           userId={userId!}
+                          activityType={currentActivity.activities.tipo_actividad}
                           activityData={{
                             duracion_min: currentActivity.activities.duracion_min,
                             duracion_max: currentActivity.activities.duracion_max,
@@ -299,6 +329,7 @@ const ActivityDetail: React.FC = () => {
                         activityId={parseInt(activityId!)} 
                         userId={userId}
                         levelId={parseInt(levelId!)}
+                        activityType={currentActivity?.activities.tipo_actividad}
                         onRatingSubmitted={() => {
                           // Opcional: refrescar datos o mostrar mensaje
                         }}

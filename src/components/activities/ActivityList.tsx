@@ -168,25 +168,21 @@ const ActivityList: React.FC<ActivityListProps> = ({
   return (
     <div className="space-y-4">
       {/* Indicador de progreso */}
-      <div className="mb-6 p-4 bg-gradient-to-r from-braini-blue/10 to-braini-turquoise/10 rounded-xl border border-braini-blue/20">
+      <div className="mb-6 p-4 bg-braini-blue/10 rounded-xl border border-braini-blue/20">
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm font-semibold text-gray-700">Progreso de la sesión</span>
           <span className="text-sm font-bold text-braini-blue">{completedCount} / {totalCount}</span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2.5 mb-2">
           <div 
-            className={`h-2.5 rounded-full transition-all duration-500 ${
-              allCompleted 
-                ? 'bg-gradient-to-r from-braini-turquoise to-braini-turquoise-dark' 
-                : 'bg-gradient-to-r from-braini-blue to-braini-turquoise'
-            }`}
+            className="h-2.5 rounded-full transition-all duration-500 bg-braini-blue"
             style={{ width: `${(completedCount / totalCount) * 100}%` }}
           ></div>
         </div>
         {allCompleted && (
-          <div className="flex items-center gap-2 text-braini-turquoise-dark font-semibold text-sm">
+          <div className="flex items-center gap-2 text-braini-blue-dark font-semibold text-sm">
             <CheckCircle className="w-5 h-5" />
-            <span>¡Todas las actividades completadas! 🎉</span>
+            <span>¡Todas las actividades completadas!</span>
           </div>
         )}
       </div>

@@ -11,12 +11,23 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog';
+import { 
+  getPrimaryButtonClasses, 
+  getSecondaryButtonClasses, 
+  getInstructionsContainerClasses, 
+  getDurationTextClasses,
+  getTitleTextClasses,
+  getSimpleButtonClasses,
+  getOutlineButtonClasses,
+  getTimerColorClasses
+} from '@/components/activities/utils/activityColors';
 
 interface Ses1Act2Props {
   userProgress?: UserActivity;
   activityId: number;
   levelId: string;
   userId: string;
+  activityType?: string;
   activityData?: {
     duracion_min?: number;
     duracion_max?: number;
@@ -89,6 +100,7 @@ const Ses1Act2: React.FC<Ses1Act2Props> = ({
   activityId, 
   levelId, 
   userId,
+  activityType,
   activityData,
   onPuzzleComplete
 }) => {
@@ -311,11 +323,11 @@ const Ses1Act2: React.FC<Ses1Act2Props> = ({
             fill="none"
             strokeDasharray={circumference}
             strokeDashoffset={offset}
-            className="text-braini-blue transition-all duration-1000"
+            className={`${getTimerColorClasses(activityType)} transition-all duration-1000`}
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-3xl font-bold text-braini-blue">{timeRemaining}</span>
+          <span className={`text-3xl font-bold ${getTimerColorClasses(activityType)}`}>{timeRemaining}</span>
         </div>
       </div>
     );
@@ -325,11 +337,11 @@ const Ses1Act2: React.FC<Ses1Act2Props> = ({
     <div className="space-y-6">
       {/* Instrucciones con datos del backend */}
       {activityData && (
-        <div className="bg-gradient-to-r from-braini-blue/10 to-braini-turquoise/10 p-6 rounded-xl border border-braini-blue/20">
+        <div className={getInstructionsContainerClasses(activityType)}>
           {/* Duración del backend */}
           {activityData.duracion_min && activityData.duracion_max && (
             <p className="text-gray-700 leading-relaxed mb-3">
-              <strong className="text-braini-blue-dark">Duración:</strong> {activityData.duracion_min} - {activityData.duracion_max} minutos
+              <strong className={getDurationTextClasses(activityType)}>Duración:</strong> {activityData.duracion_min} - {activityData.duracion_max} minutos
             </p>
           )}
           {/* ¿Cómo se juega? del backend - Con formateo */}
@@ -342,7 +354,7 @@ const Ses1Act2: React.FC<Ses1Act2Props> = ({
           <div className="mt-6 flex flex-wrap gap-4">
             <Button
               onClick={openActivityDialog}
-              className="bg-gradient-to-r from-braini-blue to-braini-turquoise hover:from-braini-blue-dark hover:to-braini-turquoise-dark text-white font-semibold px-8 py-3 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 text-lg"
+              className={getPrimaryButtonClasses(activityType)}
             >
               <Play className="w-5 h-5 mr-2" />
               Empezar Actividad
@@ -351,7 +363,7 @@ const Ses1Act2: React.FC<Ses1Act2Props> = ({
               <Button
                 onClick={() => setShowScientificBase(true)}
                 variant="outline"
-                className="bg-white/80 hover:bg-white border-braini-blue/30 text-braini-blue hover:text-braini-blue-dark hover:border-braini-blue transition-all duration-300 px-6 py-3 text-lg"
+                className={getSecondaryButtonClasses(activityType)}
               >
                 <BookOpen className="w-4 h-4 mr-2" />
                 Ver Base Científica
@@ -369,7 +381,7 @@ const Ses1Act2: React.FC<Ses1Act2Props> = ({
             {phase === 'preparation' && (
               <div className="text-center">
                 <div className="text-6xl mb-6">🚶</div>
-                <h2 className="text-3xl font-black text-braini-blue-dark mb-4">
+                <h2 className={`text-3xl font-black ${getTitleTextClasses(activityType)} mb-4`}>
                   ¡Prepárate!
                 </h2>
                 <p className="text-xl text-gray-700 mb-8">
@@ -379,7 +391,7 @@ const Ses1Act2: React.FC<Ses1Act2Props> = ({
                 </p>
                 <Button
                   onClick={startActivity}
-                  className="bg-gradient-to-r from-braini-blue to-braini-turquoise hover:from-braini-blue-dark hover:to-braini-turquoise-dark text-white font-semibold px-8 py-3 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 text-lg"
+                  className={getPrimaryButtonClasses(activityType)}
                 >
                   <Play className="w-5 h-5 mr-2" />
                   Empezar
@@ -454,7 +466,7 @@ const Ses1Act2: React.FC<Ses1Act2Props> = ({
             {!isRunning ? (
               <Button
                 onClick={startActivity}
-                className="bg-gradient-to-r from-braini-blue to-braini-turquoise hover:from-braini-blue-dark hover:to-braini-turquoise-dark text-white font-semibold px-6 py-2 rounded-lg shadow-lg"
+                className={getSimpleButtonClasses(activityType)}
               >
                 <Play className="w-4 h-4 mr-2" />
                 {stepIndex === 0 && repetition === 1 ? 'Empezar' : 'Continuar'}
@@ -463,7 +475,7 @@ const Ses1Act2: React.FC<Ses1Act2Props> = ({
               <Button
                 onClick={togglePause}
                 variant="outline"
-                className="border-braini-blue text-braini-blue hover:bg-braini-blue/10"
+                className={getOutlineButtonClasses(activityType)}
               >
                 {isPaused ? (
                   <>
@@ -664,7 +676,7 @@ const Ses1Act2: React.FC<Ses1Act2Props> = ({
           <div className="mt-6 flex justify-end">
             <Button
               onClick={() => setShowScientificBase(false)}
-              className="bg-gradient-to-r from-braini-blue to-braini-turquoise hover:from-braini-blue-dark hover:to-braini-turquoise-dark text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+              className={getSimpleButtonClasses(activityType) + " hover:shadow-xl transform hover:scale-105"}
             >
               Cerrar
             </Button>

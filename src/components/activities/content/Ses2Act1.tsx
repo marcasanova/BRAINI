@@ -214,7 +214,7 @@ const Ses2Act1: React.FC<Ses2Act1Props> = ({
     <div className="space-y-6">
       {/* Instrucciones con datos del backend */}
       {activityData && (
-        <div className="bg-gradient-to-r from-braini-blue/10 to-braini-turquoise/10 p-6 rounded-xl border border-braini-blue/20">
+        <div className="bg-braini-blue/10 p-6 rounded-xl border border-braini-blue/20">
           {/* Duración del backend */}
           {activityData.duracion_min && activityData.duracion_max && (
             <p className="text-gray-700 leading-relaxed mb-3">
@@ -231,7 +231,7 @@ const Ses2Act1: React.FC<Ses2Act1Props> = ({
           <div className="mt-6 flex flex-wrap gap-4">
             <Button
               onClick={() => setShowActivityDialog(true)}
-              className="bg-gradient-to-r from-braini-blue to-braini-turquoise hover:from-braini-blue-dark hover:to-braini-turquoise-dark text-white font-semibold px-8 py-3 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 text-lg"
+              className="bg-braini-blue hover:bg-braini-blue-dark text-white font-semibold px-8 py-3 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 text-lg"
             >
               <Play className="w-5 h-5 mr-2" />
               Empezar Actividad
@@ -267,7 +267,7 @@ const Ses2Act1: React.FC<Ses2Act1Props> = ({
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2.5">
                     <div 
-                      className="bg-gradient-to-r from-braini-blue to-braini-turquoise h-2.5 rounded-full transition-all duration-500"
+                      className="bg-braini-blue h-2.5 rounded-full transition-all duration-500"
                       style={{ width: `${((currentQuestionIndex + 1) / totalQuestions) * 100}%` }}
                     />
                   </div>
@@ -279,7 +279,7 @@ const Ses2Act1: React.FC<Ses2Act1Props> = ({
                     <h2 className="text-2xl md:text-3xl font-black text-braini-blue-dark mb-6">
                       Adivina adivinanza
                     </h2>
-                    <div className="bg-gradient-to-r from-braini-blue/10 to-braini-turquoise/10 p-6 rounded-xl border border-braini-blue/20">
+                    <div className="bg-braini-blue/10 p-6 rounded-xl border border-braini-blue/20">
                       <p className="text-lg md:text-xl text-gray-800 leading-relaxed whitespace-pre-line font-medium">
                         {currentQuestion?.texto || 'Cargando pregunta...'}
                       </p>
@@ -353,7 +353,7 @@ const Ses2Act1: React.FC<Ses2Act1Props> = ({
                 <h2 className="text-3xl font-black text-braini-blue-dark mb-4">
                   ¡Quiz Completado!
                 </h2>
-                <div className="bg-gradient-to-r from-braini-blue/10 to-braini-turquoise/10 p-6 rounded-xl border border-braini-blue/20 mb-6">
+                <div className="bg-braini-blue/10 p-6 rounded-xl border border-braini-blue/20 mb-6">
                   <p className="text-2xl font-bold text-braini-blue-dark mb-2">
                     {correctAnswers} de {totalQuestions} correctas
                   </p>
@@ -407,7 +407,7 @@ const Ses2Act1: React.FC<Ses2Act1Props> = ({
           <div className="mt-6 flex justify-end">
             <Button
               onClick={() => setShowScientificBase(false)}
-              className="bg-gradient-to-r from-braini-blue to-braini-turquoise hover:from-braini-blue-dark hover:to-braini-turquoise-dark text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+              className="bg-braini-blue hover:bg-braini-blue-dark text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
             >
               Cerrar
             </Button>
