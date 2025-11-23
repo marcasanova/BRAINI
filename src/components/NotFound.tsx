@@ -1,19 +1,38 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Home, ArrowRight, Clock } from 'lucide-react';
+import { Home, ArrowLeft, Clock } from 'lucide-react';
+
+// Rutas de assets públicos
+const logoBraini = '/logo/LogoBraini_new.png';
+const logoBrainiEnfadado = '/logo/LogoBrainiEnfadado.png';
 
 const NotFound = () => {
   const navigate = useNavigate();
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [countdown, setCountdown] = useState(5);
 
-  // Redirección automática después de 5 segundos
+  // Animación de entrada
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigate('/');
-    }, 5000);
-
+      setIsLoaded(true);
+    }, 100);
     return () => clearTimeout(timer);
+  }, []);
+
+  // Redirección automática después de 5 segundos con countdown
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          navigate('/');
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
   }, [navigate]);
 
   const handleGoHome = () => {
@@ -21,91 +40,130 @@ const NotFound = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-pink-50 font-inter relative overflow-hidden">
-      
-      <div className="container mx-auto px-4 py-12 relative z-10">
-        <div className="max-w-2xl mx-auto text-center">
-          {/* 404 Icon */}
-          <div className="mb-8 animate-fade-in">
-            <div className="w-32 h-32 bg-gradient-to-br from-braini-blue to-braini-pink rounded-full mx-auto mb-6 flex items-center justify-center shadow-2xl">
-              <span className="text-6xl font-bold text-white">404</span>
+    <div 
+      className="min-h-screen bg-white font-montserrat relative overflow-hidden transition-colors duration-300"
+      role="main"
+      aria-label="Página no encontrada"
+    >
+      {/* Hero Section */}
+      <section 
+        className="relative min-h-screen flex items-center justify-center px-2 sm:px-4 py-4 sm:py-8"
+        style={{
+          background: '#f5827b'
+        }}
+      >
+        {/* Figuras Geométricas Circulares */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute -top-20 sm:-top-40 -left-5 sm:-left-10 w-40 h-40 sm:w-80 sm:h-80 bg-white/15 rounded-full" />
+          <div className="absolute -bottom-40 sm:-bottom-80 -right-30 sm:-right-60 w-[300px] h-[300px] sm:w-[700px] sm:h-[700px] bg-white/15 rounded-full" />
+        </div>
+
+        <div className={`w-full max-w-7xl mx-auto transition-all duration-1000 ease-out ${
+          isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+        }`}>
+          
+          {/* Contenido Principal */}
+          <div className="text-center mb-8 sm:mb-12 relative z-10">
+            <div className="w-20 h-20 sm:w-28 sm:h-28 lg:w-32 lg:h-32 mx-auto mb-4 sm:mb-6 flex items-center justify-center">
+              <img 
+                src={logoBrainiEnfadado}
+                alt="Braini Emotions Logo" 
+                className="w-20 h-20 sm:w-28 sm:h-28 lg:w-32 lg:h-32 object-contain"
+              />
             </div>
             
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+            {/* Número 404 */}
+            <div className="mb-4 sm:mb-6">
+              <span className="text-8xl sm:text-9xl lg:text-[12rem] font-black text-white" style={{ fontWeight: 900 }}>
+                404
+              </span>
+            </div>
+
+            <h1 className="text-3xl sm:text-4xl lg:text-6xl font-black text-white mb-3 sm:mb-4 px-2" style={{ fontWeight: 900 }}>
               ¡Ups! Página no encontrada
             </h1>
-            <p className="text-lg md:text-xl text-gray-600 mb-6">
+            <p className="text-white text-lg sm:text-xl lg:text-2xl mb-2 sm:mb-3 px-4" style={{ fontWeight: 400 }}>
               La página que buscas no existe o ha sido movida.
             </p>
           </div>
 
-          {/* Message Card */}
-          <Card className="bg-white/95 backdrop-blur-sm shadow-xl border-0 mb-8 animate-fade-in" style={{ animationDelay: '0.3s' }}>
-            <CardContent className="p-8">
-              <div className="w-16 h-16 bg-braini-blue/20 rounded-full mx-auto mb-4 flex items-center justify-center">
-                <Clock className="w-8 h-8 text-braini-blue" />
+          {/* Card Principal */}
+          <div 
+            className="bg-white rounded-xl p-4 sm:p-6 shadow-2xl relative z-10 max-w-xs sm:max-w-lg lg:max-w-2xl mx-auto"
+            style={{
+              boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.05)'
+            }}
+          >
+            <div className="text-center">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 flex items-center justify-center">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center" style={{ background: '#f5827b' }}>
+                  <Clock className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
+                </div>
               </div>
               
-              <h2 className="text-2xl font-semibold text-gray-800 mb-3">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3" style={{ fontWeight: 700 }}>
                 ¿Qué tal si exploras Braini?
               </h2>
               
-              <p className="text-gray-600 mb-6 leading-relaxed">
-                Mientras tanto, únete a nuestra waitlist y sé el primero en descubrir cómo Braini puede transformar tu bienestar emocional y mental.
+              <p className="text-gray-600 text-sm sm:text-base mb-6 leading-relaxed" style={{ fontWeight: 400 }}>
+                Mientras tanto, únete a nuestra waitlist y sé el primero en descubrir cómo Braini puede transformar el bienestar emocional de tu familia.
               </p>
 
               <div className="space-y-4">
                 <Button 
                   onClick={handleGoHome}
-                  className="w-full bg-gradient-to-r from-braini-blue to-braini-blue-light hover:from-braini-blue-dark hover:to-braini-blue text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+                  className="w-full text-white px-6 py-3 font-bold transition-opacity text-sm sm:text-base md:hover:opacity-90"
+                  style={{ 
+                    background: '#7ea4df',
+                    border: 'none'
+                  }}
                 >
                   <Home size={20} className="mr-2" />
                   Ir a la Waitlist
                 </Button>
                 
-                <p className="text-sm text-gray-500">
-                  Redirección automática en <span className="font-semibold text-braini-blue">5 segundos</span>
+                <p className="text-sm text-gray-500" style={{ fontWeight: 400 }}>
+                  Redirección automática en{' '}
+                  <span className="font-bold" style={{ fontWeight: 700, color: '#7ea4df' }}>
+                    {countdown} {countdown === 1 ? 'segundo' : 'segundos'}
+                  </span>
                 </p>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Quick Actions */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md mx-auto animate-fade-in" style={{ animationDelay: '0.6s' }}>
-            <Button 
-              variant="outline" 
-              onClick={() => window.history.back()}
-              className="border-braini-blue text-braini-blue hover:bg-braini-blue hover:text-white transition-all duration-200"
-            >
-              <ArrowRight size={18} className="mr-2 rotate-180" />
-              Volver Atrás
-            </Button>
-            
-            <Button 
-              variant="outline"
-              onClick={() => window.location.reload()}
-              className="border-gray-300 text-gray-700 hover:bg-gray-100 transition-all duration-200"
-            >
-              <ArrowRight size={18} className="mr-2" />
-              Recargar
-            </Button>
-          </div>
-
-          {/* Additional Info */}
-          <div className="mt-12 animate-fade-in" style={{ animationDelay: '0.9s' }}>
-            <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 max-w-lg mx-auto">
-              <h3 className="font-semibold text-gray-800 mb-3">¿Necesitas ayuda?</h3>
-              <p className="text-sm text-gray-600 mb-4">
-                Si crees que esto es un error, por favor contacta con nuestro equipo de soporte.
-              </p>
-              <div className="flex justify-center space-x-4 text-sm text-gray-500">
-                <span>📧 support@braini.com</span>
-                <span>💬 Chat en vivo</span>
               </div>
             </div>
           </div>
+
+          {/* Botones de Acción Rápida */}
+          <div 
+            className={`mt-6 sm:mt-8 transition-all duration-1000 ease-out delay-200 relative z-10 ${
+              isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`}
+          >
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 max-w-md mx-auto">
+              <Button 
+                onClick={() => window.history.back()}
+                variant="outline"
+                className="w-full sm:w-auto text-gray-700 border-gray-300 hover:bg-gray-50 transition-all duration-200 text-sm sm:text-base"
+                style={{ fontWeight: 400 }}
+              >
+                <ArrowLeft size={18} className="mr-2" />
+                Volver Atrás
+              </Button>
+              
+              <Button 
+                onClick={handleGoHome}
+                variant="outline"
+                className="w-full sm:w-auto text-white border-0 transition-all duration-200 text-sm sm:text-base md:hover:opacity-90"
+                style={{ 
+                  background: '#35bdb1',
+                  fontWeight: 400
+                }}
+              >
+                Ir al Inicio
+              </Button>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 };
