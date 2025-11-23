@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Home, Construction } from 'lucide-react';
+import { Home } from 'lucide-react';
 
 // Rutas de assets públicos
 const logoBraini = '/logo/LogoBraini_new.png';
@@ -70,13 +70,6 @@ const ConferenciaPage = () => {
             }}
           >
             <div className="text-center">
-              {/* Icono de Construcción */}
-              <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6 flex items-center justify-center">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full flex items-center justify-center animate-bounce-slow" style={{ background: '#f8cd50' }}>
-                  <Construction className="w-10 h-10 sm:w-12 sm:h-12 text-white" />
-                </div>
-              </div>
-              
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-3 sm:mb-4" style={{ fontWeight: 700 }}>
                 Página en Construcción
               </h2>
