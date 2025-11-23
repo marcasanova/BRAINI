@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LandingPage from "./components/LandingPage";
 import NotFound from "./components/NotFound";
 import ConferenciaPage from "./components/ConferenciaPage";
+import TestGeniusPage from "./components/TestGeniusPage";
 
 const App = () => (
   <TooltipProvider>
@@ -14,6 +15,7 @@ const App = () => (
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/conferencia" element={<ConferenciaPage />} />
+        <Route path="/test-genius" element={<TestGeniusPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
