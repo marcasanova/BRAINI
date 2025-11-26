@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Backgrounds from '@/components/Backgrounds';
-import Navbar from '@/components/navigation/Navbar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Baby, Heart, Brain, ArrowLeft, Construction, Star, Sparkles } from 'lucide-react';
@@ -10,11 +9,15 @@ const TestEmocionalNinos = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-white font-montserrat relative overflow-hidden">
-      <Backgrounds />
-      <Navbar />
-      <div className="container mx-auto px-4 py-12 md:pl-80 relative z-10">
-        <div className="max-w-4xl mx-auto">
+    <Backgrounds 
+      wrapWithCard={true}
+      enableInternalScroll={true}
+      customColor="#f8cd50"
+      showCircles={true}
+    >
+      <div className="h-full flex flex-col relative z-10">
+        <div className="container mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-6 flex-1 flex flex-col min-h-0">
+          <div className="max-w-4xl mx-auto w-full">
           {/* Header */}
           <div className="text-center mb-12 animate-fade-in">
             <div className="w-24 h-24 bg-gradient-to-br from-pink-400 via-orange-400 to-yellow-400 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl">
@@ -228,9 +231,11 @@ const TestEmocionalNinos = () => {
               </div>
             </CardContent>
           </Card>
+          </div>
+          <div className="pb-20 md:pb-4"></div>
         </div>
       </div>
-    </div>
+      </Backgrounds>
   );
 };
 

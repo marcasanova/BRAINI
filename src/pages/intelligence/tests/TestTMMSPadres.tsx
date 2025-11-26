@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Backgrounds from '@/components/Backgrounds';
-import Navbar from '@/components/navigation/Navbar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -193,11 +192,15 @@ const TestTMMSPadres = () => {
 
   if (showResults && results) {
     return (
-      <div className="min-h-screen bg-white font-montserrat relative overflow-hidden">
-        <Backgrounds />
-        <Navbar />
-        <div className="container mx-auto px-4 py-12 md:pl-80 relative z-10">
-          <div className="max-w-4xl mx-auto">
+      <Backgrounds 
+        wrapWithCard={true}
+        enableInternalScroll={true}
+        customColor="#f8cd50"
+        showCircles={true}
+      >
+        <div className="h-full flex flex-col relative z-10">
+          <div className="container mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-6 flex-1 flex flex-col min-h-0">
+            <div className="max-w-4xl mx-auto w-full">
             {/* Header de resultados */}
             <div className="text-center mb-8 animate-fade-in">
               <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
@@ -310,7 +313,7 @@ const TestTMMSPadres = () => {
             </Card>
 
             {/* Botones de acción */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in" style={{ animationDelay: '0.4s' }}>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in pb-20 md:pb-4" style={{ animationDelay: '0.4s' }}>
               <Button
                 onClick={restartTest}
                 variant="outline"
@@ -328,15 +331,20 @@ const TestTMMSPadres = () => {
           </div>
         </div>
       </div>
+      </Backgrounds>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white font-montserrat relative overflow-hidden">
-      <Backgrounds />
-      <Navbar />
-      <div className="container mx-auto px-4 py-12 md:pl-80 relative z-10">
-        <div className="max-w-4xl mx-auto">
+    <Backgrounds 
+      wrapWithCard={true}
+      enableInternalScroll={true}
+      customColor="#f8cd50"
+      showCircles={true}
+    >
+      <div className="h-full flex flex-col relative z-10">
+        <div className="container mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-6 flex-1 flex flex-col min-h-0">
+          <div className="max-w-4xl mx-auto w-full">
           {/* Header */}
           <div className="text-center mb-8 animate-fade-in">
             <div className="w-20 h-20 bg-gradient-to-br from-braini-blue to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
@@ -452,7 +460,7 @@ const TestTMMSPadres = () => {
           </Card>
 
           {/* Navegación */}
-          <div className="flex justify-between items-center animate-fade-in" style={{ animationDelay: '0.4s' }}>
+          <div className="flex justify-between items-center animate-fade-in pb-20 md:pb-4" style={{ animationDelay: '0.4s' }}>
             <Button
               onClick={() => setCurrentQuestion(Math.max(0, currentQuestion - 1))}
               disabled={currentQuestion === 0}
@@ -466,9 +474,10 @@ const TestTMMSPadres = () => {
               {currentQuestion + 1} / 24
             </span>
           </div>
+          </div>
         </div>
       </div>
-    </div>
+      </Backgrounds>
   );
 };
 

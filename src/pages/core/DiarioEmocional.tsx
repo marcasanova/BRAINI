@@ -151,7 +151,7 @@ const DiarioEmocional = () => {
           {/* Área de contenido con scroll */}
           <div className="flex-1 overflow-y-auto min-h-0">
             {/* Grid simétrico de dos columnas */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 pb-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 pb-20 md:pb-4">
             {/* Columna izquierda: Selector de emociones y observaciones */}
             <div className="flex flex-col space-y-6">
               {/* Selector de emociones */}

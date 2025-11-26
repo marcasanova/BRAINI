@@ -79,7 +79,7 @@ const Home = () => {
               ) : error ? (
                 <div className="text-center text-red-200 py-8 font-medium">{error}</div>
               ) : (
-                <div className="space-y-4 md:space-y-5 pb-4">
+                <div className="space-y-4 md:space-y-5 pb-20 md:pb-4">
                   {/* Sección de Medallas - Primera */}
                   <div className="bg-white/95 backdrop-blur-lg p-4 md:p-6 rounded-xl md:rounded-2xl shadow-xl border-0 animate-fade-in">
                     <MedalShelf 

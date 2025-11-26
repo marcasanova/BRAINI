@@ -12,12 +12,24 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { 
+  getSecondaryButtonClasses, 
+  getInstructionsContainerClasses, 
+  getDurationTextClasses,
+  getSimpleButtonClasses,
+  getBorderClasses,
+  getScientificBaseTitleClasses,
+  getScientificBaseIconClasses,
+  getPrimaryButtonClasses,
+  getMainTitleTextClasses
+} from '@/components/activities/utils/activityColors';
 
 interface Ses2Act1Props {
   userProgress?: UserActivity;
   activityId: number;
   levelId: string;
   userId: string;
+  activityType?: string;
   activityData?: {
     duracion_min?: number;
     duracion_max?: number;
@@ -44,10 +56,27 @@ const Ses2Act1: React.FC<Ses2Act1Props> = ({
   activityId, 
   levelId, 
   userId,
+  activityType,
   activityData,
   onPuzzleComplete
 }) => {
   const { toast } = useToast();
+  
+  // Función helper para obtener el color de fondo de la barra de progreso
+  const getProgressBarColor = (type?: string): string => {
+    switch (type) {
+      case 'inteligencia_emocional':
+        return '#5a8bc4'; // braini-blue
+      case 'regulacion_emocional':
+        return '#2a9d8f'; // braini-turquoise
+      case 'vinculo_afectivo':
+        return '#e76f51'; // braini-pink
+      case 'acompañamiento_emocional':
+        return '#e9c46a'; // braini-yellow
+      default:
+        return '#5a8bc4'; // braini-blue por defecto
+    }
+  };
   
   // ====================================================
   // DATOS HARDCODEADOS - Adivinanzas
@@ -105,6 +134,71 @@ const Ses2Act1: React.FC<Ses2Act1Props> = ({
   ];
 
   // ====================================================
+  // BATERÍA DE TEXTOS DE RESULTADOS
+  // ====================================================
+  const getResultMessage = (correct: number, total: number): string => {
+    const percentage = (correct / total) * 100;
+    
+    // 100% - Perfecto
+    if (percentage === 100) {
+      const messages = [
+        "¡Perfecto! Has acertado todas las adivinanzas",
+        "¡Increíble! Conoces muy bien las emociones",
+        "¡Excelente! Eres un experto en emociones",
+        "¡Fantástico! Has demostrado un gran conocimiento emocional",
+        "¡Genial! Todas correctas, ¡eres un campeón!"
+      ];
+      return messages[Math.floor(Math.random() * messages.length)];
+    }
+    
+    // 80-99% - Muy bien
+    if (percentage >= 80) {
+      const messages = [
+        "¡Muy bien! Has demostrado un gran conocimiento emocional",
+        "¡Excelente trabajo! Casi todas correctas, ¡sigue así!",
+        "¡Genial! Tienes muy buen entendimiento de las emociones",
+        "¡Bien hecho! Has acertado la mayoría, ¡estás aprendiendo mucho!",
+        "¡Fantástico! Tu conocimiento emocional es muy bueno"
+      ];
+      return messages[Math.floor(Math.random() * messages.length)];
+    }
+    
+    // 60-79% - Bien
+    if (percentage >= 60) {
+      const messages = [
+        "¡Bien hecho! Sigue practicando para mejorar aún más",
+        "¡Buen trabajo! Estás aprendiendo sobre las emociones",
+        "¡Sigue así! Cada vez entiendes mejor las emociones",
+        "¡Bien! Has acertado más de la mitad, ¡vas por buen camino!",
+        "¡Muy bien! Estás mejorando tu conocimiento emocional"
+      ];
+      return messages[Math.floor(Math.random() * messages.length)];
+    }
+    
+    // 40-59% - Regular
+    if (percentage >= 40) {
+      const messages = [
+        "¡Sigue intentándolo! Cada práctica te ayuda a aprender más",
+        "¡No te rindas! Las emociones se aprenden poco a poco",
+        "¡Bien intentado! Sigue practicando y mejorarás",
+        "¡Ánimo! Cada vez que juegas aprendes algo nuevo",
+        "¡Sigue adelante! El conocimiento emocional se construye día a día"
+      ];
+      return messages[Math.floor(Math.random() * messages.length)];
+    }
+    
+    // < 40% - Necesita mejorar
+    const messages = [
+      "¡Ánimo! Las emociones son complejas, sigue practicando",
+      "¡No te preocupes! Cada intento es una oportunidad de aprender",
+      "¡Sigue intentándolo! Con la práctica mejorarás mucho",
+      "¡Ánimo! Aprender sobre emociones lleva tiempo, ¡tú puedes!",
+      "¡Sigue adelante! Cada juego te acerca más a entender las emociones"
+    ];
+    return messages[Math.floor(Math.random() * messages.length)];
+  };
+
+  // ====================================================
   // ESTADO DEL JUEGO
   // ====================================================
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -113,6 +207,7 @@ const Ses2Act1: React.FC<Ses2Act1Props> = ({
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [answeredQuestions, setAnsweredQuestions] = useState<number[]>([]);
   const [quizCompleted, setQuizCompleted] = useState(false);
+  const [resultMessage, setResultMessage] = useState<string>('');
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [showScientificBase, setShowScientificBase] = useState(false);
 
@@ -120,8 +215,8 @@ const Ses2Act1: React.FC<Ses2Act1Props> = ({
   const [adivinanzas, setAdivinanzas] = useState<Adivinanza[]>([]);
   const [currentOptions, setCurrentOptions] = useState<string[][]>([]);
 
-  // Randomizar adivinanzas y opciones al montar el componente
-  useEffect(() => {
+  // Función para reiniciar el juego
+  const resetGame = () => {
     // Randomizar el orden de las adivinanzas
     const shuffled = [...ADIVINANZAS_ORIGINALES].sort(() => Math.random() - 0.5);
     setAdivinanzas(shuffled);
@@ -140,7 +235,13 @@ const Ses2Act1: React.FC<Ses2Act1Props> = ({
     setCorrectAnswers(0);
     setAnsweredQuestions([]);
     setQuizCompleted(false);
+    setResultMessage('');
     setShowSuccessPopup(false);
+  };
+
+  // Randomizar adivinanzas y opciones al montar el componente
+  useEffect(() => {
+    resetGame();
   }, []);
 
   // Obtener pregunta actual
@@ -160,22 +261,14 @@ const Ses2Act1: React.FC<Ses2Act1Props> = ({
 
     const isCorrectAnswer = answer === currentQuestion.emocionCorrecta;
     
+    // Calcular el número final de respuestas correctas
+    const finalCorrectAnswers = isCorrectAnswer ? correctAnswers + 1 : correctAnswers;
+    
     if (isCorrectAnswer) {
       setCorrectAnswers(prev => prev + 1);
       setAnsweredQuestions(prev => [...prev, currentQuestion.id]);
-      
-      toast({
-        title: "¡SÚPER! 🎉",
-        description: `¡Correcto! La respuesta es ${currentQuestion.emocionCorrecta}`,
-      });
     } else {
       setAnsweredQuestions(prev => [...prev, currentQuestion.id]);
-      
-      toast({
-        title: "Incorrecto",
-        description: `La respuesta correcta es: ${currentQuestion.emocionCorrecta}`,
-        variant: "destructive",
-      });
     }
 
     // Avanzar a la siguiente pregunta después de 1 segundo
@@ -185,7 +278,9 @@ const Ses2Act1: React.FC<Ses2Act1Props> = ({
         setSelectedAnswer(null);
         setShowFeedback(false);
       } else {
-        // Quiz completado
+        // Quiz completado - Generar mensaje de resultado y guardarlo
+        const message = getResultMessage(finalCorrectAnswers, totalQuestions);
+        setResultMessage(message);
         setQuizCompleted(true);
         setShowSuccessPopup(true);
       }
@@ -211,11 +306,11 @@ const Ses2Act1: React.FC<Ses2Act1Props> = ({
     <div className="space-y-6">
       {/* Instrucciones con datos del backend */}
       {activityData && (
-        <div className="bg-braini-blue/10 p-6 rounded-xl border border-braini-blue/20">
+        <div className={getInstructionsContainerClasses(activityType)}>
           {/* Duración del backend */}
           {activityData.duracion_min && activityData.duracion_max && (
             <p className="text-gray-700 leading-relaxed mb-3">
-              <strong className="text-braini-blue-dark">Duración:</strong> {activityData.duracion_min} - {activityData.duracion_max} minutos
+              <strong className={getDurationTextClasses(activityType)}>Duración:</strong> {activityData.duracion_min} - {activityData.duracion_max} minutos
             </p>
           )}
           {/* ¿Cómo se juega? del backend - Con formateo */}
@@ -226,11 +321,11 @@ const Ses2Act1: React.FC<Ses2Act1Props> = ({
           )}
           {/* Botón para ver base científica */}
           {activityData.investigacion_beneficios && (
-            <div className={`mt-4 pt-4 border-t border-braini-blue/20`}>
+            <div className={`mt-4 pt-4 border-t ${getBorderClasses(activityType)}`}>
               <Button
                 onClick={() => setShowScientificBase(true)}
                 variant="outline"
-                className={`w-full sm:w-auto bg-white/80 hover:bg-white border-braini-blue/30 text-braini-blue hover:text-braini-blue-dark hover:border-braini-blue transition-all duration-300 px-6 py-3 text-lg`}
+                className={`w-full sm:w-auto ${getSecondaryButtonClasses(activityType)}`}
               >
                 <BookOpen className="w-4 h-4 mr-2" />
                 Ver Base Científica
@@ -244,17 +339,20 @@ const Ses2Act1: React.FC<Ses2Act1Props> = ({
       {adivinanzas.length > 0 && !quizCompleted && (
               <div className="space-y-6">
                 {/* Indicador de progreso */}
-                <div className="bg-white/95 backdrop-blur-lg p-4 rounded-xl shadow-md border border-braini-blue/20">
+                <div className="bg-white/95 backdrop-blur-lg p-4 rounded-xl shadow-md border border-gray-200">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-semibold text-gray-700">Progreso</span>
-                    <span className="text-sm font-bold text-braini-blue">
+                    <span className={`text-sm font-semibold ${getMainTitleTextClasses(activityType)}`}>
                       Pregunta {currentQuestionIndex + 1} de {totalQuestions}
                     </span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2.5">
                     <div 
-                      className="bg-braini-blue h-2.5 rounded-full transition-all duration-500"
-                      style={{ width: `${((currentQuestionIndex + 1) / totalQuestions) * 100}%` }}
+                      className="h-2.5 rounded-full transition-all duration-500"
+                      style={{ 
+                        width: `${((currentQuestionIndex + 1) / totalQuestions) * 100}%`,
+                        backgroundColor: getProgressBarColor(activityType)
+                      }}
                     />
                   </div>
                 </div>
@@ -262,40 +360,41 @@ const Ses2Act1: React.FC<Ses2Act1Props> = ({
                 {/* Card de la adivinanza */}
                 <div className="bg-white/95 backdrop-blur-lg p-6 md:p-8 rounded-2xl shadow-xl border-0">
                   <div className="text-center mb-8">
-                    <h2 className="text-2xl md:text-3xl font-black text-braini-blue-dark mb-6">
+                    <h2 className={`text-2xl md:text-3xl font-black ${getMainTitleTextClasses(activityType)} mb-6`}>
                       Adivina adivinanza
                     </h2>
-                    <div className="bg-braini-blue/10 p-6 rounded-xl border border-braini-blue/20">
-                      <p className="text-lg md:text-xl text-gray-800 leading-relaxed whitespace-pre-line font-medium">
-                        {currentQuestion?.texto || 'Cargando pregunta...'}
+                    <div className={`${getInstructionsContainerClasses(activityType)} p-8`}>
+                      <p className="text-lg md:text-xl text-gray-800 leading-relaxed font-medium text-center space-y-2">
+                        {currentQuestion?.texto.split('\n').map((line, index) => (
+                          <span key={index} className="block">
+                            {line}
+                          </span>
+                        )) || 'Cargando pregunta...'}
                       </p>
                     </div>
                   </div>
 
                   {/* Opciones de respuesta */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-8">
                     {currentQuestion && currentOptions.length > currentQuestionIndex && currentOptions[currentQuestionIndex]?.map((option, index) => {
                       const correct = isCorrect(option);
                       const selected = isSelected(option);
                       const answered = isAnswered();
 
+                      // Usar los mismos colores que Ses1Act1 para consistencia
                       let buttonClass = `
-                        relative p-6 rounded-xl border-2 transition-all duration-200 text-lg font-semibold
+                        relative p-4 rounded-xl border-2 transition-all duration-200 text-lg font-semibold
                         ${answered
                           ? correct
-                            ? 'bg-green-50 border-green-500 text-green-700 cursor-not-allowed'
+                            ? 'bg-braini-green/10 border-braini-green opacity-75 cursor-not-allowed'
                             : selected && !correct
-                            ? 'bg-red-50 border-red-500 text-red-700 cursor-not-allowed'
-                            : 'bg-gray-50 border-gray-300 text-gray-500 cursor-not-allowed opacity-60'
-                          : 'bg-white border-gray-300 hover:border-braini-blue hover:shadow-md cursor-pointer text-gray-700 hover:text-braini-blue'
+                            ? 'bg-braini-pink/10 border-braini-pink shadow-lg cursor-not-allowed'
+                            : 'bg-gray-50 border-gray-300 opacity-60 cursor-not-allowed'
+                          : selected
+                          ? 'bg-blue-100 border-blue-500 shadow-lg transform scale-105 cursor-pointer'
+                          : 'bg-white border-gray-300 hover:border-blue-400 hover:shadow-md cursor-pointer'
                         }
                       `;
-
-                      if (selected && !answered) {
-                        buttonClass = correct
-                          ? 'bg-blue-100 border-blue-500 text-blue-700 shadow-lg transform scale-105'
-                          : 'bg-blue-100 border-blue-500 text-blue-700 shadow-lg transform scale-105';
-                      }
 
                       return (
                         <button
@@ -308,19 +407,19 @@ const Ses2Act1: React.FC<Ses2Act1Props> = ({
                           
                           {/* Iconos de feedback */}
                           {answered && correct && (
-                            <div className="absolute top-2 right-2 bg-green-500 rounded-full p-1">
+                            <div className="absolute top-2 right-2 bg-braini-green rounded-full p-1">
                               <CheckCircle className="w-5 h-5 text-white" />
                             </div>
                           )}
                           
                           {answered && selected && !correct && (
-                            <div className="absolute top-2 right-2 bg-red-500 rounded-full p-1 animate-pulse">
+                            <div className="absolute top-2 right-2 bg-braini-pink rounded-full p-1 animate-pulse">
                               <X className="w-5 h-5 text-white" />
                             </div>
                           )}
 
                           {answered && !selected && correct && (
-                            <div className="absolute top-2 right-2 bg-green-500 rounded-full p-1">
+                            <div className="absolute top-2 right-2 bg-braini-green rounded-full p-1">
                               <CheckCircle className="w-5 h-5 text-white" />
                             </div>
                           )}
@@ -336,21 +435,24 @@ const Ses2Act1: React.FC<Ses2Act1Props> = ({
       {/* Pantalla de resultados */}
       {quizCompleted && (
         <div className="bg-white/95 backdrop-blur-lg p-8 rounded-2xl shadow-xl border-0 text-center">
-          <h2 className="text-3xl font-black text-braini-blue-dark mb-4">
+          <h2 className={`text-3xl font-black ${getMainTitleTextClasses(activityType)} mb-6`}>
             ¡Quiz Completado!
           </h2>
-          <div className="bg-braini-blue/10 p-6 rounded-xl border border-braini-blue/20 mb-6">
-            <p className="text-2xl font-bold text-braini-blue-dark mb-2">
+          <div className="mb-6">
+            <p className={`text-5xl md:text-6xl font-black ${getMainTitleTextClasses(activityType)} mb-4`}>
               {correctAnswers} de {totalQuestions} correctas
             </p>
-            <p className="text-lg text-gray-700">
-              {correctAnswers === totalQuestions 
-                ? "¡Perfecto! Has acertado todas las adivinanzas"
-                : correctAnswers >= totalQuestions * 0.7
-                ? "¡Muy bien! Has demostrado un gran conocimiento emocional"
-                : "¡Bien hecho! Sigue practicando para mejorar"
-              }
+          </div>
+          <div className={getInstructionsContainerClasses(activityType)}>
+            <p className="text-gray-700 leading-relaxed mb-6">
+              {resultMessage}
             </p>
+            <Button
+              onClick={resetGame}
+              className={getSimpleButtonClasses(activityType) + " hover:shadow-xl transform hover:scale-105"}
+            >
+              Volver a Jugar
+            </Button>
           </div>
         </div>
       )}
@@ -361,6 +463,7 @@ const Ses2Act1: React.FC<Ses2Act1Props> = ({
           onClose={() => {
             setShowSuccessPopup(false);
           }}
+          activityType={activityType}
         />
       )}
 
@@ -368,8 +471,8 @@ const Ses2Act1: React.FC<Ses2Act1Props> = ({
       <Dialog open={showScientificBase} onOpenChange={setShowScientificBase}>
         <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto bg-white/95 backdrop-blur-lg">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-indigo-800 flex items-center gap-2">
-              <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <DialogTitle className={`text-2xl font-bold ${getScientificBaseTitleClasses(activityType)} flex items-center gap-2`}>
+              <svg className={`w-6 h-6 ${getScientificBaseIconClasses(activityType)}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
               </svg>
               Base Científica
@@ -388,7 +491,7 @@ const Ses2Act1: React.FC<Ses2Act1Props> = ({
           <div className="mt-6 flex justify-end">
             <Button
               onClick={() => setShowScientificBase(false)}
-              className="bg-braini-blue hover:bg-braini-blue-dark text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+              className={getSimpleButtonClasses(activityType) + " hover:shadow-xl transform hover:scale-105"}
             >
               Cerrar
             </Button>

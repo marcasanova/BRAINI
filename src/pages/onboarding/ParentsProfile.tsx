@@ -122,7 +122,7 @@ const ParentsProfile = () => {
         
         const { data, error: fetchError } = await supabase
           .from('parents')
-          .select('profile_completed, nombre, apellidos, dni, fecha_nacimiento, relacion_con_menor, telefono_contacto, codigo_postal, nivel_educativo, genero, pais_origen, ciudad_origen, idioma_casa, estilo_crianza, expectativas_programa')
+          .select('profile_completed, nombre, apellidos, dni, fecha_nacimiento, relacion_con_menor, telefono_contacto, codigo_postal, nivel_educativo, genero, pais_origen, ciudad_origen, idioma_casa, estilo_crianza, expectativas_programa, is_trial_user')
           .eq('id', user.id)
           .single();
         
@@ -130,6 +130,12 @@ const ParentsProfile = () => {
         
         if (data) {
           if (data.profile_completed) {
+            navigate('/home');
+            return;
+          }
+          
+          // Verificar si es usuario de prueba (saltar onboarding)
+          if (data.is_trial_user === true) {
             navigate('/home');
             return;
           }

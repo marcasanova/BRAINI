@@ -39,7 +39,7 @@ const InteligenciaEmocional = () => {
           {/* Área de contenido con scroll */}
           <div className="flex-1 overflow-y-auto min-h-0">
             {/* Opciones de Test */}
-            <div className="grid lg:grid-cols-2 gap-8 pb-4">
+            <div className="grid lg:grid-cols-2 gap-8 pb-20 md:pb-4">
               {/* Test para Padres */}
             <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0 hover:shadow-2xl transition-all duration-300 transform hover:scale-105 animate-fade-in" style={{ animationDelay: '0.1s' }}>
               <CardHeader className="text-center pb-4">

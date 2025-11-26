@@ -126,7 +126,7 @@ const Login = () => {
       // Obtener datos del padre
       const { data: parentData, error: parentError } = await supabase
         .from('parents')
-        .select('profile_completed')
+        .select('profile_completed, is_trial_user')
         .eq('id', userId)
         .single();
       if (parentError) throw parentError;
@@ -135,6 +135,12 @@ const Login = () => {
       // Verificar si el perfil del padre está completo
       if (parentData.profile_completed === false) {
         navigate('/parents-profile');
+        return;
+      }
+      
+      // Verificar si es usuario de prueba (saltar todo el onboarding)
+      if (parentData.is_trial_user === true) {
+        navigate('/home');
         return;
       }
       

@@ -103,20 +103,20 @@ export const getSimpleButtonClasses = (activityType?: string): string => {
 };
 
 /**
- * Obtiene las clases CSS para títulos y textos destacados
+ * Obtiene las clases CSS para títulos y textos destacados (usando color corporativo principal)
  */
-export const getTitleTextClasses = (activityType?: string): string => {
+export const getMainTitleTextClasses = (activityType?: string): string => {
   switch (activityType) {
     case 'inteligencia_emocional':
-      return 'text-braini-blue-dark';
+      return 'text-braini-blue';
     case 'regulacion_emocional':
-      return 'text-braini-turquoise-dark';
+      return 'text-braini-turquoise';
     case 'vinculo_afectivo':
-      return 'text-braini-pink-dark';
+      return 'text-braini-pink';
     case 'acompañamiento_emocional':
-      return 'text-braini-yellow-dark';
+      return 'text-braini-yellow';
     default:
-      return 'text-braini-blue-dark';
+      return 'text-braini-blue';
   }
 };
 
@@ -180,6 +180,42 @@ export const getOutlineButtonClasses = (activityType?: string): string => {
  * Obtiene las clases CSS para el color del texto del cronómetro
  */
 export const getTimerColorClasses = (activityType?: string): string => {
+  switch (activityType) {
+    case 'inteligencia_emocional':
+      return 'text-braini-blue';
+    case 'regulacion_emocional':
+      return 'text-braini-turquoise';
+    case 'vinculo_afectivo':
+      return 'text-braini-pink';
+    case 'acompañamiento_emocional':
+      return 'text-braini-yellow';
+    default:
+      return 'text-braini-blue';
+  }
+};
+
+/**
+ * Obtiene las clases CSS para el título del Dialog de Base Científica
+ */
+export const getScientificBaseTitleClasses = (activityType?: string): string => {
+  switch (activityType) {
+    case 'inteligencia_emocional':
+      return 'text-braini-blue-dark';
+    case 'regulacion_emocional':
+      return 'text-braini-turquoise-dark';
+    case 'vinculo_afectivo':
+      return 'text-braini-pink-dark';
+    case 'acompañamiento_emocional':
+      return 'text-braini-yellow-dark';
+    default:
+      return 'text-braini-blue-dark';
+  }
+};
+
+/**
+ * Obtiene las clases CSS para el icono del Dialog de Base Científica
+ */
+export const getScientificBaseIconClasses = (activityType?: string): string => {
   switch (activityType) {
     case 'inteligencia_emocional':
       return 'text-braini-blue';

@@ -12,6 +12,7 @@ import Home from "./pages/core/Home";
 import VerifyEmail from './pages/support/VerifyEmail';
 import EmailVerified from './pages/support/EmailVerified';
 import LandingPage from './pages/LandingPage';
+import Conferencia from './pages/Conferencia';
 import ParentsProfile from './pages/onboarding/ParentsProfile';
 import ChildProfile from './pages/onboarding/ChildProfile';
 import Activities from './pages/core/Activities';
@@ -32,6 +33,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/conferencia" element={<Conferencia />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
           <Route path="/update-password" element={<UpdatePassword />} />

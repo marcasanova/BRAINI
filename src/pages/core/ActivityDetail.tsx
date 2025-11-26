@@ -15,6 +15,12 @@ import Ses3Act2 from '@/components/activities/content/Ses3Act2';
 import Ses4Act1 from '@/components/activities/content/Ses4Act1';
 import Ses4Act2 from '@/components/activities/content/Ses4Act2';
 import { formatearTexto } from '@/components/activities/utils/textFormatter';
+import { 
+  getInstructionsContainerClasses,
+  getDurationTextClasses,
+  getBorderClasses,
+  getMainTitleTextClasses
+} from '@/components/activities/utils/activityColors';
 
 const ActivityDetail: React.FC = () => {
   const { levelId, activityId } = useParams<{ levelId: string; activityId: string }>();
@@ -135,22 +141,28 @@ const ActivityDetail: React.FC = () => {
                     {currentActivity.activities.titulo_actividad}
                   </h1>
                   <p className="text-lg sm:text-xl md:text-2xl text-white/90 font-medium">
-                    {currentActivity.activities.objetivo || 'Sin descripción disponible'}
+                    {currentActivity.activities.objetivo || 
+                      (currentActivity.activities.tipo_actividad === 'vinculo_afectivo' 
+                        ? 'Momentos de conexión y fortalecimiento del vínculo familiar a través de gestos y palabras de amor.'
+                        : currentActivity.activities.tipo_actividad === 'acompañamiento_emocional'
+                        ? 'Herramientas y recursos para el apoyo emocional en el día a día, fortaleciendo la autoestima y el bienestar.'
+                        : 'Sin descripción disponible')
+                    }
                   </p>
                 </>
               )}
             </div>
 
             {/* Área de contenido con scroll */}
-            <div className="flex-1 overflow-y-auto min-h-0">
+            <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0">
               {loading || activitiesLoading ? (
                 <div className="text-center text-white/90 py-8 font-medium">Cargando actividad...</div>
               ) : !currentActivity ? (
                 <div className="text-center text-red-200 py-8 font-medium">Actividad no encontrada</div>
               ) : (
-                <div className="space-y-4 md:space-y-5 pb-4">
+                <div className="space-y-4 md:space-y-5 pb-20 md:pb-4 overflow-x-hidden">
                   {/* Card principal con contenido de la actividad */}
-                  <div className="bg-white/95 backdrop-blur-lg p-4 md:p-6 rounded-xl md:rounded-2xl shadow-xl border-0 animate-fade-in">
+                  <div className="bg-white/95 backdrop-blur-lg p-4 md:p-6 rounded-xl md:rounded-2xl shadow-xl border-0 animate-fade-in overflow-x-hidden">
                     {/* Contenido de la actividad */}
                     <div className="mb-8">
                       {/* 
@@ -192,6 +204,7 @@ const ActivityDetail: React.FC = () => {
                             como_se_juega: currentActivity.activities.como_se_juega,
                             investigacion_beneficios: currentActivity.activities.investigacion_beneficios
                           }}
+                          onPuzzleComplete={handleBackToSession}
                         />
                       ) : currentActivity.activities.id === 3 ? (
                         <Ses2Act1 
@@ -288,35 +301,25 @@ const ActivityDetail: React.FC = () => {
                         <>
                           {/* Contenido específico según el tipo de actividad */}
                           {currentActivity.activities.tipo_actividad === 'vinculo_afectivo' && currentActivity.activities.contenido_vinculo && (
-                            <div className="bg-braini-pink/10 p-6 rounded-xl border border-braini-pink/20">
-                              <h3 className="text-xl font-bold text-braini-pink-dark mb-4">Actividad de Vínculo Afectivo</h3>
+                            <div className={getInstructionsContainerClasses(currentActivity.activities.tipo_actividad)}>
                               <div className="space-y-4">
-                                <div className="bg-white p-4 rounded-lg border border-braini-pink/30">
-                                  <h4 className="font-semibold text-braini-pink-dark mb-2">Acción:</h4>
-                                  <p className="text-gray-700">{currentActivity.activities.contenido_vinculo.accion}</p>
+                                <div>
+                                  <h4 className={`font-semibold ${getMainTitleTextClasses(currentActivity.activities.tipo_actividad)} mb-2`}>Acción:</h4>
+                                  <p className="text-gray-700 leading-relaxed">{currentActivity.activities.contenido_vinculo.accion}</p>
                                 </div>
-                                <div className="bg-white p-4 rounded-lg border border-braini-pink/30">
-                                  <h4 className="font-semibold text-braini-pink-dark mb-2">Frase:</h4>
-                                  <p className="text-gray-700 italic">"{currentActivity.activities.contenido_vinculo.frase}"</p>
+                                <div>
+                                  <h4 className={`font-semibold ${getMainTitleTextClasses(currentActivity.activities.tipo_actividad)} mb-2`}>Frase:</h4>
+                                  <p className="text-gray-700 italic leading-relaxed">"{currentActivity.activities.contenido_vinculo.frase}"</p>
                                 </div>
                               </div>
                             </div>
                           )}
 
                           {currentActivity.activities.tipo_actividad === 'acompañamiento_emocional' && currentActivity.activities.contenido_apoyo && (
-                            <div className="bg-braini-yellow/10 p-6 rounded-xl border border-braini-yellow/20">
-                              <h3 className="text-xl font-bold text-braini-yellow-dark mb-4">Acompañamiento Emocional</h3>
-                              <div className="bg-white p-4 rounded-lg border border-braini-yellow/30">
-                                <p className="text-gray-700 leading-relaxed">{currentActivity.activities.contenido_apoyo}</p>
+                            <div className={getInstructionsContainerClasses(currentActivity.activities.tipo_actividad)}>
+                              <div className="text-gray-700 leading-relaxed">
+                                {formatearTexto(currentActivity.activities.contenido_apoyo)}
                               </div>
-                            </div>
-                          )}
-
-                          {/* Instrucciones generales */}
-                          {currentActivity.activities.como_se_juega && (
-                            <div className="bg-braini-blue/10 p-6 rounded-xl border border-braini-blue/20 mt-6">
-                              <h3 className="text-xl font-bold text-braini-blue-dark mb-4">¿Cómo se juega?</h3>
-                              <p className="text-gray-700 leading-relaxed">{currentActivity.activities.como_se_juega}</p>
                             </div>
                           )}
                         </>

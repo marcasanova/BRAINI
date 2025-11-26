@@ -368,10 +368,9 @@ const Ses4Act1: React.FC<Ses4Act1Props> = ({
         <SuccessPopup
           onClose={() => {
             setShowSuccessPopup(false);
-            if (onPuzzleComplete) {
-              onPuzzleComplete();
-            }
+            // Al cerrar el popup, nos quedamos en la misma página para poder valorar la actividad
           }}
+          activityType={activityType}
         />
       )}
 

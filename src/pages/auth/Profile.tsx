@@ -145,7 +145,7 @@ const Profile = () => {
                 </div>
               </div>
             ) : (
-              <div className="space-y-6 pb-4">
+              <div className="space-y-6 pb-20 md:pb-4">
               {/* 1. Desplegable - Datos del Usuario (Padre) */}
               <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0">
                 <Accordion type="single" collapsible className="w-full">

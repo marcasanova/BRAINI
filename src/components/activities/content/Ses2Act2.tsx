@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { UserActivity } from '@/hooks/useUserActivities';
 import { formatearTexto } from '@/components/activities/utils/textFormatter';
-import { Play, Pause, RotateCcw, BookOpen, Users } from 'lucide-react';
+import { Play, RotateCcw, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import SuccessPopup from '@/components/activities/utils/SuccessPopup';
 import {
@@ -11,12 +11,26 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog';
+import { 
+  getPrimaryButtonClasses, 
+  getSecondaryButtonClasses, 
+  getInstructionsContainerClasses, 
+  getDurationTextClasses,
+  getMainTitleTextClasses,
+  getSimpleButtonClasses,
+  getOutlineButtonClasses,
+  getTimerColorClasses,
+  getBorderClasses,
+  getScientificBaseTitleClasses,
+  getScientificBaseIconClasses
+} from '@/components/activities/utils/activityColors';
 
 interface Ses2Act2Props {
   userProgress?: UserActivity;
   activityId: number;
   levelId: string;
   userId: string;
+  activityType?: string;
   activityData?: {
     duracion_min?: number;
     duracion_max?: number;
@@ -58,21 +72,12 @@ const PIZZA_STEPS: PizzaStep[] = [
   },
   {
     id: 4,
-    nombre: 'Hornear',
-    instrucciones: 'Y para terminar solo nos queda hornear... ¡Casi está lista nuestra pizza!',
+    nombre: 'Hornear y Disfrutar',
+    instrucciones: 'Y para terminar solo nos queda hornear... ¡Casi está lista nuestra pizza! ¡Ñam ñam! Bocado tras bocado, este masaje titulado "Pizza para cenar" se ha acabado. ¡Qué rico!',
     areas: ['Masaje suave general'],
     emoji: '🔥',
   },
-  {
-    id: 5,
-    nombre: '¡Disfrutar!',
-    instrucciones: '¡Ñam ñam! Bocado tras bocado, este masaje titulado "Pizza para cenar" se ha acabado. ¡Qué rico!',
-    areas: ['¡Todo listo!'],
-    emoji: '😋',
-  },
 ];
-
-const STEP_TRANSITION_TIME = 5; // 5 segundos entre pasos
 
 /**
  * Actividad 2 - Sesión 2
@@ -83,130 +88,70 @@ const Ses2Act2: React.FC<Ses2Act2Props> = ({
   activityId, 
   levelId, 
   userId,
+  activityType,
   activityData,
   onPuzzleComplete
 }) => {
+  // Función helper para obtener el color de fondo de la barra de progreso
+  const getProgressBarColor = (type?: string): string => {
+    switch (type) {
+      case 'inteligencia_emocional':
+        return 'bg-braini-blue';
+      case 'regulacion_emocional':
+        return 'bg-braini-turquoise';
+      case 'vinculo_afectivo':
+        return 'bg-braini-pink';
+      case 'acompañamiento_emocional':
+        return 'bg-braini-yellow';
+      default:
+        return 'bg-braini-blue';
+    }
+  };
+
   // Estados principales
+  const [phase, setPhase] = useState<'preparation' | 'steps'>('preparation');
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
-  const [isRunning, setIsRunning] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
-  const [timeRemaining, setTimeRemaining] = useState(STEP_TRANSITION_TIME);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [showScientificBase, setShowScientificBase] = useState(false);
-  const [currentCook, setCurrentCook] = useState<'parent' | 'child'>('parent');
-  const [isTransitioning, setIsTransitioning] = useState(false);
 
   const currentStep = PIZZA_STEPS[currentStepIndex];
   const totalSteps = PIZZA_STEPS.length;
   const isLastStep = currentStepIndex === totalSteps - 1;
 
-  // Función para avanzar al siguiente paso
-  const handleNextStep = useCallback(() => {
-    if (currentStepIndex < totalSteps - 1) {
-      setIsTransitioning(true);
-      setIsRunning(false);
-      setTimeRemaining(STEP_TRANSITION_TIME);
-      
-      // Esperar 5 segundos antes de avanzar
-      setTimeout(() => {
-        setCurrentStepIndex(prev => prev + 1);
-        setIsTransitioning(false);
-        setIsRunning(true);
-      }, STEP_TRANSITION_TIME * 1000);
-    } else {
-      // Actividad completada
-      setIsRunning(false);
-      setShowSuccessPopup(true);
-    }
-  }, [currentStepIndex, totalSteps]);
-
-  // Efecto para el temporizador de transición
-  useEffect(() => {
-    if (!isTransitioning) return;
-
-    const interval = setInterval(() => {
-      setTimeRemaining((prev) => {
-        if (prev <= 1) {
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [isTransitioning]);
-
-  // Función para iniciar la actividad
+  // Función para iniciar la actividad (desde la pantalla de preparación)
   const startActivity = () => {
-    setIsRunning(true);
-    setIsPaused(false);
-  };
-
-  // Función para pausar/reanudar
-  const togglePause = () => {
-    setIsPaused((prev) => !prev);
-  };
-
-  // Función para reiniciar
-  const resetActivity = () => {
+    setPhase('steps');
     setCurrentStepIndex(0);
-    setIsRunning(false);
-    setIsPaused(false);
-    setTimeRemaining(STEP_TRANSITION_TIME);
-    setIsTransitioning(false);
   };
 
-  // Función para cambiar de cocinero
-  const toggleCook = () => {
-    setCurrentCook((prev) => prev === 'parent' ? 'child' : 'parent');
+  // Función para avanzar al siguiente paso
+  const handleNextStep = () => {
+    if (currentStepIndex < totalSteps - 1) {
+      setCurrentStepIndex(prev => prev + 1);
+    }
   };
 
-  // Componente de cronómetro circular para transición
-  const TransitionTimer: React.FC<{ timeRemaining: number }> = ({ timeRemaining }) => {
-    const percentage = (timeRemaining / STEP_TRANSITION_TIME) * 100;
-    const circumference = 2 * Math.PI * 45;
-    const offset = circumference - (percentage / 100) * circumference;
+  // Función para finalizar la actividad
+  const handleFinishActivity = () => {
+    setShowSuccessPopup(true);
+  };
 
-    return (
-      <div className="relative w-32 h-32">
-        <svg className="transform -rotate-90 w-32 h-32">
-          <circle
-            cx="64"
-            cy="64"
-            r="45"
-            stroke="currentColor"
-            strokeWidth="8"
-            fill="none"
-            className="text-gray-200"
-          />
-          <circle
-            cx="64"
-            cy="64"
-            r="45"
-            stroke="currentColor"
-            strokeWidth="8"
-            fill="none"
-            strokeDasharray={circumference}
-            strokeDashoffset={offset}
-            className="text-braini-turquoise transition-all duration-1000"
-          />
-        </svg>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-3xl font-bold text-braini-turquoise">{timeRemaining}</span>
-        </div>
-      </div>
-    );
+  // Función para reiniciar/repetir
+  const resetActivity = () => {
+    setPhase('preparation');
+    setCurrentStepIndex(0);
+    setShowSuccessPopup(false);
   };
 
   return (
     <div className="space-y-6">
       {/* Instrucciones con datos del backend */}
       {activityData && (
-        <div className="bg-gradient-to-r from-braini-turquoise/10 to-braini-turquoise/5 p-6 rounded-xl border border-braini-turquoise/20">
+        <div className={getInstructionsContainerClasses(activityType)}>
           {/* Duración del backend */}
           {activityData.duracion_min && activityData.duracion_max && (
             <p className="text-gray-700 leading-relaxed mb-3">
-              <strong className="text-braini-turquoise-dark">Duración:</strong> {activityData.duracion_min} - {activityData.duracion_max} minutos
+              <strong className={getDurationTextClasses(activityType)}>Duración:</strong> {activityData.duracion_min} - {activityData.duracion_max} minutos
             </p>
           )}
           {/* ¿Cómo se juega? del backend - Con formateo */}
@@ -217,11 +162,11 @@ const Ses2Act2: React.FC<Ses2Act2Props> = ({
           )}
           {/* Botón para ver base científica */}
           {activityData.investigacion_beneficios && (
-            <div className={`mt-4 pt-4 border-t border-braini-turquoise/20`}>
+            <div className={`mt-4 pt-4 border-t ${getBorderClasses(activityType)}`}>
               <Button
                 onClick={() => setShowScientificBase(true)}
                 variant="outline"
-                className={`w-full sm:w-auto bg-white/80 hover:bg-white border-braini-turquoise/30 text-braini-turquoise hover:text-braini-turquoise-dark hover:border-braini-turquoise transition-all duration-300 px-6 py-3 text-lg`}
+                className={`w-full sm:w-auto ${getSecondaryButtonClasses(activityType)}`}
               >
                 <BookOpen className="w-4 h-4 mr-2" />
                 Ver Base Científica
@@ -231,66 +176,51 @@ const Ses2Act2: React.FC<Ses2Act2Props> = ({
         </div>
       )}
 
-      {/* Pantalla de transición entre pasos */}
-      {isTransitioning && (
-              <div className="bg-white/95 backdrop-blur-lg p-8 rounded-2xl shadow-xl border-0 text-center">
-                <div className="mb-6">
-                  <TransitionTimer timeRemaining={timeRemaining} />
-                </div>
-                <h2 className="text-2xl md:text-3xl font-black text-braini-turquoise-dark mb-4">
-                  Preparando siguiente paso...
-                </h2>
-                <p className="text-lg text-gray-700">
-                  {currentStepIndex < totalSteps - 1 
-                    ? `Siguiente: ${PIZZA_STEPS[currentStepIndex + 1].nombre}`
-                    : '¡Casi terminamos!'
-                  }
-                </p>
-              </div>
-            )}
+      {/* Card contenedora única con tamaño fijo */}
+      <div className="bg-white/95 backdrop-blur-lg p-6 md:p-8 rounded-2xl shadow-xl border-0">
+        {/* Pantalla de preparación */}
+        {phase === 'preparation' && (
+          <div className="text-center min-h-[350px] flex flex-col items-center justify-center">
+            <div>
+              <h2 className={`text-3xl font-black ${getMainTitleTextClasses(activityType)} mb-4`}>
+                ¡Prepárate!
+              </h2>
+              <p className="text-xl text-gray-700 mb-8">
+                Vamos a preparar una pizza especial con masajes.
+                <br />
+                <strong>¡Prepárate para disfrutar de este momento juntos!</strong>
+              </p>
+              <Button
+                onClick={startActivity}
+                className={getPrimaryButtonClasses(activityType)}
+              >
+                <Play className="w-5 h-5 mr-2" />
+                Empezar Actividad
+              </Button>
+            </div>
+          </div>
+        )}
 
-      {/* Contenido principal de la actividad */}
-      {!isTransitioning && (
-        <div className="bg-white/95 backdrop-blur-lg p-6 md:p-8 rounded-2xl shadow-xl border-0">
+        {/* Contenido principal de la actividad - Pasos */}
+        {phase === 'steps' && (
+          <div>
                 {/* Header */}
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-3">
-                    <div className="text-4xl">{currentStep.emoji}</div>
-                    <div>
-                      <h2 className="text-2xl md:text-3xl font-black text-braini-turquoise-dark">
-                        Pizza para cenar
-                      </h2>
-                      <p className="text-sm text-gray-600">
-                        Paso {currentStepIndex + 1} de {totalSteps}
-                      </p>
-                    </div>
-                  </div>
-                  
-                  {/* Toggle de cocinero */}
-                  <Button
-                    onClick={toggleCook}
-                    variant="outline"
-                    className="border-braini-turquoise/30 text-braini-turquoise hover:bg-braini-turquoise/10"
-                  >
-                    <Users className="w-4 h-4 mr-2" />
-                    {currentCook === 'parent' ? 'Cambiar a niño/a' : 'Cambiar a adulto'}
-                  </Button>
-                </div>
-
-                {/* Indicador de quién cocina */}
-                <div className="mb-6 p-4 bg-braini-turquoise/10 rounded-xl border border-braini-turquoise/20">
-                  <p className="text-center text-lg font-semibold text-braini-turquoise-dark">
-                    {currentCook === 'parent' ? '👨‍🍳 El adulto está cocinando' : '👶 El niño/a está cocinando'}
+                <div className="mb-6">
+                  <h2 className={`text-2xl md:text-3xl font-black ${getMainTitleTextClasses(activityType)} mb-2`}>
+                    Pizza para cenar
+                  </h2>
+                  <p className="text-sm text-gray-600">
+                    Paso {currentStepIndex + 1} de {totalSteps}
                   </p>
                 </div>
 
                 {/* Paso actual */}
-                <div className="bg-gradient-to-r from-braini-turquoise/10 to-braini-turquoise/5 p-6 rounded-xl border-2 border-braini-turquoise/30 mb-6">
+                <div className={`${getInstructionsContainerClasses(activityType)} p-6 rounded-xl border-2 ${getBorderClasses(activityType)} mb-6`}>
                   <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                     {/* Emoji grande */}
                     <div className="flex-1 flex flex-col items-center">
                       <div className="text-8xl mb-4">{currentStep.emoji}</div>
-                      <h3 className="text-3xl font-black text-braini-turquoise-dark mb-4">
+                      <h3 className={`text-3xl font-black ${getMainTitleTextClasses(activityType)} mb-4`}>
                         {currentStep.nombre}
                       </h3>
                     </div>
@@ -311,7 +241,7 @@ const Ses2Act2: React.FC<Ses2Act2Props> = ({
                           {currentStep.areas.map((area, index) => (
                             <span
                               key={index}
-                              className="px-3 py-1 bg-white rounded-full text-sm font-medium text-braini-turquoise-dark border border-braini-turquoise/30"
+                              className={`px-3 py-1 bg-white rounded-full text-sm font-medium ${getMainTitleTextClasses(activityType)} border ${getBorderClasses(activityType)}`}
                             >
                               {area}
                             </span>
@@ -331,7 +261,7 @@ const Ses2Act2: React.FC<Ses2Act2Props> = ({
                         index < currentStepIndex
                           ? 'bg-green-500'
                           : index === currentStepIndex
-                          ? 'bg-braini-turquoise'
+                          ? getProgressBarColor(activityType)
                           : 'bg-gray-200'
                       }`}
                     />
@@ -340,75 +270,47 @@ const Ses2Act2: React.FC<Ses2Act2Props> = ({
 
                 {/* Controles */}
                 <div className="flex flex-wrap justify-center gap-3">
-                  {!isRunning ? (
-                    <Button
-                      onClick={startActivity}
-                      className="bg-gradient-to-r from-braini-turquoise to-braini-turquoise-light hover:from-braini-turquoise-dark hover:to-braini-turquoise text-white font-semibold px-6 py-2 rounded-lg shadow-lg"
-                    >
-                      <Play className="w-4 h-4 mr-2" />
-                      {currentStepIndex === 0 ? 'Empezar' : 'Continuar'}
-                    </Button>
-                  ) : (
-                    <Button
-                      onClick={togglePause}
-                      variant="outline"
-                      className="border-braini-turquoise text-braini-turquoise hover:bg-braini-turquoise/10"
-                    >
-                      {isPaused ? (
-                        <>
-                          <Play className="w-4 h-4 mr-2" />
-                          Reanudar
-                        </>
-                      ) : (
-                        <>
-                          <Pause className="w-4 h-4 mr-2" />
-                          Pausar
-                        </>
-                      )}
-                    </Button>
-                  )}
-                  
-                  {!isLastStep && !isTransitioning && (
+                  {!isLastStep && (
                     <Button
                       onClick={handleNextStep}
-                      className="bg-gradient-to-r from-braini-turquoise to-braini-turquoise-light hover:from-braini-turquoise-dark hover:to-braini-turquoise text-white font-semibold px-6 py-2 rounded-lg shadow-lg"
-                      disabled={!isRunning && currentStepIndex === 0}
+                      className={getPrimaryButtonClasses(activityType)}
                     >
                       Siguiente Paso
                     </Button>
                   )}
                   
-                  {isLastStep && !isTransitioning && (
+                  {!isLastStep && (
                     <Button
-                      onClick={handleNextStep}
-                      className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold px-6 py-2 rounded-lg shadow-lg"
-                      disabled={!isRunning && currentStepIndex === 0}
+                      onClick={resetActivity}
+                      variant="outline"
+                      className={getOutlineButtonClasses(activityType)}
                     >
-                      Completar Actividad
+                      <RotateCcw className="w-4 h-4 mr-2" />
+                      Reiniciar
                     </Button>
                   )}
                   
-                  <Button
-                    onClick={resetActivity}
-                    variant="outline"
-                    className="border-gray-300 text-gray-700 hover:bg-gray-100"
-                  >
-                    <RotateCcw className="w-4 h-4 mr-2" />
-                    Reiniciar
-                  </Button>
+                  {isLastStep && (
+                    <Button
+                      onClick={handleFinishActivity}
+                      className={getPrimaryButtonClasses(activityType)}
+                    >
+                      Terminar Juego
+                    </Button>
+                  )}
                 </div>
-              </div>
-            )}
+          </div>
+        )}
+      </div>
 
       {/* Popup de éxito */}
       {showSuccessPopup && (
         <SuccessPopup
           onClose={() => {
             setShowSuccessPopup(false);
-            if (onPuzzleComplete) {
-              onPuzzleComplete();
-            }
+            // Al cerrar el popup, nos quedamos en la misma página para poder valorar la actividad
           }}
+          activityType={activityType}
         />
       )}
 
@@ -416,8 +318,8 @@ const Ses2Act2: React.FC<Ses2Act2Props> = ({
       <Dialog open={showScientificBase} onOpenChange={setShowScientificBase}>
         <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto bg-white/95 backdrop-blur-lg">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-indigo-800 flex items-center gap-2">
-              <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <DialogTitle className={`text-2xl font-bold ${getScientificBaseTitleClasses(activityType)} flex items-center gap-2`}>
+              <svg className={`w-6 h-6 ${getScientificBaseIconClasses(activityType)}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
               </svg>
               Base Científica
@@ -436,7 +338,7 @@ const Ses2Act2: React.FC<Ses2Act2Props> = ({
           <div className="mt-6 flex justify-end">
             <Button
               onClick={() => setShowScientificBase(false)}
-              className="bg-gradient-to-r from-braini-turquoise to-braini-turquoise-light hover:from-braini-turquoise-dark hover:to-braini-turquoise text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+              className={getSimpleButtonClasses(activityType) + " hover:shadow-xl transform hover:scale-105"}
             >
               Cerrar
             </Button>

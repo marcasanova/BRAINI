@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { UserActivity } from '@/hooks/useUserActivities';
 import { CheckCircle, X, Sparkles, BookOpen } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
 import { formatearTexto } from '@/components/activities/utils/textFormatter';
 import SuccessPopup from '@/components/activities/utils/SuccessPopup';
 import {
@@ -17,7 +16,9 @@ import {
   getInstructionsContainerClasses, 
   getDurationTextClasses,
   getSimpleButtonClasses,
-  getBorderClasses
+  getBorderClasses,
+  getScientificBaseTitleClasses,
+  getScientificBaseIconClasses
 } from '@/components/activities/utils/activityColors';
 
 interface Ses1Act1Props {
@@ -65,8 +66,6 @@ const Ses1Act1: React.FC<Ses1Act1Props> = ({
   activityData,
   onPuzzleComplete
 }) => {
-  const { toast } = useToast();
-  
   // ====================================================
   // DATOS HARDCODEADOS - Orden aleatorio cada vez
   // ====================================================
@@ -167,12 +166,6 @@ const Ses1Act1: React.FC<Ses1Act1Props> = ({
       const nuevasCompletadas = [...completadas, emocion.id];
       setCompletadas(nuevasCompletadas);
       setSeleccion(null);
-      
-      // Mostrar toast de éxito
-      toast({
-        title: "¡Correcto! 🎉",
-        description: `Has emparejado ${emocion.nombre} correctamente`,
-      });
 
       // Si completó todas las parejas
       if (nuevasCompletadas.length === EMOCIONES.length) {
@@ -184,12 +177,6 @@ const Ses1Act1: React.FC<Ses1Act1Props> = ({
       setError(true);
       setParIncorrecto({ emocionId: emocion.id, fraseId: frase.id });
       setSeleccion(null);
-      
-      toast({
-        title: "Incorrecto",
-        description: "Las emociones no coinciden. ¡Inténtalo de nuevo!",
-        variant: "destructive",
-      });
 
       // Limpiar error y feedback visual después de 2 segundos
       setTimeout(() => {
@@ -297,9 +284,9 @@ const Ses1Act1: React.FC<Ses1Act1Props> = ({
                 className={`
                   relative p-2 rounded-xl border-2 transition-all duration-200
                   ${estaCompletada(emocion.id)
-                    ? 'bg-green-50 border-green-300 opacity-75 cursor-not-allowed'
+                    ? 'bg-braini-green/10 border-braini-green opacity-75 cursor-not-allowed'
                     : parIncorrecto?.emocionId === emocion.id
-                    ? 'bg-red-50 border-red-500 shadow-lg animate-shake'
+                    ? 'bg-braini-pink/10 border-braini-pink shadow-lg animate-shake'
                     : estaSeleccionadaImagen(emocion.id)
                     ? 'bg-blue-100 border-blue-500 shadow-lg transform scale-105'
                     : 'bg-white border-gray-300 hover:border-blue-400 hover:shadow-md cursor-pointer'
@@ -326,13 +313,13 @@ const Ses1Act1: React.FC<Ses1Act1Props> = ({
                 <p className="text-xs font-medium text-gray-700 text-center leading-tight">{emocion.nombre}</p>
                 
                 {parIncorrecto?.emocionId === emocion.id && (
-                  <div className="absolute top-1 right-1 bg-red-500 rounded-full p-1 animate-pulse">
+                  <div className="absolute top-1 right-1 bg-braini-pink rounded-full p-1 animate-pulse">
                     <X className="w-4 h-4 text-white" />
                   </div>
                 )}
                 
                 {estaCompletada(emocion.id) && (
-                  <div className="absolute top-1 right-1 bg-green-500 rounded-full p-1">
+                  <div className="absolute top-1 right-1 bg-braini-green rounded-full p-1">
                     <CheckCircle className="w-4 h-4 text-white" />
                   </div>
                 )}
@@ -362,9 +349,9 @@ const Ses1Act1: React.FC<Ses1Act1Props> = ({
                     const emocion = EMOCIONES.find(e => e.id === emocionId);
                     return emocion && emocion.fraseId === frase.id;
                   })
-                    ? 'bg-green-50 border-green-300 opacity-75 cursor-not-allowed'
+                    ? 'bg-braini-green/10 border-braini-green opacity-75 cursor-not-allowed'
                     : parIncorrecto?.fraseId === frase.id
-                    ? 'bg-red-50 border-red-500 shadow-lg animate-shake'
+                    ? 'bg-braini-pink/10 border-braini-pink shadow-lg animate-shake'
                     : estaSeleccionadaFrase(frase.id)
                     ? 'bg-blue-100 border-blue-500 shadow-lg transform scale-105'
                     : 'bg-white border-gray-300 hover:border-blue-400 hover:shadow-md cursor-pointer'
@@ -387,6 +374,7 @@ const Ses1Act1: React.FC<Ses1Act1Props> = ({
             setShowSuccessPopup(false);
             // Al cerrar el popup, nos quedamos en la misma página para poder valorar la actividad
           }}
+          activityType={activityType}
         />
       )}
 
@@ -394,8 +382,8 @@ const Ses1Act1: React.FC<Ses1Act1Props> = ({
       <Dialog open={showScientificBase} onOpenChange={setShowScientificBase}>
         <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto bg-white/95 backdrop-blur-lg">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-indigo-800 flex items-center gap-2">
-              <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <DialogTitle className={`text-2xl font-bold ${getScientificBaseTitleClasses(activityType)} flex items-center gap-2`}>
+              <svg className={`w-6 h-6 ${getScientificBaseIconClasses(activityType)}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
               </svg>
               Base Científica
@@ -414,7 +402,7 @@ const Ses1Act1: React.FC<Ses1Act1Props> = ({
           <div className="mt-6 flex justify-end">
             <Button
               onClick={() => setShowScientificBase(false)}
-              className="bg-braini-blue hover:bg-braini-blue-dark text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+              className={getSimpleButtonClasses(activityType) + " hover:shadow-xl transform hover:scale-105"}
             >
               Cerrar
             </Button>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { UserActivity } from '@/hooks/useUserActivities';
-import { CheckCircle, X, BookOpen, Play, Heart, HeartOff } from 'lucide-react';
+import { CheckCircle, X, BookOpen, Heart, HeartOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { formatearTexto } from '@/components/activities/utils/textFormatter';
 import SuccessPopup from '@/components/activities/utils/SuccessPopup';
@@ -12,12 +12,24 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { 
+  getPrimaryButtonClasses, 
+  getSecondaryButtonClasses, 
+  getInstructionsContainerClasses, 
+  getDurationTextClasses,
+  getMainTitleTextClasses,
+  getSimpleButtonClasses,
+  getBorderClasses,
+  getScientificBaseTitleClasses,
+  getScientificBaseIconClasses
+} from '@/components/activities/utils/activityColors';
 
 interface Ses3Act1Props {
   userProgress?: UserActivity;
   activityId: number;
   levelId: string;
   userId: string;
+  activityType?: string;
   activityData?: {
     duracion_min?: number;
     duracion_max?: number;
@@ -55,10 +67,27 @@ const Ses3Act1: React.FC<Ses3Act1Props> = ({
   activityId, 
   levelId, 
   userId,
+  activityType,
   activityData,
   onPuzzleComplete
 }) => {
   const { toast } = useToast();
+  
+  // Función helper para obtener el color de fondo de la barra de progreso
+  const getProgressBarColor = (type?: string): string => {
+    switch (type) {
+      case 'inteligencia_emocional':
+        return 'bg-braini-blue';
+      case 'regulacion_emocional':
+        return 'bg-braini-turquoise';
+      case 'vinculo_afectivo':
+        return 'bg-braini-pink';
+      case 'acompañamiento_emocional':
+        return 'bg-braini-yellow';
+      default:
+        return 'bg-braini-blue';
+    }
+  };
   
   // Randomizar el orden al cargar
   const [emocionesOrdenadas] = useState(() => 
@@ -70,7 +99,6 @@ const Ses3Act1: React.FC<Ses3Act1Props> = ({
   const [emocionesNoMeGusta, setEmocionesNoMeGusta] = useState<Emocion[]>([]);
   const [emocionSeleccionada, setEmocionSeleccionada] = useState<Emocion | null>(null);
   const [showModal, setShowModal] = useState(false);
-  const [showActivityDialog, setShowActivityDialog] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [showScientificBase, setShowScientificBase] = useState(false);
   const [juegoCompletado, setJuegoCompletado] = useState(false);
@@ -82,14 +110,13 @@ const Ses3Act1: React.FC<Ses3Act1Props> = ({
 
   // Efecto para detectar cuando todas las emociones están clasificadas
   useEffect(() => {
-    if (todasClasificadas && showActivityDialog && !juegoCompletado) {
+    if (todasClasificadas && !juegoCompletado) {
       setJuegoCompletado(true);
       setTimeout(() => {
-        setShowActivityDialog(false);
         setShowSuccessPopup(true);
       }, 500);
     }
-  }, [todasClasificadas, showActivityDialog, juegoCompletado]);
+  }, [todasClasificadas, juegoCompletado]);
 
   // Función para abrir modal de clasificación
   const handleEmocionClick = (emocion: Emocion) => {
@@ -144,16 +171,6 @@ const Ses3Act1: React.FC<Ses3Act1Props> = ({
     // Usamos useEffect para detectar cuando todas están clasificadas
   };
 
-  // Función para abrir dialog de actividad
-  const openActivityDialog = () => {
-    // Resetear todo
-    setEmocionesMeGusta([]);
-    setEmocionesNoMeGusta([]);
-    setEmocionSeleccionada(null);
-    setShowModal(false);
-    setJuegoCompletado(false);
-    setShowActivityDialog(true);
-  };
 
   // Función para verificar si una emoción está clasificada
   const estaClasificada = (emocion: Emocion) => {
@@ -172,11 +189,11 @@ const Ses3Act1: React.FC<Ses3Act1Props> = ({
     <div className="space-y-6">
       {/* Instrucciones con datos del backend */}
       {activityData && (
-        <div className="bg-gradient-to-r from-braini-blue/10 to-braini-blue/5 p-6 rounded-xl border border-braini-blue/20">
+        <div className={getInstructionsContainerClasses(activityType)}>
           {/* Duración del backend */}
           {activityData.duracion_min && activityData.duracion_max && (
             <p className="text-gray-700 leading-relaxed mb-3">
-              <strong className="text-braini-blue-dark">Duración:</strong> {activityData.duracion_min} - {activityData.duracion_max} minutos
+              <strong className={getDurationTextClasses(activityType)}>Duración:</strong> {activityData.duracion_min} - {activityData.duracion_max} minutos
             </p>
           )}
           {/* ¿Cómo se juega? del backend - Con formateo */}
@@ -185,67 +202,32 @@ const Ses3Act1: React.FC<Ses3Act1Props> = ({
               {formatearTexto(activityData.como_se_juega)}
             </div>
           )}
-          {/* Botones de acción */}
-          <div className="mt-6 flex flex-wrap gap-4">
-            <Button
-              onClick={openActivityDialog}
-              className="bg-gradient-to-r from-braini-blue to-braini-blue-light hover:from-braini-blue-dark hover:to-braini-blue text-white font-semibold px-8 py-3 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 text-lg"
-            >
-              <Play className="w-5 h-5 mr-2" />
-              Empezar Actividad
-            </Button>
-            {activityData.investigacion_beneficios && (
+          {/* Botón para ver base científica */}
+          {activityData.investigacion_beneficios && (
+            <div className={`mt-4 pt-4 border-t ${getBorderClasses(activityType)}`}>
               <Button
                 onClick={() => setShowScientificBase(true)}
                 variant="outline"
-                className="bg-white/80 hover:bg-white border-braini-blue/30 text-braini-blue hover:text-braini-blue-dark hover:border-braini-blue transition-all duration-300 px-6 py-3 text-lg"
+                className={`w-full sm:w-auto ${getSecondaryButtonClasses(activityType)}`}
               >
                 <BookOpen className="w-4 h-4 mr-2" />
                 Ver Base Científica
               </Button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       )}
 
-      {/* Dialog de la actividad interactiva */}
-      <Dialog open={showActivityDialog} onOpenChange={setShowActivityDialog}>
-        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto bg-white/95 backdrop-blur-lg p-0">
-          <div className="p-6 md:p-8">
-            {/* Header */}
-            <div className="mb-6">
-              <h2 className="text-2xl md:text-3xl font-black text-braini-blue-dark mb-2">
-                Me gusta, no me gusta
-              </h2>
-              <p className="text-gray-600">
-                Clasifica las emociones según lo que te hace sentir
-              </p>
-            </div>
-
-            {/* Indicador de progreso */}
-            <div className="mb-6 p-4 bg-gradient-to-r from-braini-blue/10 to-braini-blue/5 rounded-xl border border-braini-blue/20">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-semibold text-gray-700">Progreso</span>
-                <span className="text-sm font-bold text-braini-blue">
-                  {totalClasificadas} de {totalEmociones} emociones clasificadas
-                </span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2.5">
-                <div 
-                  className="bg-gradient-to-r from-braini-blue to-braini-blue-light h-2.5 rounded-full transition-all duration-500"
-                  style={{ width: `${(totalClasificadas / totalEmociones) * 100}%` }}
-                />
-              </div>
-            </div>
-
-            {/* Layout de 3 filas */}
-            <div className="space-y-6">
-              {/* Primera fila: Todas las emociones */}
-              <div>
-                <h3 className="text-lg font-bold text-gray-700 mb-4 text-center">
-                  Emociones
-                </h3>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+      {/* Área de juego */}
+      <div className="space-y-6">
+        {/* Layout de 3 filas */}
+        <div className="space-y-6">
+          {/* Primera fila: Todas las emociones */}
+          <div>
+            <h3 className="text-lg font-bold text-gray-700 mb-4">
+              Emociones
+            </h3>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                   {emocionesOrdenadas.map((emocion) => {
                     const clasificada = estaClasificada(emocion);
                     const categoria = obtenerCategoria(emocion);
@@ -258,9 +240,9 @@ const Ses3Act1: React.FC<Ses3Act1Props> = ({
                           relative p-2 rounded-xl border-2 transition-all duration-200
                           ${clasificada
                             ? categoria === 'meGusta'
-                              ? 'bg-green-50 border-green-300'
-                              : 'bg-red-50 border-red-300'
-                            : 'bg-white border-gray-300 hover:border-braini-blue hover:shadow-md'
+                              ? 'bg-braini-green/10 border-braini-green'
+                              : 'bg-braini-pink/10 border-braini-pink'
+                            : 'bg-white border-gray-300 hover:border-blue-400 hover:shadow-md'
                           }
                           cursor-pointer
                         `}
@@ -288,11 +270,11 @@ const Ses3Act1: React.FC<Ses3Act1Props> = ({
                         {clasificada && (
                           <div className="absolute top-1 right-1">
                             {categoria === 'meGusta' ? (
-                              <div className="bg-green-500 rounded-full p-1">
+                              <div className="bg-braini-green rounded-full p-1">
                                 <Heart className="w-3 h-3 text-white fill-current" />
                               </div>
                             ) : (
-                              <div className="bg-red-500 rounded-full p-1">
+                              <div className="bg-braini-pink rounded-full p-1">
                                 <HeartOff className="w-3 h-3 text-white" />
                               </div>
                             )}
@@ -301,26 +283,26 @@ const Ses3Act1: React.FC<Ses3Act1Props> = ({
                       </button>
                     );
                   })}
-                </div>
-              </div>
+            </div>
+          </div>
 
-              {/* Segunda y tercera fila: Me gusta y No me gusta (mismo ancho) */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                {/* Fila 2: Me gusta */}
-                <div>
-                  <div className="bg-green-50 border-2 border-green-300 rounded-xl p-4 min-h-[300px]">
+          {/* Segunda y tercera fila: Me gusta y No me gusta (mismo ancho) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+            {/* Fila 2: Me gusta */}
+            <div>
+                  <div className="bg-braini-green/10 border-2 border-braini-green rounded-xl p-4 min-h-[200px]">
                     <div className="flex items-center gap-2 mb-4">
-                      <Heart className="w-6 h-6 text-green-600 fill-current" />
-                      <h3 className="text-lg font-bold text-green-700">
+                      <Heart className="w-6 h-6 text-braini-green fill-current" />
+                      <h3 className="text-lg font-bold text-braini-green">
                         Me gusta
                       </h3>
-                      <span className="ml-auto bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">
+                      <span className="ml-auto bg-braini-green text-white text-xs font-bold px-2 py-1 rounded-full">
                         {emocionesMeGusta.length}
                       </span>
                     </div>
-                    <div className="space-y-3">
+                    <div className={emocionesMeGusta.length > 4 ? "grid grid-cols-2 gap-3" : "space-y-3"}>
                       {emocionesMeGusta.length === 0 ? (
-                        <div className="text-center py-8 text-gray-400">
+                        <div className="text-center py-8 text-gray-400 col-span-2">
                           <p className="text-sm">Haz click en una emoción</p>
                           <p className="text-xs mt-1">para clasificarla aquí</p>
                         </div>
@@ -329,7 +311,7 @@ const Ses3Act1: React.FC<Ses3Act1Props> = ({
                           <div
                             key={`${emocion.id}-${emocion.nombre}`}
                             onClick={() => handleEmocionClick(emocion)}
-                            className="bg-white p-3 rounded-lg border border-green-300 cursor-pointer hover:shadow-md transition-shadow"
+                            className="bg-white p-3 rounded-lg border border-braini-green cursor-pointer hover:shadow-md transition-shadow"
                           >
                             <div className="flex items-center gap-3">
                               {emocion.imagen ? (
@@ -348,30 +330,30 @@ const Ses3Act1: React.FC<Ses3Act1Props> = ({
                               <span className="font-medium text-gray-700 flex-1">
                                 {emocion.nombre}
                               </span>
-                              <X className="w-4 h-4 text-gray-400 hover:text-red-500" />
+                              <X className="w-4 h-4 text-gray-400 hover:text-braini-pink" />
                             </div>
                           </div>
                         ))
                       )}
                     </div>
                   </div>
-                </div>
+            </div>
 
-                {/* Fila 3: No me gusta */}
-                <div>
-                  <div className="bg-red-50 border-2 border-red-300 rounded-xl p-4 min-h-[300px]">
+            {/* Fila 3: No me gusta */}
+            <div>
+                  <div className="bg-braini-pink/10 border-2 border-braini-pink rounded-xl p-4 min-h-[200px]">
                     <div className="flex items-center gap-2 mb-4">
-                      <HeartOff className="w-6 h-6 text-red-600" />
-                      <h3 className="text-lg font-bold text-red-700">
+                      <HeartOff className="w-6 h-6 text-braini-pink" />
+                      <h3 className="text-lg font-bold text-braini-pink">
                         No me gusta
                       </h3>
-                      <span className="ml-auto bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">
+                      <span className="ml-auto bg-braini-pink text-white text-xs font-bold px-2 py-1 rounded-full">
                         {emocionesNoMeGusta.length}
                       </span>
                     </div>
-                    <div className="space-y-3">
+                    <div className={emocionesNoMeGusta.length > 4 ? "grid grid-cols-2 gap-3" : "space-y-3"}>
                       {emocionesNoMeGusta.length === 0 ? (
-                        <div className="text-center py-8 text-gray-400">
+                        <div className="text-center py-8 text-gray-400 col-span-2">
                           <p className="text-sm">Haz click en una emoción</p>
                           <p className="text-xs mt-1">para clasificarla aquí</p>
                         </div>
@@ -380,7 +362,7 @@ const Ses3Act1: React.FC<Ses3Act1Props> = ({
                           <div
                             key={`${emocion.id}-${emocion.nombre}`}
                             onClick={() => handleEmocionClick(emocion)}
-                            className="bg-white p-3 rounded-lg border border-red-300 cursor-pointer hover:shadow-md transition-shadow"
+                            className="bg-white p-3 rounded-lg border border-braini-pink cursor-pointer hover:shadow-md transition-shadow"
                           >
                             <div className="flex items-center gap-3">
                               {emocion.imagen ? (
@@ -399,29 +381,17 @@ const Ses3Act1: React.FC<Ses3Act1Props> = ({
                               <span className="font-medium text-gray-700 flex-1">
                                 {emocion.nombre}
                               </span>
-                              <X className="w-4 h-4 text-gray-400 hover:text-red-500" />
+                              <X className="w-4 h-4 text-gray-400 hover:text-braini-pink" />
                             </div>
                           </div>
                         ))
                       )}
                     </div>
                   </div>
-                </div>
-              </div>
             </div>
-
-            {/* Mensaje de completado */}
-            {todasClasificadas && (
-              <div className="mt-6 p-4 bg-green-50 border-2 border-green-300 rounded-xl text-center">
-                <div className="flex items-center justify-center gap-2 text-green-700 font-semibold">
-                  <CheckCircle className="w-5 h-5" />
-                  <span>¡Todas las emociones clasificadas! La actividad se completará automáticamente.</span>
-                </div>
-              </div>
-            )}
           </div>
-        </DialogContent>
-      </Dialog>
+        </div>
+      </div>
 
       {/* Modal para clasificar emoción */}
       <Dialog open={showModal} onOpenChange={setShowModal}>
@@ -457,14 +427,14 @@ const Ses3Act1: React.FC<Ses3Act1Props> = ({
               <div className="flex gap-3">
                 <Button
                   onClick={() => handleClasificar('meGusta')}
-                  className="flex-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3"
+                  className="flex-1 bg-braini-green hover:bg-braini-green-dark text-white font-semibold py-3"
                 >
                   <Heart className="w-5 h-5 mr-2 fill-current" />
                   Me gusta
                 </Button>
                 <Button
                   onClick={() => handleClasificar('noMeGusta')}
-                  className="flex-1 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-3"
+                  className="flex-1 bg-braini-pink hover:bg-braini-pink-dark text-white font-semibold py-3"
                 >
                   <HeartOff className="w-5 h-5 mr-2" />
                   No me gusta
@@ -480,10 +450,9 @@ const Ses3Act1: React.FC<Ses3Act1Props> = ({
         <SuccessPopup
           onClose={() => {
             setShowSuccessPopup(false);
-            if (onPuzzleComplete) {
-              onPuzzleComplete();
-            }
+            // Al cerrar el popup, nos quedamos en la misma página para poder valorar la actividad
           }}
+          activityType={activityType}
         />
       )}
 
@@ -491,8 +460,8 @@ const Ses3Act1: React.FC<Ses3Act1Props> = ({
       <Dialog open={showScientificBase} onOpenChange={setShowScientificBase}>
         <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto bg-white/95 backdrop-blur-lg">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-indigo-800 flex items-center gap-2">
-              <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <DialogTitle className={`text-2xl font-bold ${getScientificBaseTitleClasses(activityType)} flex items-center gap-2`}>
+              <svg className={`w-6 h-6 ${getScientificBaseIconClasses(activityType)}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
               </svg>
               Base Científica
@@ -511,7 +480,7 @@ const Ses3Act1: React.FC<Ses3Act1Props> = ({
           <div className="mt-6 flex justify-end">
             <Button
               onClick={() => setShowScientificBase(false)}
-              className="bg-gradient-to-r from-braini-blue to-braini-blue-light hover:from-braini-blue-dark hover:to-braini-blue text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+              className={getSimpleButtonClasses(activityType) + " hover:shadow-xl transform hover:scale-105"}
             >
               Cerrar
             </Button>
