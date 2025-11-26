@@ -1,5 +1,5 @@
-
 import type { Config } from "tailwindcss";
+import tailwindcssAnimate from "tailwindcss-animate";
 
 export default {
 	darkMode: ["class"],
@@ -64,16 +64,23 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				braini: {
-					blue: '#4A90E2',
-					'blue-light': '#87CEEB',
-					'blue-dark': '#2E5984',
-					pink: '#FF69B4',
-					'pink-light': '#FFB6C1',
-					yellow: '#FFD700',
-					'yellow-light': '#FFEB3B',
-					green: '#40E0D0',
-					'green-light': '#7FFFD4',
-					turquoise: '#40E0D0'
+					// Colores corporativos
+					yellow: '#f8cd50',
+					'yellow-light': '#fad97a',
+					'yellow-dark': '#d4a842',
+					pink: '#f5827b',
+					'pink-light': '#f8a8a3',
+					'pink-dark': '#d15a52',
+					blue: '#7ea4df',
+					'blue-light': '#a0c0e8',
+					'blue-dark': '#5d7ba8',
+					turquoise: '#35bdb1',
+					'turquoise-light': '#5dd1c7',
+					'turquoise-dark': '#2a968b',
+					// Mantener green como alias de turquoise para compatibilidad
+					green: '#35bdb1',
+					'green-light': '#5dd1c7',
+					'green-dark': '#2a968b'
 				}
 			},
 			borderRadius: {
@@ -106,36 +113,40 @@ export default {
 						transform: 'translateY(-10px)'
 					}
 				},
-				'float-slow': {
-					'0%, 100%': {
-						transform: 'translateY(0px) rotate(0deg)'
-					},
-					'50%': {
-						transform: 'translateY(-15px) rotate(2deg)'
-					}
-				},
-				'float-medium': {
-					'0%, 100%': {
-						transform: 'translateY(0px) rotate(0deg)'
-					},
-					'50%': {
-						transform: 'translateY(-12px) rotate(-1deg)'
-					}
-				},
-				'float-fast': {
-					'0%, 100%': {
-						transform: 'translateY(0px) rotate(0deg)'
-					},
-					'50%': {
-						transform: 'translateY(-8px) rotate(1deg)'
-					}
-				},
 				'bounce-slow': {
 					'0%, 100%': {
 						transform: 'translateY(0)'
 					},
 					'50%': {
 						transform: 'translateY(-5px)'
+					}
+				},
+				'confetti-fall': {
+					'0%': {
+						transform: 'translateY(-100vh) rotate(0deg)',
+						opacity: '1'
+					},
+					'100%': {
+						transform: 'translateY(100vh) rotate(720deg)',
+						opacity: '0'
+					}
+				},
+				'medal-glow': {
+					'0%, 100%': {
+						boxShadow: '0 0 20px rgba(248, 205, 80, 0.3)'
+					},
+					'50%': {
+						boxShadow: '0 0 40px rgba(248, 205, 80, 0.6)'
+					}
+				},
+				'sparkle-twinkle': {
+					'0%, 100%': {
+						opacity: '0.3',
+						transform: 'scale(0.8)'
+					},
+					'50%': {
+						opacity: '1',
+						transform: 'scale(1.2)'
 					}
 				},
 				'fade-in-up': {
@@ -151,19 +162,11 @@ export default {
 				'scale-in': {
 					'0%': {
 						opacity: '0',
-						transform: 'scale(0.9)'
+						transform: 'scale(0.5)'
 					},
 					'100%': {
 						opacity: '1',
 						transform: 'scale(1)'
-					}
-				},
-				'glow': {
-					'0%, 100%': {
-						boxShadow: '0 0 20px rgba(59, 130, 246, 0.3)'
-					},
-					'50%': {
-						boxShadow: '0 0 30px rgba(59, 130, 246, 0.6)'
 					}
 				}
 			},
@@ -171,23 +174,18 @@ export default {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'float': 'float 6s ease-in-out infinite',
-				'float-slow': 'float-slow 8s ease-in-out infinite',
-				'float-medium': 'float-medium 6s ease-in-out infinite',
-				'float-fast': 'float-fast 4s ease-in-out infinite',
 				'bounce-slow': 'bounce-slow 3s ease-in-out infinite',
+				'confetti-fall': 'confetti-fall 3s linear infinite',
+				'medal-glow': 'medal-glow 2s ease-in-out infinite',
+				'sparkle-twinkle': 'sparkle-twinkle 1.5s ease-in-out infinite',
 				'fade-in-up': 'fade-in-up 0.6s ease-out',
-				'scale-in': 'scale-in 0.5s ease-out',
-				'glow': 'glow 2s ease-in-out infinite'
+				'scale-in': 'scale-in 0.5s ease-out'
 			},
 			fontFamily: {
 				'inter': ['Inter', 'sans-serif'],
 				'montserrat': ['Montserrat', 'sans-serif'],
-			},
-			boxShadow: {
-				'3xl': '0 35px 60px -12px rgba(0, 0, 0, 0.25)',
-				'4xl': '0 45px 80px -12px rgba(0, 0, 0, 0.3)',
 			}
 		}
 	},
-	plugins: [require("tailwindcss-animate")],
+	plugins: [tailwindcssAnimate],
 } satisfies Config;

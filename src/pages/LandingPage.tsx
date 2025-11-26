@@ -1,11 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent } from '@/components/ui/card';
-import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/lib/supabaseClient';
-import { CheckCircle, Mail, ArrowRight, Gift, Heart, Brain, Users, Clock, Shield, Check } from 'lucide-react';
-import { useHref } from 'react-router-dom';
+import { ArrowRight, Gift, Heart, Brain, Users, Clock, Shield, Check } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 // Rutas de assets públicos (archivos en public/)
 const logoBraini = '/logo/LogoBraini_new.png';
@@ -16,29 +12,25 @@ const profile1 = '/avatars/profile1.jpeg';
 const profile2 = '/avatars/profile2.jpg';
 const profile3 = '/avatars/profile3.jpg';
 
-// Emociones
-const alegria = '/emotions/1_Alegria.jpg';
-const tranquilidad = '/emotions/12_Tranquilidad.jpg';
-const ternura = '/emotions/49_Ternura.jpg';
-const verguenza = '/emotions/7_Vergueza.jpg';
-const sorpresa = '/emotions/9_Sorpresa.jpg';
-const aburrimiento = '/emotions/35_Aburrimiento.jpg';
+// Emociones - Desde Supabase Storage
+const SUPABASE_STORAGE_URL = 'https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images';
+const alegria = `${SUPABASE_STORAGE_URL}/1.%20Alegria.jpg`;
+const tranquilidad = `${SUPABASE_STORAGE_URL}/12.%20Tranquilidad.jpg`;
+const ternura = `${SUPABASE_STORAGE_URL}/49.%20Ternura.jpg`;
+const verguenza = `${SUPABASE_STORAGE_URL}/7.%20Vergueza.jpg`;
+const sorpresa = `${SUPABASE_STORAGE_URL}/9.%20Sorpresa.jpg`;
+const aburrimiento = `${SUPABASE_STORAGE_URL}/35.%20Aburrimiento.jpg`;
 
 // Otros assets
 const logoInstagram = '/LogoInstagram.svg';
 
 const LandingPage = () => {
-  const [email, setEmail] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isFocused, setIsFocused] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [acceptTerms, setAcceptTerms] = useState(false);
   const [featuresVisible, setFeaturesVisible] = useState(false);
   const featuresTitleRef = useRef<HTMLHeadingElement>(null);
   const [benefitsVisible, setBenefitsVisible] = useState(false);
   const benefitsTitleRef = useRef<HTMLHeadingElement>(null);
-  const { toast } = useToast();
+  const navigate = useNavigate();
 
   // Animación de entrada
   useEffect(() => {
@@ -105,76 +97,8 @@ const LandingPage = () => {
   }, []);
 
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!email.trim()) {
-      toast({
-        title: "Email requerido",
-        description: "Por favor, introduce tu dirección de email.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      toast({
-        title: "Email inválido",
-        description: "Por favor, introduce una dirección de email válida.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    if (!acceptTerms) {
-      toast({
-        title: "Términos requeridos",
-        description: "Por favor, acepta la Política de Privacidad.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    setIsSubmitting(true);
-    
-    try {
-      const { data, error } = await supabase
-        .from('waitlist')
-        .insert([{ email: email.trim() }]);
-
-      if (error) {
-        if (error.code === '23505') {
-          toast({
-            title: "¡Ya estás en la lista!",
-            description: "Este email ya está registrado en nuestra waitlist.",
-          });
-        } else {
-          throw error;
-        }
-      } else {
-        setIsSubmitted(true);
-        toast({
-          title: "¡Bienvenido a Braini Emotions!",
-          description: `Te hemos enviado un email de confirmación a ${email}.`,
-        });
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      toast({
-        title: "Algo salió mal",
-        description: "Por favor, inténtalo de nuevo más tarde.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleReset = () => {
-    setEmail('');
-    setIsSubmitted(false);
-    setAcceptTerms(false);
+  const handleGetStarted = () => {
+    navigate('/conferencia');
   };
 
   return (
@@ -223,103 +147,43 @@ const LandingPage = () => {
             </p>
           </div>
 
-          {/* Waitlist Card */}
+          {/* CTA Card */}
           <div 
-            id="waitlist-form"
-            className="bg-white rounded-xl p-4 sm:p-6 shadow-2xl relative z-10 max-w-xs sm:max-w-lg lg:max-w-2xl mx-auto"
+            id="cta-section"
+            className="bg-white rounded-xl p-6 sm:p-8 shadow-2xl relative z-10 max-w-xs sm:max-w-lg lg:max-w-2xl mx-auto"
             style={{
               boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.05)'
             }}
           >
-            {isSubmitted ? (
-              <div className="text-center">
-                <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-                <h3 className="text-2xl font-bold text-gray-800 mb-3">
-                  ¡Bienvenido a Braini Emotions!
-                </h3>
-                <p className="text-gray-600 mb-6">
-                  Te hemos enviado un email de confirmación.
-                </p>
-                <Button 
-                  onClick={handleReset}
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3"
-                >
-                  Unirse con otro email
-                </Button>
-              </div>
-            ) : (
-              <>
-                <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-                  {/* Texto de introducción */}
-                  <p className="text-gray-700 text-sm sm:text-base mb-4 text-center" style={{ fontWeight: 400 }}>
-                    ¡Apúntate a la lista y aprovecha nuestra promoción!
-                  </p>
+            {/* Texto de introducción */}
+            <p className="text-gray-700 text-base sm:text-lg mb-6 text-center" style={{ fontWeight: 400 }}>
+              ¡Apúntate y aprovecha nuestra promoción!
+            </p>
 
-                  {/* Lista de regalos */}
-                  <div className="mb-4 space-y-3">
-                    <p className="text-gray-700 text-sm sm:text-base" style={{ fontWeight: 400 }}>
-                      1- <span className="font-bold" style={{ fontWeight: 700, color: '#7ea4df' }}>Evaluar</span> la <span className="font-bold" style={{ fontWeight: 700, color: '#7ea4df' }}>Inteligencia Emocional</span> de tu hijo.
-                    </p>
-                    <p className="text-gray-700 text-sm sm:text-base" style={{ fontWeight: 400 }}>
-                      2- Disfrutar de <span className="font-bold" style={{ fontWeight: 700, color: '#7ea4df' }}>3</span> <span className="font-bold" style={{ fontWeight: 700, color: '#7ea4df' }}>sesiones</span> emocionales completamente <span className="font-bold" style={{ fontWeight: 700, color: '#7ea4df' }}>GRATIS</span>.
-                    </p>
-                  </div>
+            {/* Lista de regalos */}
+            <div className="mb-6 space-y-3">
+              <p className="text-gray-700 text-sm sm:text-base" style={{ fontWeight: 400 }}>
+                1- <span className="font-bold" style={{ fontWeight: 700, color: '#7ea4df' }}>Evaluar</span> la <span className="font-bold" style={{ fontWeight: 700, color: '#7ea4df' }}>Inteligencia Emocional</span> de tu hijo.
+              </p>
+              <p className="text-gray-700 text-sm sm:text-base" style={{ fontWeight: 400 }}>
+                2- Disfrutar de <span className="font-bold" style={{ fontWeight: 700, color: '#7ea4df' }}>3</span> <span className="font-bold" style={{ fontWeight: 700, color: '#7ea4df' }}>sesiones</span> emocionales completamente <span className="font-bold" style={{ fontWeight: 700, color: '#7ea4df' }}>GRATIS</span>.
+              </p>
+            </div>
 
-                  {/* Campo de email y botón en línea */}
-                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-2">
-                    <div className="flex-1 relative">
-                      <Input
-                        id="email"
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        onFocus={() => setIsFocused(true)}
-                        onBlur={() => setIsFocused(false)}
-                        placeholder="tu@email.com"
-                        className="text-base sm:text-lg py-3"
-                        style={{
-                          borderColor: isFocused ? '#7ea4df' : 'rgba(126, 164, 223, 0.5)',
-                          ...(isFocused && {
-                            boxShadow: '0 0 0 2px rgba(126, 164, 223, 0.2)'
-                          })
-                        }}
-                        required
-                        disabled={isSubmitting}
-                      />
-                    </div>
-                    <Button 
-                      type="submit" 
-                      className="text-white px-4 sm:px-6 py-3 font-bold transition-opacity text-sm sm:text-base whitespace-nowrap md:hover:opacity-90"
-                      style={{ 
-                        background: '#7ea4df',
-                        border: 'none'
-                      }}
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting ? (
-                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                      ) : (
-                        '¡Quiero cuidar sus emociones!'
-                      )}
-                    </Button>
-                  </div>
-
-                  {/* Checkbox de privacidad */}
-                  <div className="flex items-start space-x-3 pt-2">
-                    <input
-                      type="checkbox"
-                      id="terms"
-                      checked={acceptTerms}
-                      onChange={(e) => setAcceptTerms(e.target.checked)}
-                      className="mt-1 h-5 w-5 text-cyan-600 focus:ring-cyan-500 border-gray-300 rounded"
-                    />
-                    <label htmlFor="terms" className="text-sm text-gray-700 leading-6" style={{ fontWeight: 400 }}>
-                      Acepto la <span className="font-bold" style={{ fontWeight: 700 }}>Política de Privacidad</span> y recibir las novedades de Braini.
-                    </label>
-                  </div>
-                </form>
-              </>
-            )}
+            {/* Botón centrado */}
+            <div className="flex justify-center">
+              <Button 
+                onClick={handleGetStarted}
+                className="text-white px-8 sm:px-12 py-4 sm:py-5 font-bold transition-all text-base sm:text-lg md:hover:opacity-90 md:hover:scale-105"
+                style={{ 
+                  background: '#7ea4df',
+                  border: 'none',
+                  minWidth: '280px'
+                }}
+              >
+                ¡Quiero cuidar sus emociones!
+              </Button>
+            </div>
           </div>
 
           {/* Social Proof */}
