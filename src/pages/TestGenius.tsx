@@ -231,7 +231,7 @@ const SCORING: Record<AnswerValue, number> = {
   'D': 3
 };
 
-const TestGeniusPage = () => {
+const TestGenius = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   
@@ -956,4 +956,4 @@ const TestGeniusPage = () => {
   );
 };
 
-export default TestGeniusPage;
+export default TestGenius;
