@@ -4,6 +4,7 @@ import { CheckCircle, X, BookOpen } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { formatearTexto } from '@/components/activities/utils/textFormatter';
 import SuccessPopup from '@/components/activities/utils/SuccessPopup';
+import ActivityInstructions from '@/components/activities/utils/ActivityInstructions';
 import {
   Dialog,
   DialogContent,
@@ -21,7 +22,8 @@ import {
   getScientificBaseTitleClasses,
   getScientificBaseIconClasses,
   getPrimaryButtonClasses,
-  getMainTitleTextClasses
+  getMainTitleTextClasses,
+  getProgressBarColor
 } from '@/components/activities/utils/activityColors';
 
 interface Ses2Act1Props {
@@ -61,22 +63,6 @@ const Ses2Act1: React.FC<Ses2Act1Props> = ({
   onPuzzleComplete
 }) => {
   const { toast } = useToast();
-  
-  // Función helper para obtener el color de fondo de la barra de progreso
-  const getProgressBarColor = (type?: string): string => {
-    switch (type) {
-      case 'inteligencia_emocional':
-        return '#5a8bc4'; // braini-blue
-      case 'regulacion_emocional':
-        return '#2a9d8f'; // braini-turquoise
-      case 'vinculo_afectivo':
-        return '#e76f51'; // braini-pink
-      case 'acompañamiento_emocional':
-        return '#e9c46a'; // braini-yellow
-      default:
-        return '#5a8bc4'; // braini-blue por defecto
-    }
-  };
   
   // ====================================================
   // DATOS HARDCODEADOS - Adivinanzas
@@ -305,35 +291,14 @@ const Ses2Act1: React.FC<Ses2Act1Props> = ({
   return (
     <div className="space-y-6">
       {/* Instrucciones con datos del backend */}
-      {activityData && (
-        <div className={getInstructionsContainerClasses(activityType)}>
-          {/* Duración del backend */}
-          {activityData.duracion_min && activityData.duracion_max && (
-            <p className="text-gray-700 leading-relaxed mb-3">
-              <strong className={getDurationTextClasses(activityType)}>Duración:</strong> {activityData.duracion_min} - {activityData.duracion_max} minutos
-            </p>
-          )}
-          {/* ¿Cómo se juega? del backend - Con formateo */}
-          {activityData.como_se_juega && (
-            <div className="text-gray-700 leading-relaxed mb-4">
-              {formatearTexto(activityData.como_se_juega)}
-            </div>
-          )}
-          {/* Botón para ver base científica */}
-          {activityData.investigacion_beneficios && (
-            <div className={`mt-4 pt-4 border-t ${getBorderClasses(activityType)}`}>
-              <Button
-                onClick={() => setShowScientificBase(true)}
-                variant="outline"
-                className={`w-full sm:w-auto ${getSecondaryButtonClasses(activityType)}`}
-              >
-                <BookOpen className="w-4 h-4 mr-2" />
-                Ver Base Científica
-              </Button>
-            </div>
-          )}
-        </div>
-      )}
+      <ActivityInstructions
+        activityType={activityType}
+        duracionMin={activityData?.duracion_min}
+        duracionMax={activityData?.duracion_max}
+        comoSeJuega={activityData?.como_se_juega}
+        investigacionBeneficios={activityData?.investigacion_beneficios}
+        onShowScientificBase={() => setShowScientificBase(true)}
+      />
 
       {/* Área del quiz - Mostrar siempre que haya adivinanzas y no esté completado */}
       {adivinanzas.length > 0 && !quizCompleted && (
@@ -360,9 +325,10 @@ const Ses2Act1: React.FC<Ses2Act1Props> = ({
                 {/* Card de la adivinanza */}
                 <div className="bg-white/95 backdrop-blur-lg p-6 md:p-8 rounded-2xl shadow-xl border-0">
                   <div className="text-center mb-8">
-                    <h2 className={`text-2xl md:text-3xl font-black ${getMainTitleTextClasses(activityType)} mb-6`}>
-                      Adivina adivinanza
-                    </h2>
+                    {/* Título interno más discreto para mantener consistencia con Ses1Act1 y Ses3Act1 */}
+                    <h3 className="text-lg font-bold text-gray-700 mb-4">
+                      Adivinanza
+                    </h3>
                     <div className={`${getInstructionsContainerClasses(activityType)} p-8`}>
                       <p className="text-lg md:text-xl text-gray-800 leading-relaxed font-medium text-center space-y-2">
                         {currentQuestion?.texto.split('\n').map((line, index) => (
@@ -471,13 +437,13 @@ const Ses2Act1: React.FC<Ses2Act1Props> = ({
       <Dialog open={showScientificBase} onOpenChange={setShowScientificBase}>
         <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto bg-white/95 backdrop-blur-lg">
           <DialogHeader>
-            <DialogTitle className={`text-2xl font-bold ${getScientificBaseTitleClasses(activityType)} flex items-center gap-2`}>
-              <svg className={`w-6 h-6 ${getScientificBaseIconClasses(activityType)}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <DialogTitle className={`text-3xl font-bold ${getScientificBaseTitleClasses(activityType)} flex items-center gap-2`}>
+              <svg className={`w-7 h-7 ${getScientificBaseIconClasses(activityType)}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
               </svg>
               Base Científica
             </DialogTitle>
-            <DialogDescription className="text-gray-600">
+            <DialogDescription className="text-gray-700 font-semibold text-base">
               Información respaldada por investigaciones científicas
             </DialogDescription>
           </DialogHeader>

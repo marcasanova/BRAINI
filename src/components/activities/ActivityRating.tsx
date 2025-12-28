@@ -148,16 +148,10 @@ const ActivityRating: React.FC<ActivityRatingProps> = ({
 
     setIsSubmitting(true);
     try {
-      // Solo actualizar completed_at si es la primera valoración
       const updateData: any = { 
         puntuacion: rating,
         opinion: comment.trim() || null
       };
-      
-      // Solo añadir completed_at si no se ha valorado antes
-      if (!hasRated) {
-        updateData.completed_at = new Date().toISOString();
-      }
 
       const { error } = await supabase
         .from('parents_activities')

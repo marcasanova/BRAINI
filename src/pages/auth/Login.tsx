@@ -3,9 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import Backgrounds from '@/components/Backgrounds';
 import { supabase } from '@/lib/supabaseClient';
 import {
   Dialog,
@@ -17,13 +15,25 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
+// Rutas de assets públicos
+const logoBraini = '/logo/LogoBraini_new.png';
+
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  // Animación de entrada
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoaded(true);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   // State for password reset
   const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
@@ -176,115 +186,172 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white font-montserrat relative overflow-hidden">
-      <Backgrounds />
-      
-      <div className="container mx-auto px-4 py-12 relative z-10">
-        <div className="max-w-md mx-auto">
-          {/* Logo and Title Section */}
-          <div className="text-center mb-8 animate-fade-in">
-            
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">
-              <span className="text-braini-blue">Braini</span>
-            </h1>
+    <div 
+      className="min-h-screen bg-white font-montserrat relative overflow-hidden transition-colors duration-300"
+      role="main"
+      aria-label="Página de inicio de sesión"
+    >
+      {/* Hero Section - Mismo estilo que Conferencia */}
+      <section 
+        className="relative min-h-screen flex items-center justify-center px-2 sm:px-4 py-4 sm:py-8"
+        style={{
+          background: '#7ea4df'
+        }}
+      >
+        {/* Figuras Geométricas Circulares */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute -top-20 sm:-top-40 -left-5 sm:-left-10 w-40 h-40 sm:w-80 sm:h-80 bg-white/15 rounded-full" />
+          <div className="absolute -bottom-40 sm:-bottom-80 -right-30 sm:-right-60 w-[300px] h-[300px] sm:w-[700px] sm:h-[700px] bg-white/15 rounded-full" />
+        </div>
+
+        <div className={`w-full max-w-7xl mx-auto transition-all duration-1000 ease-out ${
+          isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+        }`}>
+          
+          {/* Contenido Principal */}
+          <div className="mb-8 sm:mb-12 relative z-10">
+            {/* Logo y Título - Logo encima */}
+            <div className="text-center mb-3 sm:mb-4">
+              <div className="w-16 h-16 sm:w-24 sm:h-24 lg:w-28 lg:h-28 mx-auto mb-4 sm:mb-6 flex items-center justify-center">
+                <img 
+                  src={logoBraini}
+                  alt="Braini Emotions Logo" 
+                  className="w-16 h-16 sm:w-24 sm:h-24 lg:w-28 lg:h-28 object-contain"
+                />
+              </div>
+              <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black text-white" style={{ fontWeight: 900 }}>
+                Iniciar Sesión
+              </h1>
+            </div>
           </div>
 
-          {/* Login Form */}
-          <Card className="w-full bg-white/95 backdrop-blur-sm shadow-xl border-0 relative z-10 animate-fade-in" style={{ animationDelay: '0.3s' }}>
-            <CardContent className="p-8">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Iniciar sesión</h2>
-              
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="text-gray-700 font-medium">
-                    Correo electrónico *
-                  </Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Introduce correo electrónico"
-                    className="border-2 border-gray-200 focus:border-braini-blue transition-colors"
-                    required
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <Label htmlFor="password" className="text-gray-700 font-medium">
-                      Contraseña *
-                    </Label>
-                    <Dialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen}>
-                      <DialogTrigger asChild>
-                        <Button type="button" variant="link" className="text-sm px-0 font-normal h-auto py-1">
-                          ¿Has olvidado tu contraseña?
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent className="sm:max-w-[425px]">
-                        <DialogHeader>
-                          <DialogTitle>Recuperar contraseña</DialogTitle>
-                          <DialogDescription>
-                            Introduce tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.
-                          </DialogDescription>
-                        </DialogHeader>
-                        <div className="grid gap-4 py-4">
-                          <div className="space-y-2">
-                            <Label htmlFor="reset-email">
-                              Email
-                            </Label>
-                            <Input
-                              id="reset-email"
-                              type="email"
-                              value={resetEmail}
-                              onChange={(e) => setResetEmail(e.target.value)}
-                              placeholder="tu@email.com"
-                            />
-                          </div>
-                        </div>
-                        <DialogFooter>
-                          <Button onClick={handlePasswordReset} disabled={isResetting}>
-                            {isResetting ? 'Enviando...' : 'Enviar enlace'}
-                          </Button>
-                        </DialogFooter>
-                      </DialogContent>
-                    </Dialog>
-                  </div>
-                  <Input
-                    id="password"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Introduce contraseña"
-                    className="border-2 border-gray-200 focus:border-braini-blue transition-colors"
-                    required
-                  />
-                </div>
-                
-                <Button 
-                  type="submit" 
-                  className="w-full bg-gradient-to-r from-braini-blue to-braini-blue-light hover:from-braini-blue-dark hover:to-braini-blue text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+          {/* Formulario Card - Mismo estilo que Conferencia */}
+          <div 
+            id="login-form"
+            className="bg-white rounded-xl p-6 sm:p-8 shadow-2xl relative z-10 max-w-xs sm:max-w-lg lg:max-w-2xl mx-auto"
+            style={{
+              boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.05)'
+            }}
+          >
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Campo Email */}
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-base font-semibold text-gray-700" style={{ fontWeight: 600 }}>
+                  Correo electrónico *
+                </Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="tu@email.com"
+                  className="border-2 border-gray-200 focus:border-braini-blue transition-colors text-base py-3"
+                  required
                   disabled={isSubmitting}
-                >
-                  {isSubmitting ? 'Iniciando sesión...' : 'Iniciar sesión'}
-                </Button>
-              </form>
+                />
+                <p className="text-xs text-gray-500" style={{ fontWeight: 400 }}>
+                  El correo que usaste para registrarte en la prueba gratuita
+                </p>
+              </div>
               
+              {/* Campo Contraseña */}
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <Label htmlFor="password" className="text-base font-semibold text-gray-700" style={{ fontWeight: 600 }}>
+                    Contraseña *
+                  </Label>
+                  <Dialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button type="button" variant="link" className="text-sm px-0 font-normal h-auto py-1 text-gray-600 hover:text-braini-blue">
+                        ¿Has olvidado tu contraseña?
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]">
+                      <DialogHeader>
+                        <DialogTitle>Recuperar contraseña</DialogTitle>
+                        <DialogDescription>
+                          Introduce tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="grid gap-4 py-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="reset-email">
+                            Email
+                          </Label>
+                          <Input
+                            id="reset-email"
+                            type="email"
+                            value={resetEmail}
+                            onChange={(e) => setResetEmail(e.target.value)}
+                            placeholder="tu@email.com"
+                          />
+                        </div>
+                      </div>
+                      <DialogFooter>
+                        <Button onClick={handlePasswordReset} disabled={isResetting}>
+                          {isResetting ? 'Enviando...' : 'Enviar enlace'}
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Introduce contraseña"
+                  className="border-2 border-gray-200 focus:border-braini-blue transition-colors text-base py-3"
+                  required
+                  disabled={isSubmitting}
+                />
+                <p className="text-xs text-gray-500" style={{ fontWeight: 400 }}>
+                  No te peoupes si no la recuerdas, puedes recuperarla en "¿Has olvidado tu contraseña?" 
+                </p>
+              </div>
+              
+              {/* Botón Submit - Mismo estilo que Conferencia */}
+              <div className="flex justify-center">
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="text-white px-8 sm:px-12 py-4 sm:py-5 font-bold transition-all text-base sm:text-lg md:hover:opacity-90 md:hover:scale-105"
+                  style={{ 
+                    background: '#7ea4df',
+                    border: 'none',
+                    minWidth: '280px'
+                  }}
+                >
+                  {isSubmitting ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <span>Iniciando sesión...</span>
+                    </div>
+                  ) : (
+                    <span>Iniciar sesión</span>
+                  )}
+                </Button>
+              </div>
+
+              {/* Línea separadora */}
+              <div className="mt-6 border-t border-gray-200"></div>
+
+              {/* Enlace a Registro */}
               <div className="mt-6 text-center">
-                <p className="text-gray-600">
+                <p className="text-gray-600 text-sm sm:text-base">
                   ¿No tienes una cuenta?{' '}
                   <Link 
-                    to="/signup" 
+                    to="/conferencia" 
                     className="text-braini-blue hover:text-braini-blue-dark font-medium hover:underline transition-colors"
                   >
                     Regístrate
                   </Link>
                 </p>
               </div>
-            </CardContent>
-          </Card>
+            </form>
+          </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 };

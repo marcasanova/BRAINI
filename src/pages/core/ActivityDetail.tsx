@@ -14,6 +14,17 @@ import Ses3Act1 from '@/components/activities/content/Ses3Act1';
 import Ses3Act2 from '@/components/activities/content/Ses3Act2';
 import Ses4Act1 from '@/components/activities/content/Ses4Act1';
 import Ses4Act2 from '@/components/activities/content/Ses4Act2';
+import Ses5Act1 from '@/components/activities/content/Ses5Act1';
+import Ses5Act2 from '@/components/activities/content/Ses5Act2';
+import Ses6Act1 from '@/components/activities/content/Ses6Act1';
+import Ses6Act2 from '@/components/activities/content/Ses6Act2';
+import Ses7Act1 from '@/components/activities/content/Ses7Act1';
+import Ses7Act2 from '@/components/activities/content/Ses7Act2';
+import Ses8Act1 from '@/components/activities/content/Ses8Act1';
+import Ses8Act2 from '@/components/activities/content/Ses8Act2';
+import Ses9Act1 from '@/components/activities/content/Ses9Act1';
+import Ses9Act2 from '@/components/activities/content/Ses9Act2';
+import Ses10Act1 from '@/components/activities/content/Ses10Act1';
 import { formatearTexto } from '@/components/activities/utils/textFormatter';
 import { 
   getInstructionsContainerClasses,
@@ -175,6 +186,7 @@ const ActivityDetail: React.FC = () => {
                         - ID 7: Sesión 3, Actividad 2 (Ses3Act2)
                         - ID 8: Sesión 4, Actividad 1 (Ses4Act1)
                         - ID 9: Sesión 4, Actividad 2 (Ses4Act2)
+                        - ID 10: Sesión 5, Actividad 1 (Ses5Act1)
                       */}
                       {currentActivity.activities.id === 1 ? (
                         <Ses1Act1 
@@ -283,6 +295,171 @@ const ActivityDetail: React.FC = () => {
                         />
                       ) : currentActivity.activities.id === 9 ? (
                         <Ses4Act2 
+                          userProgress={currentActivity}
+                          activityId={currentActivity.activities.id}
+                          levelId={levelId!}
+                          userId={userId!}
+                          activityType={currentActivity.activities.tipo_actividad}
+                          activityData={{
+                            duracion_min: currentActivity.activities.duracion_min,
+                            duracion_max: currentActivity.activities.duracion_max,
+                            como_se_juega: currentActivity.activities.como_se_juega,
+                            investigacion_beneficios: currentActivity.activities.investigacion_beneficios
+                          }}
+                          onPuzzleComplete={handleBackToSession}
+                        />
+                      ) : currentActivity.activities.id === 10 ? (
+                        <Ses5Act1 
+                          userProgress={currentActivity}
+                          activityId={currentActivity.activities.id}
+                          levelId={levelId!}
+                          userId={userId!}
+                          activityType={currentActivity.activities.tipo_actividad}
+                          activityData={{
+                            duracion_min: currentActivity.activities.duracion_min,
+                            duracion_max: currentActivity.activities.duracion_max,
+                            como_se_juega: currentActivity.activities.como_se_juega,
+                            investigacion_beneficios: currentActivity.activities.investigacion_beneficios
+                          }}
+                          onPuzzleComplete={handleBackToSession}
+                        />
+                      ) : currentActivity.activities.id === 11 ? (
+                        <Ses5Act2 
+                          userProgress={currentActivity}
+                          activityId={currentActivity.activities.id}
+                          levelId={levelId!}
+                          userId={userId!}
+                          activityType={currentActivity.activities.tipo_actividad}
+                          activityData={{
+                            duracion_min: currentActivity.activities.duracion_min,
+                            duracion_max: currentActivity.activities.duracion_max,
+                            como_se_juega: currentActivity.activities.como_se_juega,
+                            investigacion_beneficios: currentActivity.activities.investigacion_beneficios
+                          }}
+                          onPuzzleComplete={handleBackToSession}
+                        />
+                      ) : currentActivity.activities.id === 24 ? (
+                        <Ses6Act1 
+                          userProgress={currentActivity}
+                          activityId={currentActivity.activities.id}
+                          levelId={levelId!}
+                          userId={userId!}
+                          activityType={currentActivity.activities.tipo_actividad}
+                          activityData={{
+                            duracion_min: currentActivity.activities.duracion_min,
+                            duracion_max: currentActivity.activities.duracion_max,
+                            como_se_juega: currentActivity.activities.como_se_juega,
+                            investigacion_beneficios: currentActivity.activities.investigacion_beneficios
+                          }}
+                          onPuzzleComplete={handleBackToSession}
+                        />
+                      ) : currentActivity.activities.id === 25 ? (
+                        <Ses7Act1 
+                          userProgress={currentActivity}
+                          activityId={currentActivity.activities.id}
+                          levelId={levelId!}
+                          userId={userId!}
+                          activityType={currentActivity.activities.tipo_actividad}
+                          activityData={{
+                            duracion_min: currentActivity.activities.duracion_min,
+                            duracion_max: currentActivity.activities.duracion_max,
+                            como_se_juega: currentActivity.activities.como_se_juega,
+                            investigacion_beneficios: currentActivity.activities.investigacion_beneficios
+                          }}
+                          onPuzzleComplete={handleBackToSession}
+                        />
+                      ) : currentActivity.activities.id === 26 ? (
+                        <Ses8Act1 
+                          userProgress={currentActivity}
+                          activityId={currentActivity.activities.id}
+                          levelId={levelId!}
+                          userId={userId!}
+                          activityType={currentActivity.activities.tipo_actividad}
+                          activityData={{
+                            duracion_min: currentActivity.activities.duracion_min,
+                            duracion_max: currentActivity.activities.duracion_max,
+                            como_se_juega: currentActivity.activities.como_se_juega,
+                            investigacion_beneficios: currentActivity.activities.investigacion_beneficios
+                          }}
+                          onPuzzleComplete={handleBackToSession}
+                        />
+                      ) : currentActivity.activities.id === 27 ? (
+                        <Ses9Act1 
+                          userProgress={currentActivity}
+                          activityId={currentActivity.activities.id}
+                          levelId={levelId!}
+                          userId={userId!}
+                          activityType={currentActivity.activities.tipo_actividad}
+                          activityData={{
+                            duracion_min: currentActivity.activities.duracion_min,
+                            duracion_max: currentActivity.activities.duracion_max,
+                            como_se_juega: currentActivity.activities.como_se_juega,
+                            investigacion_beneficios: currentActivity.activities.investigacion_beneficios
+                          }}
+                          onPuzzleComplete={handleBackToSession}
+                        />
+                      ) : currentActivity.activities.id === 28 ? (
+                        <Ses10Act1 
+                          userProgress={currentActivity}
+                          activityId={currentActivity.activities.id}
+                          levelId={levelId!}
+                          userId={userId!}
+                          activityType={currentActivity.activities.tipo_actividad}
+                          activityData={{
+                            duracion_min: currentActivity.activities.duracion_min,
+                            duracion_max: currentActivity.activities.duracion_max,
+                            como_se_juega: currentActivity.activities.como_se_juega,
+                            investigacion_beneficios: currentActivity.activities.investigacion_beneficios
+                          }}
+                          onPuzzleComplete={handleBackToSession}
+                        />
+                      ) : currentActivity.activities.id === 30 ? (
+                        <Ses6Act2 
+                          userProgress={currentActivity}
+                          activityId={currentActivity.activities.id}
+                          levelId={levelId!}
+                          userId={userId!}
+                          activityType={currentActivity.activities.tipo_actividad}
+                          activityData={{
+                            duracion_min: currentActivity.activities.duracion_min,
+                            duracion_max: currentActivity.activities.duracion_max,
+                            como_se_juega: currentActivity.activities.como_se_juega,
+                            investigacion_beneficios: currentActivity.activities.investigacion_beneficios
+                          }}
+                          onPuzzleComplete={handleBackToSession}
+                        />
+                      ) : currentActivity.activities.id === 31 ? (
+                        <Ses7Act2 
+                          userProgress={currentActivity}
+                          activityId={currentActivity.activities.id}
+                          levelId={levelId!}
+                          userId={userId!}
+                          activityType={currentActivity.activities.tipo_actividad}
+                          activityData={{
+                            duracion_min: currentActivity.activities.duracion_min,
+                            duracion_max: currentActivity.activities.duracion_max,
+                            como_se_juega: currentActivity.activities.como_se_juega,
+                            investigacion_beneficios: currentActivity.activities.investigacion_beneficios
+                          }}
+                          onPuzzleComplete={handleBackToSession}
+                        />
+                      ) : currentActivity.activities.id === 32 ? (
+                        <Ses8Act2 
+                          userProgress={currentActivity}
+                          activityId={currentActivity.activities.id}
+                          levelId={levelId!}
+                          userId={userId!}
+                          activityType={currentActivity.activities.tipo_actividad}
+                          activityData={{
+                            duracion_min: currentActivity.activities.duracion_min,
+                            duracion_max: currentActivity.activities.duracion_max,
+                            como_se_juega: currentActivity.activities.como_se_juega,
+                            investigacion_beneficios: currentActivity.activities.investigacion_beneficios
+                          }}
+                          onPuzzleComplete={handleBackToSession}
+                        />
+                      ) : currentActivity.activities.id === 33 ? (
+                        <Ses9Act2 
                           userProgress={currentActivity}
                           activityId={currentActivity.activities.id}
                           levelId={levelId!}

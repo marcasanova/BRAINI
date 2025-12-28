@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -40,6 +40,7 @@ const Conferencia = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
+    console.log('[Conferencia] handleSubmit start', { email, nombre });
     e.preventDefault();
     
     if (!isFormValid()) {
@@ -60,6 +61,8 @@ const Conferencia = () => {
         password: password
       });
 
+      console.log('[Conferencia] signUp result', { authUserId: authData?.user?.id, signUpError });
+
       if (signUpError) throw signUpError;
       if (!authData.user) throw new Error('No se pudo crear el usuario');
 
@@ -70,6 +73,8 @@ const Conferencia = () => {
 
       if (verifyError) {
         console.error('Error auto-verificando:', verifyError);
+      } else {
+        console.log('[Conferencia] auto_verify_trial_user ejecutada correctamente para', authData.user.id);
       }
 
       // 3. Hacer login automático PRIMERO (necesario para que RLS funcione)
@@ -77,6 +82,8 @@ const Conferencia = () => {
         email: email.trim(),
         password: password
       });
+
+      console.log('[Conferencia] signInWithPassword result', { signInUserId: signInData?.user?.id, signInError });
 
       if (signInError) throw signInError;
       if (!signInData.user) throw new Error('No se pudo iniciar sesión');
@@ -89,12 +96,33 @@ const Conferencia = () => {
           email: email.trim(),
           nombre: nombre.trim(),
           profile_completed: true,
-          is_trial_user: true
+          is_trial_user: true,
+          max_levels: 10
         }, {
           onConflict: 'id'
         });
 
+      console.log('[Conferencia] upsert parents result', { parentUserId: signInData.user.id, parentError });
+
       if (parentError) throw parentError;
+
+      // DEBUG extra: comprobar qué se ha guardado realmente en parents
+      const { data: parentRow, error: parentFetchError } = await supabase
+        .from('parents')
+        .select('id, email, is_trial_user')
+        .eq('id', signInData.user.id)
+        .single();
+
+      console.log('[Conferencia] parents row after upsert', { parentRow, parentFetchError });
+
+      // DEBUG extra: comprobar qué niveles se han creado para este usuario
+      const { data: levelsRows, error: levelsError } = await supabase
+        .from('parents_levels')
+        .select('level_id')
+        .eq('user_id', signInData.user.id)
+        .order('level_id', { ascending: true });
+
+      console.log('[Conferencia] parents_levels rows for user', { levelsRows, levelsError });
 
       // 5. Éxito - redirigir a home
       toast({
@@ -139,26 +167,29 @@ const Conferencia = () => {
         }`}>
           
           {/* Contenido Principal */}
-          <div className="text-center mb-8 sm:mb-12 relative z-10">
-            <div className="w-16 h-16 sm:w-24 sm:h-24 lg:w-28 lg:h-28 mx-auto mb-4 sm:mb-6 flex items-center justify-center">
-              <img 
-                src={logoBraini}
-                alt="Braini Emotions Logo" 
-                className="w-16 h-16 sm:w-24 sm:h-24 lg:w-28 lg:h-28 object-contain"
-              />
+          <div className="mb-8 sm:mb-12 relative z-10">
+            {/* Logo y Título en la misma línea */}
+            <div className="flex items-center justify-center gap-4 sm:gap-6 mb-3 sm:mb-4">
+              <div className="w-16 h-16 sm:w-24 sm:h-24 lg:w-28 lg:h-28 flex items-center justify-center flex-shrink-0">
+                <img 
+                  src={logoBraini}
+                  alt="Braini Emotions Logo" 
+                  className="w-16 h-16 sm:w-24 sm:h-24 lg:w-28 lg:h-28 object-contain"
+                />
+              </div>
+              <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black text-white" style={{ fontWeight: 900 }}>
+                Prueba Gratuita
+              </h1>
             </div>
-            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black text-white mb-3 sm:mb-4 px-2" style={{ fontWeight: 900 }}>
-              Prueba Gratuita
-            </h1>
-            <h2 className="text-white text-2xl sm:text-3xl lg:text-4xl mb-2 sm:mb-3 px-4" style={{ fontWeight: 700 }}>
-              Accede a 3 sesiones completas
-            </h2>
-            <p className="text-white text-base sm:text-lg lg:text-xl mb-2 sm:mb-3 px-4" style={{ fontWeight: 400 }}>
-              Sin compromiso y sin tarjeta de crédito
-            </p>
-            <p className="text-white text-base sm:text-lg lg:text-xl mb-4 sm:mb-5 px-4" style={{ fontWeight: 400 }}>
-              Comienza a desarrollar la inteligencia emocional de tu hijo
-            </p>
+            {/* Subtítulos centrados */}
+            <div className="text-center">
+              <h2 className="text-white text-2xl sm:text-3xl lg:text-4xl mb-2 sm:mb-3 px-4" style={{ fontWeight: 700 }}>
+                Accede a 10 sesiones completas
+              </h2>
+              <p className="text-white text-base sm:text-lg lg:text-xl mb-4 sm:mb-5 px-4" style={{ fontWeight: 400 }}>
+                Comienza a desarrollar la inteligencia emocional de tu hijo
+              </p>
+            </div>
           </div>
 
           {/* Formulario Card - Mismo estilo que CTA Card de LandingPage */}
@@ -249,19 +280,23 @@ const Conferencia = () => {
                   )}
                 </Button>
               </div>
-            </form>
 
-            {/* Información adicional */}
-            <div className="mt-6 pt-6 border-t border-gray-200">
-              <div className="mb-4 space-y-3">
-                <p className="text-gray-700 text-sm sm:text-base" style={{ fontWeight: 400 }}>
-                  1- <span className="font-bold" style={{ fontWeight: 700, color: '#7ea4df' }}>Evaluar</span> la <span className="font-bold" style={{ fontWeight: 700, color: '#7ea4df' }}>Inteligencia Emocional</span> de tu hijo.
-                </p>
-                <p className="text-gray-700 text-sm sm:text-base" style={{ fontWeight: 400 }}>
-                  2- Disfrutar de <span className="font-bold" style={{ fontWeight: 700, color: '#7ea4df' }}>3</span> <span className="font-bold" style={{ fontWeight: 700, color: '#7ea4df' }}>sesiones</span> emocionales completamente <span className="font-bold" style={{ fontWeight: 700, color: '#7ea4df' }}>GRATIS</span>.
+              {/* Línea separadora */}
+              <div className="mt-6 border-t border-gray-200"></div>
+
+              {/* Enlace a Login */}
+              <div className="mt-6 text-center">
+                <p className="text-gray-600 text-sm sm:text-base">
+                  ¿Ya tienes una cuenta?{' '}
+                  <Link 
+                    to="/login" 
+                    className="text-braini-blue hover:text-braini-blue-dark font-medium hover:underline transition-colors"
+                  >
+                    Inicia sesión
+                  </Link>
                 </p>
               </div>
-            </div>
+            </form>
           </div>
 
         </div>

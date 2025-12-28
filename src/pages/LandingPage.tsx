@@ -97,7 +97,7 @@ const LandingPage = () => {
   }, []);
 
 
-  const handleGetStarted = () => {
+  const handleTrialAccess = () => {
     navigate('/conferencia');
   };
 
@@ -170,18 +170,18 @@ const LandingPage = () => {
               </p>
             </div>
 
-            {/* Botón centrado */}
-            <div className="flex justify-center">
+            {/* Botón de Acceso a Prueba Gratuita */}
+            <div className="flex justify-center items-center">
               <Button 
-                onClick={handleGetStarted}
-                className="text-white px-8 sm:px-12 py-4 sm:py-5 font-bold transition-all text-base sm:text-lg md:hover:opacity-90 md:hover:scale-105"
+                onClick={handleTrialAccess}
+                className="text-white px-6 sm:px-10 py-4 sm:py-5 font-bold transition-all text-base sm:text-lg md:hover:opacity-90 md:hover:scale-105 w-full sm:w-auto"
                 style={{ 
                   background: '#7ea4df',
                   border: 'none',
-                  minWidth: '280px'
+                  minWidth: '200px'
                 }}
               >
-                ¡Quiero cuidar sus emociones!
+                Acceder a mi PRUEBA GRATUITA
               </Button>
             </div>
           </div>

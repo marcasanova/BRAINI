@@ -189,7 +189,6 @@ const ActivityList: React.FC<ActivityListProps> = ({
 
       {activities.map((userActivity) => {
         const activity = userActivity.activities;
-        const isCompleted = !!userActivity.completed_at;
         const isRated = !!userActivity.puntuacion;
         const activityType = activity.tipo_actividad || '';
         const iconClasses = getIconClasses(activityType);
@@ -211,21 +210,13 @@ const ActivityList: React.FC<ActivityListProps> = ({
                     {getActivityTypeLabel(activityType)}
                   </span>
                   
-                  {/* Indicadores de estado */}
-                  <div className="flex items-center gap-2">
-                    {isCompleted && (
-                      <div className="flex items-center gap-1 text-braini-turquoise-dark">
-                        <CheckCircle className="w-4 h-4" />
-                        <span className="text-xs font-medium">Completada</span>
-                      </div>
-                    )}
-                    {isRated && (
-                      <div className="flex items-center gap-1 text-braini-yellow-dark">
-                        <Star className="w-4 h-4 fill-current" />
-                        <span className="text-xs font-medium">Valorada</span>
-                      </div>
-                    )}
-                  </div>
+                  {/* Indicador de estado - Solo Valorada */}
+                  {isRated && (
+                    <div className="flex items-center gap-1 text-braini-yellow-dark">
+                      <Star className="w-4 h-4 fill-current" />
+                      <span className="text-xs font-medium">Valorada</span>
+                    </div>
+                  )}
                 </div>
 
                 <h3 className={getTitleClasses(activityType)} style={{ fontWeight: 900 }}>

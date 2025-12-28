@@ -25,7 +25,7 @@ import {
   getScientificBaseIconClasses
 } from '@/components/activities/utils/activityColors';
 
-interface Ses4Act2Props {
+interface Ses6Act2Props {
   userProgress?: UserActivity;
   activityId: number;
   levelId: string;
@@ -40,45 +40,39 @@ interface Ses4Act2Props {
   onPuzzleComplete?: () => void;
 }
 
-interface RespirationStep {
+interface ElephantStep {
   id: number;
   nombre: string;
   instruccion: string;
-  duracion: number; // en segundos
   emoji: string;
+  tipo: 'inhale' | 'exhale';
 }
 
-const RESPIRATION_STEPS: RespirationStep[] = [
+const PASOS_ELEFANTE: ElephantStep[] = [
   {
     id: 1,
     nombre: 'Inhala',
-    instruccion: 'Inhala, respira profundamente por la nariz durante 5 segundos, mientras se hincha la barriga.',
-    duracion: 5,
+    instruccion: '**Coge aire por la nariz profundamente** mientras levantas los brazos con las palmas de las manos juntas (tu trompa) e **hincha la barriga** como si estuviese llena de enfado.',
     emoji: '🌬️',
+    tipo: 'inhale'
   },
   {
     id: 2,
-    nombre: 'Aguanta',
-    instruccion: 'Aguanta el aire durante 3 segundos.',
-    duracion: 3,
-    emoji: '⏸️',
-  },
-  {
-    id: 3,
     nombre: 'Exhala',
-    instruccion: 'Exhala y saca el aire poco a poco mientras imitas el sonido de la serpiente que dure lo máximo posible "Zzzzzz".',
-    duracion: 7,
-    emoji: '🐍',
-  },
+    instruccion: '**Suelta el aire por la boca** emitiendo un suave sonido como hacen los elefantes *"uuuuu"*, bajando la trompa y **deshinchando tu barriga**. Así verás como el enfado se va calmando.',
+    emoji: '🐘',
+    tipo: 'exhale'
+  }
 ];
 
-const REPETITIONS = 5; // Número de repeticiones
+const REPETITIONS = 5;
+const BREATH_DURATION = 5; // segundos para inhalar/exhalar
 
 /**
- * Actividad 2 - Sesión 4
- * La serpiente: Actividad de respiración guiada para autorregulación emocional
+ * Actividad 2 - Sesión 6
+ * La Respiración del Elefante: Actividad de respiración activa con movimiento corporal
  */
-const Ses4Act2: React.FC<Ses4Act2Props> = ({ 
+const Ses6Act2: React.FC<Ses6Act2Props> = ({ 
   userProgress, 
   activityId, 
   levelId, 
@@ -88,72 +82,65 @@ const Ses4Act2: React.FC<Ses4Act2Props> = ({
   onPuzzleComplete
 }) => {
   // Estados principales
-  const [phase, setPhase] = useState<'preparation' | 'breathing' | 'waitingRepeat' | 'completed'>('preparation');
-  const [currentStepIndex, setCurrentStepIndex] = useState(0);
-  const [repetition, setRepetition] = useState(1);
+  const [phase, setPhase] = useState<'preparation' | 'inhale' | 'exhale' | 'waitingRepeat' | 'completed'>('preparation');
+  const [repetition, setRepetition] = useState(0);
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [showScientificBase, setShowScientificBase] = useState(false);
 
-  const currentStep = phase === 'breathing' ? RESPIRATION_STEPS[currentStepIndex] : null;
-  const totalSteps = RESPIRATION_STEPS.length;
+  const currentStep = (phase === 'inhale' || phase === 'exhale') 
+    ? PASOS_ELEFANTE.find(step => step.tipo === phase) 
+    : null;
 
-  // Función para iniciar la respiración
-  const startBreathing = () => {
-    setPhase('breathing');
-    setCurrentStepIndex(0);
+  // Función para iniciar la actividad
+  const startActivity = () => {
+    setPhase('inhale');
     setRepetition(1);
-    const firstStep = RESPIRATION_STEPS[0];
-    setTimeRemaining(firstStep.duracion);
+    setTimeRemaining(BREATH_DURATION);
     setIsRunning(true);
   };
 
-  // Función para avanzar al siguiente paso automáticamente
-  const handleStepComplete = useCallback(() => {
-    if (phase === 'breathing') {
-      if (currentStepIndex < totalSteps - 1) {
-        // Avanzar al siguiente paso automáticamente
-        const nextIndex = currentStepIndex + 1;
-        setCurrentStepIndex(nextIndex);
-        const nextStep = RESPIRATION_STEPS[nextIndex];
-        setTimeRemaining(nextStep.duracion);
-      } else {
-        // Todos los pasos completados (inhala, aguanta, exhala)
-        // Detener el temporizador y mostrar botón de repetir
-        setIsRunning(false);
-        setPhase('waitingRepeat');
-      }
+  // Función para avanzar automáticamente entre fases
+  const handlePhaseComplete = useCallback(() => {
+    if (phase === 'inhale') {
+      // Pasar de inhalar a exhalar automáticamente
+      setPhase('exhale');
+      setTimeRemaining(BREATH_DURATION);
+    } else if (phase === 'exhale') {
+      // Después de exhalar, detener y esperar confirmación del usuario
+      setIsRunning(false);
+      setPhase('waitingRepeat');
     }
-  }, [phase, currentStepIndex, totalSteps]);
+  }, [phase]);
 
-  // Función para repetir el ciclo
+  // Función para repetir el ciclo (usuario hace clic en "Continuar")
   const handleRepeat = () => {
     if (repetition < REPETITIONS) {
-      // Nueva repetición
       setRepetition((prev) => prev + 1);
-      setCurrentStepIndex(0);
-      const firstStep = RESPIRATION_STEPS[0];
-      setTimeRemaining(firstStep.duracion);
-      setPhase('breathing');
+      setPhase('inhale');
+      setTimeRemaining(BREATH_DURATION);
       setIsRunning(true);
+    } else {
+      // Ya completó las 5 repeticiones
+      handleComplete();
     }
   };
 
-  // Función para completar actividad
-  const handleComplete = () => {
+  // Función para completar la actividad
+  const handleComplete = useCallback(() => {
     setIsRunning(false);
     setShowSuccessPopup(true);
-  };
+  }, []);
 
   // Efecto para el temporizador automático
   useEffect(() => {
-    if (!isRunning || phase !== 'breathing') return;
+    if (!isRunning || phase === 'preparation' || phase === 'completed') return;
 
     const interval = setInterval(() => {
       setTimeRemaining((prev) => {
         if (prev <= 1) {
-          handleStepComplete();
+          handlePhaseComplete();
           return 0;
         }
         return prev - 1;
@@ -161,22 +148,18 @@ const Ses4Act2: React.FC<Ses4Act2Props> = ({
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [isRunning, phase, handleStepComplete]);
+  }, [isRunning, phase, handlePhaseComplete]);
 
   // Función para reiniciar
   const handleReset = () => {
     setPhase('preparation');
-    setCurrentStepIndex(0);
-    setRepetition(1);
+    setRepetition(0);
     setTimeRemaining(0);
     setIsRunning(false);
   };
 
-  // Calcular porcentaje para el círculo
-  const getProgressPercentage = () => {
-    if (!currentStep || timeRemaining === 0) return 0;
-    return ((currentStep.duracion - timeRemaining) / currentStep.duracion) * 100;
-  };
+  // Calcular progreso total
+  const progressPercentage = (repetition / REPETITIONS) * 100;
 
   return (
     <div className="space-y-6">
@@ -195,27 +178,27 @@ const Ses4Act2: React.FC<Ses4Act2Props> = ({
         {/* Header */}
         <div className="mb-6 text-center border-b-2 border-gray-200 pb-4">
           <h2 className={`text-2xl md:text-3xl font-bold ${getMainTitleTextClasses(activityType)} mb-2`}>
-            La serpiente 🐍
+            La Respiración del Elefante 🐘
           </h2>
           <p className="text-gray-600 text-base">
-            Aprende a respirar y calma tus emociones
+            Respira como un elefante y calma el enfado
           </p>
         </div>
 
-        {/* Indicador de repetición */}
-        {(phase === 'breathing' || phase === 'waitingRepeat') && (
+        {/* Indicador de progreso */}
+        {(phase === 'inhale' || phase === 'exhale' || phase === 'waitingRepeat') && (
           <div className="mb-6 p-4 bg-white/95 backdrop-blur-lg rounded-xl shadow-md border border-gray-200">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-semibold text-gray-700">Progreso</span>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-semibold text-gray-700">Progreso de respiraciones</span>
               <span className={`text-sm font-semibold ${getMainTitleTextClasses(activityType)}`}>
                 Repetición {repetition} de {REPETITIONS}
               </span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2.5 mt-2">
+            <div className="w-full bg-gray-200 rounded-full h-2.5">
               <div 
                 className="h-2.5 rounded-full transition-all duration-500"
                 style={{ 
-                  width: `${(repetition / REPETITIONS) * 100}%`,
+                  width: `${progressPercentage}%`,
                   backgroundColor: getProgressBarColor(activityType)
                 }}
               />
@@ -227,24 +210,37 @@ const Ses4Act2: React.FC<Ses4Act2Props> = ({
         {phase === 'preparation' && (
           <div className="space-y-6">
             <div className={getInstructionsContainerClasses(activityType)}>
-              <h3 className={`text-xl font-bold ${getMainTitleTextClasses(activityType)} mb-4 text-center`}>
-                Preparación
-              </h3>
+              <div className="text-center mb-6">
+                <div className="text-6xl mb-4">🐘</div>
+                <h3 className={`text-xl font-bold ${getMainTitleTextClasses(activityType)} mb-4`}>
+                  Preparación
+                </h3>
+              </div>
               <div className="space-y-3 text-left max-w-2xl mx-auto">
                 <div className="bg-white/80 p-4 rounded-lg border border-gray-300">
                   <p className="text-gray-700 font-medium leading-relaxed">
-                    <strong className={getMainTitleTextClasses(activityType)}>1º.</strong> Sentado con la espalda recta.
+                    <strong className={getMainTitleTextClasses(activityType)}>1º.</strong> Ponte de pie, con las piernas ligeramente separadas.
                   </p>
                 </div>
                 <div className="bg-white/80 p-4 rounded-lg border border-gray-300">
                   <p className="text-gray-700 font-medium leading-relaxed">
-                    <strong className={getMainTitleTextClasses(activityType)}>2º.</strong> Manos en la barriga.
+                    <strong className={getMainTitleTextClasses(activityType)}>2º.</strong> Estira los brazos hacia abajo y junta las palmas de las manos.
+                  </p>
+                </div>
+                <div className="bg-white/80 p-4 rounded-lg border border-gray-300">
+                  <p className="text-gray-700 font-medium leading-relaxed">
+                    <strong className={getMainTitleTextClasses(activityType)}>3º.</strong> Esas manos juntas serán tu <strong>trompa de elefante</strong>.
+                  </p>
+                </div>
+                <div className="bg-gradient-to-r from-braini-turquoise/10 to-braini-turquoise/5 p-4 rounded-lg border border-braini-turquoise/20 text-center">
+                  <p className="text-lg font-bold text-gray-800">
+                    ¡Ya eres un elefante y vas a respirar como ellos! 🐘
                   </p>
                 </div>
               </div>
               <div className="mt-6 text-center">
                 <Button
-                  onClick={startBreathing}
+                  onClick={startActivity}
                   className={getPrimaryButtonClasses(activityType)}
                 >
                   <Play className="w-5 h-5 mr-2" />
@@ -255,56 +251,30 @@ const Ses4Act2: React.FC<Ses4Act2Props> = ({
           </div>
         )}
 
-        {phase === 'breathing' && currentStep && (
+        {(phase === 'inhale' || phase === 'exhale') && currentStep && (
           <div className="space-y-6">
-            {/* Paso actual */}
+            {/* Paso actual con temporizador - Layout horizontal */}
             <div className={getInstructionsContainerClasses(activityType)}>
-              <div className="text-center mb-6">
-                <div className="text-5xl mb-4">{currentStep.emoji}</div>
-                <h3 className={`text-2xl font-bold ${getMainTitleTextClasses(activityType)} mb-3`}>
-                  {currentStep.nombre}
-                </h3>
-                <p className="text-lg text-gray-700 font-medium leading-relaxed max-w-2xl mx-auto">
-                  {currentStep.instruccion}
-                </p>
-              </div>
+              <div className="grid grid-cols-1 md:grid-cols-[3fr_auto] gap-5 items-center">
+                {/* Izquierda: Emoji + Instrucciones (más espacio) */}
+                <div className="text-center md:text-left">
+                  <div className="text-7xl mb-4">{currentStep.emoji}</div>
+                  <h3 className={`text-2xl font-bold ${getMainTitleTextClasses(activityType)} mb-3`}>
+                    {currentStep.nombre}
+                  </h3>
+                  <div className="text-base text-gray-700 font-medium leading-relaxed">
+                    {formatearTexto(currentStep.instruccion)}
+                  </div>
+                </div>
 
-              {/* Temporizador circular */}
-              <div className="flex justify-center mb-6">
-                <div className="relative w-48 h-48">
-                  {/* Círculo de fondo */}
-                  <svg className="w-48 h-48 transform -rotate-90" viewBox="0 0 100 100">
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r="45"
-                      fill="none"
-                      stroke="#e5e7eb"
-                      strokeWidth="8"
-                    />
-                    {/* Círculo de progreso */}
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r="45"
-                      fill="none"
-                      stroke={getProgressBarColor(activityType)}
-                      strokeWidth="8"
-                      strokeLinecap="round"
-                      strokeDasharray={`${2 * Math.PI * 45}`}
-                      strokeDashoffset={`${2 * Math.PI * 45 * (1 - getProgressPercentage() / 100)}`}
-                      className="transition-all duration-1000 ease-linear"
-                    />
-                  </svg>
-                  {/* Tiempo restante */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className={`text-5xl font-black ${getMainTitleTextClasses(activityType)}`}>
-                        {timeRemaining}
-                      </div>
-                      <div className="text-sm text-gray-600 font-medium">
-                        segundos
-                      </div>
+                {/* Derecha: Countdown simple (menos espacio) */}
+                <div className="flex justify-center">
+                  <div className="text-center">
+                    <div className={`text-7xl font-black ${getMainTitleTextClasses(activityType)} mb-2`}>
+                      {timeRemaining}
+                    </div>
+                    <div className="text-sm text-gray-600 font-medium">
+                      segundos
                     </div>
                   </div>
                 </div>
@@ -316,31 +286,34 @@ const Ses4Act2: React.FC<Ses4Act2Props> = ({
         {phase === 'waitingRepeat' && (
           <div className="space-y-6">
             <div className={`${getInstructionsContainerClasses(activityType)} text-center`}>
-              <div className="text-5xl mb-4">✅</div>
+              <div className="text-5xl mb-4">✨</div>
               <h3 className={`text-2xl font-bold ${getMainTitleTextClasses(activityType)} mb-3`}>
-                ¡Repetición completada!
+                ¡Respiración completada!
               </h3>
               <p className="text-lg text-gray-700 font-medium mb-6">
-                Has completado: Inhala → Aguanta → Exhala
+                Has completado {repetition} respiración{repetition !== 1 ? 'es' : ''} de elefante
               </p>
-              
-              {repetition < REPETITIONS ? (
-                <Button
-                  onClick={handleRepeat}
-                  className={getPrimaryButtonClasses(activityType)}
-                >
-                  <RotateCcw className="w-5 h-5 mr-2" />
-                  Repetir
-                </Button>
-              ) : (
-                <Button
-                  onClick={handleComplete}
-                  className={getPrimaryButtonClasses(activityType)}
-                >
-                  <CheckCircle className="w-5 h-5 mr-2" />
-                  Completar Actividad
-                </Button>
-              )}
+
+              {/* Botones de acción */}
+              <div className="text-center">
+                {repetition < REPETITIONS ? (
+                  <Button
+                    onClick={handleRepeat}
+                    className={getPrimaryButtonClasses(activityType)}
+                  >
+                    <RotateCcw className="w-5 h-5 mr-2" />
+                    Continuar
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={handleComplete}
+                    className={getPrimaryButtonClasses(activityType)}
+                  >
+                    <CheckCircle className="w-5 h-5 mr-2" />
+                    Completar Actividad
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
         )}
@@ -393,4 +366,5 @@ const Ses4Act2: React.FC<Ses4Act2Props> = ({
   );
 };
 
-export default Ses4Act2;
+export default Ses6Act2;
+

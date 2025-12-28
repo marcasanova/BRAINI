@@ -230,3 +230,21 @@ export const getScientificBaseIconClasses = (activityType?: string): string => {
   }
 };
 
+/**
+ * Obtiene el color hexadecimal para la barra de progreso
+ */
+export const getProgressBarColor = (activityType?: string): string => {
+  switch (activityType) {
+    case 'inteligencia_emocional':
+      return '#5a8bc4'; // braini-blue
+    case 'regulacion_emocional':
+      return '#2a9d8f'; // braini-turquoise
+    case 'vinculo_afectivo':
+      return '#e76f51'; // braini-pink
+    case 'acompañamiento_emocional':
+      return '#e9c46a'; // braini-yellow
+    default:
+      return '#5a8bc4'; // braini-blue por defecto
+  }
+};
+
