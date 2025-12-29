@@ -7,7 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/lib/supabaseClient';
 
 // Rutas de assets públicos
-const logoBraini = '/logo/LogoBraini_new.png';
+const logoBraini = '/logo/logoBraini.png';
 
 const Conferencia = () => {
   const [email, setEmail] = useState('');

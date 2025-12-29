@@ -38,35 +38,35 @@ export const useEmotionalDiary = () => {
       id: 1,
       name: "Alegría",
       imageUrl: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/1.%20Alegria.jpg",
-      color: "#FFD93D",
+      color: "#FFD93D",  // Amarillo brillante (sun-like)
       description: "Contento y feliz"
     },
     {
       id: 2,
       name: "Tristeza",
       imageUrl: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/2.%20Tristeza.jpg",
-      color: "#6C5CE7",
+      color: "#74B9FF",  // Azul claro (light blue)
       description: "Melancólico o apenado"
     },
     {
       id: 3,
       name: "Miedo",
       imageUrl: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/3.%20Miedo.jpg",
-      color: "#A8E6CF",
+      color: "#5F8DCA",  // Azul medio (con sombra oscura)
       description: "Asustado o preocupado"
     },
     {
       id: 4,
       name: "Pena",
       imageUrl: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/4.%20Pena.jpg",
-      color: "#FF8B94",
+      color: "#81C7E8",  // Azul claro (con corazón roto)
       description: "Triste o desanimado"
     },
     {
       id: 5,
       name: "Rabia",
       imageUrl: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/5.%20Rabia.jpg",
-      color: "#FF6B6B",
+      color: "#FF6B6B",  // Rojo intenso (con llamas)
       description: "Enojado o frustrado"
     }
   ];

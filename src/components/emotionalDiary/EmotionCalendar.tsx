@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar, Edit3 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface EmotionalEntry {
@@ -57,13 +57,13 @@ const EmotionCalendar: React.FC<EmotionCalendarProps> = ({
   };
 
   const getEmotionColor = (emotionName: string) => {
-    // Colores específicos para cada emoción (basados en la imagen)
+    // Colores específicos para cada emoción (basados en la imagen compartida)
     const emotionColors: { [key: string]: string } = {
-      'Alegría': '#FFD93D',    // Amarillo vibrante
-      'Tristeza': '#6C5CE7',   // Azul claro
-      'Miedo': '#A8E6CF',      // Azul oscuro
-      'Pena': '#FF8B94',       // Azul medio
-      'Rabia': '#FF6B6B'       // Rojo intenso
+      'Alegría': '#FFD93D',    // Amarillo brillante (sun-like)
+      'Tristeza': '#74B9FF',   // Azul claro (light blue)
+      'Miedo': '#5F8DCA',      // Azul medio (con sombra oscura)
+      'Pena': '#81C7E8',       // Azul claro (con corazón roto)
+      'Rabia': '#FF6B6B'       // Rojo intenso (con llamas)
     };
     
     return emotionColors[emotionName] || '#E5E7EB';
@@ -130,11 +130,15 @@ const EmotionCalendar: React.FC<EmotionCalendarProps> = ({
                 className={`
                   relative h-12 rounded-lg transition-all duration-200 text-sm font-medium
                   ${isSelected(date) 
-                    ? 'ring-2 ring-braini-blue bg-braini-blue/10' 
+                    ? '' 
                     : 'hover:bg-gray-50'
                   }
                   ${isToday(date) ? 'font-bold' : ''}
                 `}
+                style={isSelected(date) ? {
+                  boxShadow: '0 0 0 2px #35bdb1',
+                  backgroundColor: '#35bdb120'
+                } : {}}
               >
                 <span className={`
                   absolute top-1 left-1 text-xs
@@ -153,7 +157,9 @@ const EmotionCalendar: React.FC<EmotionCalendarProps> = ({
                 
                 {/* Indicador de observaciones */}
                 {entry?.observations && (
-                  <div className="absolute top-1 right-1 w-2 h-2 bg-blue-500 rounded-full shadow-sm" />
+                  <div className="absolute top-1 right-1">
+                    <Edit3 className="w-3 h-3 text-gray-600" strokeWidth={2.5} />
+                  </div>
                 )}
               </button>
             </TooltipTrigger>
@@ -233,23 +239,23 @@ const EmotionCalendar: React.FC<EmotionCalendarProps> = ({
           
           <div className="grid grid-cols-2 gap-2">
             <div className="flex items-center gap-2 p-2 bg-white rounded-lg border border-gray-100">
-              <div className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: '#FFD93D' }} />
+              <div className="h-3 rounded-full shadow-sm flex-shrink-0" style={{ width: '35px', backgroundColor: '#FFD93D' }} />
               <span className="text-xs text-gray-700 font-medium">Alegría</span>
             </div>
             <div className="flex items-center gap-2 p-2 bg-white rounded-lg border border-gray-100">
-              <div className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: '#6C5CE7' }} />
+              <div className="h-3 rounded-full shadow-sm flex-shrink-0" style={{ width: '35px', backgroundColor: '#74B9FF' }} />
               <span className="text-xs text-gray-700 font-medium">Tristeza</span>
             </div>
             <div className="flex items-center gap-2 p-2 bg-white rounded-lg border border-gray-100">
-              <div className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: '#A8E6CF' }} />
+              <div className="h-3 rounded-full shadow-sm flex-shrink-0" style={{ width: '35px', backgroundColor: '#5F8DCA' }} />
               <span className="text-xs text-gray-700 font-medium">Miedo</span>
             </div>
             <div className="flex items-center gap-2 p-2 bg-white rounded-lg border border-gray-100">
-              <div className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: '#FF8B94' }} />
+              <div className="h-3 rounded-full shadow-sm flex-shrink-0" style={{ width: '35px', backgroundColor: '#81C7E8' }} />
               <span className="text-xs text-gray-700 font-medium">Pena</span>
             </div>
             <div className="flex items-center gap-2 p-2 bg-white rounded-lg border border-gray-100">
-              <div className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: '#FF6B6B' }} />
+              <div className="h-3 rounded-full shadow-sm flex-shrink-0" style={{ width: '35px', backgroundColor: '#FF6B6B' }} />
               <span className="text-xs text-gray-700 font-medium">Rabia</span>
             </div>
           </div>

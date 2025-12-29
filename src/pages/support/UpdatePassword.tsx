@@ -8,7 +8,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { Session } from '@supabase/supabase-js';
 
 // Rutas de assets públicos
-const logoBraini = '/logo/LogoBraini_new.png';
+const logoBraini = '/logo/logoBraini.png';
 
 const UpdatePassword = () => {
   const [password, setPassword] = useState('');

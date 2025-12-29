@@ -4,7 +4,7 @@ import { ArrowRight, Gift, Heart, Brain, Users, Clock, Shield, Check } from 'luc
 import { useNavigate } from 'react-router-dom';
 
 // Rutas de assets públicos (archivos en public/)
-const logoBraini = '/logo/LogoBraini_new.png';
+const logoBraini = '/logo/logoBraini.png';
 const logoBrainiEnfadado = '/logo/LogoBrainiEnfadado.png';
 
 // Avatares
@@ -98,7 +98,11 @@ const LandingPage = () => {
 
 
   const handleTrialAccess = () => {
-    navigate('/conferencia');
+    navigate('/signup');
+  };
+
+  const handleLogin = () => {
+    navigate('/login');
   };
 
   return (
@@ -170,8 +174,8 @@ const LandingPage = () => {
               </p>
             </div>
 
-            {/* Botón de Acceso a Prueba Gratuita */}
-            <div className="flex justify-center items-center">
+            {/* Botones de Acción */}
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4">
               <Button 
                 onClick={handleTrialAccess}
                 className="text-white px-6 sm:px-10 py-4 sm:py-5 font-bold transition-all text-base sm:text-lg md:hover:opacity-90 md:hover:scale-105 w-full sm:w-auto"
@@ -181,7 +185,20 @@ const LandingPage = () => {
                   minWidth: '200px'
                 }}
               >
-                Acceder a mi PRUEBA GRATUITA
+                Conseguirlo Gratis
+              </Button>
+              <Button 
+                onClick={handleLogin}
+                variant="outline"
+                className="px-6 sm:px-10 py-4 sm:py-5 font-bold transition-all text-base sm:text-lg md:hover:opacity-90 md:hover:scale-105 w-full sm:w-auto border-2"
+                style={{ 
+                  borderColor: '#7ea4df',
+                  color: '#7ea4df',
+                  backgroundColor: 'transparent',
+                  minWidth: '200px'
+                }}
+              >
+                Ya estás registrado
               </Button>
             </div>
           </div>

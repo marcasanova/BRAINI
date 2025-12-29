@@ -4,8 +4,7 @@ import Backgrounds from '@/components/Backgrounds';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { Brain, Heart, TrendingUp, CheckCircle, AlertCircle, Info, ArrowLeft } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { Brain, Heart, TrendingUp, CheckCircle, AlertCircle, Info, ArrowLeft, Award } from 'lucide-react';
 
 interface TMMSQuestion {
   id: number;
@@ -57,7 +56,6 @@ const TMMS_QUESTIONS: TMMSQuestion[] = [
 
 const TestTMMSPadres = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<number[]>(new Array(24).fill(0));
   const [showResults, setShowResults] = useState(false);
@@ -180,14 +178,9 @@ const TestTMMSPadres = () => {
     setResults(null);
   };
 
-  // Navegar al siguiente nivel
-  const goToNextLevel = () => {
-    // Aquí puedes implementar la lógica para desbloquear el siguiente nivel
-    toast({
-      title: "¡Test completado!",
-      description: "Has desbloqueado el siguiente nivel de desarrollo emocional",
-    });
-    navigate('/home');
+  // Volver a la pantalla de tests
+  const goBackToTests = () => {
+    navigate('/inteligencia-emocional');
   };
 
   if (showResults && results) {
@@ -202,68 +195,58 @@ const TestTMMSPadres = () => {
           <div className="container mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-6 flex-1 flex flex-col min-h-0">
             <div className="max-w-4xl mx-auto w-full">
             {/* Header de resultados */}
-            <div className="text-center mb-8 animate-fade-in">
-              <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                <CheckCircle className="w-10 h-10 text-white" />
-              </div>
-              <h1 className="text-4xl sm:text-5xl font-black text-gray-800 mb-2" style={{ fontWeight: 900 }}>
-                <span className="text-green-600">Resultados del Test TMMS-24</span>
+            <div className="mb-4 md:mb-6 animate-fade-in flex-shrink-0">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-2" style={{ fontWeight: 900 }}>
+                Resultados del Test TMMS-24
               </h1>
-              <p className="text-xl sm:text-2xl text-gray-700 font-medium">
+              <p className="text-lg sm:text-xl md:text-2xl text-white/90 font-medium">
                 Tu perfil de Inteligencia Emocional
               </p>
             </div>
 
             {/* Resultados principales */}
             <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0 mb-8 animate-fade-in" style={{ animationDelay: '0.1s' }}>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-2xl text-gray-800">
-                  <Brain className="w-6 h-6 text-braini-blue" />
-                  Puntuaciones por Dimensión
-                </CardTitle>
+              <CardHeader className="text-center pb-4">
+                <div className="flex items-center justify-center gap-2 mb-3">
+                  <Award className="w-5 h-5 text-braini-yellow" />
+                  <CardTitle className="text-lg md:text-xl font-semibold text-gray-800">
+                    Puntuaciones por Dimensión
+                  </CardTitle>
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="grid md:grid-cols-3 gap-6">
                   {/* Atención Emocional */}
-                  <div className="text-center p-6 bg-blue-50 rounded-xl border border-blue-200">
-                    <div className="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Heart className="w-8 h-8 text-white" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-gray-800 mb-2">Atención Emocional</h3>
-                    <p className="text-3xl font-bold text-blue-600 mb-2">{results.atencion}/40</p>
-                    <div className="w-full bg-blue-200 rounded-full h-2">
+                  <div className="text-center p-6 bg-gray-100 rounded-xl border border-gray-200">
+                    <h3 className="text-base md:text-lg font-semibold text-gray-800 mb-2">Atención Emocional</h3>
+                    <p className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">{results.atencion}/40</p>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
                       <div 
-                        className="bg-blue-600 h-2 rounded-full transition-all duration-500"
+                        className="bg-braini-yellow h-2 rounded-full transition-all duration-500"
                         style={{ width: `${(results.atencion / 40) * 100}%` }}
                       ></div>
                     </div>
                   </div>
 
                   {/* Claridad Emocional */}
-                  <div className="text-center p-6 bg-green-50 rounded-xl border border-green-200">
-                    <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Brain className="w-8 h-8 text-white" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-gray-800 mb-2">Claridad Emocional</h3>
-                    <p className="text-3xl font-bold text-green-600 mb-2">{results.claridad}/40</p>
-                    <div className="w-full bg-green-200 rounded-full h-2">
+                  <div className="text-center p-6 bg-gray-100 rounded-xl border border-gray-200">
+                    <h3 className="text-base md:text-lg font-semibold text-gray-800 mb-2">Claridad Emocional</h3>
+                    <p className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">{results.claridad}/40</p>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
                       <div 
-                        className="bg-green-600 h-2 rounded-full transition-all duration-500"
+                        className="bg-braini-yellow h-2 rounded-full transition-all duration-500"
                         style={{ width: `${(results.claridad / 40) * 100}%` }}
                       ></div>
                     </div>
                   </div>
 
                   {/* Reparación Emocional */}
-                  <div className="text-center p-6 bg-purple-50 rounded-xl border border-purple-200">
-                    <div className="w-16 h-16 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <TrendingUp className="w-8 h-8 text-white" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-gray-800 mb-2">Reparación Emocional</h3>
-                    <p className="text-3xl font-bold text-purple-600 mb-2">{results.reparacion}/40</p>
-                    <div className="w-full bg-purple-200 rounded-full h-2">
+                  <div className="text-center p-6 bg-gray-100 rounded-xl border border-gray-200">
+                    <h3 className="text-base md:text-lg font-semibold text-gray-800 mb-2">Reparación Emocional</h3>
+                    <p className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">{results.reparacion}/40</p>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
                       <div 
-                        className="bg-purple-600 h-2 rounded-full transition-all duration-500"
+                        className="bg-braini-yellow h-2 rounded-full transition-all duration-500"
                         style={{ width: `${(results.reparacion / 40) * 100}%` }}
                       ></div>
                     </div>
@@ -271,44 +254,50 @@ const TestTMMSPadres = () => {
                 </div>
 
                 {/* Puntuación total */}
-                <div className="mt-8 text-center p-6 bg-gradient-to-r from-braini-blue/10 to-purple-600/10 rounded-xl border border-braini-blue/20">
-                  <h3 className="text-2xl font-bold text-gray-800 mb-2">Puntuación Total</h3>
-                  <p className="text-5xl font-bold text-braini-blue mb-2">{results.total}/120</p>
-                  <p className="text-gray-600">Tu nivel general de Inteligencia Emocional</p>
+                <div className="mt-8 text-center p-6 bg-gray-100 rounded-xl border border-gray-200">
+                  <h3 className="text-lg md:text-xl font-semibold text-gray-800 mb-2">Puntuación Total</h3>
+                  <p className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">{results.total}/120</p>
+                  <p className="text-sm md:text-base text-gray-600">Tu nivel general de Inteligencia Emocional</p>
                 </div>
               </CardContent>
             </Card>
 
             {/* Interpretación */}
             <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0 mb-8 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-xl text-gray-800">
-                  <Info className="w-5 h-5 text-blue-500" />
-                  Interpretación de Resultados
-                </CardTitle>
+              <CardHeader className="text-center pb-4">
+                <div className="flex items-center justify-center gap-2 mb-3">
+                  <Award className="w-5 h-5 text-braini-yellow" />
+                  <CardTitle className="text-lg md:text-xl font-semibold text-gray-800">
+                    Interpretación de Resultados
+                  </CardTitle>
+                </div>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-700 leading-relaxed text-lg">{results.interpretation}</p>
+                <p className="text-gray-600 leading-relaxed text-sm md:text-base">{results.interpretation}</p>
               </CardContent>
             </Card>
 
             {/* Recomendaciones */}
             <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0 mb-8 animate-fade-in" style={{ animationDelay: '0.3s' }}>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-xl text-gray-800">
-                  <TrendingUp className="w-5 h-5 text-green-500" />
-                  Recomendaciones para Mejorar
-                </CardTitle>
+              <CardHeader className="text-center pb-4">
+                <div className="flex items-center justify-center gap-2 mb-3">
+                  <Award className="w-5 h-5 text-braini-yellow" />
+                  <CardTitle className="text-lg md:text-xl font-semibold text-gray-800">
+                    Recomendaciones para Mejorar
+                  </CardTitle>
+                </div>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-3">
-                  {results.recommendations.map((recommendation, index) => (
-                    <li key={index} className="flex items-start gap-3">
-                      <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
-                      <span className="text-gray-700">{recommendation}</span>
-                    </li>
-                  ))}
-                </ul>
+                <div className="bg-gray-100 p-4 rounded-lg border border-gray-200">
+                  <ul className="space-y-3">
+                    {results.recommendations.map((recommendation, index) => (
+                      <li key={index} className="flex items-start gap-3">
+                        <div className="w-2 h-2 bg-gray-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <span className="text-gray-600 text-sm md:text-base">{recommendation}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </CardContent>
             </Card>
 
@@ -317,15 +306,15 @@ const TestTMMSPadres = () => {
               <Button
                 onClick={restartTest}
                 variant="outline"
-                className="border-2 border-gray-300 text-gray-700 hover:border-braini-blue hover:text-braini-blue hover:bg-white/50 font-semibold py-3 px-8 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 text-lg"
+                className="border-2 border-gray-300 text-gray-700 hover:border-braini-yellow hover:text-braini-yellow hover:bg-white/50 font-semibold py-3 px-8 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 text-lg"
               >
                 Repetir Test
               </Button>
               <Button
-                onClick={goToNextLevel}
-                className="bg-gradient-to-r from-braini-blue to-purple-600 hover:from-braini-blue-dark hover:to-purple-700 text-white font-bold py-3 px-8 rounded-xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 text-lg"
+                onClick={goBackToTests}
+                className="bg-braini-yellow hover:bg-braini-yellow-dark text-white font-bold py-3 px-8 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 text-lg"
               >
-                Continuar al Siguiente Nivel
+                Volver a Tests
               </Button>
             </div>
           </div>
@@ -346,15 +335,12 @@ const TestTMMSPadres = () => {
         <div className="container mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-6 flex-1 flex flex-col min-h-0">
           <div className="max-w-4xl mx-auto w-full">
           {/* Header */}
-          <div className="text-center mb-8 animate-fade-in">
-            <div className="w-20 h-20 bg-gradient-to-br from-braini-blue to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-              <Brain className="w-10 h-10 text-white" />
-            </div>
-            <h1 className="text-4xl sm:text-5xl font-black text-gray-800 mb-2" style={{ fontWeight: 900 }}>
-              <span className="text-braini-blue">Test TMMS-24</span>
+          <div className="mb-4 md:mb-6 animate-fade-in flex-shrink-0">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-2" style={{ fontWeight: 900 }}>
+              Test TMMS-24 para Padres
             </h1>
-            <p className="text-xl sm:text-2xl text-gray-700 font-medium">
-              Evaluación de Inteligencia Emocional para Padres
+            <p className="text-lg sm:text-xl md:text-2xl text-white/90 font-medium">
+              Evaluación completa de tu inteligencia emocional
             </p>
           </div>
 
@@ -363,7 +349,7 @@ const TestTMMSPadres = () => {
             <Button
               onClick={() => navigate('/inteligencia-emocional')}
               variant="outline"
-              className="border-2 border-gray-300 text-gray-700 hover:border-braini-blue hover:text-braini-blue hover:bg-white/50 font-semibold py-2 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+              className="border-2 border-gray-300 text-gray-700 hover:border-braini-yellow hover:text-braini-yellow hover:bg-white/50 font-semibold py-2 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Volver a Inteligencia Emocional
@@ -372,32 +358,36 @@ const TestTMMSPadres = () => {
 
           {/* Información del test */}
           <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0 mb-8 animate-fade-in" style={{ animationDelay: '0.1s' }}>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-3 text-xl text-gray-800">
-                <Info className="w-5 h-5 text-blue-500" />
-                Instrucciones del Test
-              </CardTitle>
+            <CardHeader className="text-center pb-4">
+              <div className="flex items-center justify-center gap-2 mb-3">
+                <Award className="w-5 h-5 text-braini-yellow" />
+                <CardTitle className="text-lg md:text-xl font-semibold text-gray-800">
+                  Instrucciones del Test
+                </CardTitle>
+              </div>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <p className="text-gray-700">
+                <p className="text-gray-600 text-sm md:text-base">
                   Este test evalúa tu <strong>Inteligencia Emocional</strong> en tres dimensiones importantes:
                 </p>
-                <ul className="space-y-2 text-gray-700">
-                  <li className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                    <strong>Atención Emocional:</strong> Capacidad para identificar y expresar emociones
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <strong>Claridad Emocional:</strong> Comprensión de las propias emociones
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                    <strong>Reparación Emocional:</strong> Capacidad para regular y gestionar emociones
-                  </li>
-                </ul>
-                <p className="text-gray-700">
+                <div className="bg-gray-100 p-4 rounded-lg border border-gray-200">
+                  <ul className="space-y-2 text-sm md:text-base text-gray-600">
+                    <li className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                      <strong>Atención Emocional:</strong> Capacidad para identificar y expresar emociones
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                      <strong>Claridad Emocional:</strong> Comprensión de las propias emociones
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                      <strong>Reparación Emocional:</strong> Capacidad para regular y gestionar emociones
+                    </li>
+                  </ul>
+                </div>
+                <p className="text-gray-600 text-sm md:text-base">
                   <strong>Escala de respuestas:</strong> 1 = Totalmente en desacuerdo, 5 = Totalmente de acuerdo
                 </p>
               </div>
@@ -407,10 +397,10 @@ const TestTMMSPadres = () => {
           {/* Progreso */}
           <div className="mb-8 animate-fade-in" style={{ animationDelay: '0.2s' }}>
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-medium text-gray-700">
+              <span className="text-sm font-medium text-gray-600">
                 Pregunta {currentQuestion + 1} de 24
               </span>
-              <span className="text-sm font-medium text-gray-700">
+              <span className="text-sm font-medium text-gray-600">
                 {answeredQuestions} respondidas
               </span>
             </div>
@@ -419,14 +409,14 @@ const TestTMMSPadres = () => {
 
           {/* Pregunta actual */}
           <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0 mb-8 animate-fade-in" style={{ animationDelay: '0.3s' }}>
-            <CardHeader>
-              <CardTitle className="text-xl text-gray-800 text-center">
+            <CardHeader className="text-center pb-4">
+              <CardTitle className="text-lg md:text-xl font-semibold text-gray-800">
                 {TMMS_QUESTIONS[currentQuestion].question}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <p className="text-center text-gray-600 mb-6">
+                <p className="text-center text-gray-600 text-sm md:text-base mb-6">
                   ¿Qué tan de acuerdo estás con esta afirmación?
                 </p>
                 
@@ -440,8 +430,8 @@ const TestTMMSPadres = () => {
                       className={`
                         h-16 border-2 font-semibold text-lg transition-all duration-200
                         ${answers[currentQuestion] === value
-                          ? 'border-braini-blue bg-braini-blue text-white shadow-lg'
-                          : 'border-gray-300 text-gray-700 hover:border-braini-blue hover:text-braini-blue'
+                          ? 'border-braini-yellow bg-braini-yellow text-white shadow-lg'
+                          : 'border-gray-300 text-gray-700 hover:border-braini-yellow hover:text-braini-yellow'
                         }
                       `}
                     >
@@ -451,7 +441,7 @@ const TestTMMSPadres = () => {
                 </div>
 
                 {/* Etiquetas de la escala */}
-                <div className="flex justify-between text-sm text-gray-500 mt-4">
+                <div className="flex justify-between text-sm text-gray-600 mt-4">
                   <span>Totalmente en desacuerdo</span>
                   <span>Totalmente de acuerdo</span>
                 </div>
@@ -465,12 +455,12 @@ const TestTMMSPadres = () => {
               onClick={() => setCurrentQuestion(Math.max(0, currentQuestion - 1))}
               disabled={currentQuestion === 0}
               variant="outline"
-              className="border-2 border-gray-300 text-gray-700 hover:border-braini-blue hover:text-braini-blue disabled:opacity-50 disabled:cursor-not-allowed"
+              className="border-2 border-gray-300 text-gray-700 hover:border-braini-yellow hover:text-braini-yellow disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
             >
               Anterior
             </Button>
             
-            <span className="text-gray-500">
+            <span className="text-gray-600 text-sm md:text-base">
               {currentQuestion + 1} / 24
             </span>
           </div>

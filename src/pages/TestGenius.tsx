@@ -11,7 +11,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { Home, ArrowRight, ArrowLeft, Lightbulb, Sparkles, CheckCircle2 } from 'lucide-react';
 
 // Rutas de assets públicos
-const logoBraini = '/logo/LogoBraini_new.png';
+const logoBraini = '/logo/logoBraini.png';
 
 // Tipos
 type Step = 'intro' | 'registration' | 'questionnaire' | 'results';

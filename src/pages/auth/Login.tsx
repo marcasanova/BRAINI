@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dialog";
 
 // Rutas de assets públicos
-const logoBraini = '/logo/LogoBraini_new.png';
+const logoBraini = '/logo/logoBraini.png';
 
 
 const Login = () => {
@@ -44,7 +44,7 @@ const Login = () => {
     if (!resetEmail.trim()) {
       toast({
         title: "Correo electrónico requerido",
-        description: "Por favor, introduce tu correo electrónico.",
+        description: "Por favor, introduce tu correo electrónico para poder enviarte el enlace de recuperación.",
         variant: "destructive",
       });
       return;
@@ -52,8 +52,8 @@ const Login = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(resetEmail)) {
       toast({
-        title: "Email no válido",
-        description: "Por favor, introduce una dirección de correo electrónico válida.",
+        title: "Correo electrónico no válido",
+        description: `El correo "${resetEmail}" no tiene un formato válido. Por favor, verifica que incluya un @ y un dominio (ejemplo: tu@email.com).`,
         variant: "destructive",
       });
       return;
@@ -68,15 +68,31 @@ const Login = () => {
       if (error) throw error;
 
       toast({
-        title: "Enlace enviado",
-        description: "Si existe una cuenta con este correo, te hemos enviado un enlace para restablecer tu contraseña.",
+        title: "Enlace de recuperación enviado",
+        description: `Si existe una cuenta con el correo ${resetEmail}, te hemos enviado un enlace para restablecer tu contraseña. Revisa tu bandeja de entrada y spam.`,
       });
       setIsResetDialogOpen(false);
       setResetEmail('');
     } catch (error) {
+      const err = error as Error;
+      let errorTitle = "Error al enviar el enlace";
+      let errorDescription = "No se pudo enviar el enlace de recuperación. Por favor, inténtalo de nuevo más tarde.";
+      
+      if (err.message) {
+        if (err.message.includes('email') || err.message.includes('Email')) {
+          errorTitle = "Error con el correo electrónico";
+          errorDescription = `No se pudo enviar el enlace al correo ${resetEmail}. Verifica que sea correcto e inténtalo de nuevo.`;
+        } else if (err.message.includes('network') || err.message.includes('fetch') || err.message.includes('Failed to fetch')) {
+          errorTitle = "Error de conexión";
+          errorDescription = "No se pudo conectar con el servidor. Verifica tu conexión a internet e inténtalo de nuevo.";
+        } else {
+          errorDescription = err.message;
+        }
+      }
+      
       toast({
-        title: "Error al enviar el enlace",
-        description: "No se pudo enviar el enlace de recuperación. Por favor, inténtalo de nuevo más tarde.",
+        title: errorTitle,
+        description: errorDescription,
         variant: "destructive",
       });
     } finally {
@@ -89,9 +105,20 @@ const Login = () => {
     e.preventDefault();
     
     if (!email.trim() || !password.trim()) {
+      // Determinar qué campo específico está vacío
+      let errorMessage = "Por favor, completa los siguientes campos:";
+      const missingFields: string[] = [];
+      
+      if (!email.trim()) {
+        missingFields.push("Correo electrónico");
+      }
+      if (!password.trim()) {
+        missingFields.push("Contraseña");
+      }
+      
       toast({
-        title: "Información faltante",
-        description: "Por favor, rellena todos los campos.",
+        title: "Campos incompletos",
+        description: `${errorMessage} ${missingFields.join(' y ')}.`,
         variant: "destructive"
       });
       return;
@@ -101,8 +128,8 @@ const Login = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       toast({
-        title: "Email no válido",
-        description: "Por favor, introduce una dirección de correo electrónico válida.",
+        title: "Correo electrónico no válido",
+        description: `El correo "${email}" no tiene un formato válido. Por favor, verifica que incluya un @ y un dominio (ejemplo: tu@email.com).`,
         variant: "destructive"
       });
       return;
@@ -117,7 +144,35 @@ const Login = () => {
       });
 
       if (error) {
-        throw new Error(error.message || "Email o contraseña no válidos");
+        // Manejar errores específicos de login
+        let errorTitle = "Error al iniciar sesión";
+        let errorDescription = "No se pudo iniciar sesión. Por favor, verifica tus credenciales.";
+        
+        if (error.message?.includes('Invalid login credentials') || error.message?.includes('invalid_credentials')) {
+          errorTitle = "Credenciales incorrectas";
+          errorDescription = "El correo electrónico o la contraseña no son correctos. Por favor, verifica tus datos e inténtalo de nuevo.";
+        } else if (error.message?.includes('Email not confirmed') || error.message?.includes('email_not_confirmed')) {
+          errorTitle = "Correo electrónico no verificado";
+          errorDescription = "Tu correo electrónico aún no ha sido verificado. Por favor, revisa tu bandeja de entrada y haz clic en el enlace de verificación.";
+        } else if (error.message?.includes('email') || error.message?.includes('Email')) {
+          errorTitle = "Error con el correo electrónico";
+          errorDescription = "El correo electrónico proporcionado no es válido o no está registrado en Braini.";
+        } else if (error.message?.includes('password') || error.message?.includes('Password')) {
+          errorTitle = "Error con la contraseña";
+          errorDescription = "La contraseña no es correcta. Si la has olvidado, puedes recuperarla haciendo clic en '¿Has olvidado tu contraseña?'";
+        } else if (error.message?.includes('network') || error.message?.includes('fetch') || error.message?.includes('Failed to fetch')) {
+          errorTitle = "Error de conexión";
+          errorDescription = "No se pudo conectar con el servidor. Verifica tu conexión a internet e inténtalo de nuevo.";
+        } else if (error.message) {
+          errorDescription = error.message;
+        }
+        
+        toast({
+          title: errorTitle,
+          description: errorDescription,
+          variant: "destructive"
+        });
+        return;
       }
 
       toast({
@@ -131,7 +186,14 @@ const Login = () => {
 
       // Comprobar si el perfil está completo
       const userId = data.user?.id;
-      if (!userId) throw new Error('No se pudo obtener el usuario autenticado.');
+      if (!userId) {
+        toast({
+          title: "Error al obtener información del usuario",
+          description: "No se pudo obtener la información de tu cuenta. Por favor, intenta iniciar sesión de nuevo.",
+          variant: "destructive"
+        });
+        return;
+      }
       
       // Obtener datos del padre
       const { data: parentData, error: parentError } = await supabase
@@ -139,8 +201,36 @@ const Login = () => {
         .select('profile_completed, is_trial_user')
         .eq('id', userId)
         .single();
-      if (parentError) throw parentError;
-      if (!parentData) throw new Error('No se encontró el perfil del usuario.');
+      
+      if (parentError) {
+        // Si el error es que no existe el registro, crearlo automáticamente
+        if (parentError.code === 'PGRST116') {
+          // El trigger debería haber creado el registro, pero si no existe, redirigir a onboarding
+          toast({
+            title: "Perfil incompleto",
+            description: "Necesitas completar tu perfil para continuar. Redirigiendo...",
+            variant: "default"
+          });
+          navigate('/parents-profile');
+          return;
+        } else {
+          toast({
+            title: "Error al cargar tu perfil",
+            description: "No se pudo cargar la información de tu perfil. Por favor, intenta iniciar sesión de nuevo.",
+            variant: "destructive"
+          });
+          return;
+        }
+      }
+      
+      if (!parentData) {
+        toast({
+          title: "Perfil no encontrado",
+          description: "No se encontró tu perfil de usuario. Por favor, contacta con soporte o intenta registrarte de nuevo.",
+          variant: "destructive"
+        });
+        return;
+      }
       
       // Verificar si el perfil del padre está completo
       if (parentData.profile_completed === false) {
@@ -157,17 +247,22 @@ const Login = () => {
       // Verificar si el perfil del hijo está completo
       const { data: childData, error: childError } = await supabase
         .from('children')
-        .select('id')
+        .select('profile_completed')
         .eq('parent_id', userId)
         .single();
       
       if (childError && childError.code !== 'PGRST116') {
         // Error real, no solo "no encontrado"
-        throw childError;
+        toast({
+          title: "Error al cargar el perfil del menor",
+          description: "No se pudo cargar la información del perfil del menor. Por favor, intenta iniciar sesión de nuevo.",
+          variant: "destructive"
+        });
+        return;
       }
       
-      if (!childData) {
-        // No hay hijo registrado, ir a ChildProfile
+      // Si no existe el registro o si existe pero profile_completed = false, ir a completar perfil
+      if (!childData || childData.profile_completed === false) {
         navigate('/child-profile');
         return;
       }
@@ -175,9 +270,32 @@ const Login = () => {
       // Perfil completo, ir directamente a Home
       navigate('/home');
     } catch (error) {
+      // Manejar errores inesperados
+      const err = error as Error;
+      let errorTitle = "Error inesperado";
+      let errorDescription = "Ha ocurrido un error inesperado durante el inicio de sesión.";
+      
+      if (err.message) {
+        if (err.message.includes('email') || err.message.includes('Email')) {
+          errorTitle = "Error con el correo electrónico";
+          errorDescription = "Hubo un problema con el correo electrónico. Por favor, verifica que sea correcto e inténtalo de nuevo.";
+        } else if (err.message.includes('password') || err.message.includes('Password')) {
+          errorTitle = "Error con la contraseña";
+          errorDescription = "Hubo un problema con la contraseña. Si la has olvidado, puedes recuperarla haciendo clic en '¿Has olvidado tu contraseña?'";
+        } else if (err.message.includes('network') || err.message.includes('fetch') || err.message.includes('Failed to fetch')) {
+          errorTitle = "Error de conexión";
+          errorDescription = "No se pudo conectar con el servidor. Verifica tu conexión a internet e inténtalo de nuevo.";
+        } else if (err.message.includes('Invalid login credentials') || err.message.includes('invalid_credentials')) {
+          errorTitle = "Credenciales incorrectas";
+          errorDescription = "El correo electrónico o la contraseña no son correctos. Por favor, verifica tus datos e inténtalo de nuevo.";
+        } else {
+          errorDescription = err.message;
+        }
+      }
+      
       toast({
-        title: "Inicio de sesión fallido",
-        description: error instanceof Error ? error.message : "Email o contraseña no válidos. Por favor, inténtalo de nuevo.",
+        title: errorTitle,
+        description: errorDescription,
         variant: "destructive"
       });
     } finally {
@@ -306,7 +424,7 @@ const Login = () => {
                   disabled={isSubmitting}
                 />
                 <p className="text-xs text-gray-500" style={{ fontWeight: 400 }}>
-                  No te peoupes si no la recuerdas, puedes recuperarla en "¿Has olvidado tu contraseña?" 
+                  No te peocupes si no la recuerdas, puedes recuperarla en "¿Has olvidado tu contraseña?" 
                 </p>
               </div>
               
@@ -341,7 +459,7 @@ const Login = () => {
                 <p className="text-gray-600 text-sm sm:text-base">
                   ¿No tienes una cuenta?{' '}
                   <Link 
-                    to="/conferencia" 
+                    to="/signup" 
                     className="text-braini-blue hover:text-braini-blue-dark font-medium hover:underline transition-colors"
                   >
                     Regístrate

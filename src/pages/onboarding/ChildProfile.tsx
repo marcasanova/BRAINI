@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import Backgrounds from '@/components/Backgrounds';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/lib/supabaseClient';
 import { useNavigate } from 'react-router-dom';
-import { Users, GraduationCap, Heart, Brain, Baby, School, ArrowRight, ArrowLeft, CheckCircle } from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
+
+// Rutas de assets públicos
+const logoBraini = '/logo/logoBraini.png';
 
 const GENEROS = [
   { value: 'niño', label: 'Niño' },
@@ -28,24 +29,9 @@ const NIVELES_EDUCATIVOS = [
 const STEPS = [
   {
     id: 1,
-    title: 'Información básica 👶',
+    title: 'Información básica',
     subtitle: 'Datos personales del niño/niña',
-    emoji: '👶',
-    fields: ['nombre', 'apellidos', 'genero', 'fecha_nacimiento']
-  },
-  {
-    id: 2,
-    title: 'Información educativa 🎓',
-    subtitle: 'Datos del colegio',
-    emoji: '🎓',
-    fields: ['centro_escolar', 'nivel_educativo']
-  },
-  {
-    id: 3,
-    title: 'Características (Opcional) 💫',
-    subtitle: 'Fortalezas y áreas de mejora',
-    emoji: '💫',
-    fields: ['fortalezas', 'debilidades']
+    fields: ['nombre', 'apellidos', 'genero', 'nivel_educativo']
   }
 ];
 
@@ -54,13 +40,8 @@ const ChildProfile = () => {
   const [form, setForm] = useState({
     nombre: '',
     apellidos: '',
-    dni: '',
     genero: '',
-    fecha_nacimiento: '',
-    centro_escolar: '',
     nivel_educativo: '',
-    fortalezas: '',
-    debilidades: '',
   });
 
   const [touched, setTouched] = useState<{ [k: string]: boolean }>({});
@@ -97,14 +78,34 @@ const ChildProfile = () => {
         
         const { data, error: fetchError } = await supabase
           .from('children')
-          .select('id')
+          .select('profile_completed')
           .eq('parent_id', user.id)
           .single();
         
         if (fetchError && fetchError.code !== 'PGRST116') throw fetchError;
         
-        if (data) {
+        // Si existe y profile_completed = true, redirigir a home
+        if (data?.profile_completed === true) {
           navigate('/home');
+          return;
+        }
+        
+        // Si existe pero profile_completed = false, cargar los datos existentes
+        if (data && data.profile_completed === false) {
+          const { data: childData, error: childFetchError } = await supabase
+            .from('children')
+            .select('nombre, apellidos, genero, nivel_educativo')
+            .eq('parent_id', user.id)
+            .single();
+          
+          if (!childFetchError && childData) {
+            setForm({
+              nombre: childData.nombre || '',
+              apellidos: childData.apellidos || '',
+              genero: childData.genero || '',
+              nivel_educativo: childData.nivel_educativo || '',
+            });
+          }
         }
       } catch (err: any) {
         setError(err.message || 'Error al comprobar los datos.');
@@ -124,21 +125,8 @@ const ChildProfile = () => {
   const validations = {
     nombre: () => form.nombre.trim().length >= 2,
     apellidos: () => form.apellidos.trim().length >= 2,
-    dni: () => {
-      if (!form.dni.trim()) return true;
-      return /^[0-9]{8}[A-Za-z]$/.test(form.dni);
-    },
     genero: () => form.genero !== '',
-    fecha_nacimiento: () => {
-      if (!form.fecha_nacimiento) return false;
-      const fecha = new Date(form.fecha_nacimiento);
-      const hoy = new Date();
-      return fecha <= hoy;
-    },
-    centro_escolar: () => form.centro_escolar.trim().length >= 3,
     nivel_educativo: () => form.nivel_educativo !== '',
-    fortalezas: () => true,
-    debilidades: () => true,
   };
 
   const getFieldError = (fieldName: string): string => {
@@ -149,16 +137,10 @@ const ChildProfile = () => {
         return !validations.nombre() ? 'El nombre debe tener al menos 2 caracteres' : '';
       case 'apellidos':
         return !validations.apellidos() ? 'Los apellidos deben tener al menos 2 caracteres' : '';
-      case 'dni':
-        return !validations.dni() ? 'DNI/NIE debe ser 8 números y una letra (ej: 12345678A) o dejarlo vacío' : '';
       case 'genero':
         return !validations.genero() ? 'Selecciona el género del niño/niña' : '';
-      case 'fecha_nacimiento':
-        return !validations.fecha_nacimiento() ? 'La fecha de nacimiento debe ser válida' : '';
-      case 'centro_escolar':
-        return !validations.centro_escolar() ? 'El centro escolar debe tener al menos 3 caracteres' : '';
       case 'nivel_educativo':
-        return !validations.nivel_educativo() ? 'Selecciona el nivel educativo' : '';
+        return !validations.nivel_educativo() ? 'Selecciona el nivel educativo del niño/niña' : '';
       default:
         return '';
     }
@@ -174,11 +156,10 @@ const ChildProfile = () => {
   };
 
   const handleNext = () => {
+    // Ya no hay múltiples pasos, esta función ya no se usa
+    // Pero la mantenemos por si acaso hay lógica que la llame
     if (isCurrentStepValid()) {
-      if (currentStep < STEPS.length) {
-        setCurrentStep(currentStep + 1);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
+      // Si el paso es válido, se puede enviar el formulario
     } else {
       const currentStepConfig = STEPS.find(s => s.id === currentStep);
       if (currentStepConfig) {
@@ -191,12 +172,6 @@ const ChildProfile = () => {
     }
   };
 
-  const handlePrevious = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -209,35 +184,80 @@ const ChildProfile = () => {
 
       const datosHijo = {
         ...form,
-        dni: form.dni.trim() || null,
         parent_id: user.id,
+        profile_completed: true,
       };
 
-      const { error: insertError } = await supabase
+      // Verificar si ya existe un registro (perfil incompleto)
+      const { data: existingChild, error: checkError } = await supabase
         .from('children')
-        .insert(datosHijo);
+        .select('id')
+        .eq('parent_id', user.id)
+        .single();
 
-      if (insertError) {
-        if (insertError.message.includes('dni_formato_valido_opcional')) {
-          setError('El DNI/NIE no tiene un formato válido. Debe ser 8 números y una letra (ej: 12345678A).');
-        } else if (insertError.message.includes('dni_unico')) {
-          setError('Ya existe un niño/niña con ese DNI/NIE.');
-        } else if (insertError.message.includes('parent_unico')) {
-          setError('Ya tienes un niño/niña registrado.');
-        } else {
-          setError(insertError.message || 'Error al guardar los datos. Inténtalo de nuevo.');
-        }
-        toast({ 
-          title: 'Error', 
-          description: insertError.message || 'Error al guardar los datos.', 
-          variant: 'destructive' 
-        });
-        throw insertError;
+      let error;
+      
+      if (checkError && checkError.code === 'PGRST116') {
+        // No existe, crear nuevo registro
+        const { error: insertError } = await supabase
+          .from('children')
+          .insert(datosHijo);
+        error = insertError;
+      } else if (!checkError && existingChild) {
+        // Existe, actualizar registro existente
+        const { error: updateError } = await supabase
+          .from('children')
+          .update(datosHijo)
+          .eq('id', existingChild.id);
+        error = updateError;
+      } else {
+        // Error al verificar
+        error = checkError;
       }
 
+      if (error) {
+        let errorTitle = 'Error al guardar el perfil del niño/niña';
+        let errorDescription = '';
+
+        if (error.message.includes('dni_formato_valido_opcional')) {
+          errorDescription = 'El DNI/NIE no tiene un formato válido. Debe ser 8 números y una letra (ej: 12345678A).';
+        } else if (error.message.includes('dni_unico')) {
+          errorTitle = 'DNI/NIE duplicado';
+          errorDescription = 'Ya existe un niño/niña registrado con ese DNI/NIE. Por favor, verifica los datos.';
+        } else if (error.message.includes('parent_unico')) {
+          errorTitle = 'Ya tienes un niño/niña registrado';
+          errorDescription = 'Solo puedes registrar un niño/niña por cuenta. Si necesitas registrar otro, contacta con soporte.';
+        } else if (error.message.includes('nombre') || error.message.includes('apellidos')) {
+          errorDescription = 'Por favor, verifica que el nombre y los apellidos estén correctamente completados.';
+        } else if (error.message.includes('nivel_educativo')) {
+          errorDescription = 'Por favor, selecciona el nivel educativo del niño/niña.';
+        } else if (error.message.includes('genero')) {
+          errorDescription = 'Por favor, selecciona el género del niño/niña.';
+        } else {
+          errorDescription = error.message || 'No se pudieron guardar los datos. Por favor, inténtalo de nuevo.';
+        }
+
+        setError(errorDescription);
+        toast({ 
+          title: errorTitle, 
+          description: errorDescription, 
+          variant: 'destructive' 
+        });
+        throw error;
+      }
+
+      // Personalizar mensaje con el nombre del niño/niña
+      const nombreNino = form.nombre.trim() || 'del niño/niña';
+      const mensajeTitulo = form.nombre.trim() 
+        ? `¡Perfil de ${form.nombre} completado!`
+        : '¡Perfil del niño/niña completado!';
+      const mensajeDescripcion = form.nombre.trim()
+        ? `El perfil de ${form.nombre} ${form.apellidos.trim() ? form.apellidos.trim() : ''} ha sido guardado correctamente. ¡Ya puedes comenzar a usar Braini!`
+        : 'El perfil del niño/niña ha sido guardado correctamente. ¡Ya puedes comenzar a usar Braini!';
+
       toast({ 
-        title: '¡Niño/niña registrado! 🎉', 
-        description: 'Los datos han sido guardados correctamente.', 
+        title: mensajeTitulo, 
+        description: mensajeDescripcion, 
         variant: 'default' 
       });
       
@@ -249,317 +269,217 @@ const ChildProfile = () => {
     }
   };
 
-  const currentStepConfig = STEPS.find(s => s.id === currentStep);
-  const progress = (currentStep / STEPS.length) * 100;
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // Animación de entrada
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoaded(true);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
-    <div className="min-h-screen bg-white font-montserrat relative overflow-hidden">
-      <Backgrounds />
-      <div className="container mx-auto px-4 py-8 relative z-10 flex flex-col items-center justify-center min-h-screen">
-        <div className="bg-white/95 backdrop-blur-sm shadow-xl rounded-2xl p-6 md:p-12 max-w-4xl w-full animate-fade-in">
-          {/* Barra de progreso */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-semibold text-gray-700">
-                Paso {currentStep} de {STEPS.length}
-              </span>
-              <span className="text-sm font-semibold text-braini-pink">
-                {Math.round(progress)}% completado
-              </span>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
-              <div 
-                className="h-full bg-gradient-to-r from-braini-pink to-braini-yellow rounded-full transition-all duration-500 ease-out"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-          </div>
+    <div 
+      className="min-h-screen bg-white font-montserrat relative overflow-hidden transition-colors duration-300"
+      role="main"
+      aria-label="Página de perfil del niño"
+    >
+      {/* Hero Section - Mismo estilo que SignUp/Login */}
+      <section 
+        className="relative min-h-screen flex items-center justify-center px-2 sm:px-4 py-4 sm:py-8"
+        style={{
+          background: '#7ea4df'
+        }}
+      >
+        {/* Figuras Geométricas Circulares */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute -top-20 sm:-top-40 -left-5 sm:-left-10 w-40 h-40 sm:w-80 sm:h-80 bg-white/15 rounded-full" />
+          <div className="absolute -bottom-40 sm:-bottom-80 -right-30 sm:-right-60 w-[300px] h-[300px] sm:w-[700px] sm:h-[700px] bg-white/15 rounded-full" />
+        </div>
 
-          {/* Indicadores de pasos */}
-          <div className="flex justify-between mb-8">
-            {STEPS.map((step) => (
-              <div key={step.id} className="flex-1 flex flex-col items-center">
-                <div className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl mb-2 transition-all duration-300 ${
-                  currentStep > step.id 
-                    ? 'bg-gradient-to-r from-braini-pink to-braini-yellow text-white shadow-lg scale-110' 
-                    : currentStep === step.id
-                    ? 'bg-braini-pink text-white shadow-lg scale-110'
-                    : 'bg-gray-200 text-gray-400'
-                }`}>
-                  {currentStep > step.id ? '✓' : step.emoji}
-                </div>
-                <div className={`text-xs font-medium text-center ${
-                  currentStep >= step.id ? 'text-braini-pink' : 'text-gray-400'
-                }`}>
-                  Paso {step.id}
-                </div>
+        <div className={`w-full max-w-7xl mx-auto transition-all duration-1000 ease-out ${
+          isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+        }`}>
+          
+          {/* Contenido Principal */}
+          <div className="mb-8 sm:mb-12 relative z-10">
+            {/* Logo y Título */}
+            <div className="text-center mb-3 sm:mb-4">
+              <div className="w-16 h-16 sm:w-24 sm:h-24 lg:w-28 lg:h-28 mx-auto mb-4 sm:mb-6 flex items-center justify-center">
+                <img 
+                  src={logoBraini}
+                  alt="Braini Emotions Logo" 
+                  className="w-16 h-16 sm:w-24 sm:h-24 lg:w-28 lg:h-28 object-contain"
+                />
               </div>
-            ))}
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-2 sm:mb-3" style={{ fontWeight: 900 }}>
+                Información básica
+              </h1>
+              <p className="text-white text-lg sm:text-xl lg:text-2xl" style={{ fontWeight: 400 }}>
+                Datos personales del niño/niña
+              </p>
+            </div>
           </div>
 
-          {loading ? (
-            <div className="text-center text-gray-500 py-12">Cargando datos...</div>
-          ) : (
-            <>
-              {error && (
-                <div className="text-red-600 text-center mb-4 p-3 bg-red-50 rounded-lg animate-fade-in" aria-live="polite">
-                  {error}
-                </div>
-              )}
-              
-              <form onSubmit={currentStep === STEPS.length ? handleSubmit : (e) => { e.preventDefault(); handleNext(); }} className="space-y-6">
-                {/* Header del paso actual */}
-                <div className="flex items-center justify-between mb-8 animate-fade-in-up">
-                  <h2 className="text-3xl sm:text-4xl font-black text-gray-800" style={{ fontWeight: 900 }}>
-                    {currentStepConfig?.title}
-                  </h2>
-                  <div className="w-20 h-20 bg-gradient-to-r from-braini-pink to-braini-yellow rounded-full flex items-center justify-center shadow-lg">
-                    <img 
-                      src="/logo/LogoBraini_new.png" 
-                      alt="Braini" 
-                      className="w-16 h-16 object-contain"
-                    />
+          {/* Formulario Card - Mismo estilo que SignUp/Login */}
+          <div 
+            id="child-profile-form"
+            className="bg-white rounded-xl p-6 sm:p-8 shadow-2xl relative z-10 max-w-xs sm:max-w-lg lg:max-w-2xl mx-auto"
+            style={{
+              boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.05)'
+            }}
+          >
+
+            {loading ? (
+              <div className="text-center text-gray-500 py-12">Cargando datos...</div>
+            ) : (
+              <>
+                {error && (
+                  <div className="text-red-600 text-center mb-4 p-3 bg-red-50 rounded-lg animate-fade-in" aria-live="polite">
+                    {error}
                   </div>
-                </div>
-
-                {/* Contenido del paso */}
-                <div className="space-y-6 animate-fade-in-up">
-                  {currentStep === 1 && (
-                    <div className="space-y-4">
-                      <div>
-                        <Label htmlFor="nombre" className="text-base font-semibold flex items-center gap-2">
-                          <span>👤</span> Nombre *
-                        </Label>
-                        <Input 
-                          id="nombre" 
-                          name="nombre" 
-                          value={form.nombre} 
-                          onChange={handleChange} 
-                          placeholder="Nombre del niño/niña"
-                          className={getFieldError('nombre') ? 'border-red-500' : 'border-gray-200'}
-                        />
-                        {getFieldError('nombre') && (
-                          <span className="text-red-500 text-xs mt-1 block">{getFieldError('nombre')}</span>
-                        )}
-                      </div>
-                      
-                      <div>
-                        <Label htmlFor="apellidos" className="text-base font-semibold flex items-center gap-2">
-                          <span>📝</span> Apellidos *
-                        </Label>
-                        <Input 
-                          id="apellidos" 
-                          name="apellidos" 
-                          value={form.apellidos} 
-                          onChange={handleChange} 
-                          placeholder="Apellidos del niño/niña"
-                          className={getFieldError('apellidos') ? 'border-red-500' : 'border-gray-200'}
-                        />
-                        {getFieldError('apellidos') && (
-                          <span className="text-red-500 text-xs mt-1 block">{getFieldError('apellidos')}</span>
-                        )}
-                      </div>
-                      
-                      <div>
-                        <Label htmlFor="dni" className="text-base font-semibold flex items-center gap-2">
-                          <span>🆔</span> DNI/NIE (Opcional)
-                        </Label>
-                        <Input 
-                          id="dni" 
-                          name="dni" 
-                          value={form.dni} 
-                          onChange={handleChange} 
-                          placeholder="12345678A o dejar vacío"
-                          className={getFieldError('dni') ? 'border-red-500' : 'border-gray-200'}
-                        />
-                        <span className="text-xs text-gray-500 mt-1 block">
-                          Si el niño/niña no tiene DNI aún, puedes dejarlo vacío
-                        </span>
-                        {getFieldError('dni') && (
-                          <span className="text-red-500 text-xs mt-1 block">{getFieldError('dni')}</span>
-                        )}
-                      </div>
-                      
-                      <div>
-                        <Label htmlFor="genero" className="text-base font-semibold flex items-center gap-2">
-                          <span>⚧️</span> Género *
-                        </Label>
-                        <select
-                          id="genero"
-                          name="genero"
-                          value={form.genero}
-                          onChange={handleChange}
-                          className={`w-full border-2 rounded-md p-3 focus:border-braini-pink ${
-                            getFieldError('genero') ? 'border-red-500' : 'border-gray-200'
-                          }`}
-                        >
-                          <option value="">Selecciona una opción</option>
-                          {GENEROS.map((genero) => (
-                            <option key={genero.value} value={genero.value}>
-                              {genero.label}
-                            </option>
-                          ))}
-                        </select>
-                        {getFieldError('genero') && (
-                          <span className="text-red-500 text-xs mt-1 block">{getFieldError('genero')}</span>
-                        )}
-                      </div>
-                      
-                      <div>
-                        <Label htmlFor="fecha_nacimiento" className="text-base font-semibold flex items-center gap-2">
-                          <span>🎂</span> Fecha de nacimiento *
-                        </Label>
-                        <Input 
-                          id="fecha_nacimiento" 
-                          name="fecha_nacimiento" 
-                          type="date" 
-                          value={form.fecha_nacimiento} 
-                          onChange={handleChange} 
-                          max={new Date().toISOString().split('T')[0]}
-                          className={getFieldError('fecha_nacimiento') ? 'border-red-500' : 'border-gray-200'}
-                        />
-                        <span className="text-xs text-gray-500 mt-1 block">
-                          Selecciona la fecha de nacimiento del niño/niña
-                        </span>
-                        {getFieldError('fecha_nacimiento') && (
-                          <span className="text-red-500 text-xs mt-1 block">{getFieldError('fecha_nacimiento')}</span>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {currentStep === 2 && (
-                    <div className="space-y-4">
-                      <div>
-                        <Label htmlFor="centro_escolar" className="text-base font-semibold flex items-center gap-2">
-                          <span>🏫</span> Centro escolar *
-                        </Label>
-                        <Input 
-                          id="centro_escolar" 
-                          name="centro_escolar" 
-                          value={form.centro_escolar} 
-                          onChange={handleChange} 
-                          placeholder="Nombre del colegio o escuela"
-                          className={getFieldError('centro_escolar') ? 'border-red-500' : 'border-gray-200'}
-                        />
-                        {getFieldError('centro_escolar') && (
-                          <span className="text-red-500 text-xs mt-1 block">{getFieldError('centro_escolar')}</span>
-                        )}
-                      </div>
-                      
-                      <div>
-                        <Label htmlFor="nivel_educativo" className="text-base font-semibold flex items-center gap-2">
-                          <span>📚</span> Nivel educativo *
-                        </Label>
-                        <select
-                          id="nivel_educativo"
-                          name="nivel_educativo"
-                          value={form.nivel_educativo}
-                          onChange={handleChange}
-                          className={`w-full border-2 rounded-md p-3 focus:border-braini-pink ${
-                            getFieldError('nivel_educativo') ? 'border-red-500' : 'border-gray-200'
-                          }`}
-                        >
-                          <option value="">Selecciona una opción</option>
-                          {NIVELES_EDUCATIVOS.map((nivel) => (
-                            <option key={nivel.value} value={nivel.value}>
-                              {nivel.label}
-                            </option>
-                          ))}
-                        </select>
-                        {getFieldError('nivel_educativo') && (
-                          <span className="text-red-500 text-xs mt-1 block">{getFieldError('nivel_educativo')}</span>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {currentStep === 3 && (
-                    <div className="space-y-4">
-                      <p className="text-center text-gray-600 mb-4">
-                        Estos campos son opcionales, pero nos ayudan a personalizar mejor la experiencia ✨
-                      </p>
-                      <div>
-                        <Label htmlFor="fortalezas" className="text-base font-semibold flex items-center gap-2">
-                          <span>💪</span> Fortalezas
-                        </Label>
-                        <Textarea
-                          id="fortalezas"
-                          name="fortalezas"
-                          value={form.fortalezas}
-                          onChange={handleChange}
-                          placeholder="Describe las fortalezas del niño/niña (ej: sociable, creativo, perseverante...)"
-                          className="w-full border-2 border-gray-200 rounded-md p-3 focus:border-braini-pink"
-                          rows={4}
-                        />
-                      </div>
-                      
-                      <div>
-                        <Label htmlFor="debilidades" className="text-base font-semibold flex items-center gap-2">
-                          <span>🌱</span> Áreas de mejora
-                        </Label>
-                        <Textarea
-                          id="debilidades"
-                          name="debilidades"
-                          value={form.debilidades}
-                          onChange={handleChange}
-                          placeholder="Describe las áreas de mejora (ej: timidez, impulsividad, frustración...)"
-                          className="w-full border-2 border-gray-200 rounded-md p-3 focus:border-braini-pink"
-                          rows={4}
-                        />
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Botones de navegación */}
-                <div className="flex justify-between gap-4 pt-6 border-t border-gray-200">
-                  <Button
-                    type="button"
-                    onClick={handlePrevious}
-                    disabled={currentStep === 1}
-                    variant="outline"
-                    className="flex items-center gap-2 px-6 py-3"
-                  >
-                    <ArrowLeft className="w-5 h-5" />
-                    Anterior
-                  </Button>
+                )}
+                
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* Campo Nombre */}
+                  <div className="space-y-2">
+                    <Label htmlFor="nombre" className="text-base font-semibold text-gray-700" style={{ fontWeight: 600 }}>
+                      Nombre *
+                    </Label>
+                    <Input 
+                      id="nombre" 
+                      name="nombre" 
+                      value={form.nombre} 
+                      onChange={handleChange} 
+                      placeholder="Nombre del niño/niña"
+                      className={`border-2 transition-colors text-base py-3 ${
+                        getFieldError('nombre') 
+                          ? 'border-red-500 focus:border-red-500' 
+                          : 'border-gray-200 focus:border-braini-blue'
+                      }`}
+                      disabled={isSubmitting}
+                    />
+                    {getFieldError('nombre') && (
+                      <span className="text-red-500 text-xs mt-1 block">{getFieldError('nombre')}</span>
+                    )}
+                  </div>
                   
-                  {currentStep < STEPS.length ? (
-                    <Button
-                      type="button"
-                      onClick={handleNext}
-                      disabled={!isCurrentStepValid()}
-                      className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-braini-pink to-braini-yellow hover:from-braini-pink-dark hover:to-braini-yellow-dark text-white font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+                  {/* Campo Apellidos */}
+                  <div className="space-y-2">
+                    <Label htmlFor="apellidos" className="text-base font-semibold text-gray-700" style={{ fontWeight: 600 }}>
+                      Apellidos *
+                    </Label>
+                    <Input 
+                      id="apellidos" 
+                      name="apellidos" 
+                      value={form.apellidos} 
+                      onChange={handleChange} 
+                      placeholder="Apellidos del niño/niña"
+                      className={`border-2 transition-colors text-base py-3 ${
+                        getFieldError('apellidos') 
+                          ? 'border-red-500 focus:border-red-500' 
+                          : 'border-gray-200 focus:border-braini-blue'
+                      }`}
+                      disabled={isSubmitting}
+                    />
+                    {getFieldError('apellidos') && (
+                      <span className="text-red-500 text-xs mt-1 block">{getFieldError('apellidos')}</span>
+                    )}
+                  </div>
+                  
+                  {/* Campo Género */}
+                  <div className="space-y-2">
+                    <Label htmlFor="genero" className="text-base font-semibold text-gray-700" style={{ fontWeight: 600 }}>
+                      Género *
+                    </Label>
+                    <select
+                      id="genero"
+                      name="genero"
+                      value={form.genero}
+                      onChange={handleChange}
+                      disabled={isSubmitting}
+                      className={`w-full border-2 rounded-md p-3 text-base transition-colors ${
+                        getFieldError('genero') 
+                          ? 'border-red-500 focus:border-red-500' 
+                          : 'border-gray-200 focus:border-braini-blue'
+                      }`}
                     >
-                      Siguiente
-                      <ArrowRight className="w-5 h-5" />
-                    </Button>
-                  ) : (
+                      <option value="">Selecciona una opción</option>
+                      {GENEROS.map((genero) => (
+                        <option key={genero.value} value={genero.value}>
+                          {genero.label}
+                        </option>
+                      ))}
+                    </select>
+                    {getFieldError('genero') && (
+                      <span className="text-red-500 text-xs mt-1 block">{getFieldError('genero')}</span>
+                    )}
+                  </div>
+                  
+                  {/* Campo Nivel educativo */}
+                  <div className="space-y-2">
+                    <Label htmlFor="nivel_educativo" className="text-base font-semibold text-gray-700" style={{ fontWeight: 600 }}>
+                      Nivel educativo *
+                    </Label>
+                    <select
+                      id="nivel_educativo"
+                      name="nivel_educativo"
+                      value={form.nivel_educativo}
+                      onChange={handleChange}
+                      disabled={isSubmitting}
+                      className={`w-full border-2 rounded-md p-3 text-base transition-colors ${
+                        getFieldError('nivel_educativo') 
+                          ? 'border-red-500 focus:border-red-500' 
+                          : 'border-gray-200 focus:border-braini-blue'
+                      }`}
+                    >
+                      <option value="">Selecciona una opción</option>
+                      {NIVELES_EDUCATIVOS.map((nivel) => (
+                        <option key={nivel.value} value={nivel.value}>
+                          {nivel.label}
+                        </option>
+                      ))}
+                    </select>
+                    <p className="text-xs text-gray-500" style={{ fontWeight: 400 }}>
+                      Selecciona el nivel educativo actual del niño/niña
+                    </p>
+                    {getFieldError('nivel_educativo') && (
+                      <span className="text-red-500 text-xs mt-1 block">{getFieldError('nivel_educativo')}</span>
+                    )}
+                  </div>
+
+                  {/* Botón Submit */}
+                  <div className="flex justify-center pt-4">
                     <Button
                       type="submit"
                       disabled={!isCurrentStepValid() || isSubmitting}
-                      className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-braini-pink to-braini-yellow hover:from-braini-pink-dark hover:to-braini-yellow-dark text-white font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+                      className="text-white px-8 sm:px-12 py-4 sm:py-5 font-bold transition-all text-base sm:text-lg md:hover:opacity-90 md:hover:scale-105"
+                      style={{ 
+                        background: '#7ea4df',
+                        border: 'none',
+                        minWidth: '280px'
+                      }}
                     >
                       {isSubmitting ? (
-                        <>
+                        <div className="flex items-center justify-center gap-2">
                           <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                          Guardando...
-                        </>
+                          <span>Guardando...</span>
+                        </div>
                       ) : (
-                        <>
+                        <div className="flex items-center justify-center gap-2">
                           <CheckCircle className="w-5 h-5" />
-                          Completar perfil
-                        </>
+                          <span>Completar perfil</span>
+                        </div>
                       )}
                     </Button>
-                  )}
-                </div>
-              </form>
-            </>
-          )}
+                  </div>
+                </form>
+              </>
+            )}
+          </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 };

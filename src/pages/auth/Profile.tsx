@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { User, Baby, Edit3, Save, X, Calendar, Phone, MapPin, GraduationCap, Heart, Globe, Brain, Users, School, Flag, Languages } from 'lucide-react';
+import { User, Baby, Edit3, Save, X, Calendar, Phone, MapPin, GraduationCap, Heart, Globe, Brain, Users, School, Flag, Languages, CreditCard, Mail, Eye } from 'lucide-react';
 
 // Constantes para las expectativas del programa
 const EXPECTATIVAS_PROGRAMA = [
@@ -29,6 +29,7 @@ const Profile = () => {
   const [editChild, setEditChild] = useState(false);
   const [parentForm, setParentForm] = useState<any>({});
   const [childForm, setChildForm] = useState<any>({});
+  const [accordionValue, setAccordionValue] = useState<string>('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -81,6 +82,7 @@ const Profile = () => {
       if (error) throw error;
       setParent(parentForm);
       setEditParent(false);
+      setAccordionValue('');
       toast({ title: 'Datos actualizados', description: 'Tu perfil ha sido actualizado.' });
     } catch (err: any) {
       toast({ title: 'Error', description: err.message, variant: 'destructive' });
@@ -99,6 +101,7 @@ const Profile = () => {
       if (error) throw error;
       setChild(childForm);
       setEditChild(false);
+      setAccordionValue('');
       toast({ title: 'Datos actualizados', description: 'Datos del hijo/a actualizados.' });
     } catch (err: any) {
       toast({ title: 'Error', description: err.message, variant: 'destructive' });
@@ -126,11 +129,11 @@ const Profile = () => {
             {/* Header Section - Fijo en la parte superior */}
             <div className="mb-4 md:mb-6 animate-fade-in flex-shrink-0">
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-2" style={{ fontWeight: 900 }}>
-              Mi Perfil
+              Mi Familia
             </h1>
               {parent?.nombre && (
                 <p className="text-lg sm:text-xl md:text-2xl text-white/90 font-medium">
-                  Hola, <span className="font-semibold text-braini-blue">{parent.nombre}</span>
+                  Bienvenido al perfil, <span className="font-bold text-white">{parent.nombre}</span>.
                 </p>
               )}
             </div>
@@ -140,52 +143,97 @@ const Profile = () => {
             {loading ? (
               <div className="text-center py-12">
                 <div className="inline-flex items-center gap-2 text-gray-500">
-                  <div className="w-6 h-6 border-2 border-braini-blue border-t-transparent rounded-full animate-spin"></div>
+                  <div className="w-6 h-6 border-2 border-braini-pink border-t-transparent rounded-full animate-spin"></div>
                   Cargando datos...
                 </div>
               </div>
             ) : (
               <div className="space-y-6 pb-20 md:pb-4">
-              {/* 1. Desplegable - Datos del Usuario (Padre) */}
+              {/* 1. Datos del Usuario (Padre) */}
               <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0">
-                <Accordion type="single" collapsible className="w-full">
-                  <AccordionItem value="parent-info" className="border-none">
-                    <CardHeader className="pb-4">
-                      <div className="flex items-center justify-between">
-                        <AccordionTrigger className="hover:no-underline py-0 px-0">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-braini-pink rounded-lg flex items-center justify-center">
-                              <User className="w-5 h-5 text-white" />
-                            </div>
-                            <CardTitle className="text-xl text-gray-800">
-                              Datos del Usuario
-                            </CardTitle>
-                          </div>
-                        </AccordionTrigger>
-                        {!editParent && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setEditParent(true);
-                            }}
-                            className="border-braini-blue text-braini-blue hover:bg-braini-blue hover:text-white"
-                          >
-                            <Edit3 className="w-4 h-4 mr-2" />
-                            Editar
-                          </Button>
+                <CardHeader className="pb-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-braini-pink rounded-lg flex items-center justify-center">
+                        <User className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <CardTitle className="text-xl text-gray-800">
+                          Datos de {parent?.nombre || 'Usuario'}
+                        </CardTitle>
+                        {editParent && (
+                          <p className="text-xs text-braini-pink font-medium mt-1 flex items-center gap-1">
+                            <Edit3 className="w-3 h-3" />
+                            Modo edición
+                          </p>
                         )}
                       </div>
-                    </CardHeader>
+                    </div>
+                    {!editParent ? (
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setAccordionValue(accordionValue === 'parent-info' ? '' : 'parent-info');
+                          }}
+                          className="border-gray-300 text-gray-700 hover:bg-gray-50"
+                        >
+                          <Eye className="w-4 h-4 mr-2" />
+                          {accordionValue === 'parent-info' ? 'Ocultar' : 'Ver'}
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setEditParent(true);
+                            setAccordionValue('parent-info');
+                          }}
+                          className="border-braini-pink text-braini-pink hover:bg-braini-pink hover:text-white"
+                        >
+                          <Edit3 className="w-4 h-4 mr-2" />
+                          Editar
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setEditParent(false);
+                            setParentForm(parent);
+                            setAccordionValue('');
+                          }}
+                          className="border-gray-300 text-gray-700 hover:bg-gray-50"
+                        >
+                          <X className="w-4 h-4 mr-2" />
+                          Cancelar
+                        </Button>
+                        <Button
+                          size="sm"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            saveParent();
+                          }}
+                          className="bg-braini-pink hover:bg-braini-pink-dark text-white font-semibold"
+                        >
+                          <Save className="w-4 h-4 mr-2" />
+                          Guardar
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </CardHeader>
+                <Accordion type="single" collapsible value={accordionValue} onValueChange={setAccordionValue} className="w-full">
+                  <AccordionItem value="parent-info" className="border-none">
                     <AccordionContent>
                       <CardContent className="pt-0">
                         {editParent ? (
-                          <form className="space-y-6" onSubmit={e => { e.preventDefault(); saveParent(); }}>
+                          <form className="space-y-4" onSubmit={e => { e.preventDefault(); saveParent(); }}>
                             {/* Información Personal */}
-                            <div className="space-y-4">
-                              <h4 className="font-semibold text-gray-700 flex items-center gap-2">
-                                <Users className="w-4 h-4 text-braini-blue" />
+                            <div className="space-y-4 bg-braini-pink/10 p-4 rounded-lg border border-braini-pink/20">
+                              <h4 className="font-semibold text-gray-800 text-base">
                                 Información Personal
                               </h4>
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -196,7 +244,7 @@ const Profile = () => {
                                     name="nombre"
                                     value={parentForm.nombre || ''}
                                     onChange={handleParentChange}
-                                    className="border-2 border-gray-200 focus:border-braini-blue"
+                                    className="border-2 border-gray-200 focus:border-braini-pink"
                                   />
                                 </div>
                                 <div className="space-y-2">
@@ -206,7 +254,7 @@ const Profile = () => {
                                     name="apellidos"
                                     value={parentForm.apellidos || ''}
                                     onChange={handleParentChange}
-                                    className="border-2 border-gray-200 focus:border-braini-blue"
+                                    className="border-2 border-gray-200 focus:border-braini-pink"
                                   />
                                 </div>
                                 <div className="space-y-2">
@@ -216,7 +264,7 @@ const Profile = () => {
                                     name="dni"
                                     value={parentForm.dni || ''}
                                     onChange={handleParentChange}
-                                    className="border-2 border-gray-200 focus:border-braini-blue"
+                                    className="border-2 border-gray-200 focus:border-braini-pink"
                                   />
                                 </div>
                                 <div className="space-y-2">
@@ -227,7 +275,7 @@ const Profile = () => {
                                     type="date"
                                     value={parentForm.fecha_nacimiento || ''}
                                     onChange={handleParentChange}
-                                    className="border-2 border-gray-200 focus:border-braini-blue"
+                                    className="border-2 border-gray-200 focus:border-braini-pink"
                                   />
                                 </div>
                                 <div className="space-y-2">
@@ -237,7 +285,7 @@ const Profile = () => {
                                     name="genero"
                                     value={parentForm.genero || ''}
                                     onChange={handleParentChange}
-                                    className="w-full border-2 border-gray-200 rounded-md p-2 focus:border-braini-blue"
+                                    className="w-full border-2 border-gray-200 rounded-md p-2 focus:border-braini-pink"
                                   >
                                     <option value="">Selecciona una opción</option>
                                     <option value="hombre">Hombre</option>
@@ -252,7 +300,7 @@ const Profile = () => {
                                     name="telefono_contacto"
                                     value={parentForm.telefono_contacto || ''}
                                     onChange={handleParentChange}
-                                    className="border-2 border-gray-200 focus:border-braini-blue"
+                                    className="border-2 border-gray-200 focus:border-braini-pink"
                                   />
                                 </div>
                                 <div className="space-y-2">
@@ -262,7 +310,7 @@ const Profile = () => {
                                     name="relacion_con_menor"
                                     value={parentForm.relacion_con_menor || ''}
                                     onChange={handleParentChange}
-                                    className="w-full border-2 border-gray-200 rounded-md p-2 focus:border-braini-blue"
+                                    className="w-full border-2 border-gray-200 rounded-md p-2 focus:border-braini-pink"
                                   >
                                     <option value="">Selecciona una opción</option>
                                     <option value="madre">Madre</option>
@@ -276,9 +324,8 @@ const Profile = () => {
                             </div>
 
                             {/* Ubicación */}
-                            <div className="space-y-4">
-                              <h4 className="font-semibold text-gray-700 flex items-center gap-2">
-                                <MapPin className="w-4 h-4 text-braini-blue" />
+                            <div className="space-y-4 bg-braini-pink/10 p-4 rounded-lg border border-braini-pink/20">
+                              <h4 className="font-semibold text-gray-800 text-base">
                                 Ubicación
                               </h4>
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -289,7 +336,7 @@ const Profile = () => {
                                     name="pais_origen"
                                     value={parentForm.pais_origen || ''}
                                     onChange={handleParentChange}
-                                    className="border-2 border-gray-200 focus:border-braini-blue"
+                                    className="border-2 border-gray-200 focus:border-braini-pink"
                                   />
                                 </div>
                                 <div className="space-y-2">
@@ -299,7 +346,7 @@ const Profile = () => {
                                     name="ciudad_origen"
                                     value={parentForm.ciudad_origen || ''}
                                     onChange={handleParentChange}
-                                    className="border-2 border-gray-200 focus:border-braini-blue"
+                                    className="border-2 border-gray-200 focus:border-braini-pink"
                                   />
                                 </div>
                                 <div className="space-y-2">
@@ -309,16 +356,15 @@ const Profile = () => {
                                     name="codigo_postal"
                                     value={parentForm.codigo_postal || ''}
                                     onChange={handleParentChange}
-                                    className="border-2 border-gray-200 focus:border-braini-blue"
+                                    className="border-2 border-gray-200 focus:border-braini-pink"
                                   />
                                 </div>
                               </div>
                             </div>
 
                             {/* Información Educativa y Cultural */}
-                            <div className="space-y-4">
-                              <h4 className="font-semibold text-gray-700 flex items-center gap-2">
-                                <Brain className="w-4 h-4 text-braini-blue" />
+                            <div className="space-y-4 bg-braini-pink/10 p-4 rounded-lg border border-braini-pink/20">
+                              <h4 className="font-semibold text-gray-800 text-base">
                                 Información Educativa y Cultural
                               </h4>
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -329,7 +375,7 @@ const Profile = () => {
                                     name="nivel_educativo"
                                     value={parentForm.nivel_educativo || ''}
                                     onChange={handleParentChange}
-                                    className="w-full border-2 border-gray-200 rounded-md p-2 focus:border-braini-blue"
+                                    className="w-full border-2 border-gray-200 rounded-md p-2 focus:border-braini-pink"
                                   >
                                     <option value="">Selecciona una opción</option>
                                     <option value="sin_estudios">Sin estudios</option>
@@ -351,7 +397,7 @@ const Profile = () => {
                                     name="idioma_casa"
                                     value={parentForm.idioma_casa || ''}
                                     onChange={handleParentChange}
-                                    className="border-2 border-gray-200 focus:border-braini-blue"
+                                    className="border-2 border-gray-200 focus:border-braini-pink"
                                   />
                                 </div>
                                 <div className="space-y-2">
@@ -361,7 +407,7 @@ const Profile = () => {
                                     name="estilo_crianza"
                                     value={parentForm.estilo_crianza || ''}
                                     onChange={handleParentChange}
-                                    className="w-full border-2 border-gray-200 rounded-md p-2 focus:border-braini-blue"
+                                    className="w-full border-2 border-gray-200 rounded-md p-2 focus:border-braini-pink"
                                   >
                                     <option value="">Selecciona una opción</option>
                                     <option value="permisivo">Permisivo</option>
@@ -373,147 +419,122 @@ const Profile = () => {
                                 </div>
                               </div>
                             </div>
-
-                            <div className="flex justify-end gap-3 pt-4">
-                              <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => {
-                                  setEditParent(false);
-                                  setParentForm(parent);
-                                }}
-                                className="border-gray-300 text-gray-700 hover:bg-gray-50"
-                              >
-                                <X className="w-4 h-4 mr-2" />
-                                Cancelar
-                              </Button>
-                              <Button
-                                type="submit"
-                                className="bg-braini-pink hover:bg-braini-pink-dark text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
-                              >
-                                <Save className="w-4 h-4 mr-2" />
-                                Guardar cambios
-                              </Button>
-                            </div>
                           </form>
                         ) : (
-                          <div className="space-y-6">
+                          <div className="space-y-4">
                             {/* Información Personal */}
-                            <div className="space-y-4">
-                              <h4 className="font-semibold text-gray-700 flex items-center gap-2">
-                                <Users className="w-4 h-4 text-braini-blue" />
+                            <div className="space-y-3 bg-braini-pink/10 p-4 rounded-lg border border-braini-pink/20">
+                              <h4 className="font-semibold text-gray-800 text-base">
                                 Información Personal
                               </h4>
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                                  <User className="w-5 h-5 text-braini-blue" />
-                                  <div>
-                                    <p className="text-sm text-gray-500 font-medium">Nombre</p>
-                                    <p className="font-semibold text-gray-800">{parent?.nombre || 'No especificado'}</p>
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div className="flex items-center gap-2 p-2 bg-white rounded-lg">
+                                  <User className="w-4 h-4 text-braini-pink flex-shrink-0" />
+                                  <div className="min-w-0">
+                                    <p className="text-xs text-gray-500 font-medium">Nombre</p>
+                                    <p className="font-semibold text-gray-800 text-sm">{parent?.nombre || 'No especificado'}</p>
                                   </div>
                                 </div>
-                                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                                  <User className="w-5 h-5 text-braini-blue" />
-                                  <div>
-                                    <p className="text-sm text-gray-500 font-medium">Apellidos</p>
-                                    <p className="font-semibold text-gray-800">{parent?.apellidos || 'No especificado'}</p>
+                                <div className="flex items-center gap-2 p-2 bg-white rounded-lg">
+                                  <User className="w-4 h-4 text-braini-pink flex-shrink-0" />
+                                  <div className="min-w-0">
+                                    <p className="text-xs text-gray-500 font-medium">Apellidos</p>
+                                    <p className="font-semibold text-gray-800 text-sm">{parent?.apellidos || 'No especificado'}</p>
                                   </div>
                                 </div>
-                                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                                  <User className="w-5 h-5 text-braini-blue" />
-                                  <div>
-                                    <p className="text-sm text-gray-500 font-medium">DNI</p>
-                                    <p className="font-semibold text-gray-800">{parent?.dni || 'No especificado'}</p>
+                                <div className="flex items-center gap-2 p-2 bg-white rounded-lg">
+                                  <CreditCard className="w-4 h-4 text-braini-pink flex-shrink-0" />
+                                  <div className="min-w-0">
+                                    <p className="text-xs text-gray-500 font-medium">DNI</p>
+                                    <p className="font-semibold text-gray-800 text-sm">{parent?.dni || 'No especificado'}</p>
                                   </div>
                                 </div>
-                                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                                  <Calendar className="w-5 h-5 text-braini-blue" />
-                                  <div>
-                                    <p className="text-sm text-gray-500 font-medium">Fecha de nacimiento</p>
-                                    <p className="font-semibold text-gray-800">{parent?.fecha_nacimiento || 'No especificado'}</p>
+                                <div className="flex items-center gap-2 p-2 bg-white rounded-lg">
+                                  <Calendar className="w-4 h-4 text-braini-pink flex-shrink-0" />
+                                  <div className="min-w-0">
+                                    <p className="text-xs text-gray-500 font-medium">Fecha de nacimiento</p>
+                                    <p className="font-semibold text-gray-800 text-sm">{parent?.fecha_nacimiento || 'No especificado'}</p>
                                   </div>
                                 </div>
-                                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                                  <Heart className="w-5 h-5 text-braini-blue" />
-                                  <div>
-                                    <p className="text-sm text-gray-500 font-medium">Género</p>
-                                    <p className="font-semibold text-gray-800">{parent?.genero || 'No especificado'}</p>
+                                <div className="flex items-center gap-2 p-2 bg-white rounded-lg">
+                                  <Users className="w-4 h-4 text-braini-pink flex-shrink-0" />
+                                  <div className="min-w-0">
+                                    <p className="text-xs text-gray-500 font-medium">Género</p>
+                                    <p className="font-semibold text-gray-800 text-sm">{parent?.genero || 'No especificado'}</p>
                                   </div>
                                 </div>
-                                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                                  <Phone className="w-5 h-5 text-braini-blue" />
-                                  <div>
-                                    <p className="text-sm text-gray-500 font-medium">Teléfono</p>
-                                    <p className="font-semibold text-gray-800">{parent?.telefono_contacto || 'No especificado'}</p>
+                                <div className="flex items-center gap-2 p-2 bg-white rounded-lg">
+                                  <Phone className="w-4 h-4 text-braini-pink flex-shrink-0" />
+                                  <div className="min-w-0">
+                                    <p className="text-xs text-gray-500 font-medium">Teléfono</p>
+                                    <p className="font-semibold text-gray-800 text-sm">{parent?.telefono_contacto || 'No especificado'}</p>
                                   </div>
                                 </div>
-                                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                                  <Heart className="w-5 h-5 text-braini-blue" />
-                                  <div>
-                                    <p className="text-sm text-gray-500 font-medium">Relación con el menor</p>
-                                    <p className="font-semibold text-gray-800">{parent?.relacion_con_menor || 'No especificado'}</p>
+                                <div className="flex items-center gap-2 p-2 bg-white rounded-lg">
+                                  <Heart className="w-4 h-4 text-braini-pink flex-shrink-0" />
+                                  <div className="min-w-0">
+                                    <p className="text-xs text-gray-500 font-medium">Relación con el menor</p>
+                                    <p className="font-semibold text-gray-800 text-sm">{parent?.relacion_con_menor || 'No especificado'}</p>
                                   </div>
                                 </div>
                               </div>
                             </div>
 
                             {/* Ubicación */}
-                            <div className="space-y-4">
-                              <h4 className="font-semibold text-gray-700 flex items-center gap-2">
-                                <MapPin className="w-4 h-4 text-braini-blue" />
+                            <div className="space-y-3 bg-braini-pink/10 p-4 rounded-lg border border-braini-pink/20">
+                              <h4 className="font-semibold text-gray-800 text-base">
                                 Ubicación
                               </h4>
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                                  <Flag className="w-5 h-5 text-braini-blue" />
-                                  <div>
-                                    <p className="text-sm text-gray-500 font-medium">País de origen</p>
-                                    <p className="font-semibold text-gray-800">{parent?.pais_origen || 'No especificado'}</p>
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div className="flex items-center gap-2 p-2 bg-white rounded-lg">
+                                  <Flag className="w-4 h-4 text-braini-pink flex-shrink-0" />
+                                  <div className="min-w-0">
+                                    <p className="text-xs text-gray-500 font-medium">País de origen</p>
+                                    <p className="font-semibold text-gray-800 text-sm">{parent?.pais_origen || 'No especificado'}</p>
                                   </div>
                                 </div>
-                                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                                  <MapPin className="w-5 h-5 text-braini-blue" />
-                                  <div>
-                                    <p className="text-sm text-gray-500 font-medium">Ciudad de origen</p>
-                                    <p className="font-semibold text-gray-800">{parent?.ciudad_origen || 'No especificado'}</p>
+                                <div className="flex items-center gap-2 p-2 bg-white rounded-lg">
+                                  <MapPin className="w-4 h-4 text-braini-pink flex-shrink-0" />
+                                  <div className="min-w-0">
+                                    <p className="text-xs text-gray-500 font-medium">Ciudad de origen</p>
+                                    <p className="font-semibold text-gray-800 text-sm">{parent?.ciudad_origen || 'No especificado'}</p>
                                   </div>
                                 </div>
-                                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                                  <MapPin className="w-5 h-5 text-braini-blue" />
-                                  <div>
-                                    <p className="text-sm text-gray-500 font-medium">Código postal</p>
-                                    <p className="font-semibold text-gray-800">{parent?.codigo_postal || 'No especificado'}</p>
+                                <div className="flex items-center gap-2 p-2 bg-white rounded-lg">
+                                  <MapPin className="w-4 h-4 text-braini-pink flex-shrink-0" />
+                                  <div className="min-w-0">
+                                    <p className="text-xs text-gray-500 font-medium">Código postal</p>
+                                    <p className="font-semibold text-gray-800 text-sm">{parent?.codigo_postal || 'No especificado'}</p>
                                   </div>
                                 </div>
                               </div>
                             </div>
 
                             {/* Información Educativa y Cultural */}
-                            <div className="space-y-4">
-                              <h4 className="font-semibold text-gray-700 flex items-center gap-2">
-                                <Brain className="w-4 h-4 text-braini-blue" />
+                            <div className="space-y-3 bg-braini-pink/10 p-4 rounded-lg border border-braini-pink/20">
+                              <h4 className="font-semibold text-gray-800 text-base">
                                 Información Educativa y Cultural
                               </h4>
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                                  <GraduationCap className="w-5 h-5 text-braini-blue" />
-                                  <div>
-                                    <p className="text-sm text-gray-500 font-medium">Nivel educativo</p>
-                                    <p className="font-semibold text-gray-800">{parent?.nivel_educativo || 'No especificado'}</p>
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div className="flex items-center gap-2 p-2 bg-white rounded-lg">
+                                  <GraduationCap className="w-4 h-4 text-braini-pink flex-shrink-0" />
+                                  <div className="min-w-0">
+                                    <p className="text-xs text-gray-500 font-medium">Nivel educativo</p>
+                                    <p className="font-semibold text-gray-800 text-sm">{parent?.nivel_educativo || 'No especificado'}</p>
                                   </div>
                                 </div>
-                                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                                  <Languages className="w-5 h-5 text-braini-blue" />
-                                  <div>
-                                    <p className="text-sm text-gray-500 font-medium">Idioma que se habla en casa</p>
-                                    <p className="font-semibold text-gray-800">{parent?.idioma_casa || 'No especificado'}</p>
+                                <div className="flex items-center gap-2 p-2 bg-white rounded-lg">
+                                  <Languages className="w-4 h-4 text-braini-pink flex-shrink-0" />
+                                  <div className="min-w-0">
+                                    <p className="text-xs text-gray-500 font-medium">Idioma que se habla en casa</p>
+                                    <p className="font-semibold text-gray-800 text-sm">{parent?.idioma_casa || 'No especificado'}</p>
                                   </div>
                                 </div>
-                                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                                  <Heart className="w-5 h-5 text-braini-blue" />
-                                  <div>
-                                    <p className="text-sm text-gray-500 font-medium">Estilo de crianza percibido</p>
-                                    <p className="font-semibold text-gray-800">{parent?.estilo_crianza || 'No especificado'}</p>
+                                <div className="flex items-center gap-2 p-2 bg-white rounded-lg">
+                                  <Heart className="w-4 h-4 text-braini-pink flex-shrink-0" />
+                                  <div className="min-w-0">
+                                    <p className="text-xs text-gray-500 font-medium">Estilo de crianza percibido</p>
+                                    <p className="font-semibold text-gray-800 text-sm">{parent?.estilo_crianza || 'No especificado'}</p>
                                   </div>
                                 </div>
                               </div>
@@ -521,16 +542,15 @@ const Profile = () => {
 
                             {/* Expectativas del Programa */}
                             {parent?.expectativas_programa && parent.expectativas_programa.length > 0 && (
-                              <div className="space-y-4">
-                                <h4 className="font-semibold text-gray-700 flex items-center gap-2">
-                                  <Heart className="w-4 h-4 text-braini-blue" />
+                              <div className="space-y-3 bg-braini-pink/10 p-4 rounded-lg border border-braini-pink/20">
+                                <h4 className="font-semibold text-gray-800 text-base">
                                   Expectativas del Programa
                                 </h4>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                                   {parent.expectativas_programa.map((expectativa: string, index: number) => (
-                                    <div key={index} className="flex items-center gap-2 p-2 bg-braini-blue/10 rounded-lg">
-                                      <Heart className="w-4 h-4 text-braini-blue" />
-                                      <span className="text-sm font-medium text-gray-700">
+                                    <div key={index} className="flex items-center gap-2 p-1.5 bg-white rounded-lg">
+                                      <Heart className="w-3.5 h-3.5 text-braini-pink flex-shrink-0" />
+                                      <span className="text-xs font-medium text-gray-700">
                                         {getExpectativaLabel(expectativa)}
                                       </span>
                                     </div>
@@ -546,47 +566,92 @@ const Profile = () => {
                 </Accordion>
               </Card>
 
-              {/* 2. Desplegable - Datos del Hijo/a */}
+              {/* 2. Datos del Hijo/a */}
               <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0">
-                <Accordion type="single" collapsible className="w-full">
-                  <AccordionItem value="child-info" className="border-none">
-                    <CardHeader className="pb-4">
-                      <div className="flex items-center justify-between">
-                        <AccordionTrigger className="hover:no-underline py-0 px-0">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-braini-pink rounded-lg flex items-center justify-center">
-                              <Baby className="w-5 h-5 text-white" />
-                            </div>
-                            <CardTitle className="text-xl text-gray-800">
-                              Datos del Hijo/a
-                            </CardTitle>
-                          </div>
-                        </AccordionTrigger>
-                        {child && !editChild && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setEditChild(true);
-                            }}
-                            className="border-braini-pink text-braini-pink hover:bg-braini-pink hover:text-white"
-                          >
-                            <Edit3 className="w-4 h-4 mr-2" />
-                            Editar
-                          </Button>
+                <CardHeader className="pb-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-braini-pink rounded-lg flex items-center justify-center">
+                        <Baby className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <CardTitle className="text-xl text-gray-800">
+                          Datos de {child?.nombre ? child.nombre : 'Hijo/a'}
+                        </CardTitle>
+                        {editChild && (
+                          <p className="text-xs text-braini-pink font-medium mt-1 flex items-center gap-1">
+                            <Edit3 className="w-3 h-3" />
+                            Modo edición
+                          </p>
                         )}
                       </div>
-                    </CardHeader>
+                    </div>
+                    {child && !editChild ? (
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setAccordionValue(accordionValue === 'child-info' ? '' : 'child-info');
+                          }}
+                          className="border-gray-300 text-gray-700 hover:bg-gray-50"
+                        >
+                          <Eye className="w-4 h-4 mr-2" />
+                          {accordionValue === 'child-info' ? 'Ocultar' : 'Ver'}
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setEditChild(true);
+                            setAccordionValue('child-info');
+                          }}
+                          className="border-braini-pink text-braini-pink hover:bg-braini-pink hover:text-white"
+                        >
+                          <Edit3 className="w-4 h-4 mr-2" />
+                          Editar
+                        </Button>
+                      </div>
+                    ) : child && editChild ? (
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setEditChild(false);
+                            setChildForm(child);
+                            setAccordionValue('');
+                          }}
+                          className="border-gray-300 text-gray-700 hover:bg-gray-50"
+                        >
+                          <X className="w-4 h-4 mr-2" />
+                          Cancelar
+                        </Button>
+                        <Button
+                          size="sm"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            saveChild();
+                          }}
+                          className="bg-braini-pink hover:bg-braini-pink-dark text-white font-semibold"
+                        >
+                          <Save className="w-4 h-4 mr-2" />
+                          Guardar
+                        </Button>
+                      </div>
+                    ) : null}
+                  </div>
+                </CardHeader>
+                <Accordion type="single" collapsible value={accordionValue} onValueChange={setAccordionValue} className="w-full">
+                  <AccordionItem value="child-info" className="border-none">
                     <AccordionContent>
                       <CardContent className="pt-0">
                         {child ? (
                           editChild ? (
-                            <form className="space-y-6" onSubmit={e => { e.preventDefault(); saveChild(); }}>
+                            <form className="space-y-4" onSubmit={e => { e.preventDefault(); saveChild(); }}>
                               {/* Información Personal */}
-                              <div className="space-y-4">
-                                <h4 className="font-semibold text-gray-700 flex items-center gap-2">
-                                  <Baby className="w-4 h-4 text-braini-pink" />
+                              <div className="space-y-4 bg-braini-pink/10 p-4 rounded-lg border border-braini-pink/20">
+                                <h4 className="font-semibold text-gray-800 text-base">
                                   Información Personal
                                 </h4>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -636,37 +701,6 @@ const Profile = () => {
                                     </select>
                                   </div>
                                   <div className="space-y-2">
-                                    <Label htmlFor="child-fecha_nacimiento">Fecha de nacimiento</Label>
-                                    <Input
-                                      id="child-fecha_nacimiento"
-                                      name="fecha_nacimiento"
-                                      type="date"
-                                      value={childForm.fecha_nacimiento || ''}
-                                      onChange={handleChildChange}
-                                      className="border-2 border-gray-200 focus:border-braini-pink"
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-
-                              {/* Información Educativa */}
-                              <div className="space-y-4">
-                                <h4 className="font-semibold text-gray-700 flex items-center gap-2">
-                                  <School className="w-4 h-4 text-braini-pink" />
-                                  Información Educativa
-                                </h4>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                  <div className="space-y-2">
-                                    <Label htmlFor="child-centro_escolar">Centro escolar</Label>
-                                    <Input
-                                      id="child-centro_escolar"
-                                      name="centro_escolar"
-                                      value={childForm.centro_escolar || ''}
-                                      onChange={handleChildChange}
-                                      className="border-2 border-gray-200 focus:border-braini-pink"
-                                    />
-                                  </div>
-                                  <div className="space-y-2">
                                     <Label htmlFor="child-nivel_educativo">Nivel educativo</Label>
                                     <select
                                       id="child-nivel_educativo"
@@ -687,10 +721,28 @@ const Profile = () => {
                                 </div>
                               </div>
 
+                              {/* Información Educativa */}
+                              <div className="space-y-4 bg-braini-pink/10 p-4 rounded-lg border border-braini-pink/20">
+                                <h4 className="font-semibold text-gray-800 text-base">
+                                  Información Educativa
+                                </h4>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                  <div className="space-y-2">
+                                    <Label htmlFor="child-centro_escolar">Centro escolar</Label>
+                                    <Input
+                                      id="child-centro_escolar"
+                                      name="centro_escolar"
+                                      value={childForm.centro_escolar || ''}
+                                      onChange={handleChildChange}
+                                      className="border-2 border-gray-200 focus:border-braini-pink"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+
                               {/* Características Socioemocionales */}
-                              <div className="space-y-4">
-                                <h4 className="font-semibold text-gray-700 flex items-center gap-2">
-                                  <Heart className="w-4 h-4 text-braini-pink" />
+                              <div className="space-y-4 bg-braini-pink/10 p-4 rounded-lg border border-braini-pink/20">
+                                <h4 className="font-semibold text-gray-800 text-base">
                                   Características Socioemocionales
                                 </h4>
                                 <div className="space-y-4">
@@ -720,95 +772,71 @@ const Profile = () => {
                                   </div>
                                 </div>
                               </div>
-
-                              <div className="flex justify-end gap-3 pt-4">
-                                <Button
-                                  type="button"
-                                  variant="outline"
-                                  onClick={() => {
-                                    setEditChild(false);
-                                    setChildForm(child);
-                                  }}
-                                  className="border-gray-300 text-gray-700 hover:bg-gray-50"
-                                >
-                                  <X className="w-4 h-4 mr-2" />
-                                  Cancelar
-                                </Button>
-                                <Button
-                                  type="submit"
-                                  className="bg-braini-pink hover:bg-braini-pink-dark text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
-                                >
-                                  <Save className="w-4 h-4 mr-2" />
-                                  Guardar cambios
-                                </Button>
-                              </div>
                             </form>
                           ) : (
-                            <div className="space-y-6">
+                            <div className="space-y-4">
                               {/* Información Personal */}
-                              <div className="space-y-4">
-                                <h4 className="font-semibold text-gray-700 flex items-center gap-2">
-                                  <Baby className="w-4 h-4 text-braini-pink" />
+                              <div className="space-y-3 bg-braini-pink/10 p-4 rounded-lg border border-braini-pink/20">
+                                <h4 className="font-semibold text-gray-800 text-base">
                                   Información Personal
                                 </h4>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                                    <Baby className="w-5 h-5 text-braini-pink" />
-                                    <div>
-                                      <p className="text-sm text-gray-500 font-medium">Nombre</p>
-                                      <p className="font-semibold text-gray-800">{child?.nombre || 'No especificado'}</p>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                  <div className="flex items-center gap-2 p-2 bg-white rounded-lg">
+                                    <Baby className="w-4 h-4 text-braini-pink flex-shrink-0" />
+                                    <div className="min-w-0">
+                                      <p className="text-xs text-gray-500 font-medium">Nombre</p>
+                                      <p className="font-semibold text-gray-800 text-sm">{child?.nombre || 'No especificado'}</p>
                                     </div>
                                   </div>
-                                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                                    <Baby className="w-5 h-5 text-braini-pink" />
-                                    <div>
-                                      <p className="text-sm text-gray-500 font-medium">Apellidos</p>
-                                      <p className="font-semibold text-gray-800">{child?.apellidos || 'No especificado'}</p>
+                                  <div className="flex items-center gap-2 p-2 bg-white rounded-lg">
+                                    <Baby className="w-4 h-4 text-braini-pink flex-shrink-0" />
+                                    <div className="min-w-0">
+                                      <p className="text-xs text-gray-500 font-medium">Apellidos</p>
+                                      <p className="font-semibold text-gray-800 text-sm">{child?.apellidos || 'No especificado'}</p>
                                     </div>
                                   </div>
-                                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                                    <User className="w-5 h-5 text-braini-pink" />
-                                    <div>
-                                      <p className="text-sm text-gray-500 font-medium">DNI</p>
-                                      <p className="font-semibold text-gray-800">{child?.dni || 'No especificado'}</p>
+                                  <div className="flex items-center gap-2 p-2 bg-white rounded-lg">
+                                    <CreditCard className="w-4 h-4 text-braini-pink flex-shrink-0" />
+                                    <div className="min-w-0">
+                                      <p className="text-xs text-gray-500 font-medium">DNI</p>
+                                      <p className="font-semibold text-gray-800 text-sm">{child?.dni || 'No especificado'}</p>
                                     </div>
                                   </div>
-                                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                                    <Heart className="w-5 h-5 text-braini-pink" />
-                                    <div>
-                                      <p className="text-sm text-gray-500 font-medium">Género</p>
-                                      <p className="font-semibold text-gray-800">{child?.genero || 'No especificado'}</p>
+                                  <div className="flex items-center gap-2 p-2 bg-white rounded-lg">
+                                    <Users className="w-4 h-4 text-braini-pink flex-shrink-0" />
+                                    <div className="min-w-0">
+                                      <p className="text-xs text-gray-500 font-medium">Género</p>
+                                      <p className="font-semibold text-gray-800 text-sm">{child?.genero || 'No especificado'}</p>
                                     </div>
                                   </div>
-                                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                                    <Calendar className="w-5 h-5 text-braini-pink" />
-                                    <div>
-                                      <p className="text-sm text-gray-500 font-medium">Fecha de nacimiento</p>
-                                      <p className="font-semibold text-gray-800">{child?.fecha_nacimiento || 'No especificado'}</p>
+                                  <div className="flex items-center gap-2 p-2 bg-white rounded-lg">
+                                    <Calendar className="w-4 h-4 text-braini-pink flex-shrink-0" />
+                                    <div className="min-w-0">
+                                      <p className="text-xs text-gray-500 font-medium">Fecha de nacimiento</p>
+                                      <p className="font-semibold text-gray-800 text-sm">{child?.fecha_nacimiento || 'No especificado'}</p>
                                     </div>
                                   </div>
                                 </div>
                               </div>
 
                               {/* Información Educativa */}
-                              <div className="space-y-4">
-                                <h4 className="font-semibold text-gray-700 flex items-center gap-2">
-                                  <School className="w-4 h-4 text-braini-pink" />
+                              <div className="space-y-3 bg-braini-pink/10 p-4 rounded-lg border border-braini-pink/20">
+                                <h4 className="font-semibold text-gray-800 text-base">
                                   Información Educativa
                                 </h4>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                                    <GraduationCap className="w-5 h-5 text-braini-pink" />
-                                    <div>
-                                      <p className="text-sm text-gray-500 font-medium">Centro escolar</p>
-                                      <p className="font-semibold text-gray-800">{child?.centro_escolar || 'No especificado'}</p>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                  <div className="flex items-center gap-2 p-2 bg-white rounded-lg">
+                                    <School className="w-4 h-4 text-braini-pink flex-shrink-0" />
+                                    <div className="min-w-0">
+                                      <p className="text-xs text-gray-500 font-medium">Centro escolar</p>
+                                      <p className="font-semibold text-gray-800 text-sm">{child?.centro_escolar || 'No especificado'}</p>
                                     </div>
                                   </div>
-                                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                                    <GraduationCap className="w-5 h-5 text-braini-pink" />
-                                    <div>
-                                      <p className="text-sm text-gray-500 font-medium">Nivel educativo</p>
-                                      <p className="font-semibold text-gray-800">{child?.nivel_educativo || 'No especificado'}</p>
+                                  <div className="flex items-center gap-2 p-2 bg-white rounded-lg">
+                                    <GraduationCap className="w-4 h-4 text-braini-pink flex-shrink-0" />
+                                    <div className="min-w-0">
+                                      <p className="text-xs text-gray-500 font-medium">Nivel educativo</p>
+                                      <p className="font-semibold text-gray-800 text-sm">{child?.nivel_educativo || 'No especificado'}</p>
                                     </div>
                                   </div>
                                 </div>
@@ -816,27 +844,26 @@ const Profile = () => {
 
                               {/* Características Socioemocionales */}
                               {(child?.fortalezas || child?.debilidades) && (
-                                <div className="space-y-4">
-                                  <h4 className="font-semibold text-gray-700 flex items-center gap-2">
-                                    <Heart className="w-4 h-4 text-braini-pink" />
+                                <div className="space-y-3 bg-braini-pink/10 p-4 rounded-lg border border-braini-pink/20">
+                                  <h4 className="font-semibold text-gray-800 text-base">
                                     Características Socioemocionales
                                   </h4>
-                                  <div className="space-y-4">
+                                  <div className="space-y-3">
                                     {child?.fortalezas && (
-                                      <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                                        <Brain className="w-5 h-5 text-braini-pink mt-1" />
-                                        <div>
-                                          <p className="text-sm text-gray-500 font-medium">Fortalezas</p>
-                                          <p className="font-semibold text-gray-800">{child.fortalezas}</p>
+                                      <div className="flex items-start gap-2 p-2 bg-white rounded-lg">
+                                        <Brain className="w-4 h-4 text-braini-pink mt-0.5 flex-shrink-0" />
+                                        <div className="min-w-0">
+                                          <p className="text-xs text-gray-500 font-medium">Fortalezas</p>
+                                          <p className="font-semibold text-gray-800 text-sm">{child.fortalezas}</p>
                                         </div>
                                       </div>
                                     )}
                                     {child?.debilidades && (
-                                      <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                                        <Heart className="w-5 h-5 text-braini-pink mt-1" />
-                                        <div>
-                                          <p className="text-sm text-gray-500 font-medium">Debilidades</p>
-                                          <p className="font-semibold text-gray-800">{child.debilidades}</p>
+                                      <div className="flex items-start gap-2 p-2 bg-white rounded-lg">
+                                        <Heart className="w-4 h-4 text-braini-pink mt-0.5 flex-shrink-0" />
+                                        <div className="min-w-0">
+                                          <p className="text-xs text-gray-500 font-medium">Debilidades</p>
+                                          <p className="font-semibold text-gray-800 text-sm">{child.debilidades}</p>
                                         </div>
                                       </div>
                                     )}
@@ -860,7 +887,7 @@ const Profile = () => {
                 </Accordion>
               </Card>
 
-              {/* 3. Sección Resultados de Tests */}
+              {/* 3. Resultados de Tests */}
               <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3 text-xl text-gray-800">

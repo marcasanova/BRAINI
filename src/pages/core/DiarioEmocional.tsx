@@ -181,8 +181,8 @@ const DiarioEmocional = () => {
                     className={`
                     w-full max-w-md px-8 py-3 rounded-xl font-semibold text-lg transition-all duration-300 transform
                     ${selectedEmotion && !loading
-                      ? 'bg-braini-turquoise hover:bg-braini-turquoise-dark text-white shadow-lg hover:shadow-xl hover:scale-105'
-                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      ? 'bg-white border-2 border-braini-turquoise text-braini-turquoise hover:bg-braini-turquoise hover:text-white shadow-lg hover:shadow-xl hover:scale-105'
+                      : 'bg-gray-300 text-gray-500 cursor-not-allowed border-2 border-gray-300'
                     }
                   `}
                 >

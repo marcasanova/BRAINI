@@ -44,16 +44,19 @@ const EmotionSelector: React.FC<EmotionSelectorProps> = ({
                       className={`
                         relative group flex flex-col items-center p-3 rounded-xl transition-all duration-300 transform
                         ${isSelected
-                          ? 'ring-4 ring-braini-blue scale-105 shadow-lg'
+                          ? 'scale-105 shadow-lg'
                           : 'hover:scale-105 hover:shadow-lg'
                         }
                         ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
                       `}
+                      style={isSelected ? { 
+                        outline: `4px solid ${emotion.color}`,
+                        outlineOffset: '0px'
+                      } : {}}
                     >
                       {/* Imagen de la emoción */}
                       <div className={`
-                        w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden mb-2 transition-all duration-300
-                        ${isSelected ? 'ring-2 ring-white' : ''}
+                        w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden mb-2 transition-all duration-300
                       `}>
                         <img
                           src={emotion.imageUrl}
@@ -66,35 +69,38 @@ const EmotionSelector: React.FC<EmotionSelectorProps> = ({
                       {/* Nombre de la emoción */}
                       <span className={`
                         text-xs md:text-sm font-medium text-center transition-colors duration-200
-                        ${isSelected ? 'text-braini-blue' : 'text-gray-700'}
-                      `}>
+                        ${isSelected ? '' : 'text-gray-700'}
+                      `}
+                      style={isSelected ? { color: emotion.color } : {}}
+                      >
                         {emotion.name}
                       </span>
-                      
-                      {/* Indicador de selección */}
-                      {isSelected && (
-                        <div className="absolute -top-1 -right-1 w-6 h-6 bg-braini-blue rounded-full flex items-center justify-center">
-                          <div className="w-3 h-3 bg-white rounded-full"></div>
-                        </div>
-                      )}
                       
                       {/* Efecto de hover mejorado - solo borde sutil */}
                       <div className={`
                         absolute inset-0 rounded-xl transition-all duration-300 pointer-events-none
                         ${isSelected 
-                          ? 'ring-2 ring-braini-blue/30' 
+                          ? '' 
                           : 'ring-0 group-hover:ring-2 group-hover:ring-gray-300/50'
                         }
-                      `} />
+                      `}
+                      style={isSelected ? { 
+                        boxShadow: `inset 0 0 0 2px ${emotion.color}30`
+                      } : {}}
+                      />
                       
                       {/* Efecto de brillo sutil en hover */}
                       <div className={`
                         absolute inset-0 rounded-xl transition-all duration-300 pointer-events-none
                         ${isSelected 
-                          ? 'bg-braini-blue/5' 
+                          ? '' 
                           : 'bg-transparent group-hover:bg-white/30'
                         }
-                      `} />
+                      `}
+                      style={isSelected ? { 
+                        backgroundColor: `${emotion.color}08`
+                      } : {}}
+                      />
                     </button>
                   </TooltipTrigger>
                   <TooltipContent side="bottom" className="bg-gray-800 text-white text-sm px-3 py-2">
@@ -107,9 +113,18 @@ const EmotionSelector: React.FC<EmotionSelectorProps> = ({
           </div>
           
           {selectedEmotion && (
-            <div className="mt-4 p-3 bg-braini-turquoise/10 rounded-xl border border-braini-turquoise/20">
+            <div 
+              className="mt-4 p-3 rounded-xl border"
+              style={{
+                backgroundColor: `${selectedEmotion.color}10`,
+                borderColor: `${selectedEmotion.color}30`
+              }}
+            >
               <p className="text-center text-sm text-gray-700">
-                <span className="font-semibold text-braini-turquoise">
+                <span 
+                  className="font-semibold"
+                  style={{ color: selectedEmotion.color }}
+                >
                   {selectedEmotion.name}
                 </span> seleccionada
               </p>

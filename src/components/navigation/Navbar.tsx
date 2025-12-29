@@ -114,7 +114,7 @@ const Navbar: React.FC = () => {
         {/* Header de la sidebar */}
         <div className="flex items-center justify-center p-6 border-b border-gray-200">
           <img 
-            src="/logo/LogoBraini_new.png" 
+            src="/logo/logoBraini.png" 
             alt="BRAINI Logo" 
             className="h-12 w-auto object-contain"
           />
@@ -143,9 +143,6 @@ const Navbar: React.FC = () => {
                   <Icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-gray-600'}`} />
                 </div>
                 <span className="font-semibold text-base flex-1">{item.label}</span>
-                {isActive && (
-                  <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-                )}
               </button>
             );
           })}

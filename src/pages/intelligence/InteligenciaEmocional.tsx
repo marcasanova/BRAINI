@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Backgrounds from '@/components/Backgrounds';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Brain, Baby, ArrowRight } from 'lucide-react';
+import { ArrowRight, Award } from 'lucide-react';
 
 const InteligenciaEmocional = () => {
   const navigate = useNavigate();
@@ -41,21 +41,21 @@ const InteligenciaEmocional = () => {
             {/* Opciones de Test */}
             <div className="grid lg:grid-cols-2 gap-8 pb-20 md:pb-4">
               {/* Test para Padres */}
-            <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0 hover:shadow-2xl transition-all duration-300 transform hover:scale-105 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+            <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0 animate-fade-in" style={{ animationDelay: '0.1s' }}>
               <CardHeader className="text-center pb-4">
-                <div className="w-20 h-20 bg-braini-yellow rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                  <Brain className="w-10 h-10 text-white" />
+                <div className="flex items-center justify-center gap-2 mb-3">
+                  <Award className="w-5 h-5 text-braini-yellow" />
+                  <CardTitle className="text-lg md:text-xl font-semibold text-gray-800">
+                    Test TMMS-24 para Padres
+                  </CardTitle>
                 </div>
-                <CardTitle className="text-2xl sm:text-3xl font-black text-gray-800 mb-2" style={{ fontWeight: 900 }}>
-                  Test TMMS-24 para Padres
-                </CardTitle>
-                <p className="text-gray-700 font-medium">
+                <p className="text-gray-600 text-sm md:text-base">
                   Evaluación completa de tu inteligencia emocional
                 </p>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="bg-braini-blue/10 p-4 rounded-lg border border-braini-blue/20">
-                  <p className="text-sm text-braini-blue-dark">
+                <div className="bg-gray-100 p-4 rounded-lg border border-gray-200">
+                  <p className="text-sm md:text-base text-gray-600">
                     <strong>Duración:</strong> 15-20 minutos<br/>
                     <strong>Preguntas:</strong> 24 preguntas con escala de 1-5<br/>
                     <strong>Resultados:</strong> Análisis detallado con recomendaciones
@@ -64,7 +64,7 @@ const InteligenciaEmocional = () => {
                 
                 <Button
                   onClick={handleTestPadres}
-                  className="w-full bg-braini-yellow hover:bg-braini-yellow-dark text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 text-lg"
+                  className="w-full bg-braini-yellow hover:bg-braini-yellow-dark text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 text-lg"
                 >
                   Comenzar Test para Padres
                   <ArrowRight className="w-5 h-5 ml-2" />
@@ -73,21 +73,21 @@ const InteligenciaEmocional = () => {
             </Card>
 
             {/* Test para Niños */}
-            <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0 hover:shadow-2xl transition-all duration-300 transform hover:scale-105 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+            <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0 animate-fade-in" style={{ animationDelay: '0.2s' }}>
               <CardHeader className="text-center pb-4">
-                <div className="w-20 h-20 bg-braini-yellow rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                  <Baby className="w-10 h-10 text-white" />
+                <div className="flex items-center justify-center gap-2 mb-3">
+                  <Award className="w-5 h-5 text-braini-yellow" />
+                  <CardTitle className="text-lg md:text-xl font-semibold text-gray-800">
+                    Test Emocional para Niños
+                  </CardTitle>
                 </div>
-                <CardTitle className="text-2xl sm:text-3xl font-black text-gray-800 mb-2" style={{ fontWeight: 900 }}>
-                  Test Emocional para Niños
-                </CardTitle>
-                <p className="text-gray-700 font-medium">
+                <p className="text-gray-600 text-sm md:text-base">
                   Evaluación adaptada para el desarrollo emocional infantil
                 </p>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="bg-braini-pink/10 p-4 rounded-lg border border-braini-pink/20">
-                  <p className="text-sm text-braini-pink-dark">
+                <div className="bg-gray-100 p-4 rounded-lg border border-gray-200">
+                  <p className="text-sm md:text-base text-gray-600">
                     <strong>Edad recomendada:</strong> 4-12 años<br/>
                     <strong>Duración:</strong> 10-15 minutos<br/>
                     <strong>Formato:</strong> Adaptado y amigable para niños
@@ -96,7 +96,7 @@ const InteligenciaEmocional = () => {
                 
                 <Button
                   onClick={handleTestNinos}
-                  className="w-full bg-braini-yellow hover:bg-braini-yellow-dark text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 text-lg"
+                  className="w-full bg-braini-yellow hover:bg-braini-yellow-dark text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 text-lg"
                 >
                   Comenzar Test para Niños
                   <ArrowRight className="w-5 h-5 ml-2" />
@@ -104,6 +104,57 @@ const InteligenciaEmocional = () => {
               </CardContent>
             </Card>
             </div>
+
+            {/* Sección de Credibilidad */}
+            <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0 animate-fade-in mt-8" style={{ animationDelay: '0.3s' }}>
+              <CardContent className="p-5 md:p-6">
+                <div className="text-center md:text-left">
+                  <div className="flex items-center justify-center md:justify-start gap-2 mb-3">
+                    <Award className="w-5 h-5 text-braini-yellow" />
+                    <h3 className="text-lg md:text-xl font-semibold text-gray-800">
+                      Tests Validados Científicamente
+                    </h3>
+                  </div>
+                  
+                  <p className="text-gray-600 text-sm md:text-base mb-4">
+                    Nuestros tests han sido <strong>creados y evaluados</strong> por investigadores de la <strong>Universidad de Cádiz</strong> y la <strong>Universidad de Alicante</strong>, garantizando resultados <strong>100% fiables</strong> y basados en evidencia científica.
+                  </p>
+
+                  {/* Logos de las universidades */}
+                  <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4 mt-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-14 h-14 bg-white rounded-lg p-2 shadow-sm flex items-center justify-center">
+                        <img 
+                          src="/unis/logo_cadiz.png" 
+                          alt="Universidad de Cádiz" 
+                          className="max-w-full max-h-full object-contain"
+                          onError={(e) => {
+                            // Fallback si la imagen no existe aún
+                            e.currentTarget.style.display = 'none';
+                          }}
+                        />
+                      </div>
+                      <span className="text-xs text-gray-600">Universidad de Cádiz</span>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <div className="w-14 h-14 bg-white rounded-lg p-2 shadow-sm flex items-center justify-center">
+                        <img 
+                          src="/unis/logo_alicante.png" 
+                          alt="Universidad de Alicante" 
+                          className="max-w-full max-h-full object-contain"
+                          onError={(e) => {
+                            // Fallback si la imagen no existe aún
+                            e.currentTarget.style.display = 'none';
+                          }}
+                        />
+                      </div>
+                      <span className="text-xs text-gray-600">Universidad de Alicante</span>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
