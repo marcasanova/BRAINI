@@ -7,28 +7,33 @@ interface EmotionEntryProps {
   observations: string;
   onObservationsChange: (observations: string) => void;
   disabled?: boolean;
+  childName?: string;
 }
 
 const EmotionEntry: React.FC<EmotionEntryProps> = ({
   observations,
   onObservationsChange,
-  disabled = false
+  disabled = false,
+  childName = ''
 }) => {
   return (
-    <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-lg text-gray-800">
-          <Edit3 className="w-5 h-5 text-braini-blue" />
-          Observaciones (Opcional)
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-3">
+      <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0">
+        <CardHeader className="pb-3 sm:pb-4">
+          <CardTitle className="flex items-center gap-2 text-base sm:text-lg text-gray-800">
+            <Edit3 className="w-4 h-4 sm:w-5 sm:h-5 text-braini-blue" />
+            Observaciones (Opcional)
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="pt-0">
+          <div className="space-y-2 sm:space-y-3">
           <Textarea
             value={observations}
             onChange={(e) => onObservationsChange(e.target.value)}
-            placeholder="Describe cómo se comportó tu hijo/a hoy, qué pasó, o cualquier observación que quieras recordar..."
-            className="min-h-[100px] resize-none border-2 border-gray-200 focus:border-braini-blue focus:ring-0"
+            placeholder={childName 
+              ? `Describe cómo se comportó ${childName} hoy, qué pasó, o cualquier observación que quieras recordar...`
+              : "Describe cómo se comportó hoy, qué pasó, o cualquier observación que quieras recordar..."
+            }
+            className="min-h-[100px] resize-none border-2 border-gray-200 focus:border-braini-blue focus:ring-0 text-base sm:text-sm"
             maxLength={500}
             disabled={disabled}
           />

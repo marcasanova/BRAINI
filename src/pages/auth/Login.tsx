@@ -43,8 +43,8 @@ const Login = () => {
   const handlePasswordReset = async () => {
     if (!resetEmail.trim()) {
       toast({
-        title: "Correo electrónico requerido",
-        description: "Por favor, introduce tu correo electrónico para poder enviarte el enlace de recuperación.",
+        title: "📧 Correo electrónico requerido",
+        description: "Necesitamos tu correo electrónico para enviarte el enlace de recuperación de contraseña.",
         variant: "destructive",
       });
       return;
@@ -52,8 +52,8 @@ const Login = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(resetEmail)) {
       toast({
-        title: "Correo electrónico no válido",
-        description: `El correo "${resetEmail}" no tiene un formato válido. Por favor, verifica que incluya un @ y un dominio (ejemplo: tu@email.com).`,
+        title: "❌ Formato de correo inválido",
+        description: `El correo "${resetEmail}" no tiene un formato válido. Asegúrate de incluir un @ y un dominio (ejemplo: tu@email.com).`,
         variant: "destructive",
       });
       return;
@@ -68,22 +68,22 @@ const Login = () => {
       if (error) throw error;
 
       toast({
-        title: "Enlace de recuperación enviado",
-        description: `Si existe una cuenta con el correo ${resetEmail}, te hemos enviado un enlace para restablecer tu contraseña. Revisa tu bandeja de entrada y spam.`,
+        title: "✉️ Enlace de recuperación enviado",
+        description: `Si existe una cuenta con el correo ${resetEmail}, te hemos enviado un enlace para restablecer tu contraseña. Revisa tu bandeja de entrada y la carpeta de spam.`,
       });
       setIsResetDialogOpen(false);
       setResetEmail('');
     } catch (error) {
       const err = error as Error;
-      let errorTitle = "Error al enviar el enlace";
-      let errorDescription = "No se pudo enviar el enlace de recuperación. Por favor, inténtalo de nuevo más tarde.";
+      let errorTitle = "❌ Error al enviar el enlace";
+      let errorDescription = "No hemos podido enviar el enlace de recuperación. Por favor, inténtalo de nuevo más tarde.";
       
       if (err.message) {
         if (err.message.includes('email') || err.message.includes('Email')) {
-          errorTitle = "Error con el correo electrónico";
+          errorTitle = "❌ Error con el correo electrónico";
           errorDescription = `No se pudo enviar el enlace al correo ${resetEmail}. Verifica que sea correcto e inténtalo de nuevo.`;
         } else if (err.message.includes('network') || err.message.includes('fetch') || err.message.includes('Failed to fetch')) {
-          errorTitle = "Error de conexión";
+          errorTitle = "🌐 Error de conexión";
           errorDescription = "No se pudo conectar con el servidor. Verifica tu conexión a internet e inténtalo de nuevo.";
         } else {
           errorDescription = err.message;
@@ -117,8 +117,8 @@ const Login = () => {
       }
       
       toast({
-        title: "Campos incompletos",
-        description: `${errorMessage} ${missingFields.join(' y ')}.`,
+        title: "⚠️ Campos incompletos",
+        description: `Por favor, completa los siguientes campos: ${missingFields.join(' y ')}.`,
         variant: "destructive"
       });
       return;
@@ -128,8 +128,8 @@ const Login = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       toast({
-        title: "Correo electrónico no válido",
-        description: `El correo "${email}" no tiene un formato válido. Por favor, verifica que incluya un @ y un dominio (ejemplo: tu@email.com).`,
+        title: "❌ Formato de correo inválido",
+        description: `El correo "${email}" no tiene un formato válido. Asegúrate de incluir un @ y un dominio (ejemplo: tu@email.com).`,
         variant: "destructive"
       });
       return;
@@ -145,23 +145,23 @@ const Login = () => {
 
       if (error) {
         // Manejar errores específicos de login
-        let errorTitle = "Error al iniciar sesión";
+        let errorTitle = "❌ Error al iniciar sesión";
         let errorDescription = "No se pudo iniciar sesión. Por favor, verifica tus credenciales.";
         
         if (error.message?.includes('Invalid login credentials') || error.message?.includes('invalid_credentials')) {
-          errorTitle = "Credenciales incorrectas";
+          errorTitle = "🔒 Credenciales incorrectas";
           errorDescription = "El correo electrónico o la contraseña no son correctos. Por favor, verifica tus datos e inténtalo de nuevo.";
         } else if (error.message?.includes('Email not confirmed') || error.message?.includes('email_not_confirmed')) {
-          errorTitle = "Correo electrónico no verificado";
+          errorTitle = "📧 Correo electrónico no verificado";
           errorDescription = "Tu correo electrónico aún no ha sido verificado. Por favor, revisa tu bandeja de entrada y haz clic en el enlace de verificación.";
         } else if (error.message?.includes('email') || error.message?.includes('Email')) {
-          errorTitle = "Error con el correo electrónico";
+          errorTitle = "❌ Error con el correo electrónico";
           errorDescription = "El correo electrónico proporcionado no es válido o no está registrado en Braini.";
         } else if (error.message?.includes('password') || error.message?.includes('Password')) {
-          errorTitle = "Error con la contraseña";
+          errorTitle = "🔑 Error con la contraseña";
           errorDescription = "La contraseña no es correcta. Si la has olvidado, puedes recuperarla haciendo clic en '¿Has olvidado tu contraseña?'";
         } else if (error.message?.includes('network') || error.message?.includes('fetch') || error.message?.includes('Failed to fetch')) {
-          errorTitle = "Error de conexión";
+          errorTitle = "🌐 Error de conexión";
           errorDescription = "No se pudo conectar con el servidor. Verifica tu conexión a internet e inténtalo de nuevo.";
         } else if (error.message) {
           errorDescription = error.message;
@@ -176,8 +176,8 @@ const Login = () => {
       }
 
       toast({
-        title: "¡Bienvenido/a de vuelta! 🎉",
-        description: "Has iniciado sesión correctamente en Braini.",
+        title: "🎉 ¡Bienvenido/a de vuelta!",
+        description: "Has iniciado sesión correctamente en Braini Emotions. ¡Continuemos desarrollando la inteligencia emocional!",
       });
 
       // Reset form
@@ -188,7 +188,7 @@ const Login = () => {
       const userId = data.user?.id;
       if (!userId) {
         toast({
-          title: "Error al obtener información del usuario",
+          title: "❌ Error al obtener información del usuario",
           description: "No se pudo obtener la información de tu cuenta. Por favor, intenta iniciar sesión de nuevo.",
           variant: "destructive"
         });
@@ -207,15 +207,15 @@ const Login = () => {
         if (parentError.code === 'PGRST116') {
           // El trigger debería haber creado el registro, pero si no existe, redirigir a onboarding
           toast({
-            title: "Perfil incompleto",
-            description: "Necesitas completar tu perfil para continuar. Redirigiendo...",
+            title: "📝 Perfil incompleto",
+            description: "Necesitas completar tu perfil para continuar. Te redirigimos al formulario...",
             variant: "default"
           });
           navigate('/parents-profile');
           return;
         } else {
           toast({
-            title: "Error al cargar tu perfil",
+            title: "❌ Error al cargar tu perfil",
             description: "No se pudo cargar la información de tu perfil. Por favor, intenta iniciar sesión de nuevo.",
             variant: "destructive"
           });
@@ -225,7 +225,7 @@ const Login = () => {
       
       if (!parentData) {
         toast({
-          title: "Perfil no encontrado",
+          title: "❌ Perfil no encontrado",
           description: "No se encontró tu perfil de usuario. Por favor, contacta con soporte o intenta registrarte de nuevo.",
           variant: "destructive"
         });
@@ -254,7 +254,7 @@ const Login = () => {
       if (childError && childError.code !== 'PGRST116') {
         // Error real, no solo "no encontrado"
         toast({
-          title: "Error al cargar el perfil del menor",
+          title: "❌ Error al cargar el perfil del menor",
           description: "No se pudo cargar la información del perfil del menor. Por favor, intenta iniciar sesión de nuevo.",
           variant: "destructive"
         });
@@ -272,21 +272,21 @@ const Login = () => {
     } catch (error) {
       // Manejar errores inesperados
       const err = error as Error;
-      let errorTitle = "Error inesperado";
+      let errorTitle = "❌ Error inesperado";
       let errorDescription = "Ha ocurrido un error inesperado durante el inicio de sesión.";
       
       if (err.message) {
         if (err.message.includes('email') || err.message.includes('Email')) {
-          errorTitle = "Error con el correo electrónico";
+          errorTitle = "❌ Error con el correo electrónico";
           errorDescription = "Hubo un problema con el correo electrónico. Por favor, verifica que sea correcto e inténtalo de nuevo.";
         } else if (err.message.includes('password') || err.message.includes('Password')) {
-          errorTitle = "Error con la contraseña";
+          errorTitle = "🔑 Error con la contraseña";
           errorDescription = "Hubo un problema con la contraseña. Si la has olvidado, puedes recuperarla haciendo clic en '¿Has olvidado tu contraseña?'";
         } else if (err.message.includes('network') || err.message.includes('fetch') || err.message.includes('Failed to fetch')) {
-          errorTitle = "Error de conexión";
+          errorTitle = "🌐 Error de conexión";
           errorDescription = "No se pudo conectar con el servidor. Verifica tu conexión a internet e inténtalo de nuevo.";
         } else if (err.message.includes('Invalid login credentials') || err.message.includes('invalid_credentials')) {
-          errorTitle = "Credenciales incorrectas";
+          errorTitle = "🔒 Credenciales incorrectas";
           errorDescription = "El correo electrónico o la contraseña no son correctos. Por favor, verifica tus datos e inténtalo de nuevo.";
         } else {
           errorDescription = err.message;
@@ -311,7 +311,7 @@ const Login = () => {
     >
       {/* Hero Section - Mismo estilo que Conferencia */}
       <section 
-        className="relative min-h-screen flex items-center justify-center px-2 sm:px-4 py-4 sm:py-8"
+        className="relative min-h-screen flex items-center justify-center px-3 sm:px-4 py-6 sm:py-8"
         style={{
           background: '#7ea4df'
         }}
@@ -327,34 +327,40 @@ const Login = () => {
         }`}>
           
           {/* Contenido Principal */}
-          <div className="mb-8 sm:mb-12 relative z-10">
+          <div className="mb-6 sm:mb-8 md:mb-12 relative z-10">
             {/* Logo y Título - Logo encima */}
-            <div className="text-center mb-3 sm:mb-4">
-              <div className="w-16 h-16 sm:w-24 sm:h-24 lg:w-28 lg:h-28 mx-auto mb-4 sm:mb-6 flex items-center justify-center">
+            <div className="text-center mb-4 sm:mb-6">
+              <div className="w-14 h-14 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 mx-auto mb-3 sm:mb-4 md:mb-6 flex items-center justify-center">
                 <img 
                   src={logoBraini}
                   alt="Braini Emotions Logo" 
-                  className="w-16 h-16 sm:w-24 sm:h-24 lg:w-28 lg:h-28 object-contain"
+                  className="w-14 h-14 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 object-contain"
                 />
               </div>
-              <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black text-white" style={{ fontWeight: 900 }}>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-white px-2" style={{ fontWeight: 900 }}>
                 Iniciar Sesión
               </h1>
+            </div>
+            {/* Texto descriptivo */}
+            <div className="text-center mb-4 sm:mb-6">
+              <p className="text-white text-sm sm:text-base md:text-lg px-4 max-w-2xl mx-auto" style={{ fontWeight: 400 }}>
+                Accede a tu cuenta y continúa desarrollando la inteligencia emocional de tu hijo
+              </p>
             </div>
           </div>
 
           {/* Formulario Card - Mismo estilo que Conferencia */}
           <div 
             id="login-form"
-            className="bg-white rounded-xl p-6 sm:p-8 shadow-2xl relative z-10 max-w-xs sm:max-w-lg lg:max-w-2xl mx-auto"
+            className="bg-white rounded-xl p-4 sm:p-6 md:p-8 shadow-2xl relative z-10 w-full max-w-[90%] sm:max-w-md md:max-w-lg lg:max-w-2xl mx-auto"
             style={{
               boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.05)'
             }}
           >
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5 md:space-y-6">
               {/* Campo Email */}
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-base font-semibold text-gray-700" style={{ fontWeight: 600 }}>
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label htmlFor="email" className="text-sm sm:text-base font-semibold text-gray-700" style={{ fontWeight: 600 }}>
                   Correo electrónico *
                 </Label>
                 <Input
@@ -363,38 +369,40 @@ const Login = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="tu@email.com"
-                  className="border-2 border-gray-200 focus:border-braini-blue transition-colors text-base py-3"
+                  className="border-2 border-gray-200 focus:border-braini-blue transition-colors text-sm sm:text-base py-2.5 sm:py-3"
                   required
                   disabled={isSubmitting}
                 />
-                <p className="text-xs text-gray-500" style={{ fontWeight: 400 }}>
+                <p className="text-[11px] sm:text-xs text-gray-500 leading-tight" style={{ fontWeight: 400 }}>
                   El correo que usaste para registrarte en la prueba gratuita
                 </p>
               </div>
               
               {/* Campo Contraseña */}
-              <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <Label htmlFor="password" className="text-base font-semibold text-gray-700" style={{ fontWeight: 600 }}>
+              <div className="space-y-1.5 sm:space-y-2">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0">
+                  <Label htmlFor="password" className="text-sm sm:text-base font-semibold text-gray-700" style={{ fontWeight: 600 }}>
                     Contraseña *
                   </Label>
                   <Dialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen}>
                     <DialogTrigger asChild>
-                      <Button type="button" variant="link" className="text-sm px-0 font-normal h-auto py-1 text-gray-600 hover:text-braini-blue">
+                      <Button type="button" variant="link" className="text-xs sm:text-sm px-0 font-medium h-auto py-1 text-braini-blue hover:text-braini-blue-dark hover:underline transition-colors whitespace-nowrap">
                         ¿Has olvidado tu contraseña?
                       </Button>
                     </DialogTrigger>
-                    <DialogContent className="sm:max-w-[425px]">
-                      <DialogHeader>
-                        <DialogTitle>Recuperar contraseña</DialogTitle>
-                        <DialogDescription>
+                    <DialogContent className="w-[90%] max-w-[90%] sm:max-w-md md:max-w-[425px] p-4 sm:p-6 max-h-[90vh] overflow-y-auto rounded-xl">
+                      <DialogHeader className="text-left">
+                        <DialogTitle className="text-lg sm:text-xl font-semibold text-gray-900">
+                          Recuperar contraseña
+                        </DialogTitle>
+                        <DialogDescription className="text-sm sm:text-base text-gray-600 mt-2">
                           Introduce tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.
                         </DialogDescription>
                       </DialogHeader>
-                      <div className="grid gap-4 py-4">
+                      <div className="grid gap-3 sm:gap-4 py-3 sm:py-4">
                         <div className="space-y-2">
-                          <Label htmlFor="reset-email">
-                            Email
+                          <Label htmlFor="reset-email" className="text-sm sm:text-base font-semibold text-gray-700">
+                            Correo electrónico
                           </Label>
                           <Input
                             id="reset-email"
@@ -402,12 +410,24 @@ const Login = () => {
                             value={resetEmail}
                             onChange={(e) => setResetEmail(e.target.value)}
                             placeholder="tu@email.com"
+                            className="text-sm sm:text-base py-2.5 sm:py-3"
                           />
                         </div>
                       </div>
-                      <DialogFooter>
-                        <Button onClick={handlePasswordReset} disabled={isResetting}>
-                          {isResetting ? 'Enviando...' : 'Enviar enlace'}
+                      <DialogFooter className="flex-col sm:flex-row gap-2 sm:gap-0">
+                        <Button 
+                          onClick={handlePasswordReset} 
+                          disabled={isResetting}
+                          className="w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 text-sm sm:text-base"
+                        >
+                          {isResetting ? (
+                            <div className="flex items-center justify-center gap-2">
+                              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                              <span>Enviando...</span>
+                            </div>
+                          ) : (
+                            'Enviar enlace'
+                          )}
                         </Button>
                       </DialogFooter>
                     </DialogContent>
@@ -419,25 +439,25 @@ const Login = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Introduce contraseña"
-                  className="border-2 border-gray-200 focus:border-braini-blue transition-colors text-base py-3"
+                  className="border-2 border-gray-200 focus:border-braini-blue transition-colors text-sm sm:text-base py-2.5 sm:py-3"
                   required
                   disabled={isSubmitting}
                 />
-                <p className="text-xs text-gray-500" style={{ fontWeight: 400 }}>
-                  No te peocupes si no la recuerdas, puedes recuperarla en "¿Has olvidado tu contraseña?" 
+                <p className="text-[11px] sm:text-xs text-gray-500 leading-tight" style={{ fontWeight: 400 }}>
+                  No te preocupes si no la recuerdas, puedes recuperarla arriba
                 </p>
               </div>
               
               {/* Botón Submit - Mismo estilo que Conferencia */}
-              <div className="flex justify-center">
+              <div className="flex justify-center pt-2">
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="text-white px-8 sm:px-12 py-4 sm:py-5 font-bold transition-all text-base sm:text-lg md:hover:opacity-90 md:hover:scale-105"
+                  className="w-full sm:w-auto text-white px-6 sm:px-8 md:px-12 py-3 sm:py-4 md:py-5 font-bold transition-all text-sm sm:text-base md:text-lg md:hover:opacity-90 md:hover:scale-105"
                   style={{ 
                     background: '#7ea4df',
                     border: 'none',
-                    minWidth: '280px'
+                    minWidth: 'auto'
                   }}
                 >
                   {isSubmitting ? (
@@ -452,11 +472,11 @@ const Login = () => {
               </div>
 
               {/* Línea separadora */}
-              <div className="mt-6 border-t border-gray-200"></div>
+              <div className="mt-4 sm:mt-6 border-t border-gray-200"></div>
 
               {/* Enlace a Registro */}
-              <div className="mt-6 text-center">
-                <p className="text-gray-600 text-sm sm:text-base">
+              <div className="mt-4 sm:mt-6 text-center">
+                <p className="text-gray-600 text-xs sm:text-sm md:text-base">
                   ¿No tienes una cuenta?{' '}
                   <Link 
                     to="/signup" 

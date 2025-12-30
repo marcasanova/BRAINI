@@ -28,13 +28,13 @@ const VerifyEmail: React.FC = () => {
       if (error) throw error;
       setResent(true);
       toast({
-        title: 'Correo reenviado',
-        description: 'Te hemos enviado un nuevo correo de verificación.',
+        title: '✉️ Correo reenviado',
+        description: 'Te hemos enviado un nuevo correo de verificación. Revisa tu bandeja de entrada y spam.',
       });
     } catch (err) {
       toast({
-        title: 'Error al reenviar',
-        description: err instanceof Error ? err.message : 'No se pudo reenviar el correo.',
+        title: '❌ Error al reenviar el correo',
+        description: err instanceof Error ? err.message : 'No se pudo reenviar el correo de verificación. Por favor, inténtalo de nuevo.',
         variant: 'destructive',
       });
     } finally {

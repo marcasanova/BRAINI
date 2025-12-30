@@ -2,7 +2,7 @@
   "name": "Braini Emotions",
   "short_name": "Braini",
   "description": "Desarrolla la inteligencia emocional de tus hijos con Braini Emotions. 25 sesiones científicas para niños de 3 a 7 años.",
-  "start_url": "/",
+  "start_url": "/home",
   "display": "standalone",
   "background_color": "#f5827b",
   "theme_color": "#f5827b",

@@ -32,10 +32,10 @@ const Medal: React.FC<MedalProps> = ({ levelNumber, isEarned, earnedAt, onClick 
           <button
             onClick={onClick}
             className={`
-              w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110
+              w-12 h-12 md:w-14 md:h-14 rounded-lg flex items-center justify-center transition-all duration-300 transform hover:scale-110 overflow-hidden
               ${isEarned 
-                ? 'bg-white shadow-lg hover:shadow-xl cursor-pointer border-2 border-gray-200' 
-                : 'border-2 border-dashed border-gray-300 bg-gray-50 hover:border-gray-400 hover:bg-gray-100 cursor-pointer'
+                ? 'bg-white shadow-sm hover:shadow-md cursor-pointer border border-gray-200' 
+                : 'border border-dashed border-gray-300 bg-gray-50 hover:border-gray-400 hover:bg-gray-100 cursor-pointer'
               }
             `}
           >
@@ -43,10 +43,10 @@ const Medal: React.FC<MedalProps> = ({ levelNumber, isEarned, earnedAt, onClick 
               <img 
                 src={PRIDE_EMOTION_IMAGE} 
                 alt="Orgullo" 
-                className="w-16 h-16 md:w-20 md:h-20 rounded-full object-cover"
+                className="w-full h-full object-cover"
               />
             ) : (
-              <Circle className="w-6 h-6 text-gray-400" />
+              <Circle className="w-5 h-5 text-gray-400" />
             )}
           </button>
         </TooltipTrigger>

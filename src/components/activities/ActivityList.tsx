@@ -168,37 +168,40 @@ const ActivityList: React.FC<ActivityListProps> = ({
   return (
     <div className="space-y-4">
       {/* Indicador de progreso */}
-      <div className="mb-6 p-4 bg-braini-blue/10 rounded-xl border border-braini-blue/20">
-        <div className="flex items-center justify-between mb-2">
+      <div className="mb-6 p-4 sm:p-5 bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-xl border border-gray-200/60 shadow-sm">
+        <div className="flex items-center justify-between mb-3">
           <span className="text-sm font-semibold text-gray-700">Progreso de la sesión</span>
           <span className="text-sm font-bold text-braini-blue">{completedCount} / {totalCount}</span>
         </div>
-        <div className="w-full bg-gray-200 rounded-full h-2.5 mb-2">
+        <div className="w-full bg-gray-200/80 rounded-full h-3 overflow-hidden shadow-inner">
           <div 
-            className="h-2.5 rounded-full transition-all duration-500 bg-braini-blue"
+            className="h-full rounded-full transition-all duration-700 ease-out bg-gradient-to-r from-braini-blue to-braini-blue-dark shadow-sm relative overflow-hidden"
             style={{ width: `${(completedCount / totalCount) * 100}%` }}
-          ></div>
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
+          </div>
         </div>
         {allCompleted && (
-          <div className="flex items-center gap-2 text-braini-blue-dark font-semibold text-sm">
+          <div className="flex items-center gap-2 text-braini-blue-dark font-semibold text-sm mt-3">
             <CheckCircle className="w-5 h-5" />
             <span>¡Todas las actividades completadas!</span>
           </div>
         )}
       </div>
 
-      {activities.map((userActivity) => {
-        const activity = userActivity.activities;
-        const isRated = !!userActivity.puntuacion;
-        const activityType = activity.tipo_actividad || '';
-        const iconClasses = getIconClasses(activityType);
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+        {activities.map((userActivity) => {
+          const activity = userActivity.activities;
+          const isRated = !!userActivity.puntuacion;
+          const activityType = activity.tipo_actividad || '';
+          const iconClasses = getIconClasses(activityType);
 
-        return (
-          <div
-            key={activity.id}
-            onClick={() => onActivityClick(activity.id)}
-            className={getCardClasses(activityType)}
-          >
+          return (
+            <div
+              key={activity.id}
+              onClick={() => onActivityClick(activity.id)}
+              className={getCardClasses(activityType)}
+            >
             {/* Header con tipo y estado */}
             <div className="flex items-start justify-between">
               <div className="flex-1">
@@ -210,9 +213,9 @@ const ActivityList: React.FC<ActivityListProps> = ({
                     {getActivityTypeLabel(activityType)}
                   </span>
                   
-                  {/* Indicador de estado - Solo Valorada */}
+                  {/* Indicador de estado - Solo Valorada (oculto en móvil) */}
                   {isRated && (
-                    <div className="flex items-center gap-1 text-braini-yellow-dark">
+                    <div className="hidden md:flex items-center gap-1 text-braini-yellow-dark">
                       <Star className="w-4 h-4 fill-current" />
                       <span className="text-xs font-medium">Valorada</span>
                     </div>
@@ -223,7 +226,7 @@ const ActivityList: React.FC<ActivityListProps> = ({
                   {activity.titulo_actividad}
                 </h3>
                 
-                <p className="text-gray-700 text-base sm:text-lg leading-relaxed group-hover:text-gray-800 transition-colors font-medium">
+                <p className="text-gray-700 text-sm sm:text-base md:text-lg leading-relaxed group-hover:text-gray-800 transition-colors font-medium">
                   {activity.objetivo || 'Sin descripción disponible'}
                 </p>
 
@@ -267,8 +270,9 @@ const ActivityList: React.FC<ActivityListProps> = ({
               </div>
             </div>
           </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 };

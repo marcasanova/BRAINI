@@ -45,8 +45,8 @@ const Conferencia = () => {
     
     if (!isFormValid()) {
       toast({
-        title: "Campos inválidos",
-        description: "Por favor, completa todos los campos correctamente.",
+        title: "⚠️ Campos inválidos",
+        description: "Por favor, completa todos los campos correctamente antes de continuar.",
         variant: "destructive"
       });
       return;
@@ -126,16 +126,16 @@ const Conferencia = () => {
 
       // 5. Éxito - redirigir a home
       toast({
-        title: "¡Bienvenido/a!",
-        description: "Tu cuenta de prueba ha sido creada correctamente.",
+        title: "🎉 ¡Bienvenido/a a Braini Emotions!",
+        description: "Tu cuenta de prueba ha sido creada correctamente. ¡Disfruta de las sesiones!",
       });
 
       setTimeout(() => navigate('/home'), 1000);
 
     } catch (error: any) {
       toast({
-        title: "Error al registrarse",
-        description: error.message || "No se pudo completar el registro. Inténtalo de nuevo.",
+        title: "❌ Error al registrarse",
+        description: error.message || "No se pudo completar el registro. Por favor, verifica tu conexión e inténtalo de nuevo.",
         variant: "destructive"
       });
     } finally {

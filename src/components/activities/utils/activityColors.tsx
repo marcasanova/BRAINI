@@ -247,4 +247,3 @@ export const getProgressBarColor = (activityType?: string): string => {
       return '#5a8bc4'; // braini-blue por defecto
   }
 };
-

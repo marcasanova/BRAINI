@@ -111,7 +111,7 @@ const Home = () => {
                                 Descarga el mapa físico para seguir el progreso de las actividades en cada sesión.
                               </p>
                             </div>
-                            <div className="w-full max-w-md mx-auto rounded-lg overflow-hidden flex items-center justify-center">
+                            <div className="w-full max-w-[280px] sm:max-w-xs md:max-w-md mx-auto rounded-lg overflow-hidden flex items-center justify-center">
                               <img 
                                 src="https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/braini-map/Panel%20juego%20Rescate%20de%20Azon.jpg"
                                 alt="Mapa Físico"
