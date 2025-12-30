@@ -302,7 +302,7 @@ const Profile = () => {
                                     name="nombre"
                                     value={parentForm.nombre || ''}
                                     onChange={handleParentChange}
-                                    className="border-2 border-gray-200 focus:border-braini-pink text-sm sm:text-base py-2 sm:py-2.5"
+                                    className="border-2 border-gray-200 focus:border-braini-pink text-base sm:text-sm py-2 sm:py-2.5"
                                   />
                                 </div>
                                 <div className="space-y-1.5 sm:space-y-2">
@@ -312,7 +312,7 @@ const Profile = () => {
                                     name="apellidos"
                                     value={parentForm.apellidos || ''}
                                     onChange={handleParentChange}
-                                    className="border-2 border-gray-200 focus:border-braini-pink text-sm sm:text-base py-2 sm:py-2.5"
+                                    className="border-2 border-gray-200 focus:border-braini-pink text-base sm:text-sm py-2 sm:py-2.5"
                                   />
                                 </div>
                                 <div className="space-y-1.5 sm:space-y-2">
@@ -322,7 +322,7 @@ const Profile = () => {
                                     name="dni"
                                     value={parentForm.dni || ''}
                                     onChange={handleParentChange}
-                                    className="border-2 border-gray-200 focus:border-braini-pink text-sm sm:text-base py-2 sm:py-2.5"
+                                    className="border-2 border-gray-200 focus:border-braini-pink text-base sm:text-sm py-2 sm:py-2.5"
                                   />
                                 </div>
                                 <div className="space-y-1.5 sm:space-y-2">
@@ -333,7 +333,7 @@ const Profile = () => {
                                     type="date"
                                     value={parentForm.fecha_nacimiento || ''}
                                     onChange={handleParentChange}
-                                    className="border-2 border-gray-200 focus:border-braini-pink text-sm sm:text-base py-2 sm:py-2.5"
+                                    className="border-2 border-gray-200 focus:border-braini-pink text-base sm:text-sm py-2 sm:py-2.5"
                                   />
                                 </div>
                                 <div className="space-y-1.5 sm:space-y-2">
@@ -343,7 +343,7 @@ const Profile = () => {
                                     name="genero"
                                     value={parentForm.genero || ''}
                                     onChange={handleParentChange}
-                                    className="w-full border-2 border-gray-200 rounded-md p-2 sm:p-2.5 text-sm sm:text-base focus:border-braini-pink"
+                                    className="w-full border-2 border-gray-200 rounded-md p-2 sm:p-2.5 text-base sm:text-sm focus:border-braini-pink"
                                   >
                                     <option value="">Selecciona una opción</option>
                                     <option value="hombre">Hombre</option>
@@ -358,7 +358,7 @@ const Profile = () => {
                                     name="telefono_contacto"
                                     value={parentForm.telefono_contacto || ''}
                                     onChange={handleParentChange}
-                                    className="border-2 border-gray-200 focus:border-braini-pink text-sm sm:text-base py-2 sm:py-2.5"
+                                    className="border-2 border-gray-200 focus:border-braini-pink text-base sm:text-sm py-2 sm:py-2.5"
                                   />
                                 </div>
                                 <div className="space-y-1.5 sm:space-y-2">
@@ -368,7 +368,7 @@ const Profile = () => {
                                     name="relacion_con_menor"
                                     value={parentForm.relacion_con_menor || ''}
                                     onChange={handleParentChange}
-                                    className="w-full border-2 border-gray-200 rounded-md p-2 sm:p-2.5 text-sm sm:text-base focus:border-braini-pink"
+                                    className="w-full border-2 border-gray-200 rounded-md p-2 sm:p-2.5 text-base sm:text-sm focus:border-braini-pink"
                                   >
                                     <option value="">Selecciona una opción</option>
                                     <option value="madre">Madre</option>
@@ -394,7 +394,7 @@ const Profile = () => {
                                     name="pais_origen"
                                     value={parentForm.pais_origen || ''}
                                     onChange={handleParentChange}
-                                    className="border-2 border-gray-200 focus:border-braini-pink text-sm sm:text-base py-2 sm:py-2.5"
+                                    className="border-2 border-gray-200 focus:border-braini-pink text-base sm:text-sm py-2 sm:py-2.5"
                                   />
                                 </div>
                                 <div className="space-y-1.5 sm:space-y-2">
@@ -404,7 +404,7 @@ const Profile = () => {
                                     name="ciudad_origen"
                                     value={parentForm.ciudad_origen || ''}
                                     onChange={handleParentChange}
-                                    className="border-2 border-gray-200 focus:border-braini-pink text-sm sm:text-base py-2 sm:py-2.5"
+                                    className="border-2 border-gray-200 focus:border-braini-pink text-base sm:text-sm py-2 sm:py-2.5"
                                   />
                                 </div>
                                 <div className="space-y-1.5 sm:space-y-2">
@@ -414,7 +414,7 @@ const Profile = () => {
                                     name="codigo_postal"
                                     value={parentForm.codigo_postal || ''}
                                     onChange={handleParentChange}
-                                    className="border-2 border-gray-200 focus:border-braini-pink text-sm sm:text-base py-2 sm:py-2.5"
+                                    className="border-2 border-gray-200 focus:border-braini-pink text-base sm:text-sm py-2 sm:py-2.5"
                                   />
                                 </div>
                               </div>
@@ -433,7 +433,7 @@ const Profile = () => {
                                     name="nivel_educativo"
                                     value={parentForm.nivel_educativo || ''}
                                     onChange={handleParentChange}
-                                    className="w-full border-2 border-gray-200 rounded-md p-2 sm:p-2.5 text-sm sm:text-base focus:border-braini-pink"
+                                    className="w-full border-2 border-gray-200 rounded-md p-2 sm:p-2.5 text-base sm:text-sm focus:border-braini-pink"
                                   >
                                     <option value="">Selecciona una opción</option>
                                     <option value="sin_estudios">Sin estudios</option>
@@ -455,7 +455,7 @@ const Profile = () => {
                                     name="idioma_casa"
                                     value={parentForm.idioma_casa || ''}
                                     onChange={handleParentChange}
-                                    className="border-2 border-gray-200 focus:border-braini-pink text-sm sm:text-base py-2 sm:py-2.5"
+                                    className="border-2 border-gray-200 focus:border-braini-pink text-base sm:text-sm py-2 sm:py-2.5"
                                   />
                                 </div>
                                 <div className="space-y-1.5 sm:space-y-2">
@@ -465,7 +465,7 @@ const Profile = () => {
                                     name="estilo_crianza"
                                     value={parentForm.estilo_crianza || ''}
                                     onChange={handleParentChange}
-                                    className="w-full border-2 border-gray-200 rounded-md p-2 sm:p-2.5 text-sm sm:text-base focus:border-braini-pink"
+                                    className="w-full border-2 border-gray-200 rounded-md p-2 sm:p-2.5 text-base sm:text-sm focus:border-braini-pink"
                                   >
                                     <option value="">Selecciona una opción</option>
                                     <option value="permisivo">Permisivo</option>
@@ -721,7 +721,7 @@ const Profile = () => {
                                       name="nombre"
                                       value={childForm.nombre || ''}
                                       onChange={handleChildChange}
-                                      className="border-2 border-gray-200 focus:border-braini-pink text-sm sm:text-base py-2 sm:py-2.5"
+                                      className="border-2 border-gray-200 focus:border-braini-pink text-base sm:text-sm py-2 sm:py-2.5"
                                     />
                                   </div>
                                   <div className="space-y-1.5 sm:space-y-2">
@@ -731,7 +731,7 @@ const Profile = () => {
                                       name="apellidos"
                                       value={childForm.apellidos || ''}
                                       onChange={handleChildChange}
-                                      className="border-2 border-gray-200 focus:border-braini-pink text-sm sm:text-base py-2 sm:py-2.5"
+                                      className="border-2 border-gray-200 focus:border-braini-pink text-base sm:text-sm py-2 sm:py-2.5"
                                     />
                                   </div>
                                   <div className="space-y-1.5 sm:space-y-2">
@@ -741,7 +741,7 @@ const Profile = () => {
                                       name="dni"
                                       value={childForm.dni || ''}
                                       onChange={handleChildChange}
-                                      className="border-2 border-gray-200 focus:border-braini-pink text-sm sm:text-base py-2 sm:py-2.5"
+                                      className="border-2 border-gray-200 focus:border-braini-pink text-base sm:text-sm py-2 sm:py-2.5"
                                     />
                                   </div>
                                   <div className="space-y-1.5 sm:space-y-2">
@@ -751,7 +751,7 @@ const Profile = () => {
                                       name="genero"
                                       value={childForm.genero || ''}
                                       onChange={handleChildChange}
-                                      className="w-full border-2 border-gray-200 rounded-md p-2 sm:p-2.5 text-sm sm:text-base focus:border-braini-pink"
+                                      className="w-full border-2 border-gray-200 rounded-md p-2 sm:p-2.5 text-base sm:text-sm focus:border-braini-pink"
                                     >
                                       <option value="">Selecciona una opción</option>
                                       <option value="niño">Niño</option>
@@ -766,7 +766,7 @@ const Profile = () => {
                                       name="nivel_educativo"
                                       value={childForm.nivel_educativo || ''}
                                       onChange={handleChildChange}
-                                      className="w-full border-2 border-gray-200 rounded-md p-2 sm:p-2.5 text-sm sm:text-base focus:border-braini-pink"
+                                      className="w-full border-2 border-gray-200 rounded-md p-2 sm:p-2.5 text-base sm:text-sm focus:border-braini-pink"
                                     >
                                       <option value="">Selecciona una opción</option>
                                       <option value="infantil_3">Infantil 3 años</option>
@@ -793,7 +793,7 @@ const Profile = () => {
                                       name="centro_escolar"
                                       value={childForm.centro_escolar || ''}
                                       onChange={handleChildChange}
-                                      className="border-2 border-gray-200 focus:border-braini-pink text-sm sm:text-base py-2 sm:py-2.5"
+                                      className="border-2 border-gray-200 focus:border-braini-pink text-base sm:text-sm py-2 sm:py-2.5"
                                     />
                                   </div>
                                 </div>

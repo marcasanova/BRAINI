@@ -161,9 +161,19 @@ const SignUp = () => {
           return;
         }
 
-        // 5. Éxito - redirigir a onboarding
-        // El trigger creacion_parent ya creó el registro en parents con max_levels = 10
-        // El nombre se guardará cuando el usuario complete el onboarding en ParentsProfile
+        // 5. Guardar el nombre en la BD para pre-llenarlo en el onboarding
+        // El trigger creacion_parent ya creó el registro en parents, ahora actualizamos el nombre
+        const { error: updateError } = await supabase
+          .from('parents')
+          .update({ nombre: nombre.trim() })
+          .eq('id', signInData.user.id);
+
+        if (updateError) {
+          console.error('Error guardando nombre:', updateError);
+          // No bloqueamos el flujo si falla, el usuario puede ingresarlo manualmente
+        }
+
+        // 6. Éxito - redirigir a onboarding
         toast({
           title: "🎉 ¡Cuenta creada exitosamente!",
           description: "Tu cuenta ha sido creada correctamente. Te redirigimos para completar tu perfil...",
@@ -273,7 +283,7 @@ const SignUp = () => {
                   value={nombre}
                   onChange={(e) => setNombre(e.target.value)}
                   placeholder="Tu nombre"
-                  className="border-2 border-gray-200 focus:border-braini-blue transition-colors text-sm sm:text-base py-2.5 sm:py-3"
+                  className="border-2 border-gray-200 focus:border-braini-blue transition-colors text-base sm:text-sm py-2.5 sm:py-3"
                   required
                   disabled={isSubmitting}
                 />
@@ -293,7 +303,7 @@ const SignUp = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="tu@email.com"
-                  className="border-2 border-gray-200 focus:border-braini-blue transition-colors text-sm sm:text-base py-2.5 sm:py-3"
+                  className="border-2 border-gray-200 focus:border-braini-blue transition-colors text-base sm:text-sm py-2.5 sm:py-3"
                   required
                   disabled={isSubmitting}
                 />
@@ -310,7 +320,7 @@ const SignUp = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Mínimo 6 caracteres"
-                  className="border-2 border-gray-200 focus:border-braini-blue transition-colors text-sm sm:text-base py-2.5 sm:py-3"
+                  className="border-2 border-gray-200 focus:border-braini-blue transition-colors text-base sm:text-sm py-2.5 sm:py-3"
                   required
                   disabled={isSubmitting}
                 />

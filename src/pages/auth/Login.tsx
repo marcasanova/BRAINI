@@ -369,7 +369,7 @@ const Login = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="tu@email.com"
-                  className="border-2 border-gray-200 focus:border-braini-blue transition-colors text-sm sm:text-base py-2.5 sm:py-3"
+                  className="border-2 border-gray-200 focus:border-braini-blue transition-colors text-base sm:text-sm py-2.5 sm:py-3"
                   required
                   disabled={isSubmitting}
                 />
@@ -410,7 +410,7 @@ const Login = () => {
                             value={resetEmail}
                             onChange={(e) => setResetEmail(e.target.value)}
                             placeholder="tu@email.com"
-                            className="text-sm sm:text-base py-2.5 sm:py-3"
+                            className="text-base sm:text-sm py-2.5 sm:py-3"
                           />
                         </div>
                       </div>
@@ -439,7 +439,7 @@ const Login = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Introduce contraseña"
-                  className="border-2 border-gray-200 focus:border-braini-blue transition-colors text-sm sm:text-base py-2.5 sm:py-3"
+                  className="border-2 border-gray-200 focus:border-braini-blue transition-colors text-base sm:text-sm py-2.5 sm:py-3"
                   required
                   disabled={isSubmitting}
                 />

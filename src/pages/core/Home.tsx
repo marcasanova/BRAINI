@@ -14,7 +14,6 @@ const Home = () => {
   const [userMedalsMap, setUserMedalsMap] = useState<Map<number, string>>(new Map()); // Map<levelId, fecha_obtencion>
   const [medalsLoading, setMedalsLoading] = useState(true);
   const { toast } = useToast();
-  const { userMedals, totalMedals, loading: medalsShelfLoading } = useUserMedals();
 
   useEffect(() => {
     supabase.auth.getUser().then(async ({ data: { user } }) => {
@@ -54,6 +53,7 @@ const Home = () => {
   }, []);
 
   const { sessions, loading, error } = useUserSessions(userId);
+  const { userMedals, totalMedals, loading: medalsShelfLoading } = useUserMedals();
 
   return (
     <Backgrounds 

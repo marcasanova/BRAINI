@@ -636,7 +636,7 @@ const LandingPage = () => {
                   <input
                     type="email"
                     placeholder="tu@email.com"
-                    className="flex-1 px-2.5 sm:px-3 py-2 text-xs sm:text-sm rounded-l-lg border-0 focus:outline-none focus:ring-2 focus:ring-white/20 text-gray-800"
+                    className="flex-1 px-2.5 sm:px-3 py-2 text-base sm:text-sm rounded-l-lg border-0 focus:outline-none focus:ring-2 focus:ring-white/20 text-gray-800"
                   />
                   <button className="bg-gray-800 text-white px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-r-lg hover:bg-gray-700 transition-colors">
                     Unirme

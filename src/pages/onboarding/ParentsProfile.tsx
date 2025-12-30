@@ -246,7 +246,7 @@ const ParentsProfile = () => {
           {/* Formulario Card - Mismo estilo que SignUp/Login */}
           <div 
             id="parent-profile-form"
-            className="bg-white rounded-xl p-6 sm:p-8 shadow-2xl relative z-10 max-w-xs sm:max-w-lg lg:max-w-2xl mx-auto"
+            className="bg-white rounded-xl p-4 sm:p-6 md:p-8 shadow-2xl relative z-10 w-full max-w-[90%] sm:max-w-lg lg:max-w-2xl mx-auto"
             style={{
               boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.05)'
             }}
@@ -262,10 +262,10 @@ const ParentsProfile = () => {
                   </div>
                 )}
                 
-                <form onSubmit={(e) => { e.preventDefault(); handleNext(); }} className="space-y-6">
+                <form onSubmit={(e) => { e.preventDefault(); handleNext(); }} className="space-y-4 sm:space-y-5 md:space-y-6">
                   {/* Campo Nombre */}
-                  <div className="space-y-2">
-                    <Label htmlFor="nombre" className="text-base font-semibold text-gray-700" style={{ fontWeight: 600 }}>
+                  <div className="space-y-1.5 sm:space-y-2">
+                    <Label htmlFor="nombre" className="text-sm sm:text-base font-semibold text-gray-700" style={{ fontWeight: 600 }}>
                       Nombre *
                     </Label>
                     <Input 
@@ -274,7 +274,7 @@ const ParentsProfile = () => {
                       value={form.nombre} 
                       onChange={handleChange} 
                       placeholder="Tu nombre"
-                      className={`border-2 transition-colors text-base py-3 ${
+                      className={`border-2 transition-colors text-base sm:text-sm py-2.5 sm:py-3 ${
                         getFieldError('nombre') 
                           ? 'border-red-500 focus:border-red-500' 
                           : 'border-gray-200 focus:border-braini-blue'
@@ -284,14 +284,14 @@ const ParentsProfile = () => {
                     {getFieldError('nombre') && (
                       <span className="text-red-500 text-xs mt-1 block">{getFieldError('nombre')}</span>
                     )}
-                    <p className="text-xs text-gray-500" style={{ fontWeight: 400 }}>
+                    <p className="text-[11px] sm:text-xs text-gray-500 leading-tight" style={{ fontWeight: 400 }}>
                       Este nombre aparecerá en tu perfil
                     </p>
                   </div>
                   
                   {/* Campo Relación con el menor */}
-                  <div className="space-y-2">
-                    <Label htmlFor="relacion_con_menor" className="text-base font-semibold text-gray-700" style={{ fontWeight: 600 }}>
+                  <div className="space-y-1.5 sm:space-y-2">
+                    <Label htmlFor="relacion_con_menor" className="text-sm sm:text-base font-semibold text-gray-700" style={{ fontWeight: 600 }}>
                       Relación con el menor *
                     </Label>
                     <select
@@ -300,7 +300,7 @@ const ParentsProfile = () => {
                       value={form.relacion_con_menor}
                       onChange={handleChange}
                       disabled={isSubmitting}
-                      className={`w-full border-2 rounded-md p-3 text-base transition-colors ${
+                      className={`w-full border-2 rounded-md p-2.5 sm:p-3 text-base sm:text-sm transition-colors ${
                         getFieldError('relacion_con_menor') 
                           ? 'border-red-500 focus:border-red-500' 
                           : 'border-gray-200 focus:border-braini-blue'
@@ -314,21 +314,21 @@ const ParentsProfile = () => {
                     {getFieldError('relacion_con_menor') && (
                       <span className="text-red-500 text-xs mt-1 block">{getFieldError('relacion_con_menor')}</span>
                     )}
-                    <p className="text-xs text-gray-500" style={{ fontWeight: 400 }}>
+                    <p className="text-[11px] sm:text-xs text-gray-500 leading-tight" style={{ fontWeight: 400 }}>
                       Indica tu relación con el niño/niña
                     </p>
                   </div>
 
                   {/* Botón Submit */}
-                  <div className="flex justify-center pt-4">
+                  <div className="flex justify-center pt-2 sm:pt-4">
                     <Button
                       type="submit"
                       disabled={!isCurrentStepValid() || isSubmitting}
-                      className="text-white px-8 sm:px-12 py-4 sm:py-5 font-bold transition-all text-base sm:text-lg md:hover:opacity-90 md:hover:scale-105"
+                      className="w-full sm:w-auto text-white px-6 sm:px-8 md:px-12 py-3 sm:py-4 md:py-5 font-bold transition-all text-sm sm:text-base md:text-lg md:hover:opacity-90 md:hover:scale-105"
                       style={{ 
                         background: '#7ea4df',
                         border: 'none',
-                        minWidth: '280px'
+                        minWidth: 'auto'
                       }}
                     >
                       {isSubmitting ? (

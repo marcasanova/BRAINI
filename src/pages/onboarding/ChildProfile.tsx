@@ -325,7 +325,7 @@ const ChildProfile = () => {
           {/* Formulario Card - Mismo estilo que SignUp/Login */}
           <div 
             id="child-profile-form"
-            className="bg-white rounded-xl p-6 sm:p-8 shadow-2xl relative z-10 max-w-xs sm:max-w-lg lg:max-w-2xl mx-auto"
+            className="bg-white rounded-xl p-4 sm:p-6 md:p-8 shadow-2xl relative z-10 w-full max-w-[90%] sm:max-w-lg lg:max-w-2xl mx-auto"
             style={{
               boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.05)'
             }}
@@ -341,10 +341,10 @@ const ChildProfile = () => {
                   </div>
                 )}
                 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5 md:space-y-6">
                   {/* Campo Nombre */}
-                  <div className="space-y-2">
-                    <Label htmlFor="nombre" className="text-base font-semibold text-gray-700" style={{ fontWeight: 600 }}>
+                  <div className="space-y-1.5 sm:space-y-2">
+                    <Label htmlFor="nombre" className="text-sm sm:text-base font-semibold text-gray-700" style={{ fontWeight: 600 }}>
                       Nombre *
                     </Label>
                     <Input 
@@ -353,7 +353,7 @@ const ChildProfile = () => {
                       value={form.nombre} 
                       onChange={handleChange} 
                       placeholder="Nombre del niño/niña"
-                      className={`border-2 transition-colors text-base py-3 ${
+                      className={`border-2 transition-colors text-base sm:text-sm py-2.5 sm:py-3 ${
                         getFieldError('nombre') 
                           ? 'border-red-500 focus:border-red-500' 
                           : 'border-gray-200 focus:border-braini-blue'
@@ -366,8 +366,8 @@ const ChildProfile = () => {
                   </div>
                   
                   {/* Campo Apellidos */}
-                  <div className="space-y-2">
-                    <Label htmlFor="apellidos" className="text-base font-semibold text-gray-700" style={{ fontWeight: 600 }}>
+                  <div className="space-y-1.5 sm:space-y-2">
+                    <Label htmlFor="apellidos" className="text-sm sm:text-base font-semibold text-gray-700" style={{ fontWeight: 600 }}>
                       Apellidos *
                     </Label>
                     <Input 
@@ -376,7 +376,7 @@ const ChildProfile = () => {
                       value={form.apellidos} 
                       onChange={handleChange} 
                       placeholder="Apellidos del niño/niña"
-                      className={`border-2 transition-colors text-base py-3 ${
+                      className={`border-2 transition-colors text-base sm:text-sm py-2.5 sm:py-3 ${
                         getFieldError('apellidos') 
                           ? 'border-red-500 focus:border-red-500' 
                           : 'border-gray-200 focus:border-braini-blue'
@@ -389,8 +389,8 @@ const ChildProfile = () => {
                   </div>
                   
                   {/* Campo Género */}
-                  <div className="space-y-2">
-                    <Label htmlFor="genero" className="text-base font-semibold text-gray-700" style={{ fontWeight: 600 }}>
+                  <div className="space-y-1.5 sm:space-y-2">
+                    <Label htmlFor="genero" className="text-sm sm:text-base font-semibold text-gray-700" style={{ fontWeight: 600 }}>
                       Género *
                     </Label>
                     <select
@@ -399,7 +399,7 @@ const ChildProfile = () => {
                       value={form.genero}
                       onChange={handleChange}
                       disabled={isSubmitting}
-                      className={`w-full border-2 rounded-md p-3 text-base transition-colors ${
+                      className={`w-full border-2 rounded-md p-2.5 sm:p-3 text-base sm:text-sm transition-colors ${
                         getFieldError('genero') 
                           ? 'border-red-500 focus:border-red-500' 
                           : 'border-gray-200 focus:border-braini-blue'
@@ -418,8 +418,8 @@ const ChildProfile = () => {
                   </div>
                   
                   {/* Campo Nivel educativo */}
-                  <div className="space-y-2">
-                    <Label htmlFor="nivel_educativo" className="text-base font-semibold text-gray-700" style={{ fontWeight: 600 }}>
+                  <div className="space-y-1.5 sm:space-y-2">
+                    <Label htmlFor="nivel_educativo" className="text-sm sm:text-base font-semibold text-gray-700" style={{ fontWeight: 600 }}>
                       Nivel educativo *
                     </Label>
                     <select
@@ -428,7 +428,7 @@ const ChildProfile = () => {
                       value={form.nivel_educativo}
                       onChange={handleChange}
                       disabled={isSubmitting}
-                      className={`w-full border-2 rounded-md p-3 text-base transition-colors ${
+                      className={`w-full border-2 rounded-md p-2.5 sm:p-3 text-base sm:text-sm transition-colors ${
                         getFieldError('nivel_educativo') 
                           ? 'border-red-500 focus:border-red-500' 
                           : 'border-gray-200 focus:border-braini-blue'
@@ -441,7 +441,7 @@ const ChildProfile = () => {
                         </option>
                       ))}
                     </select>
-                    <p className="text-xs text-gray-500" style={{ fontWeight: 400 }}>
+                    <p className="text-[11px] sm:text-xs text-gray-500 leading-tight" style={{ fontWeight: 400 }}>
                       Selecciona el nivel educativo actual del niño/niña
                     </p>
                     {getFieldError('nivel_educativo') && (
@@ -450,15 +450,15 @@ const ChildProfile = () => {
                   </div>
 
                   {/* Botón Submit */}
-                  <div className="flex justify-center pt-4">
+                  <div className="flex justify-center pt-2 sm:pt-4">
                     <Button
                       type="submit"
                       disabled={!isCurrentStepValid() || isSubmitting}
-                      className="text-white px-8 sm:px-12 py-4 sm:py-5 font-bold transition-all text-base sm:text-lg md:hover:opacity-90 md:hover:scale-105"
+                      className="w-full sm:w-auto text-white px-6 sm:px-8 md:px-12 py-3 sm:py-4 md:py-5 font-bold transition-all text-sm sm:text-base md:text-lg md:hover:opacity-90 md:hover:scale-105"
                       style={{ 
                         background: '#7ea4df',
                         border: 'none',
-                        minWidth: '280px'
+                        minWidth: 'auto'
                       }}
                     >
                       {isSubmitting ? (
