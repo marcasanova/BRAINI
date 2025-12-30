@@ -30,11 +30,6 @@ self.addEventListener('activate', (event) => {
   return self.clients.claim();
 });
 
-// Fetch - NO cachea nada, siempre va a la red
-self.addEventListener('fetch', (event) => {
-  // No interceptamos ninguna petición
-  // Todo se sirve directamente desde la red
-  // Esto asegura que la app siempre funcione online
-  return;
-});
+// Fetch - Eliminado para evitar warning de "no-op handler"
+// No necesitamos interceptar peticiones ya que la app funciona solo online
 
