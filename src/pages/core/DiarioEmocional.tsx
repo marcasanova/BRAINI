@@ -5,6 +5,7 @@ import EmotionEntry from '@/components/emotionalDiary/EmotionEntry';
 import EmotionCalendar from '@/components/emotionalDiary/EmotionCalendar';
 import { useEmotionalDiary } from '@/hooks/useEmotionalDiary';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/lib/supabaseClient';
 
 const DiarioEmocional = () => {
   const { toast } = useToast();
@@ -27,6 +28,31 @@ const DiarioEmocional = () => {
     year: new Date().getFullYear(),
     month: new Date().getMonth() + 1
   });
+  const [childName, setChildName] = useState<string>('');
+
+  // Cargar nombre del child
+  useEffect(() => {
+    const fetchChildName = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        const { data: childData } = await supabase
+          .from('children')
+          .select('nombre')
+          .eq('parent_id', user.id)
+          .single();
+
+        if (childData?.nombre) {
+          setChildName(childData.nombre);
+        }
+      } catch (err) {
+        console.error('Error al cargar el nombre del child:', err);
+      }
+    };
+
+    fetchChildName();
+  }, []);
 
   // Cargar entradas del mes actual al montar el componente
   useEffect(() => {
@@ -80,8 +106,10 @@ const DiarioEmocional = () => {
   const handleSave = async () => {
     if (!selectedEmotion) {
       toast({
-        title: "Emoción no seleccionada",
-        description: "Por favor selecciona una emoción antes de guardar",
+        title: "😊 Selecciona una emoción",
+        description: childName 
+          ? `Necesitas elegir cómo se siente ${childName} hoy antes de guardar la entrada en el diario emocional.`
+          : "Necesitas elegir cómo se siente hoy antes de guardar la entrada en el diario emocional.",
         variant: "destructive"
       });
       return;
@@ -96,8 +124,8 @@ const DiarioEmocional = () => {
 
       if (result) {
         toast({
-          title: "¡Emoción registrada!",
-          description: `Se ha guardado la emoción "${selectedEmotion.name}" para ${selectedDate.toLocaleDateString('es-ES')}`,
+          title: "✨ Emoción registrada correctamente",
+          description: `La emoción "${selectedEmotion.name}" ha sido guardada para el ${selectedDate.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}.`,
         });
 
         // Recargar entradas del mes para actualizar el calendario
@@ -105,8 +133,8 @@ const DiarioEmocional = () => {
       }
     } catch (err) {
       toast({
-        title: "Error al guardar",
-        description: "No se pudo guardar la emoción. Inténtalo de nuevo.",
+        title: "❌ Error al guardar la emoción",
+        description: "No hemos podido registrar la emoción en el diario. Por favor, verifica tu conexión e inténtalo de nuevo.",
         variant: "destructive"
       });
     }
@@ -116,8 +144,8 @@ const DiarioEmocional = () => {
   useEffect(() => {
     if (error) {
       toast({
-        title: "Error",
-        description: error,
+        title: "❌ Error en el diario emocional",
+        description: error || "Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo.",
         variant: "destructive"
       });
       clearError();
@@ -142,7 +170,14 @@ const DiarioEmocional = () => {
                     Diario Emocional
                   </h1>
                   <p className="text-lg sm:text-xl md:text-2xl text-white/90 font-medium">
-                    Registra y observa las emociones de tu hijo/a día a día
+                    {childName 
+                      ? (
+                        <>
+                          Registra y observa las emociones de <span className="font-black" style={{ fontWeight: 800 }}>{childName}</span> día a día
+                        </>
+                      )
+                      : 'Registra y observa las emociones día a día'
+                    }
                   </p>
                 </div>
               </div>
@@ -151,9 +186,9 @@ const DiarioEmocional = () => {
           {/* Área de contenido con scroll */}
           <div className="flex-1 overflow-y-auto min-h-0">
             {/* Grid simétrico de dos columnas */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 pb-20 md:pb-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8 pb-20 md:pb-4">
             {/* Columna izquierda: Selector de emociones y observaciones */}
-            <div className="flex flex-col space-y-6">
+            <div className="flex flex-col space-y-4 sm:space-y-5 md:space-y-6">
               {/* Selector de emociones */}
               <div className="flex-shrink-0">
                 <EmotionSelector
@@ -161,6 +196,7 @@ const DiarioEmocional = () => {
                   selectedEmotion={selectedEmotion}
                   onEmotionSelect={handleEmotionSelect}
                   disabled={loading}
+                  childName={childName}
                 />
               </div>
 
@@ -170,6 +206,7 @@ const DiarioEmocional = () => {
                   observations={observations}
                   onObservationsChange={handleObservationsChange}
                   disabled={!selectedEmotion}
+                  childName={childName}
                 />
               </div>
 
@@ -179,7 +216,7 @@ const DiarioEmocional = () => {
                   onClick={handleSave}
                   disabled={!selectedEmotion || loading}
                     className={`
-                    w-full max-w-md px-8 py-3 rounded-xl font-semibold text-lg transition-all duration-300 transform
+                    w-full max-w-md px-4 sm:px-6 md:px-8 py-2.5 sm:py-3 rounded-xl font-semibold text-sm sm:text-base md:text-lg transition-all duration-300 transform
                     ${selectedEmotion && !loading
                       ? 'bg-white border-2 border-braini-turquoise text-braini-turquoise hover:bg-braini-turquoise hover:text-white shadow-lg hover:shadow-xl hover:scale-105'
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed border-2 border-gray-300'
@@ -188,8 +225,8 @@ const DiarioEmocional = () => {
                 >
                   {loading ? (
                     <div className="flex items-center justify-center gap-2">
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      Guardando...
+                      <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span className="text-sm sm:text-base">Guardando...</span>
                     </div>
                   ) : (
                     'Guardar Emoción del Día'

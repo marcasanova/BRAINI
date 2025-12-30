@@ -15,23 +15,32 @@ interface EmotionSelectorProps {
   selectedEmotion: EmotionConfig | null;
   onEmotionSelect: (emotion: EmotionConfig) => void;
   disabled?: boolean;
+  childName?: string;
 }
 
 const EmotionSelector: React.FC<EmotionSelectorProps> = ({
   emotions,
   selectedEmotion,
   onEmotionSelect,
-  disabled = false
+  disabled = false,
+  childName = ''
 }) => {
   return (
     <TooltipProvider>
       <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0">
-        <CardContent className="p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4 text-center">
-            ¿Cómo se siente tu hijo/a hoy?
+        <CardContent className="p-4 sm:p-5 md:p-6">
+          <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-4 text-center px-2">
+            {childName 
+              ? (
+                <>
+                  ¿Cómo se siente <span className="font-black" style={{ fontWeight: 800 }}>{childName}</span> hoy?
+                </>
+              )
+              : '¿Cómo se siente hoy?'
+            }
           </h3>
           
-          <div className="grid grid-cols-5 gap-3 md:gap-4">
+          <div className="grid grid-cols-5 gap-2 sm:gap-3 md:gap-4">
             {emotions.map((emotion) => {
               const isSelected = selectedEmotion?.id === emotion.id;
               
@@ -42,7 +51,7 @@ const EmotionSelector: React.FC<EmotionSelectorProps> = ({
                       onClick={() => !disabled && onEmotionSelect(emotion)}
                       disabled={disabled}
                       className={`
-                        relative group flex flex-col items-center p-3 rounded-xl transition-all duration-300 transform
+                        relative group flex flex-col items-center p-2 sm:p-3 rounded-xl transition-all duration-300 transform
                         ${isSelected
                           ? 'scale-105 shadow-lg'
                           : 'hover:scale-105 hover:shadow-lg'
@@ -56,7 +65,7 @@ const EmotionSelector: React.FC<EmotionSelectorProps> = ({
                     >
                       {/* Imagen de la emoción */}
                       <div className={`
-                        w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden mb-2 transition-all duration-300
+                        w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-lg overflow-hidden mb-2 transition-all duration-300
                       `}>
                         <img
                           src={emotion.imageUrl}
@@ -68,7 +77,7 @@ const EmotionSelector: React.FC<EmotionSelectorProps> = ({
                       
                       {/* Nombre de la emoción */}
                       <span className={`
-                        text-xs md:text-sm font-medium text-center transition-colors duration-200
+                        text-[10px] sm:text-xs md:text-sm font-medium text-center transition-colors duration-200
                         ${isSelected ? '' : 'text-gray-700'}
                       `}
                       style={isSelected ? { color: emotion.color } : {}}
@@ -114,13 +123,13 @@ const EmotionSelector: React.FC<EmotionSelectorProps> = ({
           
           {selectedEmotion && (
             <div 
-              className="mt-4 p-3 rounded-xl border"
+              className="mt-3 sm:mt-4 p-2.5 sm:p-3 rounded-xl border"
               style={{
                 backgroundColor: `${selectedEmotion.color}10`,
                 borderColor: `${selectedEmotion.color}30`
               }}
             >
-              <p className="text-center text-sm text-gray-700">
+              <p className="text-center text-xs sm:text-sm text-gray-700">
                 <span 
                   className="font-semibold"
                   style={{ color: selectedEmotion.color }}

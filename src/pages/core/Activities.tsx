@@ -205,9 +205,14 @@ const Activities: React.FC = () => {
                 </h1>
               ) : session ? (
                 <>
-                  <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-2" style={{ fontWeight: 900 }}>
-                    Sesión {session.levels.id}: {session.levels.titulo}
-                  </h1>
+                  <div className="mb-2">
+                    <div className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-1" style={{ fontWeight: 900 }}>
+                      Sesión {session.levels.id}
+                    </div>
+                    <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white/95" style={{ fontWeight: 700 }}>
+                      {session.levels.titulo}
+                    </h1>
+                  </div>
                   <p className="text-lg sm:text-xl md:text-2xl text-white/90 font-medium">
                     {session.levels.descripcion}
                   </p>
@@ -227,17 +232,10 @@ const Activities: React.FC = () => {
                 <div className="space-y-4 md:space-y-5 pb-20 md:pb-4">
                   {/* Card principal con información de la sesión */}
                   <div className="bg-white/95 backdrop-blur-lg p-4 md:p-6 rounded-xl md:rounded-2xl shadow-xl border-0 animate-fade-in">
-                    {/* Estado de la sesión */}
-                    <div className="mb-6 text-left">
-                      <span className="font-bold text-gray-700">Estado: </span>
-                      {session.status === SESSION_STATUS.CURRENT && <span className="text-braini-blue-dark font-black">Actual</span>}
-                      {session.status === SESSION_STATUS.COMPLETED && <span className="text-braini-turquoise-dark font-black">Completada</span>}
-                      {session.status === SESSION_STATUS.LOCKED && <span className="text-gray-500 font-black">Bloqueada</span>}
-                    </div>
-                    
                     {/* Título de actividades */}
-                    <h3 className="text-2xl sm:text-3xl font-black mb-6 text-braini-blue-dark text-left" style={{ fontWeight: 800 }}>
-                      Actividades de esta sesión
+                    <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 md:mb-6 text-gray-700 text-left" style={{ fontWeight: 700 }}>
+                      <span className="md:hidden">Actividades</span>
+                      <span className="hidden md:inline">Actividades de esta sesión</span>
                     </h3>
                     
                     {/* Lista de actividades */}

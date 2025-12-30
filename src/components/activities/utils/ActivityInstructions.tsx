@@ -1,14 +1,14 @@
 import React from 'react';
 import { Info, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { formatearTexto } from '@/components/activities/utils/textFormatter';
+import { formatearTexto } from '@/components/activities/utils/TextFormatter';
 import {
   getInstructionsContainerClasses,
   getDurationTextClasses,
   getMainTitleTextClasses,
   getBorderClasses,
   getSecondaryButtonClasses,
-} from '@/components/activities/utils/activityColors';
+} from '@/components/activities/utils/ActivityColors';
 
 interface ActivityInstructionsProps {
   activityType?: string;

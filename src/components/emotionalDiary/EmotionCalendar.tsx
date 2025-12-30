@@ -111,7 +111,7 @@ const EmotionCalendar: React.FC<EmotionCalendarProps> = ({
     
     // Días vacíos del mes anterior
     for (let i = 0; i < firstDayOfMonth; i++) {
-      days.push(<div key={`empty-${i}`} className="h-12" />);
+      days.push(<div key={`empty-${i}`} className="h-10 sm:h-12" />);
     }
     
     // Días del mes actual
@@ -128,7 +128,7 @@ const EmotionCalendar: React.FC<EmotionCalendarProps> = ({
               <button
                 onClick={() => onDateSelect(date)}
                 className={`
-                  relative h-12 rounded-lg transition-all duration-200 text-sm font-medium
+                  relative h-10 sm:h-12 rounded-lg transition-all duration-200 text-sm font-medium
                   ${isSelected(date) 
                     ? '' 
                     : 'hover:bg-gray-50'
@@ -141,7 +141,7 @@ const EmotionCalendar: React.FC<EmotionCalendarProps> = ({
                 } : {}}
               >
                 <span className={`
-                  absolute top-1 left-1 text-xs
+                  absolute top-0.5 left-0.5 sm:top-1 sm:left-1 text-[10px] sm:text-xs
                   ${isToday(date) ? 'text-braini-blue' : 'text-gray-700'}
                 `}>
                   {day}
@@ -150,15 +150,15 @@ const EmotionCalendar: React.FC<EmotionCalendarProps> = ({
                 {/* Indicador de emoción - más prominente */}
                 {hasEntry && (
                   <div 
-                    className="absolute bottom-1 left-1 right-1 h-3 rounded-full shadow-sm"
+                    className="absolute bottom-0.5 left-0.5 right-0.5 sm:bottom-1 sm:left-1 sm:right-1 h-2 sm:h-3 rounded-full shadow-sm"
                     style={{ backgroundColor: emotionColor }}
                   />
                 )}
                 
                 {/* Indicador de observaciones */}
                 {entry?.observations && (
-                  <div className="absolute top-1 right-1">
-                    <Edit3 className="w-3 h-3 text-gray-600" strokeWidth={2.5} />
+                  <div className="absolute top-0.5 right-0.5 sm:top-1 sm:right-1">
+                    <Edit3 className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-gray-600" strokeWidth={2.5} />
                   </div>
                 )}
               </button>
@@ -182,26 +182,26 @@ const EmotionCalendar: React.FC<EmotionCalendarProps> = ({
 
   return (
     <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-lg text-gray-800">
-          <Calendar className="w-5 h-5 text-braini-blue" />
+      <CardHeader className="pb-3 sm:pb-4">
+        <CardTitle className="flex items-center gap-2 text-base sm:text-lg text-gray-800">
+          <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-braini-blue" />
           Calendario Emocional
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="pt-0">
         {/* Navegación del mes */}
-        <div className="flex items-center justify-between mb-6 gap-2">
+        <div className="flex items-center justify-between mb-4 sm:mb-6 gap-1 sm:gap-2">
           <Button
             onClick={() => navigateMonth('prev')}
             variant="outline"
             size="sm"
-            className="border-gray-300 text-gray-700 hover:border-braini-blue flex-shrink-0"
+            className="border-gray-300 text-gray-700 hover:border-braini-blue flex-shrink-0 text-xs sm:text-sm px-2 sm:px-3"
           >
-            <ChevronLeft className="w-4 h-4 mr-1" />
-            Anterior
+            <ChevronLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-0.5 sm:mr-1" />
+            <span className="hidden sm:inline">Anterior</span>
           </Button>
           
-          <h3 className="text-lg font-semibold text-gray-800 text-center flex-1 min-w-0 px-2">
+          <h3 className="text-xs sm:text-sm md:text-lg font-semibold text-gray-800 text-center flex-1 min-w-0 px-1 sm:px-2">
             {getMonthName(currentDate)}
           </h3>
           
@@ -209,54 +209,62 @@ const EmotionCalendar: React.FC<EmotionCalendarProps> = ({
             onClick={() => navigateMonth('next')}
             variant="outline"
             size="sm"
-            className="border-gray-300 text-gray-700 hover:border-braini-blue flex-shrink-0"
+            className="border-gray-300 text-gray-700 hover:border-braini-blue flex-shrink-0 text-xs sm:text-sm px-2 sm:px-3"
           >
-            Siguiente
-            <ChevronRight className="w-4 h-4 ml-1" />
+            <span className="hidden sm:inline">Siguiente</span>
+            <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 ml-0.5 sm:ml-1" />
           </Button>
         </div>
         
         {/* Días de la semana */}
-        <div className="grid grid-cols-7 gap-1 mb-2">
+        <div className="grid grid-cols-7 gap-0.5 sm:gap-1 mb-2">
           {['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].map((day) => (
-            <div key={day} className="h-8 flex items-center justify-center text-xs font-medium text-gray-500">
+            <div key={day} className="h-8 flex items-center justify-center text-[10px] sm:text-xs font-medium text-gray-500">
               {day}
             </div>
           ))}
         </div>
         
         {/* Calendario */}
-        <div className="grid grid-cols-7 gap-1">
+        <div className="grid grid-cols-7 gap-0.5 sm:gap-1">
           {renderCalendarDays()}
         </div>
         
         {/* Leyenda Simplificada - Solo Emociones */}
-        <div className="mt-6 p-4 bg-gradient-to-r from-gray-50 to-blue-50 rounded-lg border border-gray-200">
-          <h4 className="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2">
-            <div className="w-2 h-2 bg-braini-blue rounded-full"></div>
+        <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-gradient-to-r from-gray-50 to-blue-50 rounded-lg border border-gray-200">
+          <h4 className="text-xs sm:text-sm font-semibold text-gray-800 mb-2 sm:mb-3">
             Emociones del Calendario
           </h4>
           
-          <div className="grid grid-cols-2 gap-2">
-            <div className="flex items-center gap-2 p-2 bg-white rounded-lg border border-gray-100">
-              <div className="h-3 rounded-full shadow-sm flex-shrink-0" style={{ width: '35px', backgroundColor: '#FFD93D' }} />
-              <span className="text-xs text-gray-700 font-medium">Alegría</span>
+          {/* Grid: 3 columnas en todas las pantallas (2 filas: 3+2) */}
+          <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg border border-gray-100">
+              <div className="h-2.5 sm:h-3 rounded-full shadow-sm flex-shrink-0" style={{ width: '28px', backgroundColor: '#FFD93D' }} />
+              <span className="text-[10px] sm:text-xs text-gray-700 font-medium">Alegría</span>
             </div>
-            <div className="flex items-center gap-2 p-2 bg-white rounded-lg border border-gray-100">
-              <div className="h-3 rounded-full shadow-sm flex-shrink-0" style={{ width: '35px', backgroundColor: '#74B9FF' }} />
-              <span className="text-xs text-gray-700 font-medium">Tristeza</span>
+            <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg border border-gray-100">
+              <div className="h-2.5 sm:h-3 rounded-full shadow-sm flex-shrink-0" style={{ width: '28px', backgroundColor: '#74B9FF' }} />
+              <span className="text-[10px] sm:text-xs text-gray-700 font-medium">Tristeza</span>
             </div>
-            <div className="flex items-center gap-2 p-2 bg-white rounded-lg border border-gray-100">
-              <div className="h-3 rounded-full shadow-sm flex-shrink-0" style={{ width: '35px', backgroundColor: '#5F8DCA' }} />
-              <span className="text-xs text-gray-700 font-medium">Miedo</span>
+            <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg border border-gray-100">
+              <div className="h-2.5 sm:h-3 rounded-full shadow-sm flex-shrink-0" style={{ width: '28px', backgroundColor: '#5F8DCA' }} />
+              <span className="text-[10px] sm:text-xs text-gray-700 font-medium">Miedo</span>
             </div>
-            <div className="flex items-center gap-2 p-2 bg-white rounded-lg border border-gray-100">
-              <div className="h-3 rounded-full shadow-sm flex-shrink-0" style={{ width: '35px', backgroundColor: '#81C7E8' }} />
-              <span className="text-xs text-gray-700 font-medium">Pena</span>
+            <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg border border-gray-100">
+              <div className="h-2.5 sm:h-3 rounded-full shadow-sm flex-shrink-0" style={{ width: '28px', backgroundColor: '#81C7E8' }} />
+              <span className="text-[10px] sm:text-xs text-gray-700 font-medium">Pena</span>
             </div>
-            <div className="flex items-center gap-2 p-2 bg-white rounded-lg border border-gray-100">
-              <div className="h-3 rounded-full shadow-sm flex-shrink-0" style={{ width: '35px', backgroundColor: '#FF6B6B' }} />
-              <span className="text-xs text-gray-700 font-medium">Rabia</span>
+            <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg border border-gray-100">
+              <div className="h-2.5 sm:h-3 rounded-full shadow-sm flex-shrink-0" style={{ width: '28px', backgroundColor: '#FF6B6B' }} />
+              <span className="text-[10px] sm:text-xs text-gray-700 font-medium">Rabia</span>
+            </div>
+          </div>
+          
+          {/* Indicador de observaciones */}
+          <div className="mt-3 sm:mt-4 pt-2 sm:pt-3 border-t border-gray-200">
+            <div className="flex items-center gap-2 p-1.5 sm:p-2 bg-white rounded-lg border border-gray-100">
+              <Edit3 className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-gray-600 flex-shrink-0" strokeWidth={2.5} />
+              <span className="text-[10px] sm:text-xs text-gray-700 font-medium">Días con observaciones</span>
             </div>
           </div>
         </div>

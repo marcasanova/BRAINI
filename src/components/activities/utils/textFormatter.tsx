@@ -84,4 +84,3 @@ export const formatearTexto = (texto: string) => {
     return <p key={index} className="mb-2">{linea}</p>;
   });
 };
-

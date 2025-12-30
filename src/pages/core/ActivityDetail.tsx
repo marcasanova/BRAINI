@@ -25,13 +25,13 @@ import Ses8Act2 from '@/components/activities/content/Ses8Act2';
 import Ses9Act1 from '@/components/activities/content/Ses9Act1';
 import Ses9Act2 from '@/components/activities/content/Ses9Act2';
 import Ses10Act1 from '@/components/activities/content/Ses10Act1';
-import { formatearTexto } from '@/components/activities/utils/textFormatter';
+import { formatearTexto } from '@/components/activities/utils/TextFormatter';
 import { 
   getInstructionsContainerClasses,
   getDurationTextClasses,
   getBorderClasses,
   getMainTitleTextClasses
-} from '@/components/activities/utils/activityColors';
+} from '@/components/activities/utils/ActivityColors';
 
 const ActivityDetail: React.FC = () => {
   const { levelId, activityId } = useParams<{ levelId: string; activityId: string }>();

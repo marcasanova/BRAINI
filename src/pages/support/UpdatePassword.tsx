@@ -31,8 +31,8 @@ const UpdatePassword = () => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) {
         toast({
-          title: "Acceso no autorizado",
-          description: "Necesitas estar autenticado para cambiar tu contraseña.",
+          title: "🔒 Acceso no autorizado",
+          description: "Necesitas estar autenticado para cambiar tu contraseña. Por favor, inicia sesión primero.",
           variant: "destructive",
         });
         navigate('/login');
@@ -47,8 +47,8 @@ const UpdatePassword = () => {
 
     if (password.length < 6) {
       toast({
-        title: "Contraseña demasiado corta",
-        description: "La contraseña debe tener al menos 6 caracteres.",
+        title: "🔑 Contraseña demasiado corta",
+        description: "La contraseña debe tener al menos 6 caracteres para garantizar la seguridad de tu cuenta.",
         variant: "destructive",
       });
       return;
@@ -56,8 +56,8 @@ const UpdatePassword = () => {
 
     if (password !== confirmPassword) {
       toast({
-        title: "Las contraseñas no coinciden",
-        description: "Por favor, asegúrate de que ambas contraseñas sean iguales.",
+        title: "⚠️ Las contraseñas no coinciden",
+        description: "Las contraseñas que has introducido no son iguales. Por favor, verifica que ambas coincidan.",
         variant: "destructive",
       });
       return;
@@ -70,8 +70,8 @@ const UpdatePassword = () => {
       if (error) throw error;
 
       toast({
-        title: "¡Contraseña actualizada! 🎉",
-        description: "Tu contraseña ha sido cambiada correctamente. Ya puedes iniciar sesión.",
+        title: "✅ Contraseña actualizada correctamente",
+        description: "Tu contraseña ha sido cambiada con éxito. Serás redirigido para iniciar sesión con tu nueva contraseña.",
       });
 
       // Cerramos sesión para forzar un nuevo login con la nueva contraseña
@@ -80,8 +80,8 @@ const UpdatePassword = () => {
 
     } catch (error) {
       toast({
-        title: "Error al actualizar",
-        description: "No se pudo actualizar la contraseña. Por favor, inténtalo de nuevo.",
+        title: "❌ Error al actualizar la contraseña",
+        description: "No hemos podido cambiar tu contraseña. Por favor, verifica tu conexión e inténtalo de nuevo.",
         variant: "destructive",
       });
     } finally {

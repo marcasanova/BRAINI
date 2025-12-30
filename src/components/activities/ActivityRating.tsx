@@ -18,6 +18,7 @@ const ActivityRating: React.FC<ActivityRatingProps> = ({
   const [comment, setComment] = useState<string>('');
   const [hasRated, setHasRated] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
   const { toast } = useToast();
 
   // Función para obtener las clases del botón según el tipo de actividad
@@ -139,14 +140,20 @@ const ActivityRating: React.FC<ActivityRatingProps> = ({
   const handleRatingSubmit = async () => {
     if (rating === 0) {
       toast({
-        title: "Valoración requerida",
-        description: "Por favor, selecciona una puntuación antes de enviar.",
+        title: "⭐ Selecciona una valoración",
+        description: "Necesitas elegir al menos una estrella para poder guardar tu opinión sobre esta actividad.",
         variant: "destructive",
       });
       return;
     }
 
+    // Prevenir múltiples clics
+    if (isSubmitting) {
+      return;
+    }
+
     setIsSubmitting(true);
+    
     try {
       const updateData: any = { 
         puntuacion: rating,
@@ -162,14 +169,25 @@ const ActivityRating: React.FC<ActivityRatingProps> = ({
       if (error) throw error;
 
       setHasRated(true);
+      
+      // Resetear el estado de submitting antes de mostrar el toast
+      setIsSubmitting(false);
+      
+      // Quitar el focus del botón para evitar que se quede en estado activo
+      if (buttonRef.current) {
+        buttonRef.current.blur();
+      }
+      
       toast({
-        title: "¡Valoración guardada! ⭐",
-        description: "Gracias por compartir tu opinión sobre esta actividad.",
+        title: "✨ Valoración guardada con éxito",
+        description: "Tu opinión ha sido registrada correctamente. ¡Gracias por ayudarnos a mejorar!",
       });
 
-      // Verificar si se completó el nivel y se ganó medalla
+      // Verificar si se completó el nivel y se ganó medalla (sin bloquear la UI)
       if (levelId) {
-        await checkLevelCompletion(levelId);
+        checkLevelCompletion(levelId).catch(() => {
+          // Silenciar errores en la verificación de medalla
+        });
       }
 
       if (onRatingSubmitted) {
@@ -177,32 +195,40 @@ const ActivityRating: React.FC<ActivityRatingProps> = ({
       }
 
     } catch (error) {
+      setIsSubmitting(false);
+      
+      // Quitar el focus del botón en caso de error también
+      if (buttonRef.current) {
+        buttonRef.current.blur();
+      }
+      
       toast({
-        title: "Error al guardar",
-        description: "No se pudo guardar tu valoración. Inténtalo de nuevo.",
+        title: "❌ Error al guardar la valoración",
+        description: "No hemos podido guardar tu opinión. Por favor, verifica tu conexión e inténtalo de nuevo.",
         variant: "destructive",
       });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
   return (
     <div className="mt-8 pt-6 border-t border-gray-200">
-      <h3 className="text-xl font-bold text-gray-700 mb-4">
-        ¿Qué te pareció esta actividad?
+      {/* Primera prioridad: Título principal - Mismo tamaño que "Información de la actividad" */}
+      <h3 className="text-2xl font-bold text-gray-700 mb-4">
+        Valorar la actividad
       </h3>
       
-      <div className="space-y-4">
-        {/* Sistema de Estrellas */}
+      <div className="space-y-4 md:space-y-0 md:grid md:grid-cols-[1fr_1.5fr] md:gap-3">
+        {/* Sistema de Estrellas - Izquierda en desktop */}
         <div>
-          <p className="text-sm text-gray-600 mb-3">
-            {hasRated ? 'Tu valoración:' : 'Selecciona una puntuación:'}
+          {/* Segunda prioridad: Label de puntuación - Tamaño medio, destacado */}
+          <p className="text-base sm:text-lg font-semibold text-gray-700 mb-3">
+            {hasRated ? 'Tu puntuación' : 'Selecciona una puntuación:'}
           </p>
           <div className="flex items-center gap-1 mb-2">
             {renderStars()}
           </div>
-          <p className="text-sm text-gray-500">
+          {/* Tercera prioridad: Texto de ayuda - Más pequeño y menos destacado */}
+          <p className="text-xs sm:text-sm text-gray-500">
             {rating === 0 && 'Toca una estrella para valorar'}
             {rating === 1 && 'No me gustó'}
             {rating === 2 && 'Me gustó poco'}
@@ -212,9 +238,10 @@ const ActivityRating: React.FC<ActivityRatingProps> = ({
           </p>
         </div>
 
-        {/* Campo de Opinión (Opcional) */}
+        {/* Campo de Opinión (Opcional) - Derecha en desktop */}
         <div>
-          <label htmlFor="comment" className="block text-sm font-medium text-gray-700 mb-2">
+          {/* Segunda prioridad: Label de opinión - Tamaño medio, destacado */}
+          <label htmlFor="comment" className="block text-base sm:text-lg font-semibold text-gray-700 mb-2">
             Tu opinión (opcional)
           </label>
           <Textarea
@@ -222,28 +249,38 @@ const ActivityRating: React.FC<ActivityRatingProps> = ({
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             placeholder="Comparte tu experiencia con esta actividad, qué te gustó, qué mejorarías..."
-            className="resize-none"
+            className="resize-none text-base sm:text-sm text-gray-600 placeholder:text-gray-400"
             rows={3}
+            maxLength={500}
           />
-        </div>
-
-        {/* Botón de Envío */}
-        <div className="flex justify-end">
-          <Button
-            onClick={handleRatingSubmit}
-            disabled={isSubmitting || rating === 0}
-            className={getButtonClasses()}
-          >
-            {isSubmitting ? 'Guardando...' : hasRated ? 'Actualizar Valoración' : 'Enviar Valoración'}
-          </Button>
-        </div>
-
-        {/* Mensaje de confirmación */}
-        {hasRated && (
-          <div className="text-sm text-braini-turquoise-dark bg-braini-turquoise/10 p-3 rounded-lg">
-            ✅ Tu valoración ha sido guardada correctamente
+          {/* Contador de caracteres */}
+          <div className="flex justify-end mt-1">
+            <span className="text-xs text-gray-500">
+              {comment.length}/500 caracteres
+            </span>
           </div>
-        )}
+        </div>
+
+      </div>
+
+      {/* Botón de Envío - Fuera del grid, alineado a la derecha */}
+      <div className="flex justify-end mt-4">
+        <Button
+          ref={buttonRef}
+          onClick={handleRatingSubmit}
+          disabled={isSubmitting || rating === 0}
+          className={`${getButtonClasses()} w-full sm:w-auto sm:min-w-[200px] relative active:scale-95`}
+          type="button"
+        >
+          <span className={`inline-block text-center transition-opacity duration-200 ${isSubmitting ? 'opacity-0' : 'opacity-100'}`}>
+            {hasRated ? 'Actualizar Valoración' : 'Enviar Valoración'}
+          </span>
+          {isSubmitting && (
+            <span className="absolute inset-0 flex items-center justify-center text-center">
+              Guardando...
+            </span>
+          )}
+        </Button>
       </div>
     </div>
   );

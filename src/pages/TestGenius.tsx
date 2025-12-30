@@ -303,7 +303,7 @@ const TestGenius = () => {
   const validateRegistration = (): boolean => {
     if (!registrationData.evaluatorName.trim()) {
       toast({
-        title: 'Campo requerido',
+        title: '⚠️ Campo requerido',
         description: 'Por favor, introduce el nombre y apellidos del evaluador/a.',
         variant: 'destructive'
       });
@@ -311,7 +311,7 @@ const TestGenius = () => {
     }
     if (!registrationData.role) {
       toast({
-        title: 'Campo requerido',
+        title: '⚠️ Campo requerido',
         description: 'Por favor, selecciona un rol.',
         variant: 'destructive'
       });
@@ -319,7 +319,7 @@ const TestGenius = () => {
     }
     if (!registrationData.centerName.trim()) {
       toast({
-        title: 'Campo requerido',
+        title: '⚠️ Campo requerido',
         description: 'Por favor, introduce el nombre del centro.',
         variant: 'destructive'
       });
@@ -327,7 +327,7 @@ const TestGenius = () => {
     }
     if (!registrationData.province.trim()) {
       toast({
-        title: 'Campo requerido',
+        title: '⚠️ Campo requerido',
         description: 'Por favor, introduce la provincia.',
         variant: 'destructive'
       });
@@ -335,7 +335,7 @@ const TestGenius = () => {
     }
     if (!registrationData.city.trim()) {
       toast({
-        title: 'Campo requerido',
+        title: '⚠️ Campo requerido',
         description: 'Por favor, introduce la población.',
         variant: 'destructive'
       });
@@ -343,7 +343,7 @@ const TestGenius = () => {
     }
     if (!registrationData.email.trim()) {
       toast({
-        title: 'Campo requerido',
+        title: '⚠️ Campo requerido',
         description: 'Por favor, introduce el email.',
         variant: 'destructive'
       });
@@ -352,7 +352,7 @@ const TestGenius = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(registrationData.email)) {
       toast({
-        title: 'Email inválido',
+        title: '❌ Email inválido',
         description: 'Por favor, introduce una dirección de email válida.',
         variant: 'destructive'
       });
@@ -365,8 +365,8 @@ const TestGenius = () => {
   const validateQuestionnaire = (): boolean => {
     if (Object.keys(answers).length !== 10) {
       toast({
-        title: 'Preguntas incompletas',
-        description: 'Por favor, responde todas las preguntas antes de finalizar.',
+        title: '⚠️ Preguntas incompletas',
+        description: 'Por favor, responde todas las preguntas antes de finalizar el cuestionario.',
         variant: 'destructive'
       });
       return false;
@@ -431,8 +431,8 @@ const TestGenius = () => {
       setStep('results');
     } catch (error) {
       toast({
-        title: 'Error',
-        description: 'Hubo un problema al guardar los resultados. Por favor, inténtalo de nuevo.',
+        title: '❌ Error al guardar los resultados',
+        description: 'No hemos podido guardar los resultados del cuestionario. Por favor, verifica tu conexión e inténtalo de nuevo.',
         variant: 'destructive'
       });
     } finally {

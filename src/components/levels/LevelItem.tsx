@@ -18,7 +18,7 @@ const SessionItem: React.FC<SessionItemProps> = ({ levelId, titulo, descripcion,
 
   return (
     <li
-      className={`flex flex-col md:flex-row items-start md:items-center justify-between p-4 md:p-5 rounded-xl md:rounded-2xl border transition-all ${isLocked ? 'bg-gray-100 text-gray-400 opacity-60 cursor-not-allowed border-gray-200' : 'bg-white border-gray-200 shadow-md hover:shadow-lg hover:border-braini-blue/30'} animate-fade-in`}
+      className={`flex flex-col md:flex-row items-start md:items-center justify-between p-3 sm:p-4 md:p-5 rounded-xl md:rounded-2xl border transition-all ${isLocked ? 'bg-gray-100 text-gray-400 opacity-60 cursor-not-allowed border-gray-200' : 'bg-white border-gray-200 shadow-md hover:shadow-lg hover:border-braini-blue/30'} animate-fade-in`}
     >
       <div className="flex-1">
         {/* Etiquetas de estado encima del título */}
@@ -28,30 +28,32 @@ const SessionItem: React.FC<SessionItemProps> = ({ levelId, titulo, descripcion,
           {status === SESSION_STATUS.COMPLETED && <span className="text-xs bg-braini-turquoise/20 text-braini-turquoise-dark px-2 py-0.5 rounded">Completada</span>}
         </div>
         {/* Título de la sesión */}
-        <div className="text-braini-blue font-bold text-2xl md:text-3xl" style={{ fontWeight: 700 }}>
-          Sesión{levelId}: <span className="text-xl md:text-2xl" style={{ fontWeight: 700 }}>{titulo}</span>
+        <div className="text-braini-blue font-bold text-xl sm:text-2xl md:text-3xl" style={{ fontWeight: 700 }}>
+          Sesión{levelId}: <span className="text-lg sm:text-xl md:text-2xl" style={{ fontWeight: 700 }}>{titulo}</span>
         </div>
-        <div className="text-gray-700 mt-1 text-sm md:text-base font-medium">{descripcion}</div>
+        <div className="text-gray-700 mt-1 text-xs sm:text-sm md:text-base font-medium">{descripcion}</div>
       </div>
-      <div className="mt-3 md:mt-0 md:ml-6 flex items-center gap-3">
+      <div className="mt-3 md:mt-0 md:ml-6 flex items-center gap-3 sm:gap-4 w-full md:w-auto">
         {/* Medalla */}
         <Medal
           levelNumber={levelId}
           isEarned={hasMedal}
           earnedAt={medalDate}
         />
-        {/* Botón Acceder */}
+        {/* Spacer para empujar el botón a la derecha */}
+        <div className="flex-1 md:hidden"></div>
+        {/* Botón Acceder - Completamente a la derecha */}
         {isAccessible ? (
           <Link
             to={`/sesion/${levelId}`}
-            className="inline-block px-4 py-2 bg-braini-blue text-white rounded-lg shadow hover:bg-braini-blue-dark transition disabled:opacity-50"
+            className="ml-auto md:ml-0 inline-block px-4 py-2.5 sm:px-6 sm:py-3 bg-braini-blue text-white text-sm sm:text-base font-semibold rounded-lg shadow hover:bg-braini-blue-dark transition disabled:opacity-50"
           >
             Acceder
           </Link>
         ) : (
           <button
             disabled
-            className="inline-block px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed"
+            className="ml-auto md:ml-0 inline-block px-4 py-2.5 sm:px-6 sm:py-3 bg-gray-300 text-gray-500 text-sm sm:text-base font-semibold rounded-lg cursor-not-allowed"
           >
             Acceso bloqueado
           </button>

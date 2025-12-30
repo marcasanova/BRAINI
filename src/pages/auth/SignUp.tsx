@@ -58,7 +58,7 @@ const SignUp = () => {
       }
       
       toast({
-        title: "Campos inválidos",
+        title: "⚠️ Campos inválidos",
         description: `${errorMessage}\n${errors.join('\n')}`,
         variant: "destructive"
       });
@@ -76,7 +76,7 @@ const SignUp = () => {
       if (checkError) {
         // Si la función de verificación falla, mostramos error específico
         toast({
-          title: "Error al verificar el correo electrónico",
+          title: "❌ Error al verificar el correo electrónico",
           description: "No se pudo verificar si el correo ya está registrado. Por favor, inténtalo de nuevo.",
           variant: "destructive"
         });
@@ -86,7 +86,7 @@ const SignUp = () => {
       // 2. SI EL EMAIL EXISTE, mostramos error y detenemos el proceso.
       if (checkData.exists) {
         toast({
-          title: "Correo electrónico ya registrado",
+          title: "📧 Correo electrónico ya registrado",
           description: `El correo ${email} ya está registrado en Braini. Por favor, inicia sesión o usa otro correo electrónico.`,
           variant: "destructive"
         });
@@ -100,17 +100,17 @@ const SignUp = () => {
 
         if (signUpError) {
           // Manejar errores específicos de registro
-          let errorTitle = "Error al crear la cuenta";
+          let errorTitle = "❌ Error al crear la cuenta";
           let errorDescription = signUpError.message || "No se pudo completar el registro. Inténtalo de nuevo.";
           
           if (signUpError.message?.includes('email')) {
-            errorTitle = "Error con el correo electrónico";
+            errorTitle = "❌ Error con el correo electrónico";
             errorDescription = "El correo electrónico proporcionado no es válido o ya está en uso.";
           } else if (signUpError.message?.includes('password')) {
-            errorTitle = "Error con la contraseña";
+            errorTitle = "🔑 Error con la contraseña";
             errorDescription = "La contraseña no cumple con los requisitos de seguridad.";
           } else if (signUpError.message?.includes('network') || signUpError.message?.includes('fetch')) {
-            errorTitle = "Error de conexión";
+            errorTitle = "🌐 Error de conexión";
             errorDescription = "No se pudo conectar con el servidor. Verifica tu conexión a internet e inténtalo de nuevo.";
           }
           
@@ -130,17 +130,17 @@ const SignUp = () => {
         });
 
         if (signInError) {
-          let errorTitle = "Error al iniciar sesión";
+          let errorTitle = "❌ Error al iniciar sesión";
           let errorDescription = signInError.message || "No se pudo iniciar sesión automáticamente después del registro.";
           
           if (signInError.message?.includes('email') || signInError.message?.includes('Email')) {
-            errorTitle = "Error con el correo electrónico";
+            errorTitle = "❌ Error con el correo electrónico";
             errorDescription = "No se pudo iniciar sesión con el correo proporcionado. Por favor, intenta iniciar sesión manualmente.";
           } else if (signInError.message?.includes('password') || signInError.message?.includes('Password')) {
-            errorTitle = "Error con la contraseña";
+            errorTitle = "🔑 Error con la contraseña";
             errorDescription = "La contraseña no es correcta. Por favor, intenta iniciar sesión manualmente.";
           } else if (signInError.message?.includes('network') || signInError.message?.includes('fetch')) {
-            errorTitle = "Error de conexión";
+            errorTitle = "🌐 Error de conexión";
             errorDescription = "No se pudo conectar con el servidor. Verifica tu conexión a internet e inténtalo de nuevo.";
           }
           
@@ -154,7 +154,7 @@ const SignUp = () => {
         
         if (!signInData.user) {
           toast({
-            title: "Error al iniciar sesión",
+            title: "❌ Error al iniciar sesión",
             description: "No se pudo obtener la información del usuario. Por favor, intenta iniciar sesión manualmente.",
             variant: "destructive"
           });
@@ -165,8 +165,8 @@ const SignUp = () => {
         // El trigger creacion_parent ya creó el registro en parents con max_levels = 10
         // El nombre se guardará cuando el usuario complete el onboarding en ParentsProfile
         toast({
-          title: "¡Cuenta creada exitosamente!",
-          description: "Redirigiendo al perfil...",
+          title: "🎉 ¡Cuenta creada exitosamente!",
+          description: "Tu cuenta ha sido creada correctamente. Te redirigimos para completar tu perfil...",
         });
 
         setEmail('');
@@ -176,18 +176,18 @@ const SignUp = () => {
     } catch (error) {
       // Manejar errores inesperados
       const err = error as Error;
-      let errorTitle = "Error inesperado";
+      let errorTitle = "❌ Error inesperado";
       let errorDescription = "Ha ocurrido un error inesperado durante el registro.";
       
       if (err.message) {
         if (err.message.includes('email') || err.message.includes('Email')) {
-          errorTitle = "Error con el correo electrónico";
+          errorTitle = "❌ Error con el correo electrónico";
           errorDescription = "Hubo un problema con el correo electrónico proporcionado. Por favor, verifica que sea correcto e inténtalo de nuevo.";
         } else if (err.message.includes('password') || err.message.includes('Password')) {
-          errorTitle = "Error con la contraseña";
+          errorTitle = "🔑 Error con la contraseña";
           errorDescription = "Hubo un problema con la contraseña. Asegúrate de que tenga al menos 6 caracteres e inténtalo de nuevo.";
         } else if (err.message.includes('network') || err.message.includes('fetch') || err.message.includes('Failed to fetch')) {
-          errorTitle = "Error de conexión";
+          errorTitle = "🌐 Error de conexión";
           errorDescription = "No se pudo conectar con el servidor. Verifica tu conexión a internet e inténtalo de nuevo.";
         } else {
           errorDescription = err.message;
@@ -212,7 +212,7 @@ const SignUp = () => {
     >
       {/* Hero Section - Igual que Conferencia */}
       <section 
-        className="relative min-h-screen flex items-center justify-center px-2 sm:px-4 py-4 sm:py-8"
+        className="relative min-h-screen flex items-center justify-center px-3 sm:px-4 py-6 sm:py-8"
         style={{
           background: '#7ea4df'
         }}
@@ -228,26 +228,26 @@ const SignUp = () => {
         }`}>
           
           {/* Contenido Principal */}
-          <div className="mb-8 sm:mb-12 relative z-10">
-            {/* Logo y Título en la misma línea */}
-            <div className="flex items-center justify-center gap-4 sm:gap-6 mb-3 sm:mb-4">
-              <div className="w-16 h-16 sm:w-24 sm:h-24 lg:w-28 lg:h-28 flex items-center justify-center flex-shrink-0">
+          <div className="mb-6 sm:mb-8 md:mb-12 relative z-10">
+            {/* Logo y Título - Responsive: vertical en móvil, horizontal en desktop */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 md:gap-6 mb-4 sm:mb-6">
+              <div className="w-14 h-14 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 flex items-center justify-center flex-shrink-0">
                 <img 
                   src={logoBraini}
                   alt="Braini Emotions Logo" 
-                  className="w-16 h-16 sm:w-24 sm:h-24 lg:w-28 lg:h-28 object-contain"
+                  className="w-14 h-14 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 object-contain"
                 />
               </div>
-              <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black text-white" style={{ fontWeight: 900 }}>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black text-white text-center px-2" style={{ fontWeight: 900 }}>
                 Prueba Gratuita
               </h1>
             </div>
             {/* Subtítulos centrados */}
             <div className="text-center">
-              <h2 className="text-white text-2xl sm:text-3xl lg:text-4xl mb-2 sm:mb-3 px-4" style={{ fontWeight: 700 }}>
+              <h2 className="text-white text-xl sm:text-2xl md:text-3xl lg:text-4xl mb-2 sm:mb-3 px-3 sm:px-4" style={{ fontWeight: 700 }}>
                 Accede a 10 sesiones completas
               </h2>
-              <p className="text-white text-base sm:text-lg lg:text-xl mb-4 sm:mb-5 px-4" style={{ fontWeight: 400 }}>
+              <p className="text-white text-sm sm:text-base md:text-lg lg:text-xl mb-4 sm:mb-5 px-3 sm:px-4" style={{ fontWeight: 400 }}>
                 Comienza a desarrollar la inteligencia emocional de tu hijo
               </p>
             </div>
@@ -256,15 +256,15 @@ const SignUp = () => {
           {/* Formulario Card - Mismo estilo que Conferencia */}
           <div 
             id="registration-form"
-            className="bg-white rounded-xl p-6 sm:p-8 shadow-2xl relative z-10 max-w-xs sm:max-w-lg lg:max-w-2xl mx-auto"
+            className="bg-white rounded-xl p-4 sm:p-6 md:p-8 shadow-2xl relative z-10 w-full max-w-[90%] sm:max-w-md md:max-w-lg lg:max-w-2xl mx-auto"
             style={{
               boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.05)'
             }}
           >
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5 md:space-y-6">
               {/* Campo Nombre */}
-              <div className="space-y-2">
-                <Label htmlFor="nombre" className="text-base font-semibold text-gray-700" style={{ fontWeight: 600 }}>
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label htmlFor="nombre" className="text-sm sm:text-base font-semibold text-gray-700" style={{ fontWeight: 600 }}>
                   Nombre *
                 </Label>
                 <Input
@@ -273,18 +273,18 @@ const SignUp = () => {
                   value={nombre}
                   onChange={(e) => setNombre(e.target.value)}
                   placeholder="Tu nombre"
-                  className="border-2 border-gray-200 focus:border-braini-blue transition-colors text-base py-3"
+                  className="border-2 border-gray-200 focus:border-braini-blue transition-colors text-sm sm:text-base py-2.5 sm:py-3"
                   required
                   disabled={isSubmitting}
                 />
-                <p className="text-xs text-gray-500" style={{ fontWeight: 400 }}>
+                <p className="text-[11px] sm:text-xs text-gray-500 leading-tight" style={{ fontWeight: 400 }}>
                   Este nombre aparecerá en tu perfil
                 </p>
               </div>
 
               {/* Campo Email */}
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-base font-semibold text-gray-700" style={{ fontWeight: 600 }}>
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label htmlFor="email" className="text-sm sm:text-base font-semibold text-gray-700" style={{ fontWeight: 600 }}>
                   Correo electrónico *
                 </Label>
                 <Input
@@ -293,15 +293,15 @@ const SignUp = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="tu@email.com"
-                  className="border-2 border-gray-200 focus:border-braini-blue transition-colors text-base py-3"
+                  className="border-2 border-gray-200 focus:border-braini-blue transition-colors text-sm sm:text-base py-2.5 sm:py-3"
                   required
                   disabled={isSubmitting}
                 />
               </div>
 
               {/* Campo Contraseña */}
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-base font-semibold text-gray-700" style={{ fontWeight: 600 }}>
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label htmlFor="password" className="text-sm sm:text-base font-semibold text-gray-700" style={{ fontWeight: 600 }}>
                   Contraseña *
                 </Label>
                 <Input
@@ -310,25 +310,25 @@ const SignUp = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Mínimo 6 caracteres"
-                  className="border-2 border-gray-200 focus:border-braini-blue transition-colors text-base py-3"
+                  className="border-2 border-gray-200 focus:border-braini-blue transition-colors text-sm sm:text-base py-2.5 sm:py-3"
                   required
                   disabled={isSubmitting}
                 />
-                <p className="text-xs text-gray-500" style={{ fontWeight: 400 }}>
+                <p className="text-[11px] sm:text-xs text-gray-500 leading-tight" style={{ fontWeight: 400 }}>
                   La contraseña debe tener al menos 6 caracteres
                 </p>
               </div>
 
               {/* Botón Submit - Mismo estilo que Conferencia */}
-              <div className="flex justify-center">
+              <div className="flex justify-center pt-2">
                 <Button
                   type="submit"
                   disabled={!isFormValid() || isSubmitting}
-                  className="text-white px-8 sm:px-12 py-4 sm:py-5 font-bold transition-all text-base sm:text-lg md:hover:opacity-90 md:hover:scale-105"
+                  className="w-full sm:w-auto text-white px-6 sm:px-8 md:px-12 py-3 sm:py-4 md:py-5 font-bold transition-all text-sm sm:text-base md:text-lg md:hover:opacity-90 md:hover:scale-105"
                   style={{ 
                     background: '#7ea4df',
                     border: 'none',
-                    minWidth: '280px'
+                    minWidth: 'auto'
                   }}
                 >
                   {isSubmitting ? (
@@ -343,11 +343,11 @@ const SignUp = () => {
               </div>
 
               {/* Línea separadora */}
-              <div className="mt-6 border-t border-gray-200"></div>
+              <div className="mt-4 sm:mt-6 border-t border-gray-200"></div>
 
               {/* Enlace a Login */}
-              <div className="mt-6 text-center">
-                <p className="text-gray-600 text-sm sm:text-base">
+              <div className="mt-4 sm:mt-6 text-center">
+                <p className="text-gray-600 text-xs sm:text-sm md:text-base">
                   ¿Ya tienes una cuenta?{' '}
                   <Link 
                     to="/login" 
