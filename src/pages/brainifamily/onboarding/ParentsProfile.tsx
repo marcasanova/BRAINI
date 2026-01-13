@@ -60,13 +60,13 @@ const ParentsProfile = () => {
         
         if (data) {
           if (data.profile_completed) {
-            navigate('/home');
+            navigate('/brainifamily/home');
             return;
           }
           
           // Verificar si es usuario de prueba (saltar onboarding)
           if (data.is_trial_user === true) {
-            navigate('/home');
+            navigate('/brainifamily/home');
             return;
           }
           
@@ -181,7 +181,7 @@ const ParentsProfile = () => {
         variant: 'default' 
       });
       
-      setTimeout(() => navigate('/child-profile'), 1200);
+      setTimeout(() => navigate('/brainifamily/child-profile'), 1200);
     } catch (err: any) {
       // Error ya manejado arriba
     } finally {

@@ -111,7 +111,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   }
 
   if (!user || !userExists) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/brainifamily/login" replace />;
   }
 
   return <>{children}</>;

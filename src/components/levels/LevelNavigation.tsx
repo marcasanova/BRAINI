@@ -34,7 +34,7 @@ const SessionNavigation: React.FC<SessionNavigationProps> = ({
         <div className="flex items-center gap-1.5 sm:gap-2 md:gap-2 flex-shrink-0">
           <Button
             variant="ghost"
-            onClick={() => navigate('/home')}
+            onClick={() => navigate('/brainifamily/home')}
             size="sm"
             className="flex items-center justify-center text-white hover:text-white hover:bg-white/20 transition-all duration-200 p-2 sm:p-2.5 md:px-3 md:py-2"
           >

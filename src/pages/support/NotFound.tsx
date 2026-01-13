@@ -17,7 +17,7 @@ const NotFound = () => {
         <p className="text-2xl md:text-3xl font-black text-gray-700 mb-2" style={{ fontWeight: 900 }}>¡Ups! Página no encontrada</p>
         <p className="text-md sm:text-lg text-gray-600 mb-6 font-medium">La ruta <span className="font-mono bg-gray-200 px-2 py-1 rounded">{location.pathname}</span> no existe.</p>
         <Button asChild className="bg-braini-blue hover:bg-braini-blue-dark text-white px-8 py-3 rounded-lg text-lg font-semibold shadow-lg transition-all">
-          <Link to="/home">Volver a la home</Link>
+          <Link to="/brainifamily/home">Volver a la home</Link>
         </Button>
       </div>
     </div>

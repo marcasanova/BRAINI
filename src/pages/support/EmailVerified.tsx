@@ -19,7 +19,7 @@ const EmailVerified: React.FC = () => {
             </p>
           </div>
           <Button
-            onClick={() => navigate('/login')}
+            onClick={() => navigate('/brainifamily/login')}
             className="w-full py-4 text-lg mt-4"
           >
             Ir a iniciar sesión

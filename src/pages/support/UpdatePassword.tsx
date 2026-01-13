@@ -35,7 +35,7 @@ const UpdatePassword = () => {
           description: "Necesitas estar autenticado para cambiar tu contraseña. Por favor, inicia sesión primero.",
           variant: "destructive",
         });
-        navigate('/login');
+        navigate('/brainifamily/login');
       } else {
         setSession(session);
       }
@@ -76,7 +76,7 @@ const UpdatePassword = () => {
 
       // Cerramos sesión para forzar un nuevo login con la nueva contraseña
       await supabase.auth.signOut();
-      navigate('/login');
+      navigate('/brainifamily/login');
 
     } catch (error) {
       toast({

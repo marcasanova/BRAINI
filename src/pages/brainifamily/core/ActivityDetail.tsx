@@ -56,20 +56,20 @@ const ActivityDetail: React.FC = () => {
     const nextActivity = currentIndex < activities.length - 1 ? activities[currentIndex + 1] : null;
     
     if (nextActivity) {
-      navigate(`/sesion/${levelId}/actividad/${nextActivity.activities.id}`);
+      navigate(`/brainifamily/sesion/${levelId}/actividad/${nextActivity.activities.id}`);
     } else {
-      navigate(`/sesion/${levelId}?fromActivity=true`);
+      navigate(`/brainifamily/sesion/${levelId}?fromActivity=true`);
     }
   };
 
   // Función para navegar entre actividades
   const handleActivityNavigate = (newActivityId: number) => {
-    navigate(`/sesion/${levelId}/actividad/${newActivityId}`);
+    navigate(`/brainifamily/sesion/${levelId}/actividad/${newActivityId}`);
   };
 
   // Función para volver a la sesión
   const handleBackToSession = () => {
-    navigate(`/sesion/${levelId}`);
+    navigate(`/brainifamily/sesion/${levelId}`);
   };
 
   // Obtener información de navegación
@@ -517,7 +517,7 @@ const ActivityDetail: React.FC = () => {
                           // Cuando se gana medalla, navegar de vuelta a la sesión
                           // La medalla se mostrará desde Activities.tsx
                           setTimeout(() => {
-                            navigate(`/sesion/${levelId}?medalEarned=true`);
+                            navigate(`/brainifamily/sesion/${levelId}?medalEarned=true`);
                           }, 1000);
                         }}
                       />

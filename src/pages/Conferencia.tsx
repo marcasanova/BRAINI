@@ -130,7 +130,7 @@ const Conferencia = () => {
         description: "Tu cuenta de prueba ha sido creada correctamente. ¡Disfruta de las sesiones!",
       });
 
-      setTimeout(() => navigate('/home'), 1000);
+      setTimeout(() => navigate('/brainifamily/home'), 1000);
 
     } catch (error: any) {
       toast({
@@ -289,7 +289,7 @@ const Conferencia = () => {
                 <p className="text-gray-600 text-sm sm:text-base">
                   ¿Ya tienes una cuenta?{' '}
                   <Link 
-                    to="/login" 
+                    to="/brainifamily/login" 
                     className="text-braini-blue hover:text-braini-blue-dark font-medium hover:underline transition-colors"
                   >
                     Inicia sesión

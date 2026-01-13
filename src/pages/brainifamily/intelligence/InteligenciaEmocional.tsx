@@ -9,11 +9,11 @@ const InteligenciaEmocional = () => {
   const navigate = useNavigate();
 
   const handleTestPadres = () => {
-    navigate('/test-tmms-padres');
+    navigate('/brainifamily/test-tmms-padres');
   };
 
   const handleTestNinos = () => {
-    navigate('/test-emocional-ninos');
+    navigate('/brainifamily/test-emocional-ninos');
   };
 
   return (

@@ -62,7 +62,7 @@ const Login = () => {
     setIsResetting(true);
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
-        redirectTo: `${window.location.origin}/update-password`,
+        redirectTo: `${window.location.origin}/brainifamily/update-password`,
       });
 
       if (error) throw error;
@@ -211,7 +211,7 @@ const Login = () => {
             description: "Necesitas completar tu perfil para continuar. Te redirigimos al formulario...",
             variant: "default"
           });
-          navigate('/parents-profile');
+          navigate('/brainifamily/parents-profile');
           return;
         } else {
           toast({
@@ -234,13 +234,13 @@ const Login = () => {
       
       // Verificar si el perfil del padre está completo
       if (parentData.profile_completed === false) {
-        navigate('/parents-profile');
+        navigate('/brainifamily/parents-profile');
         return;
       }
       
       // Verificar si es usuario de prueba (saltar todo el onboarding)
       if (parentData.is_trial_user === true) {
-        navigate('/home');
+        navigate('/brainifamily/home');
         return;
       }
       
@@ -263,12 +263,12 @@ const Login = () => {
       
       // Si no existe el registro o si existe pero profile_completed = false, ir a completar perfil
       if (!childData || childData.profile_completed === false) {
-        navigate('/child-profile');
+        navigate('/brainifamily/child-profile');
         return;
       }
       
       // Perfil completo, ir directamente a Home
-      navigate('/home');
+      navigate('/brainifamily/home');
     } catch (error) {
       // Manejar errores inesperados
       const err = error as Error;
@@ -479,7 +479,7 @@ const Login = () => {
                 <p className="text-gray-600 text-xs sm:text-sm md:text-base">
                   ¿No tienes una cuenta?{' '}
                   <Link 
-                    to="/signup" 
+                    to="/brainifamily/signup" 
                     className="text-braini-blue hover:text-braini-blue-dark font-medium hover:underline transition-colors"
                   >
                     Regístrate

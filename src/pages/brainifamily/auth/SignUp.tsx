@@ -182,7 +182,7 @@ const SignUp = () => {
         setEmail('');
         setPassword('');
         setNombre('');
-        navigate('/parents-profile');
+        navigate('/brainifamily/parents-profile');
     } catch (error) {
       // Manejar errores inesperados
       const err = error as Error;
@@ -360,7 +360,7 @@ const SignUp = () => {
                 <p className="text-gray-600 text-xs sm:text-sm md:text-base">
                   ¿Ya tienes una cuenta?{' '}
                   <Link 
-                    to="/login" 
+                    to="/brainifamily/login" 
                     className="text-braini-blue hover:text-braini-blue-dark font-medium hover:underline transition-colors"
                   >
                     Inicia sesión

@@ -92,7 +92,7 @@ const Activities: React.FC = () => {
     if (fromActivity === 'true') {
       setIsReturningFromActivity(true);
       // Limpiar el parámetro de la URL
-      navigate(`/sesion/${id}`, { replace: true });
+      navigate(`/brainifamily/sesion/${id}`, { replace: true });
       // Resetear después de un breve delay
       setTimeout(() => {
         setIsReturningFromActivity(false);
@@ -103,7 +103,7 @@ const Activities: React.FC = () => {
       // Verificar si se ganó medalla y mostrarla
       checkForMedal();
       // Limpiar el parámetro de la URL
-      navigate(`/sesion/${id}`, { replace: true });
+      navigate(`/brainifamily/sesion/${id}`, { replace: true });
     }
   }, [location.search, navigate, id, userId, checkForMedal]);
 
@@ -149,19 +149,19 @@ const Activities: React.FC = () => {
 
   // Función para navegar entre sesiones
   const handleNavigate = (levelId: number) => {
-    navigate(`/sesion/${levelId}`);
+    navigate(`/brainifamily/sesion/${levelId}`);
   };
 
   // Función para manejar click en actividad
   const handleActivityClick = (activityId: number) => {
-    navigate(`/sesion/${id}/actividad/${activityId}`);
+    navigate(`/brainifamily/sesion/${id}/actividad/${activityId}`);
   };
 
   // Función para cerrar la animación de medalla y navegar a home
   const handleMedalClose = () => {
     setEarnedMedal(null);
     // Siempre navegar a la página principal donde están todos los niveles
-    navigate('/home');
+    navigate('/brainifamily/home');
   };
 
   // Obtener sesiones adyacentes para navegación

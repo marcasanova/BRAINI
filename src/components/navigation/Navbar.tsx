@@ -4,10 +4,10 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { Home, BookOpen, User, Award } from 'lucide-react';
 
 const NAV_ITEMS = [
-  { label: 'Panel de Juego', mobileLabel: 'Sesiones', icon: Home, path: '/home' },
-  { label: 'Así me siento hoy', mobileLabel: 'Diario', icon: BookOpen, path: '/diario-emocional' },
-  { label: 'Evaluar y Crecer', mobileLabel: 'Test', icon: Award, path: '/inteligencia-emocional' },
-  { label: 'Mi familia', mobileLabel: 'Perfil', icon: User, path: '/profile' },
+  { label: 'Panel de Juego', mobileLabel: 'Sesiones', icon: Home, path: '/brainifamily/home' },
+  { label: 'Así me siento hoy', mobileLabel: 'Diario', icon: BookOpen, path: '/brainifamily/diario-emocional' },
+  { label: 'Evaluar y Crecer', mobileLabel: 'Test', icon: Award, path: '/brainifamily/inteligencia-emocional' },
+  { label: 'Mi familia', mobileLabel: 'Perfil', icon: User, path: '/brainifamily/profile' },
 ];
 
 const Navbar: React.FC = () => {
@@ -18,13 +18,13 @@ const Navbar: React.FC = () => {
   // Función para obtener el color sólido según la ruta activa
   const getActiveColor = (path: string) => {
     switch (path) {
-      case '/home':
+      case '/brainifamily/home':
         return 'bg-braini-blue'; // Azul #7ea4df
-      case '/diario-emocional':
+      case '/brainifamily/diario-emocional':
         return 'bg-braini-turquoise'; // Verde/Turquesa #35bdb1
-      case '/inteligencia-emocional':
+      case '/brainifamily/inteligencia-emocional':
         return 'bg-braini-yellow'; // Amarillo #f8cd50
-      case '/profile':
+      case '/brainifamily/profile':
         return 'bg-braini-pink'; // Rojo/Coral #f5827b
       default:
         return 'bg-braini-blue';
@@ -34,28 +34,28 @@ const Navbar: React.FC = () => {
   // Función para obtener las clases de color sólido según la ruta activa (para móvil)
   const getActiveSolidColorClasses = (path: string) => {
     switch (path) {
-      case '/home':
+      case '/brainifamily/home':
         return {
           text: 'text-braini-blue',
           textActive: 'text-braini-blue font-bold',
           bg: 'bg-braini-blue/20',
           bgActive: 'bg-braini-blue'
         };
-      case '/diario-emocional':
+      case '/brainifamily/diario-emocional':
         return {
           text: 'text-braini-turquoise',
           textActive: 'text-braini-turquoise font-bold',
           bg: 'bg-braini-turquoise/20',
           bgActive: 'bg-braini-turquoise'
         };
-      case '/inteligencia-emocional':
+      case '/brainifamily/inteligencia-emocional':
         return {
           text: 'text-braini-yellow',
           textActive: 'text-braini-yellow font-bold',
           bg: 'bg-braini-yellow/20',
           bgActive: 'bg-braini-yellow'
         };
-      case '/profile':
+      case '/brainifamily/profile':
         return {
           text: 'text-braini-pink',
           textActive: 'text-braini-pink font-bold',
@@ -75,25 +75,25 @@ const Navbar: React.FC = () => {
   // Función para obtener las clases de hover según la ruta (para desktop)
   const getHoverColorClasses = (path: string) => {
     switch (path) {
-      case '/home':
+      case '/brainifamily/home':
         return {
           button: 'hover:bg-gray-50 hover:text-braini-blue hover:shadow-md',
           iconContainer: 'group-hover:bg-braini-blue/20 group-hover:border-braini-blue',
           icon: 'group-hover:text-braini-blue'
         };
-      case '/diario-emocional':
+      case '/brainifamily/diario-emocional':
         return {
           button: 'hover:bg-gray-50 hover:text-braini-turquoise hover:shadow-md',
           iconContainer: 'group-hover:bg-braini-turquoise/20 group-hover:border-braini-turquoise',
           icon: 'group-hover:text-braini-turquoise'
         };
-      case '/inteligencia-emocional':
+      case '/brainifamily/inteligencia-emocional':
         return {
           button: 'hover:bg-gray-50 hover:text-braini-yellow hover:shadow-md',
           iconContainer: 'group-hover:bg-braini-yellow/20 group-hover:border-braini-yellow',
           icon: 'group-hover:text-braini-yellow'
         };
-      case '/profile':
+      case '/brainifamily/profile':
         return {
           button: 'hover:bg-gray-50 hover:text-braini-pink hover:shadow-md',
           iconContainer: 'group-hover:bg-braini-pink/20 group-hover:border-braini-pink',

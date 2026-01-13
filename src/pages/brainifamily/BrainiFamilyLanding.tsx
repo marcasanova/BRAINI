@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Gift, Heart, Brain, Users, Clock, Shield, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import NavbarLandings from '@/components/navigation/NavbarLandings';
 
 // Rutas de assets públicos (archivos en public/)
 const logoBraini = '/logo/logoBraini.png';
@@ -24,13 +24,38 @@ const aburrimiento = `${SUPABASE_STORAGE_URL}/35.%20Aburrimiento.jpg`;
 // Otros assets
 const logoInstagram = '/LogoInstagram.svg';
 
-const LandingPage = () => {
+const BrainiFamilyLanding = () => {
+  const navigate = useNavigate();
   const [isLoaded, setIsLoaded] = useState(false);
   const [featuresVisible, setFeaturesVisible] = useState(false);
   const featuresTitleRef = useRef<HTMLHeadingElement>(null);
   const [benefitsVisible, setBenefitsVisible] = useState(false);
   const benefitsTitleRef = useRef<HTMLHeadingElement>(null);
-  const navigate = useNavigate();
+
+  const handleLogin = () => {
+    navigate('/brainifamily/login');
+  };
+
+  const handleSignUp = () => {
+    navigate('/brainifamily/signup');
+  };
+
+  // SEO: Actualizar meta tags dinámicamente
+  useEffect(() => {
+    document.title = 'Braini Family - Programa de Neurobienestar Emocional';
+    
+    // Actualizar meta description
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', 'Braini Family: Programa interactivo de 25 sesiones para desarrollar la inteligencia emocional en familia. Accede a la herramienta completa.');
+    }
+
+    // Actualizar canonical
+    const canonical = document.querySelector('link[rel="canonical"]');
+    if (canonical) {
+      canonical.setAttribute('href', 'https://brainiemotions.com/brainifamily');
+    }
+  }, []);
 
   // Animación de entrada
   useEffect(() => {
@@ -45,14 +70,13 @@ const LandingPage = () => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          // Cuando el título es visible en pantalla
           if (entry.isIntersecting) {
             setFeaturesVisible(true);
           }
         });
       },
       {
-        threshold: 0.1, // Se activa cuando el 10% del título es visible
+        threshold: 0.1,
         rootMargin: '0px'
       }
     );
@@ -73,14 +97,13 @@ const LandingPage = () => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          // Cuando el título es visible en pantalla
           if (entry.isIntersecting) {
             setBenefitsVisible(true);
           }
         });
       },
       {
-        threshold: 0.1, // Se activa cuando el 10% del título es visible
+        threshold: 0.1,
         rootMargin: '0px'
       }
     );
@@ -96,27 +119,22 @@ const LandingPage = () => {
     };
   }, []);
 
-
-  const handleTrialAccess = () => {
-    navigate('/signup');
-  };
-
-  const handleLogin = () => {
-    navigate('/login');
-  };
-
   return (
-    <div 
+    <main 
       className="min-h-screen bg-white font-montserrat relative overflow-hidden transition-colors duration-300"
       role="main"
-      aria-label="Landing page de Braini Emotions"
+      aria-label="Landing page de Braini Family"
     >
+      {/* Header con Navegación */}
+      <NavbarLandings currentPage="family" />
+
       {/* Hero Section */}
       <section 
         className="relative min-h-screen flex items-center justify-center px-3 sm:px-4 py-6 sm:py-8"
         style={{
           background: '#7ea4df'
         }}
+        aria-label="Programa de neurobienestar emocional Braini Family"
       >
         {/* Figuras Geométricas Circulares */}
         <div className="absolute inset-0 pointer-events-none">
@@ -128,8 +146,8 @@ const LandingPage = () => {
           isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
           
-          {/* Contenido Principal */}
-          <div className="text-center mb-6 sm:mb-8 md:mb-12 relative z-10">
+          {/* Header Principal */}
+          <header className="text-center mb-6 sm:mb-8 md:mb-10 relative z-10">
             <div className="w-14 h-14 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 mx-auto mb-3 sm:mb-4 md:mb-6 flex items-center justify-center">
               <img 
                 src={logoBraini}
@@ -146,38 +164,40 @@ const LandingPage = () => {
             <p className="text-white text-sm sm:text-base md:text-lg lg:text-xl mb-2 sm:mb-3 px-3 sm:px-4" style={{ fontWeight: 400 }}>
               25 sesiones de 20' basadas en evidencias científicas
             </p>
-            <p className="text-white text-sm sm:text-base md:text-lg lg:text-xl mb-4 sm:mb-5 px-3 sm:px-4" style={{ fontWeight: 400 }}>
+            <p className="text-white text-xs sm:text-sm md:text-base mb-4 sm:mb-6 px-3 sm:px-4" style={{ fontWeight: 400 }}>
               Level Kids: Niños de 3 a 7 años
             </p>
-          </div>
+          </header>
 
-          {/* CTA Card */}
+          {/* CTA Card con Promoción */}
           <div 
-            id="cta-section"
-            className="bg-white rounded-xl p-4 sm:p-6 md:p-8 shadow-2xl relative z-10 w-full max-w-[90%] sm:max-w-md md:max-w-lg lg:max-w-2xl mx-auto"
+            className="bg-white rounded-xl p-4 sm:p-6 md:p-8 shadow-2xl relative z-10 w-full max-w-[90%] sm:max-w-md md:max-w-lg lg:max-w-2xl mx-auto mb-8 sm:mb-12"
             style={{
-              boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.05)'
+              boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
             }}
           >
-            {/* Texto de introducción */}
-            <p className="text-gray-700 text-sm sm:text-base md:text-lg mb-4 sm:mb-6 text-center" style={{ fontWeight: 400 }}>
+            <h3 className="text-gray-900 text-base sm:text-lg md:text-xl font-bold mb-4 sm:mb-6 text-center" style={{ fontWeight: 700 }}>
               ¡Apúntate y aprovecha nuestra promoción!
-            </p>
-
-            {/* Lista de regalos */}
-            <div className="mb-4 sm:mb-6 space-y-2 sm:space-y-3">
-              <p className="text-gray-700 text-xs sm:text-sm md:text-base leading-relaxed" style={{ fontWeight: 400 }}>
-                1- <span className="font-bold" style={{ fontWeight: 700, color: '#7ea4df' }}>Evaluar</span> la <span className="font-bold" style={{ fontWeight: 700, color: '#7ea4df' }}>Inteligencia Emocional</span> de tu hijo.
-              </p>
-              <p className="text-gray-700 text-xs sm:text-sm md:text-base leading-relaxed" style={{ fontWeight: 400 }}>
-                2- Disfrutar de <span className="font-bold" style={{ fontWeight: 700, color: '#7ea4df' }}>3</span> <span className="font-bold" style={{ fontWeight: 700, color: '#7ea4df' }}>sesiones</span> emocionales completamente <span className="font-bold" style={{ fontWeight: 700, color: '#7ea4df' }}>GRATIS</span>.
-              </p>
+            </h3>
+            
+            {/* Lista Numerada */}
+            <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
+              <div className="text-left">
+                <p className="text-gray-900 text-sm sm:text-base md:text-lg">
+                  <span style={{ fontWeight: 600 }}>1-</span> Evaluar la <span style={{ color: '#7ea4df', fontWeight: 600 }}>Inteligencia Emocional</span> de tu hijo.
+                </p>
+              </div>
+              <div className="text-left">
+                <p className="text-gray-900 text-sm sm:text-base md:text-lg">
+                  <span style={{ fontWeight: 600 }}>2-</span> Disfrutar de <span style={{ color: '#7ea4df', fontWeight: 600 }}>3</span> sesiones emocionales completamente <span style={{ color: '#7ea4df', fontWeight: 600 }}>GRATIS</span>.
+                </p>
+              </div>
             </div>
 
             {/* Botones de Acción */}
-            <div className="flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-3 md:gap-4">
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4">
               <Button 
-                onClick={handleTrialAccess}
+                onClick={handleSignUp}
                 className="text-white px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 font-bold transition-all text-sm sm:text-base md:text-lg md:hover:opacity-90 md:hover:scale-105 w-full sm:w-auto"
                 style={{ 
                   background: '#7ea4df',
@@ -190,11 +210,11 @@ const LandingPage = () => {
               <Button 
                 onClick={handleLogin}
                 variant="outline"
-                className="px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 font-bold transition-all text-sm sm:text-base md:text-lg md:hover:opacity-90 md:hover:scale-105 w-full sm:w-auto border-2"
+                className="px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 font-bold transition-all text-sm sm:text-base md:text-lg md:hover:opacity-90 md:hover:scale-105 w-full sm:w-auto border-2 bg-white"
                 style={{ 
                   borderColor: '#7ea4df',
                   color: '#7ea4df',
-                  backgroundColor: 'transparent',
+                  backgroundColor: 'white',
                   minWidth: 'auto'
                 }}
               >
@@ -205,7 +225,7 @@ const LandingPage = () => {
 
           {/* Social Proof */}
           <div 
-            className={`mt-4 sm:mt-6 md:mt-8 transition-all duration-1000 ease-out delay-200 relative z-10 ${
+            className={`transition-all duration-1000 ease-out delay-200 relative z-10 ${
               isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
             role="region"
@@ -248,6 +268,7 @@ const LandingPage = () => {
         style={{
           background: '#35bdb1'
         }}
+        aria-label="Características de los programas Braini Emotions"
       >
         {/* Figuras Geométricas Circulares */}
         <div className="absolute inset-0 pointer-events-none">
@@ -262,15 +283,14 @@ const LandingPage = () => {
               className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl mb-2 sm:mb-3 px-3 sm:px-4" 
               style={{ fontWeight: 800 }}
             >
-              ¿Qué es Braini Emotions Family?
+              ¿Qué es Braini Emotions?
             </h2>
             <p className="text-white text-sm sm:text-base md:text-lg lg:text-xl mb-2 sm:mb-3 px-3 sm:px-4 max-w-3xl mx-auto" style={{ fontWeight: 700 }}>
-              Un espacio creado para el desarrollo del neurobienestar emocional.
+              Un espacio creado para el desarrollo del neurobienestar emocional
             </p>
             <p className="text-white text-sm sm:text-base md:text-lg lg:text-xl mb-2 sm:mb-3 px-3 sm:px-4 max-w-3xl mx-auto" style={{ fontWeight: 400 }}>
               Aprende a acompañar sus rabietas, miedos e inseguridades jugando.
             </p>
-            
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
@@ -424,6 +444,7 @@ const LandingPage = () => {
         style={{
           background: '#f8cd50'
         }}
+        aria-label="Beneficios y riesgos de la gestión emocional"
       >
         {/* Figuras Geométricas Circulares */}
         <div className="absolute inset-0 pointer-events-none">
@@ -560,14 +581,11 @@ const LandingPage = () => {
                     Los niños sin herramientas emocionales tienen mayor riesgo de ansiedad y depresión
                   </p>
                 </div>
-
               </div>
             </div>
           </div>
         </div>
       </section>
-
-
 
       {/* Footer */}
       <footer 
@@ -575,6 +593,8 @@ const LandingPage = () => {
         style={{
           background: '#f5827b'
         }}
+        role="contentinfo"
+        aria-label="Pie de página de Braini Emotions"
       >
         {/* Figuras Geométricas Circulares */}
         <div className="absolute inset-0 pointer-events-none">
@@ -593,7 +613,7 @@ const LandingPage = () => {
                   className="w-7 h-7 sm:w-8 sm:h-8 object-contain mr-2 sm:mr-3"
                 />
                 <h3 className="text-base sm:text-lg font-bold text-white" style={{ fontWeight: 700 }}>
-                  Braini Emotions Family
+                  Braini Emotions
                 </h3>
               </div>
               <p className="text-white text-xs sm:text-sm mb-2 sm:mb-3 font-medium">
@@ -606,19 +626,19 @@ const LandingPage = () => {
               {/* Información de Contacto */}
               <div className="space-y-1.5 sm:space-y-2">
                 <div className="flex items-center">
-                  <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white mr-1.5 sm:mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white mr-1.5 sm:mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                     <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
                     <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
                   </svg>
-                  <a href="mailto:hola@brainiemotions.com" className="text-white text-xs sm:text-sm hover:text-white/80 transition-colors break-all">
+                  <a href="mailto:hola@brainiemotions.com" className="text-white text-xs sm:text-sm hover:text-white/80 transition-colors break-all" aria-label="Enviar email a hola@brainiemotions.com">
                     hola@brainiemotions.com
                   </a>
                 </div>
                 <div className="flex items-center">
-                  <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white mr-1.5 sm:mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white mr-1.5 sm:mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                     <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/>
                   </svg>
-                  <a href="tel:+34646982440" className="text-white text-xs sm:text-sm hover:text-white/80 transition-colors">
+                  <a href="tel:+34646982440" className="text-white text-xs sm:text-sm hover:text-white/80 transition-colors" aria-label="Llamar al +34 646 982 440">
                     +34 646 982 440
                   </a>
                 </div>
@@ -637,8 +657,9 @@ const LandingPage = () => {
                     type="email"
                     placeholder="tu@email.com"
                     className="flex-1 px-2.5 sm:px-3 py-2 text-base sm:text-sm rounded-l-lg border-0 focus:outline-none focus:ring-2 focus:ring-white/20 text-gray-800"
+                    aria-label="Campo de email para suscripción"
                   />
-                  <button className="bg-gray-800 text-white px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-r-lg hover:bg-gray-700 transition-colors">
+                  <button className="bg-gray-800 text-white px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-r-lg hover:bg-gray-700 transition-colors" aria-label="Suscribirse al newsletter">
                     Unirme
                   </button>
                 </div>
@@ -650,12 +671,12 @@ const LandingPage = () => {
                   Síguenos
                 </h4>
                 <div className="flex space-x-2">
-                  {/* Instagram - AQUÍ PON TU ENLACE DE INSTAGRAM */}
                   <a 
                     href="https://www.instagram.com/brainiemotions?igsh=MXB1OXcza3NnZjh2Yw%3D%3D&utm_source=qr" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="w-9 h-9 sm:w-10 sm:h-10 bg-white/20 rounded-lg flex items-center justify-center transition-colors md:hover:bg-white/30"
+                    aria-label="Seguir a Braini Emotions en Instagram"
                   >
                     <img 
                       src={logoInstagram} 
@@ -676,8 +697,8 @@ const LandingPage = () => {
           </div>
         </div>
       </footer>
-    </div>
+    </main>
   );
 };
 
-export default LandingPage;
+export default BrainiFamilyLanding;
