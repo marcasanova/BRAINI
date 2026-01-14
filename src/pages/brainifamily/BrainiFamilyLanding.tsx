@@ -130,7 +130,7 @@ const BrainiFamilyLanding = () => {
 
       {/* Hero Section */}
       <section 
-        className="relative min-h-screen flex items-center justify-center px-3 sm:px-4 py-6 sm:py-8"
+        className="relative min-h-screen flex items-center justify-center px-3 sm:px-4 pt-20 sm:pt-24 md:pt-28 py-6 sm:py-8"
         style={{
           background: '#7ea4df'
         }}
@@ -165,7 +165,7 @@ const BrainiFamilyLanding = () => {
               25 sesiones de 20' basadas en evidencias científicas
             </p>
             <p className="text-white text-xs sm:text-sm md:text-base mb-4 sm:mb-6 px-3 sm:px-4" style={{ fontWeight: 400 }}>
-              Level Kids: Niños de 3 a 7 años
+              Level Kids: Niños de 3 a 12 años
             </p>
           </header>
 

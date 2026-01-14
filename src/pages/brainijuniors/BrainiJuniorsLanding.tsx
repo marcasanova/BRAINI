@@ -22,7 +22,7 @@ const BrainiJuniorsLanding = () => {
       
       {/* Hero Section */}
       <section 
-        className="relative min-h-screen flex items-center justify-center px-3 sm:px-4 py-6 sm:py-8"
+        className="relative min-h-screen flex items-center justify-center px-3 sm:px-4 pt-20 sm:pt-24 md:pt-28 py-6 sm:py-8"
         style={{
           background: '#35bdb1'
         }}

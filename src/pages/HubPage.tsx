@@ -21,7 +21,7 @@ const verguenza = `${SUPABASE_STORAGE_URL}/7.%20Vergueza.jpg`;
 const sorpresa = `${SUPABASE_STORAGE_URL}/9.%20Sorpresa.jpg`;
 const aburrimiento = `${SUPABASE_STORAGE_URL}/35.%20Aburrimiento.jpg`;
 
-// Otros assets
+
 const logoInstagram = '/LogoInstagram.svg';
 
 const HubPage = () => {
@@ -239,8 +239,11 @@ const HubPage = () => {
               Braini Emotions
             </h1>
             <h2 className="text-white text-xl sm:text-2xl md:text-3xl lg:text-4xl mb-2 sm:mb-3 px-3 sm:px-4" style={{ fontWeight: 700 }}>
-              Elige el programa adecuado para tu familia
+              Programa de Neurobienestar Emocional
             </h2>
+            <p className="text-white text-sm sm:text-base md:text-lg lg:text-xl mb-2 sm:mb-3 px-3 sm:px-4" style={{ fontWeight: 400 }}>
+              Juegos, retos y actividades basadas en evidencias científicas
+            </p>
           </header>
 
           {/* Cards de Productos */}
@@ -260,17 +263,16 @@ const HubPage = () => {
               }}
             >
               <div className="text-center">
-                <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl mb-2 sm:mb-3 px-1" style={{ fontWeight: 700 }}>
+                <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl mb-0.5 sm:mb-1 px-1" style={{ fontWeight: 700 }}>
                   <span style={{ color: '#000000' }}>Braini</span> <span style={{ color: '#f5827b', fontWeight: 800 }}>Kids</span>
                 </h2>
+                <p className="text-gray-600 text-base sm:text-lg md:text-xl mb-2 sm:mb-3 px-1" style={{ fontWeight: 500 }}>
+                  Centros educativos.
+                </p>
                 <p className="text-gray-600 text-xs sm:text-sm md:text-base mb-3 sm:mb-4 md:mb-6 leading-relaxed px-1">
-                  Material educativo en Moodle para el desarrollo emocional de los más pequeños
+                  Implantación en centros educativos de <span style={{ fontWeight: 600, color: '#f5827b' }}>Educación Infantil</span>
                 </p>
                 <ul className="text-left text-xs sm:text-sm text-gray-600 mb-4 sm:mb-5 md:mb-6 space-y-1.5 sm:space-y-2">
-                  <li className="flex items-start">
-                    <span style={{ color: '#f5827b' }} className="mr-1.5 sm:mr-2 flex-shrink-0">•</span>
-                    <span className="leading-snug">Contenido educativo estructurado</span>
-                  </li>
                   <li className="flex items-start">
                     <span style={{ color: '#f5827b' }} className="mr-1.5 sm:mr-2 flex-shrink-0">•</span>
                     <span className="leading-snug">Acceso a material en Moodle</span>
@@ -315,24 +317,23 @@ const HubPage = () => {
               }}
             >
               <div className="text-center">
-                <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl mb-2 sm:mb-3 px-1" style={{ fontWeight: 700 }}>
+                <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl mb-0.5 sm:mb-1 px-1" style={{ fontWeight: 700 }}>
                   <span style={{ color: '#000000' }}>Braini</span> <span style={{ color: '#35bdb1', fontWeight: 800 }}>Juniors</span>
                 </h2>
+                <p className="text-base sm:text-lg md:text-xl mb-2 sm:mb-3 px-1" style={{ fontWeight: 500, color: '#35bdb1' }}>
+                  Centros educativos.
+                </p>
                 <p className="text-gray-600 text-xs sm:text-sm md:text-base mb-3 sm:mb-4 md:mb-6 leading-relaxed px-1">
-                  Material educativo en Moodle para jóvenes en desarrollo emocional
+                  Implantación en centros educativos de <span style={{ fontWeight: 600 }}>Educación Primaria</span>
                 </p>
                 <ul className="text-left text-xs sm:text-sm text-gray-600 mb-4 sm:mb-5 md:mb-6 space-y-1.5 sm:space-y-2">
-                  <li className="flex items-start">
-                    <span style={{ color: '#35bdb1' }} className="mr-1.5 sm:mr-2 flex-shrink-0">•</span>
-                    <span className="leading-snug">Contenido adaptado para jóvenes</span>
-                  </li>
                   <li className="flex items-start">
                     <span style={{ color: '#35bdb1' }} className="mr-1.5 sm:mr-2 flex-shrink-0">•</span>
                     <span className="leading-snug">Acceso a material en Moodle</span>
                   </li>
                   <li className="flex items-start">
                     <span style={{ color: '#35bdb1' }} className="mr-1.5 sm:mr-2 flex-shrink-0">•</span>
-                    <span className="leading-snug">Recursos especializados</span>
+                    <span className="leading-snug">Recursos para padres y madres</span>
                   </li>
                 </ul>
                 <div className="mb-3 sm:mb-4 md:mb-5 lg:mb-6">
@@ -370,11 +371,14 @@ const HubPage = () => {
               }}
             >
               <div className="text-center">
-                <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl mb-2 sm:mb-3 px-1" style={{ fontWeight: 700 }}>
+                <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl mb-0.5 sm:mb-1 px-1" style={{ fontWeight: 700 }}>
                   <span style={{ color: '#000000' }}>Braini</span> <span style={{ color: '#7ea4df', fontWeight: 800 }}>Family</span>
                 </h2>
+                <p className="text-gray-600 text-base sm:text-lg md:text-xl mb-2 sm:mb-3 px-1" style={{ fontWeight: 500 }}>
+                  Familias
+                </p>
                 <p className="text-gray-600 text-xs sm:text-sm md:text-base mb-3 sm:mb-4 md:mb-6 leading-relaxed px-1">
-                  Programa interactivo de 25 sesiones para desarrollar la inteligencia emocional en familia
+                  Programa interactivo para desarrollar la inteligencia emocional en familia
                 </p>
                 <ul className="text-left text-xs sm:text-sm text-gray-600 mb-4 sm:mb-5 md:mb-6 space-y-1.5 sm:space-y-2">
                   <li className="flex items-start">
@@ -383,11 +387,7 @@ const HubPage = () => {
                   </li>
                   <li className="flex items-start">
                     <span style={{ color: '#7ea4df' }} className="mr-1.5 sm:mr-2 flex-shrink-0">•</span>
-                    <span className="leading-snug">Programa interactivo completo</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span style={{ color: '#7ea4df' }} className="mr-1.5 sm:mr-2 flex-shrink-0">•</span>
-                    <span className="leading-snug">Para niños de 3 a 7 años</span>
+                    <span className="leading-snug">Para niños de 3 a 12 años</span>
                   </li>
                 </ul>
                 <div className="mb-3 sm:mb-4 md:mb-5 lg:mb-6">

@@ -98,7 +98,7 @@ const BrainiKidsLanding = () => {
 
       {/* Hero Section */}
       <section 
-        className="relative px-4 sm:px-6 md:px-8 pt-8 sm:pt-12 md:pt-16 pb-12 sm:pb-16 md:pb-20 border-b border-white/20 overflow-hidden"
+        className="relative px-4 sm:px-6 md:px-8 pt-20 sm:pt-24 md:pt-28 pb-12 sm:pb-16 md:pb-20 border-b border-white/20 overflow-hidden"
         aria-label="Información principal de BrainiKids"
       >
         {/* Figuras Geométricas Circulares */}
