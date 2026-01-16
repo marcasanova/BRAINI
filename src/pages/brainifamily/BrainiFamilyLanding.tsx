@@ -251,10 +251,10 @@ const BrainiFamilyLanding = () => {
               </div>
               <div className="text-center sm:text-left">
                 <p className="text-xs sm:text-sm md:text-base font-bold text-white" style={{ fontWeight: 700 }}>
-                  Con la confianza de <span className="font-black text-sm sm:text-base md:text-lg" style={{ fontWeight: 900 }}>+100</span> familias
+                  <span className="font-black text-sm sm:text-base md:text-lg" style={{ fontWeight: 900 }}>+1000</span> usuarios
                 </p>
                 <p className="text-[10px] sm:text-xs md:text-sm text-white/90" style={{ fontWeight: 400 }}>
-                  "Más de 100 familias ya confían en nosotros"
+                  "Más de 1.000 familias y docentes confían en Braini"
                 </p>
               </div>
             </div>
