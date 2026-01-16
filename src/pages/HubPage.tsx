@@ -275,11 +275,11 @@ const HubPage = () => {
                 <ul className="text-left text-xs sm:text-sm text-gray-600 mb-4 sm:mb-5 md:mb-6 space-y-1.5 sm:space-y-2">
                   <li className="flex items-start">
                     <span style={{ color: '#f5827b' }} className="mr-1.5 sm:mr-2 flex-shrink-0">•</span>
-                    <span className="leading-snug">Acceso a material en Moodle</span>
+                    <span className="leading-snug">Acceso al programa</span>
                   </li>
                   <li className="flex items-start">
                     <span style={{ color: '#f5827b' }} className="mr-1.5 sm:mr-2 flex-shrink-0">•</span>
-                    <span className="leading-snug">Recursos para padres y educadores</span>
+                    <span className="leading-snug">Sesiones, recursos y formación para docentes</span>
                   </li>
                 </ul>
                 <div className="mb-3 sm:mb-4 md:mb-5 lg:mb-6">
@@ -329,11 +329,11 @@ const HubPage = () => {
                 <ul className="text-left text-xs sm:text-sm text-gray-600 mb-4 sm:mb-5 md:mb-6 space-y-1.5 sm:space-y-2">
                   <li className="flex items-start">
                     <span style={{ color: '#35bdb1' }} className="mr-1.5 sm:mr-2 flex-shrink-0">•</span>
-                    <span className="leading-snug">Acceso a material en Moodle</span>
+                    <span className="leading-snug">Acceso al programa</span>
                   </li>
                   <li className="flex items-start">
                     <span style={{ color: '#35bdb1' }} className="mr-1.5 sm:mr-2 flex-shrink-0">•</span>
-                    <span className="leading-snug">Recursos para padres y madres</span>
+                    <span className="leading-snug">Sesiones, recursos y formación para docentes</span>
                   </li>
                 </ul>
                 <div className="mb-3 sm:mb-4 md:mb-5 lg:mb-6">

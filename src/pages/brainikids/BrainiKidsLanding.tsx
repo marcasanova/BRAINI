@@ -135,7 +135,7 @@ const BrainiKidsLanding = () => {
             >
               {/* Título */}
               <h3 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 mb-4 sm:mb-5 md:mb-6 text-center" style={{ fontWeight: 600 }}>
-                Implantación en centros educativos de Educación Infantil
+                Implantación en centros educativos de <span style={{ color: BRAINI_RED }}>Educación Infantil</span>
               </h3>
               
               {/* Lista numerada */}
@@ -147,7 +147,7 @@ const BrainiKidsLanding = () => {
                 
                 {/* Item 2 */}
                 <div className="text-sm sm:text-base md:text-lg text-gray-900 leading-relaxed">
-                  <span className="font-bold" style={{ fontWeight: 700 }}>2-</span> Acceso a <span style={{ color: BRAINI_RED, fontWeight: 600 }}>Moodle</span>
+                  <span className="font-bold" style={{ fontWeight: 700 }}>2-</span> Acceso al programa
                 </div>
               </div>
               
