@@ -140,8 +140,8 @@ const ActivityRating: React.FC<ActivityRatingProps> = ({
   const handleRatingSubmit = async () => {
     if (rating === 0) {
       toast({
-        title: "⭐ Selecciona una valoración",
-        description: "Necesitas elegir al menos una estrella para poder guardar tu opinión sobre esta actividad.",
+        title: "⭐ Antes de guardar",
+        description: "Elige al menos una estrella para valorar tu experiencia.",
         variant: "destructive",
       });
       return;
@@ -179,8 +179,8 @@ const ActivityRating: React.FC<ActivityRatingProps> = ({
       }
       
       toast({
-        title: "✨ Valoración guardada con éxito",
-        description: "Tu opinión ha sido registrada correctamente. ¡Gracias por ayudarnos a mejorar!",
+        title: "✨ ¡Gracias por tu opinión!",
+        description: "Nos ayuda a seguir mejorando Braini Emotions.",
       });
 
       // Verificar si se completó el nivel y se ganó medalla (sin bloquear la UI)

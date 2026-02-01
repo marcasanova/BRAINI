@@ -24,7 +24,7 @@ const MedalShelf: React.FC<MedalShelfProps> = ({ userMedals, totalMedals, isLoad
     return (
       <div className="flex items-center justify-center gap-2">
         <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
-        <span className="text-xs text-gray-500">Cargando medallas...</span>
+        <span className="text-xs text-gray-500">Cargando misiones...</span>
       </div>
     );
   }
@@ -43,7 +43,7 @@ const MedalShelf: React.FC<MedalShelfProps> = ({ userMedals, totalMedals, isLoad
           </div>
           <div>
             <div className="text-sm font-semibold text-gray-700">
-              {earnedMedals} / {totalMedals} medallas
+              {earnedMedals} / {totalMedals} misiones
             </div>
           </div>
         </div>
@@ -52,7 +52,7 @@ const MedalShelf: React.FC<MedalShelfProps> = ({ userMedals, totalMedals, isLoad
         <div className="flex items-center gap-2">
           <div className="text-right">
             <div className="text-xs text-gray-500 font-medium uppercase">
-              Progreso
+              Misiones superadas
             </div>
             <div className="text-lg font-black text-braini-blue" style={{ fontWeight: 900 }}>
               {Math.round(progressPercentage)}%

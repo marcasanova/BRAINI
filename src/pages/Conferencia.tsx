@@ -45,8 +45,8 @@ const Conferencia = () => {
     
     if (!isFormValid()) {
       toast({
-        title: "⚠️ Campos inválidos",
-        description: "Por favor, completa todos los campos correctamente antes de continuar.",
+        title: "⚠️ Nos falta un poquito",
+        description: "Hay algunos campos sin completar. Los revisamos con calma y continuamos.",
         variant: "destructive"
       });
       return;

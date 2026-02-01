@@ -106,10 +106,8 @@ const DiarioEmocional = () => {
   const handleSave = async () => {
     if (!selectedEmotion) {
       toast({
-        title: "😊 Selecciona una emoción",
-        description: childName 
-          ? `Necesitas elegir cómo se siente ${childName} hoy antes de guardar la entrada en el diario emocional.`
-          : "Necesitas elegir cómo se siente hoy antes de guardar la entrada en el diario emocional.",
+        title: "😊 Paramos un momento",
+        description: "Antes de guardar, necesitamos elegir cómo se ha sentido hoy. Miramos la emoción y seguimos.",
         variant: "destructive"
       });
       return;
@@ -124,8 +122,8 @@ const DiarioEmocional = () => {
 
       if (result) {
         toast({
-          title: "✨ Emoción registrada correctamente",
-          description: `La emoción "${selectedEmotion.name}" ha sido guardada para el ${selectedDate.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}.`,
+          title: "✨ Emoción registrada",
+          description: "La emoción de hoy ha quedado registrada. Gracias por cuidar sus emociones.",
         });
 
         // Recargar entradas del mes para actualizar el calendario
@@ -133,8 +131,8 @@ const DiarioEmocional = () => {
       }
     } catch (err) {
       toast({
-        title: "❌ Error al guardar la emoción",
-        description: "No hemos podido registrar la emoción en el diario. Por favor, verifica tu conexión e inténtalo de nuevo.",
+        title: "🌱 No se ha guardado aún",
+        description: "La emoción no se ha podido guardar en este momento. ¿Lo intentamos de nuevo?",
         variant: "destructive"
       });
     }

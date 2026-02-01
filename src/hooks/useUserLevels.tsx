@@ -25,45 +25,56 @@ export function useUserSessions(userId: string | undefined) {
   };
 
   useEffect(() => {
-    if (!userId) {
-      setSessions([]);
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-
-    supabase
-      .from("parents_levels")
-      .select(
-        `
-        level_id,
-        status,
-        levels (
-          id,
-          titulo,
-          descripcion
-        )
-        `
-      )
-      .eq("user_id", userId)
-      .order("level_id", { ascending: true })
-      .then(({ data, error }) => {
-        if (error) {
-          setError(error.message);
-          setSessions([]);
-        } else {
-          // levels puede venir como array, cogemos el primer elemento
-          const mapped = (data as any[]).map((item) => ({
-            ...item,
-            levels: Array.isArray(item.levels) ? item.levels[0] : item.levels,
-          }));
-          setSessions(mapped as UserSession[]);
-        }
+    const loadUserSessions = async () => {
+      if (!userId) {
+        setSessions([]);
         setLoading(false);
-      });
-  }, [userId, refreshTrigger]); // Añadido refreshTrigger como dependencia
+        setError(null);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        setError(null);
+
+        const { data, error } = await supabase
+          .from("parents_levels")
+          .select(
+            `
+            level_id,
+            status,
+            levels (
+              id,
+              titulo,
+              descripcion
+            )
+            `
+          )
+          .eq("user_id", userId)
+          .order("level_id", { ascending: true });
+
+        if (error) throw error;
+
+        // levels puede venir como array, cogemos el primer elemento
+        const mapped = (data as any[]).map((item) => ({
+          ...item,
+          levels: Array.isArray(item.levels) ? item.levels[0] : item.levels,
+        }));
+        
+        setSessions(mapped as UserSession[]);
+        setError(null);
+      } catch (err: any) {
+        console.error('Error cargando sesiones:', err);
+        setError(err.message || 'Error al cargar las sesiones');
+        setSessions([]);
+      } finally {
+        // ✅ SIEMPRE ejecutar setLoading(false)
+        setLoading(false);
+      }
+    };
+
+    loadUserSessions();
+  }, [userId, refreshTrigger]);
 
   // Función para obtener sesiones adyacentes
   const getAdjacentSessions = (currentLevelId: number) => {

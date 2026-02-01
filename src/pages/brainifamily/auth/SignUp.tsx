@@ -58,8 +58,8 @@ const SignUp = () => {
       }
       
       toast({
-        title: "⚠️ Campos inválidos",
-        description: `${errorMessage}\n${errors.join('\n')}`,
+        title: "⚠️ Nos falta un poquito",
+        description: "Hay algunos campos sin completar. Los revisamos con calma y continuamos.",
         variant: "destructive"
       });
       return;
@@ -86,8 +86,8 @@ const SignUp = () => {
       // 2. SI EL EMAIL EXISTE, mostramos error y detenemos el proceso.
       if (checkData.exists) {
         toast({
-          title: "📧 Correo electrónico ya registrado",
-          description: `El correo ${email} ya está registrado en Braini. Por favor, inicia sesión o usa otro correo electrónico.`,
+          title: "📧 Este correo ya está en Braini",
+          description: "Puedes iniciar sesión o usar otro correo electrónico para continuar.",
           variant: "destructive"
         });
         return;
@@ -175,8 +175,8 @@ const SignUp = () => {
 
         // 6. Éxito - redirigir a onboarding
         toast({
-          title: "🎉 ¡Cuenta creada exitosamente!",
-          description: "Tu cuenta ha sido creada correctamente. Te redirigimos para completar tu perfil...",
+          title: "🎉 ¡Bienvenidos a Braini Emotions!",
+          description: "La cuenta está lista. Ahora seguimos completando el perfil y empezamos este camino emocional juntos.",
         });
 
         setEmail('');
@@ -186,8 +186,8 @@ const SignUp = () => {
     } catch (error) {
       // Manejar errores inesperados
       const err = error as Error;
-      let errorTitle = "❌ Error inesperado";
-      let errorDescription = "Ha ocurrido un error inesperado durante el registro.";
+      let errorTitle = "🌱 Algo inesperado ha pasado";
+      let errorDescription = "No pasa nada. Lo intentamos de nuevo en unos momentos.";
       
       if (err.message) {
         if (err.message.includes('email') || err.message.includes('Email')) {

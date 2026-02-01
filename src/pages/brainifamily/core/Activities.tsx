@@ -10,6 +10,7 @@ import Backgrounds from '@/components/Backgrounds';
 import SessionNavigation from '@/components/levels/LevelNavigation';
 import MedalAnimation from '@/components/medals/MedalAnimation';
 import ActivityList from '@/components/activities/ActivityList';
+import { formatearDescripcionMision } from '@/components/activities/utils/TextFormatter';
 
 interface Medal {
   id: number;
@@ -130,7 +131,7 @@ const Activities: React.FC = () => {
       .single()
       .then(({ data, error }) => {
         if (error || !data) {
-          setError("No se encontró la sesión o no tienes acceso.");
+          setError("No se encontró la misión o no tienes acceso.");
           setSession(null);
           setLoading(false);
         } else {
@@ -197,7 +198,7 @@ const Activities: React.FC = () => {
               {/* Título y subtítulo de la sesión */}
               {loading || sessionsLoading || activitiesLoading ? (
                 <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white" style={{ fontWeight: 900 }}>
-                  Cargando sesión...
+                  Cargando misión...
                 </h1>
               ) : error || activitiesError ? (
                 <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white" style={{ fontWeight: 900 }}>
@@ -206,16 +207,13 @@ const Activities: React.FC = () => {
               ) : session ? (
                 <>
                   <div className="mb-2">
-                    <div className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-1" style={{ fontWeight: 900 }}>
-                      Sesión {session.levels.id}
-                    </div>
-                    <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white/95" style={{ fontWeight: 700 }}>
-                      {session.levels.titulo}
+                    <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-1" style={{ fontWeight: 900 }}>
+                      Misión {session.levels.id}. <span className="text-xl sm:text-2xl md:text-3xl font-bold" style={{ fontWeight: 700 }}>{session.levels.titulo}</span>
                     </h1>
                   </div>
-                  <p className="text-lg sm:text-xl md:text-2xl text-white/90 font-medium">
-                    {session.levels.descripcion}
-                  </p>
+                  <div className="text-lg sm:text-xl md:text-2xl text-white/90 font-medium">
+                    {formatearDescripcionMision(session.levels.descripcion)}
+                  </div>
                 </>
               ) : null}
             </div>
@@ -223,19 +221,19 @@ const Activities: React.FC = () => {
             {/* Área de contenido con scroll */}
             <div className="flex-1 overflow-y-auto min-h-0">
               {loading || sessionsLoading || activitiesLoading ? (
-                <div className="text-center text-white/90 py-8 font-medium">Cargando sesión...</div>
+                <div className="text-center text-white/90 py-8 font-medium">Cargando misión...</div>
               ) : error || activitiesError ? (
                 <div className="text-center text-red-200 py-8 font-medium">{error || activitiesError}</div>
               ) : !session ? (
-                <div className="text-center text-white/90 py-8 font-medium">No se encontró la sesión</div>
+                <div className="text-center text-white/90 py-8 font-medium">No se encontró la misión</div>
               ) : (
                 <div className="space-y-4 md:space-y-5 pb-20 md:pb-4">
                   {/* Card principal con información de la sesión */}
                   <div className="bg-white/95 backdrop-blur-lg p-4 md:p-6 rounded-xl md:rounded-2xl shadow-xl border-0 animate-fade-in">
                     {/* Título de actividades */}
                     <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 md:mb-6 text-gray-700 text-left" style={{ fontWeight: 700 }}>
-                      <span className="md:hidden">Actividades</span>
-                      <span className="hidden md:inline">Actividades de esta sesión</span>
+                      <span className="md:hidden">Retos</span>
+                      <span className="hidden md:inline">Retos de esta misión</span>
                     </h3>
                     
                     {/* Lista de actividades */}

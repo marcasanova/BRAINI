@@ -1,6 +1,6 @@
 import React from 'react';
 import { ActivityListProps } from '@/hooks/useUserActivities';
-import { Star, Clock, CheckCircle } from 'lucide-react';
+import { Star, CheckCircle } from 'lucide-react';
 
 const ActivityList: React.FC<ActivityListProps> = ({ 
   activities, 
@@ -18,7 +18,7 @@ const ActivityList: React.FC<ActivityListProps> = ({
   if (activities.length === 0) {
     return (
       <div className="text-center text-gray-400 py-8">
-        No hay actividades disponibles para esta sesión.
+        No hay actividades disponibles para esta misión.
       </div>
     );
   }
@@ -76,6 +76,28 @@ const ActivityList: React.FC<ActivityListProps> = ({
   const completedCount = activities.filter(a => a.puntuacion && a.puntuacion > 0).length;
   const totalCount = activities.length;
   const allCompleted = completedCount === totalCount && totalCount > 0;
+
+  // Función para obtener el mensaje de progreso
+  const getProgressMessage = (completed: number, total: number) => {
+    if (total !== 4) return null; // Solo mostrar mensajes para misiones con 4 actividades
+    
+    switch (completed) {
+      case 0:
+        return { text: "La misión acaba de empezar", icon: null };
+      case 1:
+        return { text: "¡Buen comienzo!", icon: null };
+      case 2:
+        return { text: "Seguimos avanzando", icon: null };
+      case 3:
+        return { text: "¡Ya casi lo conseguimos!", icon: null };
+      case 4:
+        return { text: "¡Misión completada! 🎉", icon: null };
+      default:
+        return null;
+    }
+  };
+
+  const progressMessage = getProgressMessage(completedCount, totalCount);
 
   // Función para obtener clases de card según tipo
   const getCardClasses = (type: string) => {
@@ -170,7 +192,7 @@ const ActivityList: React.FC<ActivityListProps> = ({
       {/* Indicador de progreso */}
       <div className="mb-6 p-4 sm:p-5 bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-xl border border-gray-200/60 shadow-sm">
         <div className="flex items-center justify-between mb-3">
-          <span className="text-sm font-semibold text-gray-700">Progreso de la sesión</span>
+          <span className="text-sm font-semibold text-gray-700">Progreso de esta misión</span>
           <span className="text-sm font-bold text-braini-blue">{completedCount} / {totalCount}</span>
         </div>
         <div className="w-full bg-gray-200/80 rounded-full h-3 overflow-hidden shadow-inner">
@@ -181,10 +203,10 @@ const ActivityList: React.FC<ActivityListProps> = ({
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
           </div>
         </div>
-        {allCompleted && (
+        {progressMessage && (
           <div className="flex items-center gap-2 text-braini-blue-dark font-semibold text-sm mt-3">
-            <CheckCircle className="w-5 h-5" />
-            <span>¡Todas las actividades completadas!</span>
+            {progressMessage.icon && <progressMessage.icon className="w-5 h-5" />}
+            <span>{progressMessage.text}</span>
           </div>
         )}
       </div>
@@ -213,11 +235,24 @@ const ActivityList: React.FC<ActivityListProps> = ({
                     {getActivityTypeLabel(activityType)}
                   </span>
                   
-                  {/* Indicador de estado - Solo Valorada (oculto en móvil) */}
-                  {isRated && (
-                    <div className="hidden md:flex items-center gap-1 text-braini-yellow-dark">
-                      <Star className="w-4 h-4 fill-current" />
-                      <span className="text-xs font-medium">Valorada</span>
+                  {/* Indicador de valoración con estrellas (oculto en móvil) */}
+                  {isRated && userActivity.puntuacion && (
+                    <div className="hidden md:flex items-center gap-2">
+                      <div className="flex">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <Star
+                            key={star}
+                            className={`w-4 h-4 ${
+                              star <= userActivity.puntuacion! 
+                                ? 'text-braini-yellow fill-current' 
+                                : 'text-gray-300'
+                            }`}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-sm text-gray-600">
+                        {userActivity.puntuacion}/5
+                      </span>
                     </div>
                   )}
                 </div>
@@ -230,34 +265,7 @@ const ActivityList: React.FC<ActivityListProps> = ({
                   {activity.objetivo || 'Sin descripción disponible'}
                 </p>
 
-                {/* Duración */}
-                {activity.duracion_min && activity.duracion_max && (
-                  <div className="flex items-center gap-1 text-sm text-gray-500 mt-2">
-                    <Clock className="w-4 h-4" />
-                    <span>{activity.duracion_min}-{activity.duracion_max} minutos</span>
-                  </div>
-                )}
 
-                {/* Valoración actual */}
-                {isRated && userActivity.puntuacion && (
-                  <div className="flex items-center gap-2 mt-3">
-                    <div className="flex">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <Star
-                          key={star}
-                          className={`w-4 h-4 ${
-                            star <= userActivity.puntuacion! 
-                              ? 'text-braini-yellow fill-current' 
-                              : 'text-gray-300'
-                          }`}
-                        />
-                      ))}
-                    </div>
-                    <span className="text-sm text-gray-600">
-                      Tu valoración: {userActivity.puntuacion}/5
-                    </span>
-                  </div>
-                )}
               </div>
 
               {/* Flecha de navegación */}

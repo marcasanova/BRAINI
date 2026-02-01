@@ -117,8 +117,8 @@ const Login = () => {
       }
       
       toast({
-        title: "⚠️ Campos incompletos",
-        description: `Por favor, completa los siguientes campos: ${missingFields.join(' y ')}.`,
+        title: "⚠️ Nos falta un poquito",
+        description: "Hay algunos campos sin completar. Los revisamos con calma y continuamos.",
         variant: "destructive"
       });
       return;
@@ -149,11 +149,11 @@ const Login = () => {
         let errorDescription = "No se pudo iniciar sesión. Por favor, verifica tus credenciales.";
         
         if (error.message?.includes('Invalid login credentials') || error.message?.includes('invalid_credentials')) {
-          errorTitle = "🔒 Credenciales incorrectas";
-          errorDescription = "El correo electrónico o la contraseña no son correctos. Por favor, verifica tus datos e inténtalo de nuevo.";
+          errorTitle = "🔒 Revisamos los datos";
+          errorDescription = "El correo o la contraseña no coinciden. Lo intentamos de nuevo con calma.";
         } else if (error.message?.includes('Email not confirmed') || error.message?.includes('email_not_confirmed')) {
-          errorTitle = "📧 Correo electrónico no verificado";
-          errorDescription = "Tu correo electrónico aún no ha sido verificado. Por favor, revisa tu bandeja de entrada y haz clic en el enlace de verificación.";
+          errorTitle = "📧 Último paso";
+          errorDescription = "Revisa tu correo y haz clic en el enlace de verificación para poder acceder.";
         } else if (error.message?.includes('email') || error.message?.includes('Email')) {
           errorTitle = "❌ Error con el correo electrónico";
           errorDescription = "El correo electrónico proporcionado no es válido o no está registrado en Braini.";
@@ -176,8 +176,8 @@ const Login = () => {
       }
 
       toast({
-        title: "🎉 ¡Bienvenido/a de vuelta!",
-        description: "Has iniciado sesión correctamente en Braini Emotions. ¡Continuemos desarrollando la inteligencia emocional!",
+        title: "💛 Qué alegría verte de nuevo",
+        description: "Has iniciado sesión correctamente. Continuamos cuidando nuestro bienestar emocional.",
       });
 
       // Reset form
@@ -207,8 +207,8 @@ const Login = () => {
         if (parentError.code === 'PGRST116') {
           // El trigger debería haber creado el registro, pero si no existe, redirigir a onboarding
           toast({
-            title: "📝 Perfil incompleto",
-            description: "Necesitas completar tu perfil para continuar. Te redirigimos al formulario...",
+            title: "🌱 Nos queda un paso",
+            description: "Necesitas completar el perfil para continuar. Te acompaño al formulario.",
             variant: "default"
           });
           navigate('/brainifamily/parents-profile');
@@ -272,8 +272,8 @@ const Login = () => {
     } catch (error) {
       // Manejar errores inesperados
       const err = error as Error;
-      let errorTitle = "❌ Error inesperado";
-      let errorDescription = "Ha ocurrido un error inesperado durante el inicio de sesión.";
+      let errorTitle = "🌱 Algo inesperado ha pasado";
+      let errorDescription = "No pasa nada. Lo intentamos de nuevo en unos momentos.";
       
       if (err.message) {
         if (err.message.includes('email') || err.message.includes('Email')) {
@@ -286,8 +286,8 @@ const Login = () => {
           errorTitle = "🌐 Error de conexión";
           errorDescription = "No se pudo conectar con el servidor. Verifica tu conexión a internet e inténtalo de nuevo.";
         } else if (err.message.includes('Invalid login credentials') || err.message.includes('invalid_credentials')) {
-          errorTitle = "🔒 Credenciales incorrectas";
-          errorDescription = "El correo electrónico o la contraseña no son correctos. Por favor, verifica tus datos e inténtalo de nuevo.";
+          errorTitle = "🔒 Revisamos los datos";
+          errorDescription = "El correo o la contraseña no coinciden. Lo intentamos de nuevo con calma.";
         } else {
           errorDescription = err.message;
         }

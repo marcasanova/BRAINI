@@ -197,7 +197,7 @@ const MedalAnimation: React.FC<MedalAnimationProps> = ({
               <Star className="w-5 h-5 text-braini-turquoise fill-current animate-sparkle-twinkle" style={{ animationDelay: '0.5s' }} />
             </div>
             <p className="text-gray-600">
-              Has completado la sesión {medal.level_id} y obtenido esta medalla
+              Has completado la misión {medal.level_id} y obtenido esta medalla
             </p>
           </div>
 

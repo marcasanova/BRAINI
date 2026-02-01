@@ -10,46 +10,65 @@ import { useToast } from '@/hooks/use-toast';
 
 const Home = () => {
   const [userId, setUserId] = useState<string | undefined>(undefined);
-  const [userName, setUserName] = useState<string | undefined>(undefined);
+  const [childName, setChildName] = useState<string | undefined>(undefined);
   const [userMedalsMap, setUserMedalsMap] = useState<Map<number, string>>(new Map()); // Map<levelId, fecha_obtencion>
   const [medalsLoading, setMedalsLoading] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
-    supabase.auth.getUser().then(async ({ data: { user } }) => {
-      setUserId(user?.id);
-      if (user?.id) {
-        // Buscar el nombre del usuario en la tabla parents
-        const { data: parentData, error } = await supabase
-          .from('parents')
-          .select('nombre')
-          .eq('id', user.id)
-          .single();
-        if (parentData && parentData.nombre) {
-          setUserName(parentData.nombre);
+    const loadUserData = async () => {
+      try {
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        
+        if (authError) {
+          console.error('Error de autenticación:', authError);
+          setMedalsLoading(false);
+          return;
         }
 
-        // Obtener medallas del usuario para el Map (usado en las sesiones)
-        // El medal_id coincide con el level_id
-        const { data: medalsData, error: medalsError } = await supabase
-          .from('parents_medals')
-          .select('medal_id, fecha_obtencion')
-          .eq('user_id', user.id);
+        setUserId(user?.id);
+        
+        if (user?.id) {
+          try {
+            // Buscar el nombre del niño en la tabla children
+            const { data: childData, error } = await supabase
+              .from('children')
+              .select('nombre')
+              .eq('parent_id', user.id)
+              .single();
+            
+            if (childData?.nombre) {
+              setChildName(childData.nombre);
+            }
 
-        if (medalsError) {
-          console.error('Error al obtener medallas:', medalsError);
-        } else {
-          // Crear un Map con levelId -> fecha_obtencion
-          const medalsMap = new Map<number, string>();
-          medalsData?.forEach((medal) => {
-            // medal_id es igual al level_id
-            medalsMap.set(medal.medal_id, medal.fecha_obtencion);
-          });
-          setUserMedalsMap(medalsMap);
+            // Obtener medallas del usuario para el Map
+            const { data: medalsData, error: medalsError } = await supabase
+              .from('parents_medals')
+              .select('medal_id, fecha_obtencion')
+              .eq('user_id', user.id);
+
+            if (medalsError) {
+              console.error('Error al obtener medallas:', medalsError);
+            } else {
+              const medalsMap = new Map<number, string>();
+              medalsData?.forEach((medal) => {
+                medalsMap.set(medal.medal_id, medal.fecha_obtencion);
+              });
+              setUserMedalsMap(medalsMap);
+            }
+          } catch (error) {
+            console.error('Error cargando datos del usuario:', error);
+          }
         }
+      } catch (error) {
+        console.error('Error general:', error);
+      } finally {
+        // ✅ SIEMPRE ejecutar setMedalsLoading(false)
         setMedalsLoading(false);
       }
-    });
+    };
+
+    loadUserData();
   }, []);
 
   const { sessions, loading, error } = useUserSessions(userId);
@@ -68,7 +87,7 @@ const Home = () => {
             {/* Header con título - Fijo en la parte superior */}
             <div className="mb-4 md:mb-6 animate-fade-in flex-shrink-0">
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white" style={{ fontWeight: 900 }}>
-                {userName ? `Estas son tus sesiones, ${userName}` : 'Tus Sesiones'}
+                {childName ? `${childName} ¡Empieza la aventura!` : '¡Empieza la aventura!'}
               </h1>
             </div>
 
@@ -89,49 +108,52 @@ const Home = () => {
                     />
                   </div>
 
-                  {/* Sesión 0 - Tutorial - Hardcodeado */}
+                  {/* Misión 0 - ¡Comienza la aventura! - Hardcodeado */}
                   <div className="bg-white/95 backdrop-blur-lg p-4 md:p-6 rounded-xl md:rounded-2xl shadow-xl border-0 animate-fade-in">
                     <ul className="space-y-0">
                       <li>
-                        <div className="mb-4">
-                          <div className="text-braini-blue font-bold text-2xl md:text-3xl flex items-center gap-2 mb-2" style={{ fontWeight: 700 }}>
-                            Sesión0: <span className="text-xl md:text-2xl" style={{ fontWeight: 700 }}>Tutorial</span>
+                        {/* Título y descripción - ancho completo */}
+                        <div className="mb-6">
+                          <div className="text-braini-blue font-bold text-2xl md:text-3xl flex items-center gap-2 mb-4" style={{ fontWeight: 700 }}>
+                            Misión 0. <span className="text-xl md:text-2xl" style={{ fontWeight: 700 }}>¡Comienza la aventura!</span>
                           </div>
+                          <ul className="text-sm md:text-base text-gray-600 font-medium mb-6 space-y-2">
+                            <li className="flex items-start">
+                              <span className="mr-3">•</span>
+                              <span>Esta sesión es solo para entender el recorrido y empezar con calma.</span>
+                            </li>
+                            <li className="flex items-start">
+                              <span className="mr-3">•</span>
+                              <span>Cada casilla es un pequeño paso de neurobienestar emocional en familia.</span>
+                            </li>
+                            <li className="flex items-start">
+                              <span className="mr-3">•</span>
+                              <span>Con él veremos por dónde vamos y todo lo que vamos logrando juntos.</span>
+                            </li>
+                          </ul>
                         </div>
-                        
-                        {/* Layout: Mapa a la izquierda, Tipos de actividades a la derecha */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-start">
-                          {/* Columna izquierda: Mapa y botón */}
-                          <div className="flex flex-col gap-4">
-                            <div className="w-full">
-                              <h3 className="text-lg md:text-xl font-bold text-gray-800 mb-3 flex items-center gap-2">
-                                Mapa con las actividades
-                              </h3>
-                              <p className="text-sm md:text-base text-gray-600 mb-4 font-medium">
-                                Descarga el mapa físico para seguir el progreso de las actividades en cada sesión.
-                              </p>
-                            </div>
-                            <div className="w-full max-w-[280px] sm:max-w-xs md:max-w-md mx-auto rounded-lg overflow-hidden flex items-center justify-center">
-                              <img 
-                                src="https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/braini-map/Panel%20juego%20Rescate%20de%20Azon.jpg"
-                                alt="Mapa Físico"
-                                className="w-full h-auto object-contain"
-                              />
-                            </div>
-                            <div className="flex justify-center">
-                              <MapDownload />
-                            </div>
-                          </div>
 
-                          {/* Columna derecha: Tipos de actividades en columna */}
+                        {/* Dos columnas: mapa a la izquierda, tipos de actividades a la derecha */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                          {/* Columna izquierda: mapa y botón de descarga */}
                           <div className="flex flex-col">
                             <h3 className="text-lg md:text-xl font-bold text-gray-800 mb-3 flex items-center gap-2">
-                              Tipos de actividades
+                              Mapa de misiones
+                            </h3>
+                            <MapDownload
+                              showImage
+                              buttonText="¡Descarga el mapa para vivir la aventura!"
+                            />
+                          </div>
+
+                          {/* Columna derecha: tipos de actividades */}
+                          <div className="flex flex-col">
+                            <h3 className="text-lg md:text-xl font-bold text-gray-800 mb-3 flex items-center gap-2">
+                              Así son nuestras misiones de BRAINI:
                             </h3>
                             <p className="text-sm md:text-base text-gray-600 mb-4 font-medium">
-                              Cada sesión contiene <span className="font-bold">4 actividades</span> diferentes, cada una con su propio color para que las identifiques fácilmente:
+                              Cada misión contiene <span className="font-bold">4 actividades</span> diferentes, cada una con su propio color para que las identifiques fácilmente:
                             </p>
-                            
                             <div className="flex flex-col gap-3 md:gap-4">
                               {/* 1. Inteligencia Emocional */}
                               <div className="p-4 rounded-xl bg-gradient-to-br from-braini-blue/5 to-braini-blue/10 border-2 border-braini-blue/30 flex items-start gap-3">
@@ -142,8 +164,11 @@ const Home = () => {
                                   <h4 className="font-bold text-braini-blue-dark text-base md:text-lg mb-1">
                                     Inteligencia Emocional
                                   </h4>
+                                  <p className="text-sm font-semibold text-gray-800 mb-2">
+                                    Aprendemos a reconocer cómo nos sentimos
+                                  </p>
                                   <p className="text-sm text-gray-700 font-medium">
-                                    Actividades para desarrollar habilidades emocionales y reconocer emociones.
+                                    Jugamos juntos para descubrir, nombrar y entender nuestras emociones a través de juegos, historias y preguntas.
                                   </p>
                                 </div>
                               </div>
@@ -157,8 +182,11 @@ const Home = () => {
                                   <h4 className="font-bold text-braini-turquoise-dark text-base md:text-lg mb-1">
                                     Regulación Emocional
                                   </h4>
+                                  <p className="text-sm font-semibold text-gray-800 mb-2">
+                                    Descubrimos cómo calmarnos y escuchar nuestro cuerpo
+                                  </p>
                                   <p className="text-sm text-gray-700 font-medium">
-                                    Ejercicios prácticos de relajación, respiración y técnicas corporales.
+                                    Aprendemos ejercicios sencillos para respirar, relajarnos y volver a la calma cuando lo necesitamos.
                                   </p>
                                 </div>
                               </div>
@@ -172,8 +200,11 @@ const Home = () => {
                                   <h4 className="font-bold text-braini-pink-dark text-base md:text-lg mb-1">
                                     Vínculo Afectivo
                                   </h4>
+                                  <p className="text-sm font-semibold text-gray-800 mb-2">
+                                    Cerramos la sesión con un momento especial juntos
+                                  </p>
                                   <p className="text-sm text-gray-700 font-medium">
-                                    Momentos de conexión y fortalecimiento del vínculo familiar.
+                                    Compartimos un gesto de cariño (abrazo, mirada, palabras bonitas) para conectar y cerrar la aventura juntos.
                                   </p>
                                 </div>
                               </div>
@@ -187,8 +218,11 @@ const Home = () => {
                                   <h4 className="font-bold text-braini-yellow-dark text-base md:text-lg mb-1">
                                     Acompañamiento Emocional
                                   </h4>
+                                  <p className="text-sm font-semibold text-gray-800 mb-2">
+                                    Un espacio solo para las personas adultas
+                                  </p>
                                   <p className="text-sm text-gray-700 font-medium">
-                                    Herramientas y recursos para el apoyo emocional en el día a día.
+                                    Información y orientaciones para acompañar emocionalmente a tu hijo/a con calma en el día a día.
                                   </p>
                                 </div>
                               </div>

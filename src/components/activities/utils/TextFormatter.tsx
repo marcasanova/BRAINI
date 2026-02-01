@@ -84,3 +84,30 @@ export const formatearTexto = (texto: string) => {
     return <p key={index} className="mb-2">{linea}</p>;
   });
 };
+
+/**
+ * Función específica para formatear descripciones de misiones
+ * Solo maneja saltos de línea para estructurar mejor la información
+ * 
+ * @param texto - Texto de descripción de misión
+ * @returns JSX con saltos de línea aplicados
+ */
+export const formatearDescripcionMision = (texto: string) => {
+  if (!texto) return null;
+  
+  // Convertir marcadores || en saltos de línea
+  const textoConSaltos = texto.replace(/\|\|/g, '\n');
+  
+  // Normalizar cualquier tipo de salto de línea
+  const lineas = textoConSaltos
+    .replace(/\r\n/g, '\n')    // Windows
+    .replace(/\r/g, '\n')      // Mac antiguo
+    .split('\n')
+    .filter(linea => linea.trim() !== ''); // Eliminar líneas completamente vacías
+  
+  return lineas.map((linea, index) => (
+    <p key={index} className={index > 0 ? "mt-2" : ""}>
+      {linea.trim()}
+    </p>
+  ));
+};

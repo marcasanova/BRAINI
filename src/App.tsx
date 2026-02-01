@@ -6,8 +6,6 @@ import { BrowserRouter, Routes, Route, Navigate, useParams } from "react-router-
 import NotFound from "./pages/support/NotFound";
 import ProtectedRoute from "./components/navigation/ProtectedRoute";
 import UpdatePassword from "./pages/support/UpdatePassword";
-import VerifyEmail from './pages/support/VerifyEmail';
-import EmailVerified from './pages/support/EmailVerified';
 import HubPage from './pages/HubPage';
 import BrainiKidsLanding from './pages/brainikids/BrainiKidsLanding';
 import BrainiJuniorsLanding from './pages/brainijuniors/BrainiJuniorsLanding';
@@ -59,10 +57,6 @@ const App = () => (
           <Route path="/brainifamily/login" element={<Login />} />
           <Route path="/brainifamily/signup" element={<SignUp />} />
           <Route path="/brainifamily/update-password" element={<UpdatePassword />} />
-          
-          {/* BrainiFamily - Soporte */}
-          <Route path="/brainifamily/verify-email" element={<VerifyEmail />} />
-          <Route path="/brainifamily/email-verified" element={<EmailVerified />} />
           
           {/* BrainiFamily - Protegidas */}
           <Route path="/brainifamily/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />

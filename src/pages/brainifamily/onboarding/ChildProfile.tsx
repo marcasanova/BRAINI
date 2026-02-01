@@ -239,25 +239,16 @@ const ChildProfile = () => {
 
         setError(errorDescription);
         toast({ 
-          title: `❌ ${errorTitle}`, 
-          description: errorDescription, 
+          title: '🌱 Seguimos intentándolo', 
+          description: 'El perfil del niño o la niña no se ha guardado todavía. Revisamos los datos con calma y volvemos a probar.', 
           variant: 'destructive' 
         });
         throw error;
       }
 
-      // Personalizar mensaje con el nombre del niño/niña
-      const nombreNino = form.nombre.trim() || 'del niño/niña';
-      const mensajeTitulo = form.nombre.trim() 
-        ? `✅ Perfil de ${form.nombre} completado`
-        : '✅ Perfil del niño/niña completado';
-      const mensajeDescripcion = form.nombre.trim()
-        ? `El perfil de ${form.nombre} ${form.apellidos.trim() ? form.apellidos.trim() : ''} ha sido guardado correctamente. ¡Ya puedes comenzar a usar Braini Emotions!`
-        : 'El perfil del niño/niña ha sido guardado correctamente. ¡Ya puedes comenzar a usar Braini Emotions!';
-
       toast({ 
-        title: mensajeTitulo, 
-        description: mensajeDescripcion, 
+        title: '🎉 ¡Todo listo!', 
+        description: 'El perfil está guardado. Ya podéis empezar a disfrutar de Braini Emotions juntos.', 
         variant: 'default' 
       });
       

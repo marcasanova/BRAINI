@@ -17,9 +17,18 @@ export const useUserMedals = () => {
   const fetchUserMedals = useCallback(async () => {
     try {
       setLoading(true);
-      const { data: { user } } = await supabase.auth.getUser();
+      setError(null);
       
-      if (!user) throw new Error('Usuario no autenticado');
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      
+      // ✅ Si no hay usuario, limpiar datos pero NO lanzar error
+      if (authError || !user) {
+        console.log('Usuario no autenticado en useUserMedals');
+        setUserMedals([]);
+        setTotalMedals(0);
+        setError(null); // No es un error real
+        return;
+      }
 
       // Obtener las medallas del usuario
       const { data: userMedalsData, error: userMedalsError } = await supabase
@@ -38,9 +47,15 @@ export const useUserMedals = () => {
 
       setUserMedals(userMedalsData || []);
       setTotalMedals(count || 0);
+      setError(null);
     } catch (err: any) {
+      console.error('Error en useUserMedals:', err);
       setError(err.message);
+      // ✅ En caso de error, limpiar datos para evitar estados inconsistentes
+      setUserMedals([]);
+      setTotalMedals(0);
     } finally {
+      // ✅ SIEMPRE ejecutar setLoading(false)
       setLoading(false);
     }
   }, []);

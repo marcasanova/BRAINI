@@ -157,8 +157,8 @@ const ParentsProfile = () => {
       if (updateError) {
         setError(updateError.message || 'Error al guardar los datos. Inténtalo de nuevo.');
         toast({ 
-          title: '❌ Error al guardar el perfil', 
-          description: `No se pudo guardar tu perfil de ${form.relacion_con_menor || 'padre/madre'}. ${updateError.message || 'Por favor, verifica tu conexión e inténtalo de nuevo.'}`, 
+          title: '🌱 Perfil no guardado', 
+          description: 'Tu perfil no se ha podido guardar. Revisamos los datos o lo intentamos de nuevo en unos segundos.', 
           variant: 'destructive' 
         });
         throw updateError;
@@ -176,8 +176,8 @@ const ParentsProfile = () => {
         : 'padre/madre';
 
       toast({ 
-        title: `✅ Perfil de ${relacionTexto} completado`, 
-        description: `Tu perfil de ${relacionTexto} ha sido guardado correctamente. Ahora vamos a completar el perfil del niño/niña.`, 
+        title: '💛 Perfil guardado', 
+        description: 'Tu perfil está listo. Ahora vamos a crear el perfil del niño o la niña, paso a paso.', 
         variant: 'default' 
       });
       

@@ -28,18 +28,103 @@ const UpdatePassword = () => {
   }, []);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) {
-        toast({
-          title: "🔒 Acceso no autorizado",
-          description: "Necesitas estar autenticado para cambiar tu contraseña. Por favor, inicia sesión primero.",
-          variant: "destructive",
-        });
-        navigate('/brainifamily/login');
-      } else {
+    let mounted = true;
+    let sessionProcessed = false;
+    
+    // Verificar si hay tokens de recuperación en la URL
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const accessToken = hashParams.get('access_token');
+    const type = hashParams.get('type');
+    
+    // Función para procesar la sesión
+    const processSession = async (session: any) => {
+      if (!mounted || sessionProcessed) return;
+      
+      if (session) {
+        sessionProcessed = true;
         setSession(session);
+        // Limpiar el hash de la URL
+        if (window.location.hash) {
+          window.history.replaceState(null, '', window.location.pathname);
+        }
+      }
+    };
+    
+    // Listener para cambios de autenticación (procesa tokens automáticamente)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (!mounted) return;
+      
+      console.log('Auth state change:', event, session ? 'Session exists' : 'No session');
+      
+      // PASSWORD_RECOVERY es el evento específico para recuperación de contraseña
+      if (event === 'PASSWORD_RECOVERY') {
+        if (session) {
+          await processSession(session);
+        }
+      } 
+      // Si el evento es SIGNED_IN y hay tokens de recuperación en la URL
+      else if (event === 'SIGNED_IN' && (type === 'recovery' || accessToken)) {
+        if (session) {
+          await processSession(session);
+        }
+      }
+      // Si hay una sesión válida (puede ser de recuperación o normal)
+      else if (session) {
+        await processSession(session);
       }
     });
+    
+    // Verificar sesión inicial y procesar tokens de la URL si existen
+    const initializeSession = async () => {
+      // Si hay tokens en el hash, Supabase los procesará automáticamente
+      // pero podemos forzar el procesamiento esperando un momento
+      if (accessToken && type === 'recovery') {
+        // Esperar a que Supabase procese los tokens del hash
+        // getSession() debería procesarlos automáticamente
+        setTimeout(async () => {
+          if (!mounted || sessionProcessed) return;
+          
+          const { data: { session: recoverySession }, error } = await supabase.auth.getSession();
+          
+          if (error) {
+            console.error('Error getting session:', error);
+          }
+          
+          if (recoverySession) {
+            await processSession(recoverySession);
+          } else {
+            // Si después de esperar no hay sesión, los tokens pueden haber expirado
+            toast({
+              title: "Primero iniciamos sesión",
+              description: "El enlace de recuperación ha expirado o no es válido. Por favor, solicita un nuevo enlace desde la página de login.",
+              variant: "destructive",
+            });
+            navigate('/brainifamily/login');
+          }
+        }, 2000);
+      } else {
+        // No hay tokens en la URL, verificar sesión existente
+        const { data: { session: existingSession } } = await supabase.auth.getSession();
+        if (existingSession) {
+          await processSession(existingSession);
+        } else {
+          // No hay sesión ni tokens, redirigir al login
+          toast({
+            title: "Primero iniciamos sesión",
+            description: "Para cuidar la seguridad de tu cuenta, necesitamos iniciar sesión antes de cambiar la contraseña. Vamos paso a paso 😊",
+            variant: "destructive",
+          });
+          navigate('/brainifamily/login');
+        }
+      }
+    };
+
+    initializeSession();
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, [navigate, toast]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -47,8 +132,8 @@ const UpdatePassword = () => {
 
     if (password.length < 6) {
       toast({
-        title: "🔑 Contraseña demasiado corta",
-        description: "La contraseña debe tener al menos 6 caracteres para garantizar la seguridad de tu cuenta.",
+        title: "🔑 Un poquito más de seguridad",
+        description: "Tu contraseña necesita al menos 6 caracteres para proteger bien tu cuenta. Añadimos algunos más y seguimos.",
         variant: "destructive",
       });
       return;
@@ -56,32 +141,68 @@ const UpdatePassword = () => {
 
     if (password !== confirmPassword) {
       toast({
-        title: "⚠️ Las contraseñas no coinciden",
-        description: "Las contraseñas que has introducido no son iguales. Por favor, verifica que ambas coincidan.",
+        title: "⚠️ Revisamos un momento",
+        description: "Las dos contraseñas no coinciden todavía. Las escribimos igual y continuamos con calma.",
         variant: "destructive",
       });
       return;
     }
 
+    // Verificar que tenemos una sesión válida antes de intentar cambiar la contraseña
+    const { data: { session: currentSession } } = await supabase.auth.getSession();
+    if (!currentSession) {
+      toast({
+        title: "Primero iniciamos sesión",
+        description: "La sesión de recuperación ha expirado. Por favor, solicita un nuevo enlace de recuperación.",
+        variant: "destructive",
+      });
+      navigate('/brainifamily/login');
+      return;
+    }
+
     setIsSubmitting(true);
     try {
-      const { error } = await supabase.auth.updateUser({ password });
+      // Actualizar la contraseña
+      const { data, error } = await supabase.auth.updateUser({ 
+        password: password 
+      });
       
-      if (error) throw error;
+      if (error) {
+        // Mostrar el mensaje de error específico de Supabase
+        let errorMessage = "No hemos podido cambiar la contraseña en este momento. Revisamos la conexión y lo intentamos de nuevo con calma.";
+        
+        if (error.message) {
+          if (error.message.includes('expired') || error.message.includes('invalid')) {
+            errorMessage = "El enlace de recuperación ha expirado o no es válido. Por favor, solicita un nuevo enlace desde la página de login.";
+          } else if (error.message.includes('session')) {
+            errorMessage = "La sesión no es válida. Por favor, solicita un nuevo enlace de recuperación.";
+          } else {
+            errorMessage = error.message;
+          }
+        }
+        
+        throw new Error(errorMessage);
+      }
 
       toast({
-        title: "✅ Contraseña actualizada correctamente",
-        description: "Tu contraseña ha sido cambiada con éxito. Serás redirigido para iniciar sesión con tu nueva contraseña.",
+        title: "✅ ¡Listo!",
+        description: "Tu contraseña se ha actualizado correctamente. Ahora puedes iniciar sesión con ella.",
       });
 
       // Cerramos sesión para forzar un nuevo login con la nueva contraseña
       await supabase.auth.signOut();
-      navigate('/brainifamily/login');
+      
+      // Pequeño delay para que el usuario vea el mensaje de éxito
+      setTimeout(() => {
+        navigate('/brainifamily/login');
+      }, 1500);
 
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "No hemos podido cambiar la contraseña en este momento. Revisamos la conexión y lo intentamos de nuevo con calma.";
+      
       toast({
-        title: "❌ Error al actualizar la contraseña",
-        description: "No hemos podido cambiar tu contraseña. Por favor, verifica tu conexión e inténtalo de nuevo.",
+        title: "🌱 Algo no ha salido aún",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {

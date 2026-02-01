@@ -28,10 +28,21 @@ const HubPage = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [productsVisible, setProductsVisible] = useState(false);
   const productsRef = useRef<HTMLDivElement>(null);
-  const [featuresVisible, setFeaturesVisible] = useState(false);
-  const featuresTitleRef = useRef<HTMLHeadingElement>(null);
-  const [benefitsVisible, setBenefitsVisible] = useState(false);
-  const benefitsTitleRef = useRef<HTMLHeadingElement>(null);
+
+  // Función para scroll al top optimizada para móviles
+  const scrollToTop = () => {
+    // Scroll inmediato para desktop
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    // Fallback para móviles iOS/Android
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+    // Timeout adicional para asegurar que funciona tras la navegación
+    setTimeout(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+    }, 100);
+  };
 
   // SEO: Actualizar meta tags dinámicamente
   useEffect(() => {
@@ -148,59 +159,6 @@ const HubPage = () => {
     };
   }, []);
 
-  // Intersection Observer para el título de Features
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setFeaturesVisible(true);
-          }
-        });
-      },
-      {
-        threshold: 0.1,
-        rootMargin: '0px'
-      }
-    );
-
-    if (featuresTitleRef.current) {
-      observer.observe(featuresTitleRef.current);
-    }
-
-    return () => {
-      if (featuresTitleRef.current) {
-        observer.unobserve(featuresTitleRef.current);
-      }
-    };
-  }, []);
-
-  // Intersection Observer para el título de Benefits
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setBenefitsVisible(true);
-          }
-        });
-      },
-      {
-        threshold: 0.1,
-        rootMargin: '0px'
-      }
-    );
-
-    if (benefitsTitleRef.current) {
-      observer.observe(benefitsTitleRef.current);
-    }
-
-    return () => {
-      if (benefitsTitleRef.current) {
-        observer.unobserve(benefitsTitleRef.current);
-      }
-    };
-  }, []);
 
   return (
     <main 
@@ -289,6 +247,7 @@ const HubPage = () => {
                   to="/brainikids"
                   className="inline-block w-full"
                   aria-label="Acceder a Braini Kids - Material educativo en Moodle"
+                  onClick={scrollToTop}
                 >
                   <Button 
                     className="w-full text-white px-4 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-4 font-bold transition-all text-xs sm:text-sm md:text-base md:hover:opacity-90 md:hover:scale-105"
@@ -343,6 +302,7 @@ const HubPage = () => {
                   to="/brainijuniors"
                   className="inline-block w-full"
                   aria-label="Acceder a Braini Juniors - Material educativo en Moodle"
+                  onClick={scrollToTop}
                 >
                   <Button 
                     className="w-full text-white px-4 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-4 font-bold transition-all text-xs sm:text-sm md:text-base md:hover:opacity-90 md:hover:scale-105"
@@ -397,6 +357,7 @@ const HubPage = () => {
                   to="/brainifamily"
                   className="inline-block w-full"
                   aria-label="Acceder a Braini Family - Programa interactivo de neurobienestar emocional"
+                  onClick={scrollToTop}
                 >
                   <Button 
                     className="w-full text-white px-4 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-4 font-bold transition-all text-xs sm:text-sm md:text-base md:hover:opacity-90 md:hover:scale-105"
@@ -454,330 +415,7 @@ const HubPage = () => {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section 
-        className="py-16 sm:py-24 relative overflow-hidden"
-        style={{
-          background: '#35bdb1'
-        }}
-        aria-label="Características de los programas Braini Emotions"
-      >
-        {/* Figuras Geométricas Circulares */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute -top-20 sm:-top-40 -left-5 sm:-left-10 w-40 h-40 sm:w-80 sm:h-80 bg-white/15 rounded-full" />
-          <div className="absolute -bottom-40 sm:-bottom-80 -right-30 sm:-right-60 w-[300px] h-[300px] sm:w-[700px] sm:h-[700px] bg-white/15 rounded-full" />
-        </div>
 
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 relative z-10">
-          <div className="text-center mb-8 sm:mb-12 md:mb-16">
-            <h2 
-              ref={featuresTitleRef}
-              className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl mb-2 sm:mb-3 px-3 sm:px-4" 
-              style={{ fontWeight: 800 }}
-            >
-              ¿Qué es Braini Emotions?
-            </h2>
-            <p className="text-white text-sm sm:text-base md:text-lg lg:text-xl mb-2 sm:mb-3 px-3 sm:px-4 max-w-3xl mx-auto" style={{ fontWeight: 700 }}>
-              Un espacio creado para el desarrollo del neurobienestar emocional
-            </p>
-            <p className="text-white text-sm sm:text-base md:text-lg lg:text-xl mb-2 sm:mb-3 px-3 sm:px-4 max-w-3xl mx-auto" style={{ fontWeight: 400 }}>
-              Aprende a acompañar sus rabietas, miedos e inseguridades jugando.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
-            {/* Feature 1 */}
-            <div 
-              className={`bg-white rounded-xl p-3 sm:p-4 md:p-5 shadow-lg transition-all duration-1000 ease-out ${
-                featuresVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-              }`} 
-              style={{
-                transitionDelay: featuresVisible ? '0ms' : '0ms'
-              }}
-            >
-              <div className="text-center">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 mx-auto mb-2 sm:mb-3 md:mb-4 rounded-full overflow-hidden">
-                  <img 
-                    src={alegria} 
-                    alt="Alegría - Basado en Evidencias" 
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-1.5 sm:mb-2" style={{ fontWeight: 700, color: '#f59e0b' }}>
-                  Basado en Evidencias
-                </h3>
-                <p className="text-gray-600 text-xs sm:text-sm md:text-base leading-relaxed">
-                  Metodología respaldada por investigaciones científicas en psicología infantil y neurociencia
-                </p>
-              </div>
-            </div>
-
-            {/* Feature 2 */}
-            <div className={`bg-white rounded-xl p-3 sm:p-4 md:p-5 shadow-lg transition-all duration-1000 ease-out ${
-              featuresVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-            }`} style={{
-              transitionDelay: featuresVisible ? '100ms' : '0ms'
-            }}>
-              <div className="text-center">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 mx-auto mb-2 sm:mb-3 md:mb-4 rounded-full overflow-hidden">
-                  <img 
-                    src={tranquilidad} 
-                    alt="Tranquilidad - Solo 20 Minutos" 
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-1.5 sm:mb-2" style={{ fontWeight: 700, color: '#10b981' }}>
-                  Solo 20 Minutos
-                </h3>
-                <p className="text-gray-600 text-xs sm:text-sm md:text-base leading-relaxed">
-                  Sesiones cortas y efectivas que se adaptan a la rutina familiar sin sobrecargar
-                </p>
-              </div>
-            </div>
-
-            {/* Feature 3 */}
-            <div className={`bg-white rounded-xl p-3 sm:p-4 md:p-5 shadow-lg transition-all duration-1000 ease-out ${
-              featuresVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-            }`} style={{
-              transitionDelay: featuresVisible ? '200ms' : '0ms'
-            }}>
-              <div className="text-center">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 mx-auto mb-2 sm:mb-3 md:mb-4 rounded-full overflow-hidden">
-                  <img 
-                    src={ternura} 
-                    alt="Ternura - Divertido y Atractivo" 
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-1.5 sm:mb-2" style={{ fontWeight: 700, color: '#ec4899' }}>
-                  Divertido y Atractivo
-                </h3>
-                <p className="text-gray-600 text-xs sm:text-sm md:text-base leading-relaxed">
-                  Actividades lúdicas que mantienen a los niños motivados y comprometidos
-                </p>
-              </div>
-            </div>
-
-            {/* Feature 4 */}
-            <div className={`bg-white rounded-xl p-3 sm:p-4 md:p-5 shadow-lg transition-all duration-1000 ease-out ${
-              featuresVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-            }`} style={{
-              transitionDelay: featuresVisible ? '300ms' : '0ms'
-            }}>
-              <div className="text-center">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 mx-auto mb-2 sm:mb-3 md:mb-4 rounded-full overflow-hidden">
-                  <img 
-                    src={verguenza} 
-                    alt="Vergüenza - Para Toda la Familia" 
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-1.5 sm:mb-2" style={{ fontWeight: 700, color: '#f97316' }}>
-                  Para Toda la Familia
-                </h3>
-                <p className="text-gray-600 text-xs sm:text-sm md:text-base leading-relaxed">
-                  Involucra a padres y cuidadores en el proceso de desarrollo emocional
-                </p>
-              </div>
-            </div>
-
-            {/* Feature 5 */}
-            <div className={`bg-white rounded-xl p-3 sm:p-4 md:p-5 shadow-lg transition-all duration-1000 ease-out ${
-              featuresVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-            }`} style={{
-              transitionDelay: featuresVisible ? '400ms' : '0ms'
-            }}>
-              <div className="text-center">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 mx-auto mb-2 sm:mb-3 md:mb-4 rounded-full overflow-hidden">
-                  <img 
-                    src={sorpresa} 
-                    alt="Sorpresa - Seguro y Confiable" 
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-1.5 sm:mb-2" style={{ fontWeight: 700, color: '#8b5cf6' }}>
-                  Seguro y Confiable
-                </h3>
-                <p className="text-gray-600 text-xs sm:text-sm md:text-base leading-relaxed">
-                  Contenido apropiado para la edad y supervisado por profesionales
-                </p>
-              </div>
-            </div>
-
-            {/* Feature 6 */}
-            <div className={`bg-white rounded-xl p-3 sm:p-4 md:p-5 shadow-lg transition-all duration-1000 ease-out ${
-              featuresVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-            }`} style={{
-              transitionDelay: featuresVisible ? '500ms' : '0ms'
-            }}>
-              <div className="text-center">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 mx-auto mb-2 sm:mb-3 md:mb-4 rounded-full overflow-hidden">
-                  <img 
-                    src={aburrimiento} 
-                    alt="Aburrimiento - Resultados Comprobados" 
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-1.5 sm:mb-2" style={{ fontWeight: 700, color: '#3b82f6' }}>
-                  Resultados Comprobados
-                </h3>
-                <p className="text-gray-600 text-xs sm:text-sm md:text-base leading-relaxed">
-                  Más de 100 familias ya han transformado la vida emocional de sus hijos
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Benefits Section */}
-      <section 
-        className="py-16 sm:py-24 relative overflow-hidden"
-        style={{
-          background: '#f8cd50'
-        }}
-        aria-label="Beneficios y riesgos de la gestión emocional"
-      >
-        {/* Figuras Geométricas Circulares */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute -top-20 sm:-top-40 -left-5 sm:-left-10 w-40 h-40 sm:w-80 sm:h-80 bg-white/15 rounded-full" />
-          <div className="absolute -bottom-40 sm:-bottom-80 -right-30 sm:-right-60 w-[300px] h-[300px] sm:w-[700px] sm:h-[700px] bg-white/15 rounded-full" />
-        </div>
-
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 relative z-10">
-          <div className="text-center mb-8 sm:mb-12 md:mb-16">
-            <h2 
-              ref={benefitsTitleRef}
-              className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl mb-2 sm:mb-3 px-3 sm:px-4" 
-              style={{ fontWeight: 800 }}
-            >
-              Beneficios y Riesgos de la Gestión Emocional
-            </h2>
-            <p className="text-white text-sm sm:text-base md:text-lg lg:text-xl mb-2 sm:mb-3 px-3 sm:px-4 max-w-3xl mx-auto" style={{ fontWeight: 700 }}>
-              Los primeros años son fundamentales para el desarrollo emocional
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8 lg:gap-12">
-            {/* Tarjeta Izquierda - Beneficios Inmediatos */}
-            <div className={`bg-white rounded-xl p-4 sm:p-6 md:p-8 shadow-lg transition-all duration-1000 ease-out ${
-              benefitsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-            }`} style={{
-              transitionDelay: benefitsVisible ? '0ms' : '0ms'
-            }}>
-              <div className="flex flex-col sm:flex-row items-center sm:items-start mb-4 sm:mb-6 md:mb-8">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 mb-2 sm:mb-0 sm:mr-3 md:mr-4 flex items-center justify-center">
-                  <img 
-                    src={logoBraini}
-                    alt="Braini Emotions Logo" 
-                    className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 object-contain"
-                  />
-                </div>
-                <div className="text-center sm:text-left">
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-1" style={{ fontWeight: 800 }}>
-                    Beneficios Inmediatos
-                  </h3>
-                  <p className="text-gray-600 text-xs sm:text-sm md:text-base">
-                    Transformación visible desde las primeras semanas
-                  </p>
-                </div>
-              </div>
-
-              <div className="space-y-3 sm:space-y-4">
-                <div className="p-2.5 sm:p-3 rounded-lg border-2" style={{ borderColor: '#f8cd50' }}>
-                  <h4 className="text-sm sm:text-base font-bold mb-1" style={{ fontWeight: 700, color: '#f8cd50' }}>
-                    Seguridad y Autoestima
-                  </h4>
-                  <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
-                    Desarrolla una confianza sólida en sus capacidades y valor personal
-                  </p>
-                </div>
-
-                <div className="p-2.5 sm:p-3 rounded-lg border-2" style={{ borderColor: '#f5827b' }}>
-                  <h4 className="text-sm sm:text-base font-bold mb-1" style={{ fontWeight: 700, color: '#f5827b' }}>
-                    Mejor Relación con Familia y Amigos
-                  </h4>
-                  <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
-                    Fortalece vínculos afectivos y mejora la comunicación familiar
-                  </p>
-                </div>
-
-                <div className="p-2.5 sm:p-3 rounded-lg border-2" style={{ borderColor: '#7ea4df' }}>
-                  <h4 className="text-sm sm:text-base font-bold mb-1" style={{ fontWeight: 700, color: '#7ea4df' }}>
-                    Transformar Rabietas en Aprendizaje
-                  </h4>
-                  <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
-                    Convierte momentos difíciles en oportunidades de crecimiento
-                  </p>
-                </div>
-
-                <div className="p-2.5 sm:p-3 rounded-lg border-2" style={{ borderColor: '#35bdb1' }}>
-                  <h4 className="text-sm sm:text-base font-bold mb-1" style={{ fontWeight: 700, color: '#35bdb1' }}>
-                    Bases para un Futuro Feliz y Exitoso
-                  </h4>
-                  <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
-                    Cimientos emocionales sólidos que durarán toda la vida
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Tarjeta Derecha - Riesgos de No Actuar */}
-            <div className={`bg-white rounded-xl p-4 sm:p-6 md:p-8 shadow-lg transition-all duration-1000 ease-out ${
-              benefitsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-            }`} style={{
-              transitionDelay: benefitsVisible ? '200ms' : '0ms'
-            }}>
-              <div className="flex flex-col sm:flex-row items-center sm:items-start mb-4 sm:mb-6 md:mb-8">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 mb-2 sm:mb-0 sm:mr-3 md:mr-4 flex items-center justify-center">
-                  <img 
-                    src={logoBrainiEnfadado}
-                    alt="Braini Emotions Logo" 
-                    className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 object-contain"
-                  />
-                </div>
-                <div className="text-center sm:text-left">
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-1" style={{ fontWeight: 800 }}>
-                    Riesgos de No Actuar
-                  </h3>
-                  <p className="text-gray-600 text-xs sm:text-sm md:text-base">
-                    Datos científicos que no puedes ignorar
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex flex-col justify-center space-y-3 sm:space-y-4">
-                <div className="bg-red-50 rounded-xl p-3 sm:p-4 md:p-6 border border-red-200">
-                  <h4 className="text-sm sm:text-base font-bold text-gray-900 mb-1.5 sm:mb-2" style={{ fontWeight: 700 }}>
-                    Problemas Emocionales en la Infancia
-                  </h4>
-                  <p className="text-gray-600 text-[11px] sm:text-xs leading-relaxed">
-                    El 75% de los problemas emocionales y de salud mental empiezan en la infancia
-                  </p>
-                </div>
-
-                <div className="bg-orange-50 rounded-xl p-3 sm:p-4 md:p-6 border border-orange-200">
-                  <h4 className="text-sm sm:text-base font-bold text-gray-900 mb-1.5 sm:mb-2" style={{ fontWeight: 700 }}>
-                    Dificultad de Cambio
-                  </h4>
-                  <p className="text-gray-600 text-[11px] sm:text-xs leading-relaxed">
-                    Es 5 veces más difícil cambiar patrones emocionales después de los 7 años
-                  </p>
-                </div>
-
-                <div className="bg-yellow-50 rounded-xl p-3 sm:p-4 md:p-6 border border-yellow-200">
-                  <h4 className="text-sm sm:text-base font-bold text-gray-900 mb-1.5 sm:mb-2" style={{ fontWeight: 700 }}>
-                    Mayor Riesgo de Ansiedad
-                  </h4>
-                  <p className="text-gray-600 text-[11px] sm:text-xs leading-relaxed">
-                    Los niños sin herramientas emocionales tienen mayor riesgo de ansiedad y depresión
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Footer */}
       <footer 
