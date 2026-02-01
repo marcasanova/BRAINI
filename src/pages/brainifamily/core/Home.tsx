@@ -120,11 +120,11 @@ const Home = () => {
                           <ul className="text-sm md:text-base text-gray-600 font-medium mb-6 space-y-2">
                             <li className="flex items-start">
                               <span className="mr-3">•</span>
-                              <span>Esta sesión es solo para entender el recorrido y empezar con calma.</span>
+                              <span>Esta misión es solo para entender el recorrido y empezar con calma.</span>
                             </li>
                             <li className="flex items-start">
                               <span className="mr-3">•</span>
-                              <span>Cada casilla es un pequeño paso de neurobienestar emocional en familia.</span>
+                              <span>Cada casilla del mapaes un pequeño paso de neurobienestar emocional en familia.</span>
                             </li>
                             <li className="flex items-start">
                               <span className="mr-3">•</span>
