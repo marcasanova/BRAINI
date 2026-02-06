@@ -1,7 +1,5 @@
 import React from 'react';
-
-// URL de la emoción de orgullo
-const PRIDE_EMOTION_IMAGE = "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/23.%20Orgullo.jpg";
+import { getMedalImageForNivelEducativo } from '@/constants/emotionsStorage';
 
 interface UserMedal {
   id: number;
@@ -14,11 +12,13 @@ interface MedalShelfProps {
   userMedals: UserMedal[];
   totalMedals: number;
   isLoading: boolean;
+  childNivelEducativo?: string | null;
 }
 
-const MedalShelf: React.FC<MedalShelfProps> = ({ userMedals, totalMedals, isLoading }) => {
+const MedalShelf: React.FC<MedalShelfProps> = ({ userMedals, totalMedals, isLoading, childNivelEducativo }) => {
   const earnedMedals = userMedals.length;
   const progressPercentage = totalMedals > 0 ? (earnedMedals / totalMedals) * 100 : 0;
+  const medalImage = getMedalImageForNivelEducativo(childNivelEducativo);
 
   if (isLoading) {
     return (
@@ -36,8 +36,8 @@ const MedalShelf: React.FC<MedalShelfProps> = ({ userMedals, totalMedals, isLoad
         <div className="flex items-center gap-2">
           <div className="w-12 h-12 md:w-14 md:h-14 bg-white rounded-lg flex items-center justify-center shadow-sm overflow-hidden border border-gray-200">
             <img 
-              src={PRIDE_EMOTION_IMAGE} 
-              alt="Orgullo" 
+              src={medalImage} 
+              alt="Medalla Braini" 
               className="w-full h-full object-cover"
             />
           </div>

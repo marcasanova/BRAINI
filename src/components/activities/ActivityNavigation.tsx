@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, Lock, ArrowLeft, Trophy, Home } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Lock, Trophy, Home } from 'lucide-react';
 import { ActivityNavigationProps } from '@/hooks/useUserActivities';
 
 const ActivityNavigation: React.FC<ActivityNavigationProps> = ({
@@ -27,8 +27,7 @@ const ActivityNavigation: React.FC<ActivityNavigationProps> = ({
             size="sm"
             className="flex items-center justify-center text-white hover:text-white hover:bg-white/20 transition-all duration-200 p-2 sm:p-2.5 md:px-3 md:py-2"
           >
-            <ArrowLeft className="w-5 h-5 sm:w-4 sm:h-4 md:hidden" />
-            <Home className="hidden md:block w-4 h-4" />
+            <Home className="w-5 h-5 sm:w-4 sm:h-4 md:w-4 md:h-4" />
             <span className="hidden md:inline ml-1 text-sm font-medium">Volver</span>
           </Button>
           

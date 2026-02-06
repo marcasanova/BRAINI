@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { UserActivity } from '@/hooks/useUserActivities';
 import { CheckCircle, X, BookOpen, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { formatearTexto } from '@/components/activities/utils/TextFormatter';
 import SuccessPopup from '@/components/activities/utils/SuccessPopup';
 import ActivityInstructions from '@/components/activities/utils/ActivityInstructions';
@@ -15,6 +16,7 @@ import {
   getMainTitleTextClasses,
   getProgressBarColor
 } from '@/components/activities/utils/ActivityColors';
+import { EMOTIONS_INFANTIL_URL } from '@/constants/emotionsStorage';
 
 interface Ses5Act1Props {
   userProgress?: UserActivity;
@@ -104,22 +106,21 @@ const Ses5Act1: React.FC<Ses5Act1Props> = ({
 
   // Inicializar emociones mezcladas al montar el componente
   useEffect(() => {
-    const SUPABASE_STORAGE_URL = 'https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images';
     
     // Mapeo de nombres de emociones a IDs e imágenes (basado en las otras actividades)
     const emocionMap: { [key: string]: { id: number; imagen: string } } = {
-      "Rabia": { id: 5, imagen: `${SUPABASE_STORAGE_URL}/5.%20Rabia.jpg` },
-      "Enfado": { id: 20, imagen: `${SUPABASE_STORAGE_URL}/20.%20Enfado.jpg` },
-      "Frustración": { id: 11, imagen: `${SUPABASE_STORAGE_URL}/11.%20Frustracion.jpg` },
-      "Tristeza": { id: 2, imagen: `${SUPABASE_STORAGE_URL}/2.%20Tristeza.jpg` },
-      "Pena": { id: 4, imagen: `${SUPABASE_STORAGE_URL}/4.%20Pena.jpg` },
-      "Amabilidad": { id: 22, imagen: `${SUPABASE_STORAGE_URL}/22.%20Amabilidad.jpg` },
-      "Ternura": { id: 23, imagen: `${SUPABASE_STORAGE_URL}/23.%20Ternura.jpg` },
-      "Alegría": { id: 1, imagen: `${SUPABASE_STORAGE_URL}/1.%20Alegria.jpg` },
-      "Felicidad": { id: 13, imagen: `${SUPABASE_STORAGE_URL}/13.%20Felicidad.jpg` },
-      "Esperanza": { id: 14, imagen: `${SUPABASE_STORAGE_URL}/14.%20Esperanza.jpg` },
-      "Vergüenza": { id: 7, imagen: `${SUPABASE_STORAGE_URL}/7.%20Vergueza.jpg` },
-      "Miedo": { id: 3, imagen: `${SUPABASE_STORAGE_URL}/3.%20Miedo.jpg` },
+      "Rabia": { id: 5, imagen: `${EMOTIONS_INFANTIL_URL}/5.%20Rabia.png` },
+      "Enfado": { id: 20, imagen: `${EMOTIONS_INFANTIL_URL}/20.%20Enfado.png` },
+      "Frustración": { id: 11, imagen: `${EMOTIONS_INFANTIL_URL}/11.%20Frustracion.png` },
+      "Tristeza": { id: 2, imagen: `${EMOTIONS_INFANTIL_URL}/2.%20Tristeza.png` },
+      "Pena": { id: 4, imagen: `${EMOTIONS_INFANTIL_URL}/4.%20Pena.png` },
+      "Amabilidad": { id: 22, imagen: `${EMOTIONS_INFANTIL_URL}/22.%20Amabilidad.png` },
+      "Ternura": { id: 23, imagen: `${EMOTIONS_INFANTIL_URL}/23.%20Ternura.png` },
+      "Alegría": { id: 1, imagen: `${EMOTIONS_INFANTIL_URL}/1.%20Alegria.png` },
+      "Felicidad": { id: 13, imagen: `${EMOTIONS_INFANTIL_URL}/13.%20Felicidad.png` },
+      "Esperanza": { id: 17, imagen: `${EMOTIONS_INFANTIL_URL}/17.%20Esperanza.png` },
+      "Vergüenza": { id: 7, imagen: `${EMOTIONS_INFANTIL_URL}/7.%20Verguenza.png` },
+      "Miedo": { id: 3, imagen: `${EMOTIONS_INFANTIL_URL}/3.%20Miedo.png` },
     };
 
     // Combinar todas las emociones

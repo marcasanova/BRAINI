@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { UserActivity } from '@/hooks/useUserActivities';
 import { BookOpen, ArrowLeft, ArrowRight, CheckCircle, Heart } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { formatearTexto } from '@/components/activities/utils/TextFormatter';
 import SuccessPopup from '@/components/activities/utils/SuccessPopup';
 import ActivityInstructions from '@/components/activities/utils/ActivityInstructions';

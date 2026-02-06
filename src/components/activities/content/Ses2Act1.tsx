@@ -1,20 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { UserActivity } from '@/hooks/useUserActivities';
-import { CheckCircle, X, BookOpen } from 'lucide-react';
+import { CheckCircle, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { formatearTexto } from '@/components/activities/utils/TextFormatter';
+import { Button } from '@/components/ui/button';
 import SuccessPopup from '@/components/activities/utils/SuccessPopup';
 import ActivityInstructions from '@/components/activities/utils/ActivityInstructions';
 import SciBasePopup from '@/components/activities/utils/SciBasePopup';
+import { EMOTIONS_INFANTIL_URL } from '@/constants/emotionsStorage';
 import { 
-  getSecondaryButtonClasses, 
   getInstructionsContainerClasses, 
-  getDurationTextClasses,
-  getBorderClasses,
-  getPrimaryButtonClasses,
   getMainTitleTextClasses,
-  getProgressBarColor
+  getProgressBarColor,
+  getSimpleButtonClasses
 } from '@/components/activities/utils/ActivityColors';
+
+// Mapa nombre de emoción (como en las opciones) -> archivo en bucket emociones_infantil
+// Los nombres de archivo deben coincidir exactamente con el bucket (ej. Nerviosismo, no Nervioso)
+const EMOCION_A_IMAGEN: Record<string, string> = {
+  'Pena': '4.%20Pena.png',
+  'Alegría': '1.%20Alegria.png',
+  'Miedo': '3.%20Miedo.png',
+  'Ilusión': '10.%20Ilusion.png',
+  'Frustración': '11.%20Frustracion.png',
+  'Vergüenza': '7.%20Verguenza.png',
+  'Tranquilidad': '12.%20Tranquilidad.png',
+  'Nervioso': '16.%20Nerviosismo.png',
+  'Enfadado': '20.%20Enfado.png',
+  'Relajado': '22.%20Relajacion.png',
+};
 
 interface Ses2Act1Props {
   userProgress?: UserActivity;
@@ -66,25 +79,11 @@ const Ses2Act1: React.FC<Ses2Act1Props> = ({
       opcion2: "Miedo"
     },
     {
-      id: 6,
-      emocionCorrecta: "Celos",
-      texto: "Quiero lo que otro tiene sin razón,\nme molesta no tener su atención.\nNo es justo, también lo quiero yo,\n¿qué emoción me visita hoy?",
-      opcion1: "Enfado",
-      opcion2: "Felicidad"
-    },
-    {
       id: 10,
       emocionCorrecta: "Ilusión",
       texto: "Salto muy alto, los ojos yo abro,\nalgo bonito está por llegar.\nQue ganas tengo de vivirlo ya,\n¿qué emoción siento ya?",
       opcion1: "Frustración",
-      opcion2: "Celos"
-    },
-    {
-      id: 11,
-      emocionCorrecta: "Frustración",
-      texto: "Lo intento y no me sale, ¡buaaa! quiero gritar.\nQuiero hacerlo y no lo consigo ¡aiii! que chillo.\n\nNo me gusta sentirla, pero tengo que vivirla.\n¿Qué siento ahora que me irrita?",
-      opcion1: "Celos",
-      opcion2: "Alegría"
+      opcion2: "Vergüenza"
     },
     {
       id: 12,
@@ -97,15 +96,8 @@ const Ses2Act1: React.FC<Ses2Act1Props> = ({
       id: 16,
       emocionCorrecta: "Nervioso",
       texto: "Mucho me muevo, no paro de hablar,\nalgo va a pasar y no puedo esperar.\nEl corazón late rápido sin parar,\n¿Qué es lo que siento que no puedo frenar?",
-      opcion1: "Tranquilidad",
+      opcion1: "Enfadado",
       opcion2: "Relajado"
-    },
-    {
-      id: 21,
-      emocionCorrecta: "Paciencia",
-      texto: "Espero mi turno sin protestar,\naunque me cueste, sé esperar.\nContar hasta diez me ayuda a calmar,\n¿qué emoción me hace aguantar?",
-      opcion1: "Alegría",
-      opcion2: "Celos"
     }
   ];
 
@@ -219,6 +211,19 @@ const Ses2Act1: React.FC<Ses2Act1Props> = ({
   useEffect(() => {
     resetGame();
   }, []);
+
+  // Precargar imágenes de las opciones de la pregunta actual para evitar parpadeos y fallos de carga
+  useEffect(() => {
+    if (!currentOptions.length || currentQuestionIndex >= currentOptions.length) return;
+    const options = currentOptions[currentQuestionIndex];
+    options?.forEach((option) => {
+      const filename = EMOCION_A_IMAGEN[option];
+      if (filename) {
+        const img = new Image();
+        img.src = `${EMOTIONS_INFANTIL_URL}/${filename}`;
+      }
+    });
+  }, [currentQuestionIndex, currentOptions]);
 
   // Obtener pregunta actual
   const currentQuestion = adivinanzas.length > 0 && currentQuestionIndex < adivinanzas.length 
@@ -352,6 +357,10 @@ const Ses2Act1: React.FC<Ses2Act1Props> = ({
                         }
                       `;
 
+                      const imageSrc = EMOCION_A_IMAGEN[option]
+                        ? `${EMOTIONS_INFANTIL_URL}/${EMOCION_A_IMAGEN[option]}`
+                        : null;
+
                       return (
                         <button
                           key={index}
@@ -359,7 +368,34 @@ const Ses2Act1: React.FC<Ses2Act1Props> = ({
                           disabled={answered}
                           className={buttonClass}
                         >
-                          {option}
+                          {imageSrc ? (
+                            <div className="flex flex-col items-center gap-2">
+                              <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center bg-white rounded-lg overflow-hidden flex-shrink-0 relative">
+                                <img
+                                  src={imageSrc}
+                                  alt={option}
+                                  className="w-full h-full object-contain"
+                                  loading="eager"
+                                  onError={(e) => {
+                                    const target = e.currentTarget;
+                                    target.style.display = 'none';
+                                    const fallback = target.nextElementSibling as HTMLElement;
+                                    if (fallback) fallback.style.display = 'flex';
+                                  }}
+                                />
+                                <div
+                                  className="absolute inset-0 hidden items-center justify-center bg-gray-100 text-gray-500 text-2xl font-bold"
+                                  style={{ display: 'none' }}
+                                  aria-hidden
+                                >
+                                  {option.charAt(0)}
+                                </div>
+                              </div>
+                              <span>{option}</span>
+                            </div>
+                          ) : (
+                            option
+                          )}
                           
                           {/* Iconos de feedback */}
                           {answered && correct && (

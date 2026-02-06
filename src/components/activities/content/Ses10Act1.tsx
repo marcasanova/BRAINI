@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { UserActivity } from '@/hooks/useUserActivities';
 import { CheckCircle, X, BookOpen } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { formatearTexto } from '@/components/activities/utils/TextFormatter';
 import SuccessPopup from '@/components/activities/utils/SuccessPopup';
 import ActivityInstructions from '@/components/activities/utils/ActivityInstructions';
@@ -14,6 +15,7 @@ import {
   getBorderClasses,
   getMainTitleTextClasses
 } from '@/components/activities/utils/ActivityColors';
+import { EMOTIONS_INFANTIL_URL } from '@/constants/emotionsStorage';
 
 interface Ses10Act1Props {
   userProgress?: UserActivity;
@@ -36,9 +38,7 @@ interface Emocion {
   imagen: string;
 }
 
-const SUPABASE_STORAGE_URL = 'https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images';
-
-// Pares de emociones contrarias
+// Pares de emociones contrarias (imágenes desde bucket emociones_infantil)
 const PARES_EMOCIONES: { emocion1: string; emocion2: string }[] = [
   { emocion1: "Contento", emocion2: "Triste" },
   { emocion1: "Ilusión", emocion2: "Desilusión" },
@@ -50,18 +50,18 @@ const PARES_EMOCIONES: { emocion1: string; emocion2: string }[] = [
 
 // Mapeo de nombres de emociones a IDs e imágenes
 const emocionMap: { [key: string]: { id: number; imagen: string } } = {
-  "Contento": { id: 18, imagen: `${SUPABASE_STORAGE_URL}/18.%20Contento.jpg` },
-  "Triste": { id: 2, imagen: `${SUPABASE_STORAGE_URL}/2.%20Tristeza.jpg` },
-  "Ilusión": { id: 10, imagen: `${SUPABASE_STORAGE_URL}/10.%20Ilusion.jpg` },
-  "Desilusión": { id: 47, imagen: `${SUPABASE_STORAGE_URL}/47.%20Desilusion.jpg` },
-  "Entusiasmo": { id: 19, imagen: `${SUPABASE_STORAGE_URL}/19.%20Entusiasmo.jpg` },
-  "Enfado": { id: 20, imagen: `${SUPABASE_STORAGE_URL}/20.%20Enfado.jpg` },
-  "Amabilidad": { id: 22, imagen: `${SUPABASE_STORAGE_URL}/22.%20Amabilidad.jpg` },
-  "Envidia": { id: 8, imagen: `${SUPABASE_STORAGE_URL}/8.%20Envidia.jpg` },
-  "Felicidad": { id: 13, imagen: `${SUPABASE_STORAGE_URL}/13.%20Felicidad.jpg` },
-  "Miedo": { id: 3, imagen: `${SUPABASE_STORAGE_URL}/3.%20Miedo.jpg` },
-  "Ternura": { id: 23, imagen: `${SUPABASE_STORAGE_URL}/23.%20Ternura.jpg` },
-  "Celos": { id: 6, imagen: `${SUPABASE_STORAGE_URL}/6.%20Celos.jpg` },
+  "Contento": { id: 18, imagen: `${EMOTIONS_INFANTIL_URL}/18.%20Contento.png` },
+  "Triste": { id: 2, imagen: `${EMOTIONS_INFANTIL_URL}/2.%20Tristeza.png` },
+  "Ilusión": { id: 10, imagen: `${EMOTIONS_INFANTIL_URL}/10.%20Ilusion.png` },
+  "Desilusión": { id: 47, imagen: `${EMOTIONS_INFANTIL_URL}/47.%20Desilusion.png` },
+  "Entusiasmo": { id: 35, imagen: `${EMOTIONS_INFANTIL_URL}/35.%20Entusiasmo.png` },
+  "Enfado": { id: 20, imagen: `${EMOTIONS_INFANTIL_URL}/20.%20Enfado.png` },
+  "Amabilidad": { id: 22, imagen: `${EMOTIONS_INFANTIL_URL}/22.%20Amabilidad.png` },
+  "Envidia": { id: 8, imagen: `${EMOTIONS_INFANTIL_URL}/8.%20Envidia.png` },
+  "Felicidad": { id: 13, imagen: `${EMOTIONS_INFANTIL_URL}/13.%20Felicidad.png` },
+  "Miedo": { id: 3, imagen: `${EMOTIONS_INFANTIL_URL}/3.%20Miedo.png` },
+  "Ternura": { id: 23, imagen: `${EMOTIONS_INFANTIL_URL}/23.%20Ternura.png` },
+  "Celos": { id: 6, imagen: `${EMOTIONS_INFANTIL_URL}/6.%20Celos.png` },
 };
 
 /**

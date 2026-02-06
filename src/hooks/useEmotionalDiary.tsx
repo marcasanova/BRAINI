@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabaseClient';
+import { EMOTIONS_INFANTIL_URL } from '@/constants/emotionsStorage';
 
 interface EmotionalEntry {
   id: number;
@@ -32,40 +33,40 @@ export const useEmotionalDiary = () => {
     return `${year}-${month}-${day}`;
   };
 
-  // Configuración de las 5 emociones
+  // Configuración de las 5 emociones (imágenes desde bucket emociones_infantil)
   const EMOTIONS_CONFIG: EmotionConfig[] = [
     {
       id: 1,
       name: "Alegría",
-      imageUrl: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/1.%20Alegria.jpg",
+      imageUrl: `${EMOTIONS_INFANTIL_URL}/1.%20Alegria.png`,
       color: "#FFD93D",  // Amarillo brillante (sun-like)
       description: "Contento y feliz"
     },
     {
       id: 2,
       name: "Tristeza",
-      imageUrl: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/2.%20Tristeza.jpg",
+      imageUrl: `${EMOTIONS_INFANTIL_URL}/2.%20Tristeza.png`,
       color: "#74B9FF",  // Azul claro (light blue)
       description: "Melancólico o apenado"
     },
     {
       id: 3,
       name: "Miedo",
-      imageUrl: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/3.%20Miedo.jpg",
+      imageUrl: `${EMOTIONS_INFANTIL_URL}/3.%20Miedo.png`,
       color: "#5F8DCA",  // Azul medio (con sombra oscura)
       description: "Asustado o preocupado"
     },
     {
       id: 4,
       name: "Pena",
-      imageUrl: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/4.%20Pena.jpg",
+      imageUrl: `${EMOTIONS_INFANTIL_URL}/4.%20Pena.png`,
       color: "#81C7E8",  // Azul claro (con corazón roto)
       description: "Triste o desanimado"
     },
     {
       id: 5,
       name: "Rabia",
-      imageUrl: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/5.%20Rabia.jpg",
+      imageUrl: `${EMOTIONS_INFANTIL_URL}/5.%20Rabia.png`,
       color: "#FF6B6B",  // Rojo intenso (con llamas)
       description: "Enojado o frustrado"
     }

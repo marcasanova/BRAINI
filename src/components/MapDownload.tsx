@@ -1,8 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { MapIcon } from 'lucide-react';
-
-const MAP_IMAGE_URL = 'https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/braini-map/Panel%20juego%20Rescate%20de%20Azon.jpg';
+import { MAPA_AVENTURA_URL } from '@/constants/documentosStorage';
 
 interface MapDownloadProps {
   className?: string;
@@ -17,20 +16,20 @@ const MapDownload: React.FC<MapDownloadProps> = ({
   showImage = false
 }) => {
   const handleMapOpen = () => {
-    window.open(MAP_IMAGE_URL, '_blank');
+    window.open(MAPA_AVENTURA_URL, '_blank');
   };
 
   return (
     <div className={className}>
       {showImage && (
         <a
-          href={MAP_IMAGE_URL}
+          href={MAPA_AVENTURA_URL}
           target="_blank"
           rel="noopener noreferrer"
           className="block rounded-xl overflow-hidden border-2 border-braini-blue/20 shadow-lg mb-4 focus:outline-none focus:ring-2 focus:ring-braini-blue"
         >
           <img
-            src={MAP_IMAGE_URL}
+            src={MAPA_AVENTURA_URL}
             alt="Mapa de la aventura BRAINI"
             className="w-full h-auto object-contain"
           />

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { UserActivity } from '@/hooks/useUserActivities';
 import { BookOpen, ArrowLeft, ArrowRight, CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { Button } from '@/components/ui/button';
 import { formatearTexto } from '@/components/activities/utils/TextFormatter';
 import SuccessPopup from '@/components/activities/utils/SuccessPopup';
 import ActivityInstructions from '@/components/activities/utils/ActivityInstructions';
@@ -16,6 +17,7 @@ import {
   getMainTitleTextClasses,
   getProgressBarColor
 } from '@/components/activities/utils/ActivityColors';
+import { EMOTIONS_INFANTIL_URL } from '@/constants/emotionsStorage';
 
 interface Ses4Act1Props {
   userProgress?: UserActivity;
@@ -44,34 +46,32 @@ interface ParEmociones {
   emocion2: Emocion;
 }
 
-const SUPABASE_STORAGE_URL = 'https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images';
-
-// Pares de emociones originales (se randomizará el orden al iniciar)
+// Pares de emociones originales (bucket emociones_infantil) (se randomizará el orden al iniciar)
 const PARES_ORIGINALES: ParEmociones[] = [
   {
     id: 1,
-    emocion1: { id: 1, nombre: "Alegría", imagen: `${SUPABASE_STORAGE_URL}/1.%20Alegria.jpg` },
-    emocion2: { id: 2, nombre: "Tristeza", imagen: `${SUPABASE_STORAGE_URL}/2.%20Tristeza.jpg` }
+    emocion1: { id: 1, nombre: "Alegría", imagen: `${EMOTIONS_INFANTIL_URL}/1.%20Alegria.png` },
+    emocion2: { id: 2, nombre: "Tristeza", imagen: `${EMOTIONS_INFANTIL_URL}/2.%20Tristeza.png` }
   },
   {
     id: 2,
-    emocion1: { id: 18, nombre: "Contento", imagen: `${SUPABASE_STORAGE_URL}/18.%20Contento.jpg` },
-    emocion2: { id: 20, nombre: "Enfado", imagen: `${SUPABASE_STORAGE_URL}/20.%20Enfado.jpg` }
+    emocion1: { id: 18, nombre: "Contento", imagen: `${EMOTIONS_INFANTIL_URL}/18.%20Contento.png` },
+    emocion2: { id: 20, nombre: "Enfado", imagen: `${EMOTIONS_INFANTIL_URL}/20.%20Enfado.png` }
   },
   {
     id: 3,
-    emocion1: { id: 21, nombre: "Paciencia", imagen: `${SUPABASE_STORAGE_URL}/21.%20Paciencia.jpg` },
-    emocion2: { id: 16, nombre: "Impaciencia", imagen: `${SUPABASE_STORAGE_URL}/16.%20Impaciencia.jpg` }
+    emocion1: { id: 21, nombre: "Paciencia", imagen: `${EMOTIONS_INFANTIL_URL}/21.%20Paciencia.png` },
+    emocion2: { id: 16, nombre: "Impaciencia", imagen: `${EMOTIONS_INFANTIL_URL}/16.%20Impaciencia.png` }
   },
   {
     id: 4,
-    emocion1: { id: 12, nombre: "Tranquilidad", imagen: `${SUPABASE_STORAGE_URL}/12.%20Tranquilidad.jpg` },
-    emocion2: { id: 16, nombre: "Nerviosismo", imagen: `${SUPABASE_STORAGE_URL}/16.%20Nervioso.jpg` }
+    emocion1: { id: 12, nombre: "Tranquilidad", imagen: `${EMOTIONS_INFANTIL_URL}/12.%20Tranquilidad.png` },
+    emocion2: { id: 16, nombre: "Nerviosismo", imagen: `${EMOTIONS_INFANTIL_URL}/16.%20Nerviosismo.png` }
   },
   {
     id: 5,
-    emocion1: { id: 3, nombre: "Miedo", imagen: `${SUPABASE_STORAGE_URL}/3.%20Miedo.jpg` },
-    emocion2: { id: 13, nombre: "Felicidad", imagen: `${SUPABASE_STORAGE_URL}/13.%20Felicidad.jpg` }
+    emocion1: { id: 3, nombre: "Miedo", imagen: `${EMOTIONS_INFANTIL_URL}/3.%20Miedo.png` },
+    emocion2: { id: 13, nombre: "Felicidad", imagen: `${EMOTIONS_INFANTIL_URL}/13.%20Felicidad.png` }
   }
 ];
 

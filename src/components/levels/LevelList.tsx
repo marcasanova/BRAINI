@@ -5,9 +5,11 @@ import { UserSession } from "@/hooks/useUserLevels";
 interface SessionListProps {
   sessions: UserSession[];
   userMedals: Map<number, string>; // Map<levelId, fecha_obtencion>
+  /** Nivel educativo del niño para la imagen de medalla en cada misión */
+  childNivelEducativo?: string | null;
 }
 
-const SessionList: React.FC<SessionListProps> = ({ sessions, userMedals }) => {
+const SessionList: React.FC<SessionListProps> = ({ sessions, userMedals, childNivelEducativo }) => {
   return (
     <>
       {sessions.map((session) => {
@@ -24,6 +26,7 @@ const SessionList: React.FC<SessionListProps> = ({ sessions, userMedals }) => {
             status={session.status}
             hasMedal={hasMedal}
             medalDate={medalDate}
+            childNivelEducativo={childNivelEducativo}
           />
         );
       })}

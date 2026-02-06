@@ -5,22 +5,11 @@ import { ArrowRight } from 'lucide-react';
 
 // Rutas de assets públicos (archivos en public/)
 const logoBraini = '/logo/logoBraini.png';
-const logoBrainiEnfadado = '/logo/LogoBrainiEnfadado.png';
 
 // Avatares
 const profile1 = '/avatars/profile1.jpeg';
 const profile2 = '/avatars/profile2.jpg';
 const profile3 = '/avatars/profile3.jpg';
-
-// Emociones - Desde Supabase Storage
-const SUPABASE_STORAGE_URL = 'https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images';
-const alegria = `${SUPABASE_STORAGE_URL}/1.%20Alegria.jpg`;
-const tranquilidad = `${SUPABASE_STORAGE_URL}/12.%20Tranquilidad.jpg`;
-const ternura = `${SUPABASE_STORAGE_URL}/49.%20Ternura.jpg`;
-const verguenza = `${SUPABASE_STORAGE_URL}/7.%20Vergueza.jpg`;
-const sorpresa = `${SUPABASE_STORAGE_URL}/9.%20Sorpresa.jpg`;
-const aburrimiento = `${SUPABASE_STORAGE_URL}/35.%20Aburrimiento.jpg`;
-
 
 const logoInstagram = '/LogoInstagram.svg';
 

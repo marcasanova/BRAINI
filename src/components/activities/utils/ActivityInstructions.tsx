@@ -53,12 +53,9 @@ const ActivityInstructions: React.FC<ActivityInstructionsProps> = ({
         </p>
       )}
 
-      {/* ¿Cómo se juega? */}
+      {/* Contenido de la actividad: puede incluir "¿Para qué?" y "¿Cómo se juega?" con ### en el texto */}
       {comoSeJuega && (
         <div className="text-gray-700 leading-relaxed mb-4">
-          <h4 className={`text-lg font-semibold ${getMainTitleTextClasses(activityType)} mb-2`}>
-            ¿Cómo se juega?
-          </h4>
           <div className="text-sm">{formatearTexto(comoSeJuega)}</div>
         </div>
       )}

@@ -48,7 +48,7 @@ const EMOTION_STEPS: EmotionStep[] = [
   {
     id: 1,
     nombre: 'Enfado',
-    imagen: 'https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/20.%20Enfado.jpg',
+    imagen: 'https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emociones_infantil/20.%20Enfado.png',
     preguntaInicial: '¿Qué te hace enfadar?',
     ejemplos: [
       'Cuando no te quiero dejar el móvil.',
@@ -66,7 +66,7 @@ const EMOTION_STEPS: EmotionStep[] = [
   {
     id: 2,
     nombre: 'Desilusión',
-    imagen: 'https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/47.%20Desilusion.jpg',
+    imagen: 'https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emociones_infantil/47.%20Desilusion.png',
     preguntaInicial: '¿Cuéntame que te ha desilusionado?',
     ejemplos: [
       'Cuando tenías que ir a casa de un amigo/a a jugar, pero finalmente no podremos.',

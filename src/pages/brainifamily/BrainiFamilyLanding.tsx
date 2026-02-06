@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import NavbarLandings from '@/components/navigation/NavbarLandings';
+import { EMOTIONS_INFANTIL_URL } from '@/constants/emotionsStorage';
 
 // Rutas de assets públicos (archivos en public/)
 const logoBraini = '/logo/logoBraini.png';
@@ -12,14 +13,13 @@ const profile1 = '/avatars/profile1.jpeg';
 const profile2 = '/avatars/profile2.jpg';
 const profile3 = '/avatars/profile3.jpg';
 
-// Emociones - Desde Supabase Storage
-const SUPABASE_STORAGE_URL = 'https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images';
-const alegria = `${SUPABASE_STORAGE_URL}/1.%20Alegria.jpg`;
-const tranquilidad = `${SUPABASE_STORAGE_URL}/12.%20Tranquilidad.jpg`;
-const ternura = `${SUPABASE_STORAGE_URL}/49.%20Ternura.jpg`;
-const verguenza = `${SUPABASE_STORAGE_URL}/7.%20Vergueza.jpg`;
-const sorpresa = `${SUPABASE_STORAGE_URL}/9.%20Sorpresa.jpg`;
-const aburrimiento = `${SUPABASE_STORAGE_URL}/35.%20Aburrimiento.jpg`;
+// Emociones - Desde Supabase Storage (bucket emociones_infantil, sección de features)
+const alegria = `${EMOTIONS_INFANTIL_URL}/1.%20Alegria.png`;
+const esperanza = `${EMOTIONS_INFANTIL_URL}/17.%20Esperanza.png`;
+const amor = `${EMOTIONS_INFANTIL_URL}/24.%20Amor.png`;
+const timidez = `${EMOTIONS_INFANTIL_URL}/29.%20Timidez.png`;
+const perdon = `${EMOTIONS_INFANTIL_URL}/34.%20Perdon.png`;
+const relajacion = `${EMOTIONS_INFANTIL_URL}/22.%20Relajacion.png`;
 
 // Otros assets
 const logoInstagram = '/LogoInstagram.svg';
@@ -304,11 +304,11 @@ const BrainiFamilyLanding = () => {
               }}
             >
               <div className="text-center">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 mx-auto mb-2 sm:mb-3 md:mb-4 rounded-full overflow-hidden">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 mx-auto mb-2 sm:mb-3 md:mb-4">
                   <img 
                     src={alegria} 
                     alt="Alegría - Basado en Evidencias" 
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain"
                   />
                 </div>
                 <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-1.5 sm:mb-2" style={{ fontWeight: 700, color: '#f59e0b' }}>
@@ -327,11 +327,11 @@ const BrainiFamilyLanding = () => {
               transitionDelay: featuresVisible ? '100ms' : '0ms'
             }}>
               <div className="text-center">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 mx-auto mb-2 sm:mb-3 md:mb-4 rounded-full overflow-hidden">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 mx-auto mb-2 sm:mb-3 md:mb-4">
                   <img 
-                    src={tranquilidad} 
-                    alt="Tranquilidad - Solo 20 Minutos" 
-                    className="w-full h-full object-cover"
+                    src={esperanza} 
+                    alt="Esperanza - Solo 20 Minutos" 
+                    className="w-full h-full object-contain"
                   />
                 </div>
                 <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-1.5 sm:mb-2" style={{ fontWeight: 700, color: '#10b981' }}>
@@ -350,11 +350,11 @@ const BrainiFamilyLanding = () => {
               transitionDelay: featuresVisible ? '200ms' : '0ms'
             }}>
               <div className="text-center">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 mx-auto mb-2 sm:mb-3 md:mb-4 rounded-full overflow-hidden">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 mx-auto mb-2 sm:mb-3 md:mb-4">
                   <img 
-                    src={ternura} 
-                    alt="Ternura - Divertido y Atractivo" 
-                    className="w-full h-full object-cover"
+                    src={amor} 
+                    alt="Amor - Divertido y Atractivo" 
+                    className="w-full h-full object-contain"
                   />
                 </div>
                 <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-1.5 sm:mb-2" style={{ fontWeight: 700, color: '#ec4899' }}>
@@ -373,11 +373,11 @@ const BrainiFamilyLanding = () => {
               transitionDelay: featuresVisible ? '300ms' : '0ms'
             }}>
               <div className="text-center">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 mx-auto mb-2 sm:mb-3 md:mb-4 rounded-full overflow-hidden">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 mx-auto mb-2 sm:mb-3 md:mb-4">
                   <img 
-                    src={verguenza} 
-                    alt="Vergüenza - Para Toda la Familia" 
-                    className="w-full h-full object-cover"
+                    src={timidez} 
+                    alt="Timidez - Para Toda la Familia" 
+                    className="w-full h-full object-contain"
                   />
                 </div>
                 <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-1.5 sm:mb-2" style={{ fontWeight: 700, color: '#f97316' }}>
@@ -396,11 +396,11 @@ const BrainiFamilyLanding = () => {
               transitionDelay: featuresVisible ? '400ms' : '0ms'
             }}>
               <div className="text-center">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 mx-auto mb-2 sm:mb-3 md:mb-4 rounded-full overflow-hidden">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 mx-auto mb-2 sm:mb-3 md:mb-4">
                   <img 
-                    src={sorpresa} 
-                    alt="Sorpresa - Seguro y Confiable" 
-                    className="w-full h-full object-cover"
+                    src={perdon} 
+                    alt="Perdón - Seguro y Confiable" 
+                    className="w-full h-full object-contain"
                   />
                 </div>
                 <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-1.5 sm:mb-2" style={{ fontWeight: 700, color: '#8b5cf6' }}>
@@ -419,11 +419,11 @@ const BrainiFamilyLanding = () => {
               transitionDelay: featuresVisible ? '500ms' : '0ms'
             }}>
               <div className="text-center">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 mx-auto mb-2 sm:mb-3 md:mb-4 rounded-full overflow-hidden">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 mx-auto mb-2 sm:mb-3 md:mb-4">
                   <img 
-                    src={aburrimiento} 
-                    alt="Aburrimiento - Resultados Comprobados" 
-                    className="w-full h-full object-cover"
+                    src={relajacion} 
+                    alt="Relajación - Resultados Comprobados" 
+                    className="w-full h-full object-contain"
                   />
                 </div>
                 <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-1.5 sm:mb-2" style={{ fontWeight: 700, color: '#3b82f6' }}>

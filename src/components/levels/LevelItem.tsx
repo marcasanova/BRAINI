@@ -10,9 +10,11 @@ export interface SessionItemProps {
   status: string;
   hasMedal?: boolean;
   medalDate?: string;
+  /** Nivel educativo del niño para mostrar la medalla correcta (3/4/5 años infantil o orgullo) */
+  childNivelEducativo?: string | null;
 }
 
-const SessionItem: React.FC<SessionItemProps> = ({ levelId, titulo, descripcion, status, hasMedal = false, medalDate }) => {
+const SessionItem: React.FC<SessionItemProps> = ({ levelId, titulo, descripcion, status, hasMedal = false, medalDate, childNivelEducativo }) => {
   const isLocked = status === SESSION_STATUS.LOCKED;
   const isAccessible = status === SESSION_STATUS.CURRENT || status === SESSION_STATUS.COMPLETED;
 
@@ -38,6 +40,7 @@ const SessionItem: React.FC<SessionItemProps> = ({ levelId, titulo, descripcion,
           levelNumber={levelId}
           isEarned={hasMedal}
           earnedAt={medalDate}
+          childNivelEducativo={childNivelEducativo}
         />
         {/* Spacer para empujar el botón a la derecha */}
         <div className="flex-1 md:hidden"></div>

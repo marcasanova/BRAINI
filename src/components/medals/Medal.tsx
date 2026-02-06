@@ -1,18 +1,19 @@
 import React from 'react';
 import { Circle } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { getMedalImageForNivelEducativo } from '@/constants/emotionsStorage';
 
 interface MedalProps {
   levelNumber: number;
   isEarned: boolean;
   earnedAt?: string;
   onClick?: () => void;
+  /** Nivel educativo del niño (infantil_3, infantil_4, infantil_5, etc.) para mostrar la medalla correcta */
+  childNivelEducativo?: string | null;
 }
 
-// URL de la emoción de orgullo
-const PRIDE_EMOTION_IMAGE = "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/23.%20Orgullo.jpg";
-
-const Medal: React.FC<MedalProps> = ({ levelNumber, isEarned, earnedAt, onClick }) => {
+const Medal: React.FC<MedalProps> = ({ levelNumber, isEarned, earnedAt, onClick, childNivelEducativo }) => {
+  const medalImage = getMedalImageForNivelEducativo(childNivelEducativo);
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('es-ES', {
       day: '2-digit',
@@ -41,8 +42,8 @@ const Medal: React.FC<MedalProps> = ({ levelNumber, isEarned, earnedAt, onClick 
           >
             {isEarned ? (
               <img 
-                src={PRIDE_EMOTION_IMAGE} 
-                alt="Orgullo" 
+                src={medalImage} 
+                alt="Medalla Braini" 
                 className="w-full h-full object-cover"
               />
             ) : (

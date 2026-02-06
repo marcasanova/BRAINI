@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { UserActivity } from '@/hooks/useUserActivities';
 import { BookOpen, ArrowLeft, ArrowRight, CheckCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { formatearTexto } from '@/components/activities/utils/TextFormatter';
 import SuccessPopup from '@/components/activities/utils/SuccessPopup';
 import ActivityInstructions from '@/components/activities/utils/ActivityInstructions';
@@ -15,6 +16,7 @@ import {
   getMainTitleTextClasses,
   getProgressBarColor
 } from '@/components/activities/utils/ActivityColors';
+import { EMOTIONS_INFANTIL_URL } from '@/constants/emotionsStorage';
 
 interface Ses8Act1Props {
   userProgress?: UserActivity;
@@ -42,16 +44,14 @@ interface Situacion {
   texto: string;
 }
 
-const SUPABASE_STORAGE_URL = 'https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images';
-
-// Emociones disponibles (8 emociones)
+// Emociones disponibles (imágenes desde bucket emociones_infantil) (8 emociones)
 const EMOCIONES_DISPONIBLES: Omit<Emocion, 'id' | 'imagen'>[] = [
   { nombre: "Celos" },
   { nombre: "Tristeza" },
   { nombre: "Enfado" },
   { nombre: "Rabia" },
   { nombre: "Pena" },
-  { nombre: "Nervioso" },
+  { nombre: "Nerviosismo" },
   { nombre: "Miedo" },
   { nombre: "Frustración" },
 ];
@@ -99,14 +99,14 @@ const Ses8Act1: React.FC<Ses8Act1Props> = ({
 
   // Mapeo de nombres de emociones a IDs e imágenes
   const emocionMap: { [key: string]: { id: number; imagen: string } } = {
-    "Celos": { id: 6, imagen: `${SUPABASE_STORAGE_URL}/6.%20Celos.jpg` },
-    "Tristeza": { id: 2, imagen: `${SUPABASE_STORAGE_URL}/2.%20Tristeza.jpg` },
-    "Enfado": { id: 20, imagen: `${SUPABASE_STORAGE_URL}/20.%20Enfado.jpg` },
-    "Rabia": { id: 5, imagen: `${SUPABASE_STORAGE_URL}/5.%20Rabia.jpg` },
-    "Pena": { id: 4, imagen: `${SUPABASE_STORAGE_URL}/4.%20Pena.jpg` },
-    "Nervioso": { id: 16, imagen: `${SUPABASE_STORAGE_URL}/16.%20Nervioso.jpg` },
-    "Miedo": { id: 3, imagen: `${SUPABASE_STORAGE_URL}/3.%20Miedo.jpg` },
-    "Frustración": { id: 11, imagen: `${SUPABASE_STORAGE_URL}/11.%20Frustracion.jpg` },
+    "Celos": { id: 6, imagen: `${EMOTIONS_INFANTIL_URL}/6.%20Celos.png` },
+    "Tristeza": { id: 2, imagen: `${EMOTIONS_INFANTIL_URL}/2.%20Tristeza.png` },
+    "Enfado": { id: 20, imagen: `${EMOTIONS_INFANTIL_URL}/20.%20Enfado.png` },
+    "Rabia": { id: 5, imagen: `${EMOTIONS_INFANTIL_URL}/5.%20Rabia.png` },
+    "Pena": { id: 4, imagen: `${EMOTIONS_INFANTIL_URL}/4.%20Pena.png` },
+    "Nerviosismo": { id: 16, imagen: `${EMOTIONS_INFANTIL_URL}/16.%20Nerviosismo.png` },
+    "Miedo": { id: 3, imagen: `${EMOTIONS_INFANTIL_URL}/3.%20Miedo.png` },
+    "Frustración": { id: 11, imagen: `${EMOTIONS_INFANTIL_URL}/11.%20Frustracion.png` },
   };
 
   // Inicializar emociones al montar el componente

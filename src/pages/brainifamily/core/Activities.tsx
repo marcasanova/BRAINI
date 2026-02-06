@@ -30,12 +30,31 @@ const Activities: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [earnedMedal, setEarnedMedal] = useState<Medal | null>(null);
+  const [childNivelEducativo, setChildNivelEducativo] = useState<string | null>(null);
   const [isReturningFromActivity, setIsReturningFromActivity] = useState(false);
 
   // Obtener el usuario logeado
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setUserId(user?.id);
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
+      const userId = user?.id;
+      setUserId(userId);
+
+      if (userId) {
+        // Obtener nivel educativo del niño para decidir la imagen de medalla
+        try {
+          const { data: childData } = await supabase
+            .from('children')
+            .select('nivel_educativo')
+            .eq('parent_id', userId)
+            .single();
+
+          if (childData?.nivel_educativo) {
+            setChildNivelEducativo(childData.nivel_educativo);
+          }
+        } catch (error) {
+          console.error('Error obteniendo nivel educativo del niño:', error);
+        }
+      }
     });
   }, []);
 
@@ -254,6 +273,7 @@ const Activities: React.FC = () => {
       {earnedMedal && (
         <MedalAnimation
           medal={earnedMedal}
+          childNivelEducativo={childNivelEducativo}
           onClose={handleMedalClose}
         />
       )}

@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sparkles, Star } from 'lucide-react';
-
-// URL de la emoción de orgullo
-const PRIDE_EMOTION_IMAGE = "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/23.%20Orgullo.jpg";
+import { getMedalImageForNivelEducativo } from '@/constants/emotionsStorage';
 
 interface Medal {
   id: number;
@@ -17,6 +15,7 @@ interface Medal {
 interface MedalAnimationProps {
   medal: Medal;
   onClose: () => void;
+  childNivelEducativo?: string | null;
 }
 
 // Componente de partícula de confeti mejorado
@@ -62,7 +61,8 @@ const Sparkle: React.FC<{
 
 const MedalAnimation: React.FC<MedalAnimationProps> = ({ 
   medal, 
-  onClose 
+  onClose,
+  childNivelEducativo
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [showContent, setShowContent] = useState(false);
@@ -79,6 +79,8 @@ const MedalAnimation: React.FC<MedalAnimationProps> = ({
     '#7ea4df', // Azul (duplicado para más presencia)
     '#35bdb1', // Turquesa (duplicado para más presencia)
   ];
+
+  const medalImage = getMedalImageForNivelEducativo(childNivelEducativo);
 
   useEffect(() => {
     // Secuencia de animación
@@ -139,7 +141,7 @@ const MedalAnimation: React.FC<MedalAnimationProps> = ({
         
         {/* Contenido */}
         <div className="relative z-10 text-center">
-          {/* Icono de emoción de orgullo animado */}
+          {/* Icono de medalla animado */}
           <div className="mb-6">
             <div 
               className={`inline-block transition-all duration-1000 transform ${
@@ -147,8 +149,8 @@ const MedalAnimation: React.FC<MedalAnimationProps> = ({
               }`}
             >
               <img 
-                src={PRIDE_EMOTION_IMAGE} 
-                alt="Orgullo" 
+                src={medalImage} 
+                alt="Medalla Braini" 
                 className="w-28 h-28 md:w-32 md:h-32 rounded-full object-cover mx-auto mb-4 animate-bounce shadow-lg border-2 border-gray-200"
               />
             </div>
@@ -212,8 +214,8 @@ const MedalAnimation: React.FC<MedalAnimationProps> = ({
               className="bg-gradient-to-r from-braini-blue to-braini-blue-light hover:from-braini-blue-dark hover:to-braini-blue text-white font-semibold py-3 px-8 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 text-lg min-w-[200px] animate-fade-in-up"
             >
               <img 
-                src={PRIDE_EMOTION_IMAGE} 
-                alt="Orgullo" 
+                src={medalImage} 
+                alt="Medalla Braini" 
                 className="w-6 h-6 rounded-full object-cover mr-2"
               />
               Ver Todos los Niveles

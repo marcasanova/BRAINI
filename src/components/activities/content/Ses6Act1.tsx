@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { UserActivity } from '@/hooks/useUserActivities';
 import { CheckCircle, X, BookOpen, Utensils } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { formatearTexto } from '@/components/activities/utils/TextFormatter';
 import SuccessPopup from '@/components/activities/utils/SuccessPopup';
 import ActivityInstructions from '@/components/activities/utils/ActivityInstructions';
@@ -15,6 +16,7 @@ import {
   getMainTitleTextClasses,
   getProgressBarColor
 } from '@/components/activities/utils/ActivityColors';
+import { EMOTIONS_INFANTIL_URL } from '@/constants/emotionsStorage';
 
 interface Ses6Act1Props {
   userProgress?: UserActivity;
@@ -37,8 +39,6 @@ interface Emocion {
   imagen: string;
   esNegativa: boolean; // true si debe eliminarse (Enfado, Impaciencia, Rabia, Celos)
 }
-
-const SUPABASE_STORAGE_URL = 'https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images';
 
 // Emociones negativas (a eliminar)
 const EMOCIONES_NEGATIVAS: Omit<Emocion, 'id' | 'imagen'>[] = [
@@ -81,15 +81,15 @@ const Ses6Act1: React.FC<Ses6Act1Props> = ({
 
   // Mapeo de nombres de emociones a IDs e imágenes
   const emocionMap: { [key: string]: { id: number; imagen: string } } = {
-    "Enfado": { id: 20, imagen: `${SUPABASE_STORAGE_URL}/20.%20Enfado.jpg` },
-    "Impaciencia": { id: 16, imagen: `${SUPABASE_STORAGE_URL}/16.%20Impaciencia.jpg` },
-    "Rabia": { id: 5, imagen: `${SUPABASE_STORAGE_URL}/5.%20Rabia.jpg` },
-    "Celos": { id: 6, imagen: `${SUPABASE_STORAGE_URL}/6.%20Celos.jpg` },
-    "Alegría": { id: 1, imagen: `${SUPABASE_STORAGE_URL}/1.%20Alegria.jpg` },
-    "Tranquilidad": { id: 12, imagen: `${SUPABASE_STORAGE_URL}/12.%20Tranquilidad.jpg` },
-    "Ilusión": { id: 10, imagen: `${SUPABASE_STORAGE_URL}/10.%20Ilusion.jpg` },
-    "Paciencia": { id: 21, imagen: `${SUPABASE_STORAGE_URL}/21.%20Paciencia.jpg` },
-    "Curiosidad": { id: 24, imagen: `${SUPABASE_STORAGE_URL}/24.%20Curiosidad.jpg` },
+    "Enfado": { id: 20, imagen: `${EMOTIONS_INFANTIL_URL}/20.%20Enfado.png` },
+    "Impaciencia": { id: 16, imagen: `${EMOTIONS_INFANTIL_URL}/16.%20Impaciencia.png` },
+    "Rabia": { id: 5, imagen: `${EMOTIONS_INFANTIL_URL}/5.%20Rabia.png` },
+    "Celos": { id: 6, imagen: `${EMOTIONS_INFANTIL_URL}/6.%20Celos.png` },
+    "Alegría": { id: 1, imagen: `${EMOTIONS_INFANTIL_URL}/1.%20Alegria.png` },
+    "Tranquilidad": { id: 12, imagen: `${EMOTIONS_INFANTIL_URL}/12.%20Tranquilidad.png` },
+    "Ilusión": { id: 10, imagen: `${EMOTIONS_INFANTIL_URL}/10.%20Ilusion.png` },
+    "Paciencia": { id: 21, imagen: `${EMOTIONS_INFANTIL_URL}/21.%20Paciencia.png` },
+    "Curiosidad": { id: 24, imagen: `${EMOTIONS_INFANTIL_URL}/24.%20Curiosidad.png` },
   };
 
   // Función para inicializar emociones mezcladas

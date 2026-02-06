@@ -61,16 +61,14 @@ const Ses1Act1: React.FC<Ses1Act1Props> = ({
   // DATOS HARDCODEADOS - Orden aleatorio cada vez
   // ====================================================
   const EMOCIONES_ORIGINALES: Emocion[] = [
-    { id: 1, nombre: "Alegría", imagen: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/1.%20Alegria.jpg", fraseId: 1 },
-    { id: 2, nombre: "Tristeza", imagen: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/2.%20Tristeza.jpg", fraseId: 2 },
-    { id: 3, nombre: "Miedo", imagen: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/3.%20Miedo.jpg", fraseId: 3 },
-    { id: 5, nombre: "Rabia", imagen: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/5.%20Rabia.jpg", fraseId: 5 },
-    { id: 7, nombre: "Vergüenza", imagen: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/7.%20Vergueza.jpg", fraseId: 7 },
-    { id: 9, nombre: "Sorpresa", imagen: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/9.%20Sorpresa.jpg", fraseId: 9 },
-    { id: 13, nombre: "Felicidad", imagen: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/13.%20Felicidad.jpg", fraseId: 13 },
-    { id: 15, nombre: "Asustado", imagen: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/15.%20Asustado.jpg", fraseId: 15 },
-    { id: 18, nombre: "Contento", imagen: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/18.%20Contento.jpg", fraseId: 18 },
-    { id: 20, nombre: "Enfado", imagen: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/20.%20Enfado.jpg", fraseId: 20 },
+    { id: 1, nombre: "Alegría", imagen: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emociones_infantil/1.%20Alegria.png", fraseId: 1 },
+    { id: 2, nombre: "Tristeza", imagen: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emociones_infantil/2.%20Tristeza.png", fraseId: 2 },
+    { id: 3, nombre: "Miedo", imagen: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emociones_infantil/3.%20Miedo.png", fraseId: 3 },
+    { id: 5, nombre: "Rabia", imagen: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emociones_infantil/5.%20Rabia.png", fraseId: 5 },
+    { id: 7, nombre: "Vergüenza", imagen: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emociones_infantil/7.%20Verguenza.png", fraseId: 7 },
+    { id: 13, nombre: "Felicidad", imagen: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emociones_infantil/13.%20Felicidad.png", fraseId: 13 },
+    { id: 18, nombre: "Contento", imagen: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emociones_infantil/18.%20Contento.png", fraseId: 18 },
+    { id: 20, nombre: "Enfado", imagen: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emociones_infantil/20.%20Enfado.png", fraseId: 20 },
   ];
 
   const FRASES_ORIGINALES: Frase[] = [
@@ -79,10 +77,8 @@ const Ses1Act1: React.FC<Ses1Act1Props> = ({
     { id: 3, texto: "Me da miedo…" },
     { id: 5, texto: "Un día sentí mucha rabia …" },
     { id: 7, texto: "Tengo vergüenza cuando…" },
-    { id: 9, texto: "La sorpresa que más me gustó fue…" },
     { id: 13, texto: "Una cosa que me hace muy feliz es…" },
-    { id: 15, texto: "Me asusta…" },
-    { id: 18, texto: "Me siento contento/a cuando…" },
+    { id: 18, texto: "Me sentí muy contento/a cuando…" },
     { id: 20, texto: "Un día me enfadé porque…" },
   ];
 
@@ -192,10 +188,8 @@ const Ses1Act1: React.FC<Ses1Act1Props> = ({
       3: 'miedo',
       5: 'rabia',
       7: 'vergüenza',
-      9: 'sorpresa',
       13: 'feliz',
-      15: 'asusta',
-      18: 'contento',
+      18: 'contento/a',
       20: 'enfadé'
     };
 
@@ -245,7 +239,7 @@ const Ses1Act1: React.FC<Ses1Act1Props> = ({
           <h4 className="text-lg font-semibold text-gray-700 mb-3">
             Imágenes de Emociones
           </h4>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {EMOCIONES.map((emocion) => (
               <button
                 key={emocion.id}
@@ -264,7 +258,7 @@ const Ses1Act1: React.FC<Ses1Act1Props> = ({
                 `}
               >
                 {emocion.imagen ? (
-                  <div className="w-full h-32 mb-1.5 flex items-center justify-center bg-gray-50 rounded-lg overflow-hidden">
+                  <div className="w-full h-32 mb-1.5 flex items-center justify-center bg-white rounded-lg overflow-hidden">
                     <img
                       src={emocion.imagen}
                       alt={emocion.nombre}
@@ -276,7 +270,7 @@ const Ses1Act1: React.FC<Ses1Act1Props> = ({
                     />
                   </div>
                 ) : (
-                  <div className="w-full h-32 bg-gray-100 rounded-lg flex items-center justify-center mb-1.5">
+                  <div className="w-full h-32 bg-white rounded-lg flex items-center justify-center mb-1.5">
                     <span className="text-2xl">{emocion.nombre.charAt(0)}</span>
                   </div>
                 )}
@@ -303,7 +297,7 @@ const Ses1Act1: React.FC<Ses1Act1Props> = ({
           <h4 className="text-lg font-semibold text-gray-700 mb-3">
             Frases de Reflexión
           </h4>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {FRASES.map((frase) => (
               <button
                 key={frase.id}

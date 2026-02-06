@@ -11,6 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 const Home = () => {
   const [userId, setUserId] = useState<string | undefined>(undefined);
   const [childName, setChildName] = useState<string | undefined>(undefined);
+  const [childNivelEducativo, setChildNivelEducativo] = useState<string | undefined>(undefined);
   const [userMedalsMap, setUserMedalsMap] = useState<Map<number, string>>(new Map()); // Map<levelId, fecha_obtencion>
   const [medalsLoading, setMedalsLoading] = useState(true);
   const { toast } = useToast();
@@ -33,13 +34,16 @@ const Home = () => {
             // Buscar el nombre del niño en la tabla children
             const { data: childData, error } = await supabase
               .from('children')
-              .select('nombre')
+              .select('nombre, nivel_educativo')
               .eq('parent_id', user.id)
               .single();
             
             if (childData?.nombre) {
               setChildName(childData.nombre);
             }
+          if (childData?.nivel_educativo) {
+            setChildNivelEducativo(childData.nivel_educativo);
+          }
 
             // Obtener medallas del usuario para el Map
             const { data: medalsData, error: medalsError } = await supabase
@@ -105,6 +109,7 @@ const Home = () => {
                       userMedals={userMedals} 
                       totalMedals={totalMedals}
                       isLoading={medalsShelfLoading}
+                      childNivelEducativo={childNivelEducativo}
                     />
                   </div>
 
@@ -236,7 +241,7 @@ const Home = () => {
                   {/* Resto de sesiones */}
                   <div className="bg-white/95 backdrop-blur-lg p-4 md:p-6 rounded-xl md:rounded-2xl shadow-xl border-0 animate-fade-in">
                     <ul className="space-y-3 md:space-y-4">
-                      <SessionList sessions={sessions} userMedals={userMedalsMap} />
+                      <SessionList sessions={sessions} userMedals={userMedalsMap} childNivelEducativo={childNivelEducativo} />
                     </ul>
                   </div>
                 </div>

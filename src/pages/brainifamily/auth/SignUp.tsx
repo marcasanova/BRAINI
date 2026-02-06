@@ -3,8 +3,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/lib/supabaseClient';
+import { POLITICA_PRIVACIDAD_URL } from '@/constants/documentosStorage';
 
 // Rutas de assets públicos
 const logoBraini = '/logo/logoBraini.png';
@@ -12,7 +15,9 @@ const logoBraini = '/logo/logoBraini.png';
 const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [nombre, setNombre] = useState('');
+  const [acceptPolitica, setAcceptPolitica] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const { toast } = useToast();
@@ -36,7 +41,7 @@ const SignUp = () => {
   };
 
   const isFormValid = () => {
-    return validations.email() && validations.password() && validations.nombre();
+    return validations.email() && validations.password() && validations.nombre() && acceptPolitica;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -314,19 +319,57 @@ const SignUp = () => {
                 <Label htmlFor="password" className="text-sm sm:text-base font-semibold text-gray-700" style={{ fontWeight: 600 }}>
                   Contraseña *
                 </Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Mínimo 6 caracteres"
-                  className="border-2 border-gray-200 focus:border-braini-blue transition-colors text-base sm:text-sm py-2.5 sm:py-3"
-                  required
-                  disabled={isSubmitting}
-                />
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Mínimo 6 caracteres"
+                    className="border-2 border-gray-200 focus:border-braini-blue transition-colors text-base sm:text-sm py-2.5 sm:py-3 pr-10"
+                    required
+                    disabled={isSubmitting}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((v) => !v)}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-braini-blue/20 transition-colors"
+                    tabIndex={-1}
+                    aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                  >
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
+                </div>
                 <p className="text-[11px] sm:text-xs text-gray-500 leading-tight" style={{ fontWeight: 400 }}>
                   La contraseña debe tener al menos 6 caracteres
                 </p>
+              </div>
+
+              {/* Aceptación Política de Privacidad - Responsive */}
+              <div className="flex items-start gap-2 sm:gap-3 pt-1 sm:pt-2">
+                <Checkbox
+                  id="accept-politica"
+                  checked={acceptPolitica}
+                  onCheckedChange={(checked) => setAcceptPolitica(checked === true)}
+                  disabled={isSubmitting}
+                  className="mt-0.5 sm:mt-1 flex-shrink-0 h-4 w-4 sm:h-[18px] sm:w-[18px] border-2 border-gray-300 data-[state=checked]:bg-braini-blue data-[state=checked]:border-braini-blue"
+                />
+                <Label
+                  htmlFor="accept-politica"
+                  className="text-xs sm:text-sm text-gray-700 cursor-pointer leading-snug sm:leading-normal select-none font-normal break-words"
+                >
+                  He leído y acepto la{' '}
+                  <a
+                    href={POLITICA_PRIVACIDAD_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-braini-blue hover:text-braini-blue-dark font-medium underline underline-offset-2 break-all sm:break-normal"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    Política de Privacidad y Protección de Datos
+                  </a>
+                  .
+                </Label>
               </div>
 
               {/* Botón Submit - Mismo estilo que Conferencia */}

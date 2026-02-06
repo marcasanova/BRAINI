@@ -2,10 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { UserActivity } from '@/hooks/useUserActivities';
 import { CheckCircle, X, BookOpen, Heart, HeartOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { formatearTexto } from '@/components/activities/utils/TextFormatter';
 import SuccessPopup from '@/components/activities/utils/SuccessPopup';
 import ActivityInstructions from '@/components/activities/utils/ActivityInstructions';
 import SciBasePopup from '@/components/activities/utils/SciBasePopup';
+import { EMOTIONS_INFANTIL_URL } from '@/constants/emotionsStorage';
 import { 
   getPrimaryButtonClasses, 
   getSecondaryButtonClasses, 
@@ -40,16 +49,16 @@ interface Emocion {
 }
 
 const EMOCIONES_ORIGINALES: Emocion[] = [
-  { id: 10, nombre: "Ilusión", imagen: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/10.%20Ilusion.jpg" },
-  { id: 47, nombre: "Desilusión", imagen: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/47.%20Desilusion.jpg" },
-  { id: 1, nombre: "Alegría", imagen: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/1.%20Alegria.jpg" },
-  { id: 2, nombre: "Tristeza", imagen: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/2.%20Tristeza.jpg" },
-  { id: 18, nombre: "Contento", imagen: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/18.%20Contento.jpg" },
-  { id: 20, nombre: "Enfado", imagen: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/20.%20Enfado.jpg" },
-  { id: 21, nombre: "Paciencia", imagen: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/21.%20Paciencia.jpg" },
-  { id: 16, nombre: "Impaciencia", imagen: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/16.%20Impaciencia.jpg" },
-  { id: 12, nombre: "Tranquila", imagen: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/12.%20Tranquilidad.jpg" },
-  { id: 16, nombre: "Nervioso", imagen: "https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emotions_images/16.%20Nervioso.jpg" },
+  { id: 10, nombre: "Ilusión", imagen: `${EMOTIONS_INFANTIL_URL}/10.%20Ilusion.png` },
+  { id: 47, nombre: "Desilusión", imagen: `${EMOTIONS_INFANTIL_URL}/47.%20Desilusion.png` },
+  { id: 1, nombre: "Alegría", imagen: `${EMOTIONS_INFANTIL_URL}/1.%20Alegria.png` },
+  { id: 2, nombre: "Tristeza", imagen: `${EMOTIONS_INFANTIL_URL}/2.%20Tristeza.png` },
+  { id: 18, nombre: "Contento", imagen: `${EMOTIONS_INFANTIL_URL}/18.%20Contento.png` },
+  { id: 20, nombre: "Enfado", imagen: `${EMOTIONS_INFANTIL_URL}/20.%20Enfado.png` },
+  { id: 21, nombre: "Paciencia", imagen: `${EMOTIONS_INFANTIL_URL}/21.%20Paciencia.png` },
+  { id: 16, nombre: "Impaciencia", imagen: `${EMOTIONS_INFANTIL_URL}/16.%20Nerviosismo.png` },
+  { id: 12, nombre: "Tranquila", imagen: `${EMOTIONS_INFANTIL_URL}/12.%20Tranquilidad.png` },
+  { id: 16, nombre: "Nervioso", imagen: `${EMOTIONS_INFANTIL_URL}/16.%20Nerviosismo.png` },
 ];
 
 /**
@@ -85,6 +94,16 @@ const Ses3Act1: React.FC<Ses3Act1Props> = ({
   const totalClasificadas = emocionesMeGusta.length + emocionesNoMeGusta.length;
   const totalEmociones = EMOCIONES_ORIGINALES.length;
   const todasClasificadas = totalClasificadas === totalEmociones;
+
+  // Precargar imágenes de emociones al montar para evitar parpadeos
+  useEffect(() => {
+    EMOCIONES_ORIGINALES.forEach((e) => {
+      if (e.imagen) {
+        const img = new Image();
+        img.src = e.imagen;
+      }
+    });
+  }, []);
 
   // Efecto para detectar cuando todas las emociones están clasificadas
   useEffect(() => {
@@ -205,15 +224,22 @@ const Ses3Act1: React.FC<Ses3Act1Props> = ({
                         `}
                       >
                         {emocion.imagen ? (
-                          <div className="w-full h-24 mb-1.5 flex items-center justify-center bg-gray-50 rounded-lg overflow-hidden">
+                          <div className="w-full h-24 mb-1.5 flex items-center justify-center bg-white rounded-lg overflow-hidden relative">
                             <img
                               src={emocion.imagen}
                               alt={emocion.nombre}
                               className="w-full h-full object-contain"
+                              loading="eager"
                               onError={(e) => {
-                                e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2VlZSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj57ZW1vY2lvbi5ub21icmV9PC90ZXh0Pjwvc3ZnPg==';
+                                const t = e.currentTarget;
+                                t.style.display = 'none';
+                                const fb = t.nextElementSibling as HTMLElement;
+                                if (fb) fb.style.display = 'flex';
                               }}
                             />
+                            <div className="absolute inset-0 hidden items-center justify-center bg-gray-100 text-gray-500 text-2xl font-bold" style={{ display: 'none' }} aria-hidden>
+                              {emocion.nombre.charAt(0)}
+                            </div>
                           </div>
                         ) : (
                           <div className="w-full h-24 bg-gray-100 rounded-lg flex items-center justify-center mb-1.5">
@@ -272,12 +298,20 @@ const Ses3Act1: React.FC<Ses3Act1Props> = ({
                           >
                             <div className="flex items-center gap-3">
                               {emocion.imagen ? (
-                                <div className="w-12 h-12 flex-shrink-0 rounded-lg overflow-hidden bg-gray-50">
+                                <div className="w-12 h-12 flex-shrink-0 rounded-lg overflow-hidden bg-white relative">
                                   <img
                                     src={emocion.imagen}
                                     alt={emocion.nombre}
                                     className="w-full h-full object-contain"
+                                    loading="eager"
+                                    onError={(e) => {
+                                      const t = e.currentTarget;
+                                      t.style.display = 'none';
+                                      const fb = t.nextElementSibling as HTMLElement;
+                                      if (fb) fb.style.display = 'flex';
+                                    }}
                                   />
+                                  <div className="absolute inset-0 hidden items-center justify-center bg-gray-100 text-gray-500 font-bold" style={{ display: 'none' }} aria-hidden>{emocion.nombre.charAt(0)}</div>
                                 </div>
                               ) : (
                                 <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -323,12 +357,20 @@ const Ses3Act1: React.FC<Ses3Act1Props> = ({
                           >
                             <div className="flex items-center gap-3">
                               {emocion.imagen ? (
-                                <div className="w-12 h-12 flex-shrink-0 rounded-lg overflow-hidden bg-gray-50">
+                                <div className="w-12 h-12 flex-shrink-0 rounded-lg overflow-hidden bg-white relative">
                                   <img
                                     src={emocion.imagen}
                                     alt={emocion.nombre}
                                     className="w-full h-full object-contain"
+                                    loading="eager"
+                                    onError={(e) => {
+                                      const t = e.currentTarget;
+                                      t.style.display = 'none';
+                                      const fb = t.nextElementSibling as HTMLElement;
+                                      if (fb) fb.style.display = 'flex';
+                                    }}
                                   />
+                                  <div className="absolute inset-0 hidden items-center justify-center bg-gray-100 text-gray-500 font-bold" style={{ display: 'none' }} aria-hidden>{emocion.nombre.charAt(0)}</div>
                                 </div>
                               ) : (
                                 <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -365,12 +407,20 @@ const Ses3Act1: React.FC<Ses3Act1Props> = ({
             <div className="mt-4">
               <div className="flex flex-col items-center mb-6">
                 {emocionSeleccionada.imagen ? (
-                  <div className="w-32 h-32 mb-4 rounded-lg overflow-hidden bg-gray-50">
+                  <div className="w-32 h-32 mb-4 rounded-lg overflow-hidden bg-white relative">
                     <img
                       src={emocionSeleccionada.imagen}
                       alt={emocionSeleccionada.nombre}
                       className="w-full h-full object-contain"
+                      loading="eager"
+                      onError={(e) => {
+                        const t = e.currentTarget;
+                        t.style.display = 'none';
+                        const fb = t.nextElementSibling as HTMLElement;
+                        if (fb) fb.style.display = 'flex';
+                      }}
                     />
+                    <div className="absolute inset-0 hidden items-center justify-center bg-gray-100 text-gray-500 text-4xl font-bold" style={{ display: 'none' }} aria-hidden>{emocionSeleccionada.nombre.charAt(0)}</div>
                   </div>
                 ) : (
                   <div className="w-32 h-32 mb-4 bg-gray-100 rounded-lg flex items-center justify-center">
