@@ -442,7 +442,7 @@ const Ses1Act2: React.FC<Ses1Act2Props> = ({
           <div className="text-center min-h-[350px] flex flex-col items-center justify-center">
             <div className="w-full">
               <h2 className="text-3xl font-black text-braini-turquoise-dark mb-4">
-                ¡Secuencia de piernas completada!
+                ¡Secuencia completada!
               </h2>
               <p className="text-xl text-gray-700 mb-8">
                 ¿Qué quieres hacer ahora?
@@ -472,8 +472,11 @@ const Ses1Act2: React.FC<Ses1Act2Props> = ({
         <SuccessPopup
           onClose={() => {
             setShowSuccessPopup(false);
-            // Volver a la pantalla de decisión para que se vea el juego (Repetir / Terminar Juego)
-            setPhase('legsDecision');
+            setPhase('preparation');
+            setStepIndex(0);
+            setCurrentStep('giant');
+            setTimeRemaining(STEP_CONFIGS.giant.duration);
+            setIsRunning(false);
           }}
           activityType={activityType}
         />

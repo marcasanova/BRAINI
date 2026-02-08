@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { UserActivity } from '@/hooks/useUserActivities';
 import { formatearTexto } from '@/components/activities/utils/TextFormatter';
-import { Play, RotateCcw, BookOpen } from 'lucide-react';
+import { Play, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import SuccessPopup from '@/components/activities/utils/SuccessPopup';
 import ActivityInstructions from '@/components/activities/utils/ActivityInstructions';
 import SciBasePopup from '@/components/activities/utils/SciBasePopup';
+import { PIZZA_IMAGE_URL } from '@/constants/actividadesInfantilStorage';
 import { 
   getPrimaryButtonClasses, 
   getSecondaryButtonClasses, 
@@ -13,7 +14,6 @@ import {
   getDurationTextClasses,
   getMainTitleTextClasses,
   getSimpleButtonClasses,
-  getOutlineButtonClasses,
   getTimerColorClasses,
   getBorderClasses,
 } from '@/components/activities/utils/ActivityColors';
@@ -129,13 +129,6 @@ const Ses2Act2: React.FC<Ses2Act2Props> = ({
     setShowSuccessPopup(true);
   };
 
-  // Función para reiniciar/repetir
-  const resetActivity = () => {
-    setPhase('preparation');
-    setCurrentStepIndex(0);
-    setShowSuccessPopup(false);
-  };
-
   return (
     <div className="space-y-6">
       {/* Instrucciones con datos del backend */}
@@ -150,25 +143,50 @@ const Ses2Act2: React.FC<Ses2Act2Props> = ({
 
       {/* Card contenedora única con tamaño fijo */}
       <div className="bg-white/95 backdrop-blur-lg p-6 md:p-8 rounded-2xl shadow-xl border-0">
-        {/* Pantalla de preparación */}
+        {/* Pantalla de preparación (Pizza como Gigante/Ratón y Nube/Sol) */}
         {phase === 'preparation' && (
-          <div className="text-center min-h-[350px] flex flex-col items-center justify-center">
-            <div>
-              <h2 className={`text-3xl font-black ${getMainTitleTextClasses(activityType)} mb-4`}>
-                ¡Prepárate!
-              </h2>
-              <p className="text-xl text-gray-700 mb-8">
-                Vamos a preparar una pizza especial con masajes.
-                <br />
-                <strong>¡Prepárate para disfrutar de este momento juntos!</strong>
-              </p>
-              <Button
-                onClick={startActivity}
-                className={getPrimaryButtonClasses(activityType)}
-              >
-                <Play className="w-5 h-5 mr-2" />
-                Empezar Reto
-              </Button>
+          <div className="min-h-[350px] flex flex-col items-center justify-center">
+            <div className="w-full max-w-4xl">
+              <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-5">
+                {/* Izquierda: Imagen Pizza */}
+                <div className="flex flex-col items-center shrink-0">
+                  <img
+                    src={PIZZA_IMAGE_URL}
+                    alt="Pizza"
+                    className="h-40 sm:h-52 md:h-56 w-auto object-contain drop-shadow-md block"
+                  />
+                  <span className={`text-sm font-bold -mt-1 leading-tight ${getMainTitleTextClasses(activityType)}`}>Pizza</span>
+                </div>
+
+                {/* Centro: Texto y botón */}
+                <div className="flex-1 text-center">
+                  <h2 className={`text-3xl font-black ${getMainTitleTextClasses(activityType)} mb-4`}>
+                    ¡Prepárate!
+                  </h2>
+                  <p className="text-xl text-gray-700 mb-8">
+                    Vamos a preparar una pizza especial con masajes.
+                    <br />
+                    <strong>¡Prepárate para disfrutar de este momento juntos!</strong>
+                  </p>
+                  <Button
+                    onClick={startActivity}
+                    className={getPrimaryButtonClasses(activityType)}
+                  >
+                    <Play className="w-5 h-5 mr-2" />
+                    Empezar Reto
+                  </Button>
+                </div>
+
+                {/* Derecha: Imagen Pizza */}
+                <div className="flex flex-col items-center shrink-0">
+                  <img
+                    src={PIZZA_IMAGE_URL}
+                    alt="Pizza"
+                    className="h-40 sm:h-52 md:h-56 w-auto object-contain drop-shadow-md block"
+                  />
+                  <span className={`text-sm font-bold -mt-1 leading-tight ${getMainTitleTextClasses(activityType)}`}>Pizza</span>
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -176,11 +194,8 @@ const Ses2Act2: React.FC<Ses2Act2Props> = ({
         {/* Contenido principal de la actividad - Pasos */}
         {phase === 'steps' && (
           <div>
-                {/* Header */}
+                {/* Indicador de paso (sin letrero "Pizza para cenar") */}
                 <div className="mb-6">
-                  <h2 className={`text-2xl md:text-3xl font-black ${getMainTitleTextClasses(activityType)} mb-2`}>
-                    Pizza para cenar
-                  </h2>
                   <p className="text-sm text-gray-600">
                     Paso {currentStepIndex + 1} de {totalSteps}
                   </p>
@@ -250,18 +265,7 @@ const Ses2Act2: React.FC<Ses2Act2Props> = ({
                       Siguiente Paso
                     </Button>
                   )}
-                  
-                  {!isLastStep && (
-                    <Button
-                      onClick={resetActivity}
-                      variant="outline"
-                      className={getOutlineButtonClasses(activityType)}
-                    >
-                      <RotateCcw className="w-4 h-4 mr-2" />
-                      Reiniciar
-                    </Button>
-                  )}
-                  
+
                   {isLastStep && (
                     <Button
                       onClick={handleFinishActivity}
@@ -280,7 +284,8 @@ const Ses2Act2: React.FC<Ses2Act2Props> = ({
         <SuccessPopup
           onClose={() => {
             setShowSuccessPopup(false);
-            // Al cerrar el popup, nos quedamos en la misma página para poder valorar la actividad
+            setPhase('preparation');
+            setCurrentStepIndex(0);
           }}
           activityType={activityType}
         />

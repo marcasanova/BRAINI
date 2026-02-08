@@ -1,21 +1,17 @@
 import React, { useState } from 'react';
 import { UserActivity } from '@/hooks/useUserActivities';
-import { formatearTexto } from '@/components/activities/utils/TextFormatter';
-import { Play, RotateCcw, BookOpen, Cloud, Sun, ArrowRight } from 'lucide-react';
+import { Play, ArrowRight, Check, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import SuccessPopup from '@/components/activities/utils/SuccessPopup';
 import ActivityInstructions from '@/components/activities/utils/ActivityInstructions';
 import SciBasePopup from '@/components/activities/utils/SciBasePopup';
-import { 
-  getPrimaryButtonClasses, 
-  getSecondaryButtonClasses, 
-  getInstructionsContainerClasses, 
-  getDurationTextClasses,
+import { NUBE_IMAGE_URL, SOL_IMAGE_URL } from '@/constants/actividadesInfantilStorage';
+import {
+  getPrimaryButtonClasses,
   getMainTitleTextClasses,
-  getSimpleButtonClasses,
-  getOutlineButtonClasses,
   getBorderClasses,
-  getScientificBaseIconClasses
+  getLightBgClasses,
+  getProgressBarColor,
 } from '@/components/activities/utils/ActivityColors';
 
 interface Ses3Act2Props {
@@ -33,292 +29,121 @@ interface Ses3Act2Props {
   onPuzzleComplete?: () => void;
 }
 
-interface EmotionStep {
+interface Situacion {
   id: number;
-  nombre: string;
-  imagen: string;
-  preguntaInicial: string;
-  ejemplos: string[];
-  pensamientosAlternativos: string[];
-  preguntaFinal: string;
-  ejemploFinal?: string;
+  titulo: string;
+  situacionTexto: string;
+  respuestaCorrecta: 'nube' | 'sol';
+  pensamientosAyuda: string[];
 }
 
-const EMOTION_STEPS: EmotionStep[] = [
+const SITUACIONES: Situacion[] = [
   {
     id: 1,
-    nombre: 'Enfado',
-    imagen: 'https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emociones_infantil/20.%20Enfado.png',
-    preguntaInicial: '¿Qué te hace enfadar?',
-    ejemplos: [
-      'Cuando no te quiero dejar el móvil.',
-      'Cuando no te dejo comer más chuches.',
-      'Cuando me enfado y te regaño por algo que has hecho.'
+    titulo: 'NO TOCA JUGAR',
+    situacionTexto: 'Quiero jugar, pero tengo que terminar de comer. Me enfado y mi cuerpo se siente mal.',
+    respuestaCorrecta: 'nube',
+    pensamientosAyuda: [
+      'Ahora toca comer.',
+      'Después podré jugar.',
+      'Puedo esperar un poquito.',
+      'Respiro… y espero un poco más.',
     ],
-    pensamientosAlternativos: [
-      'Aunque ahora no pueda usarlo, puedo hacer otra cosa divertida. ¡Dibujar o jugar con mis juguetes, leer cuentos?',
-      'Si como muchas chuches me dolerá la barriga, ya comeré otro día, ahora puedo comer otras cosas que me encantan más saludables.',
-      'Todos nos equivocamos y podemos rectificar.'
-    ],
-    preguntaFinal: '¿Cómo te sientes ahora?',
-    ejemploFinal: 'Contento – feliz – alegre.'
   },
   {
     id: 2,
-    nombre: 'Desilusión',
-    imagen: 'https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emociones_infantil/47.%20Desilusion.png',
-    preguntaInicial: '¿Cuéntame que te ha desilusionado?',
-    ejemplos: [
-      'Cuando tenías que ir a casa de un amigo/a a jugar, pero finalmente no podremos.',
-      'Cuando esperabas un regalo, pero no lo tuviste.'
+    titulo: 'AL PARQUE OTRO DÍA SÍ',
+    situacionTexto: 'Hoy no voy al parque, pero sé que otro día iré. Mi cuerpo se siente bien.',
+    respuestaCorrecta: 'sol',
+    pensamientosAyuda: [
+      'Hoy no vamos al parque.',
+      'Otro día sí.',
+      'Ahora puedo jugar aquí.',
+      'Respiro…',
     ],
-    pensamientosAlternativos: [
-      'Me encanta jugar con mi amigo/a, pero hoy no puede ser, iré otro día, así que hoy puedo jugar en mi casa con mis juguetes y mi familia.'
+  },
+  {
+    id: 3,
+    titulo: 'A RECOGER',
+    situacionTexto: 'Estoy jugando y ya toca recoger. No quiero y me enfado. Mi cuerpo se siente mal.',
+    respuestaCorrecta: 'nube',
+    pensamientosAyuda: [
+      'Ahora toca recoger.',
+      'Después podré jugar otra vez.',
+      'Recojo.',
+      'Respiro… hasta que todo esté en su lugar.',
     ],
-    preguntaFinal: '¿Cómo te sientes ahora?',
-    ejemploFinal: 'Contento – feliz – alegre.'
-  }
+  },
+  {
+    id: 4,
+    titulo: 'VESTIRSE TRANQUILO/A',
+    situacionTexto: 'Me tengo que vestir para ir al colegio. Mi cuerpo está tranquilo, me visto yo solo y si no puedo, pido que me ayuden.',
+    respuestaCorrecta: 'sol',
+    pensamientosAyuda: [
+      'Ahora toca vestirse.',
+      'Me visto.',
+      'Respiro… y así me visto super bien.',
+    ],
+  },
 ];
 
-type Phase = 'preparation' | 'emotions';
-type EmotionPhase = 0 | 1 | 2; // 0: Primera pregunta, 1: Segunda pregunta (si existe), 2: Sol (pensamientos alternativos)
+type Pantalla = 'inicio' | 'situacion';
 
 /**
  * Actividad 2 - Sesión 3
- * La nube y el sol: Distinguir entre pensamientos limitantes y potenciadores
+ * La nube y el sol: ¿Dónde se pondrá este pensamiento? Nube o Sol
  */
-const Ses3Act2: React.FC<Ses3Act2Props> = ({ 
-  userProgress, 
-  activityId, 
-  levelId, 
+const Ses3Act2: React.FC<Ses3Act2Props> = ({
+  userProgress,
+  activityId,
+  levelId,
   userId,
   activityType,
   activityData,
-  onPuzzleComplete
+  onPuzzleComplete,
 }) => {
-  // Función helper para obtener el color de fondo de la barra de progreso
-  const getProgressBarColor = (type?: string): string => {
-    switch (type) {
-      case 'inteligencia_emocional':
-        return 'bg-braini-blue';
-      case 'regulacion_emocional':
-        return 'bg-braini-turquoise';
-      case 'vinculo_afectivo':
-        return 'bg-braini-pink';
-      case 'acompañamiento_emocional':
-        return 'bg-braini-yellow';
-      default:
-        return 'bg-braini-blue';
-    }
-  };
-
-  // Estados principales
-  const [phase, setPhase] = useState<Phase>('preparation');
-  const [currentEmotionIndex, setCurrentEmotionIndex] = useState(0);
-  const [currentEmotionPhase, setCurrentEmotionPhase] = useState<EmotionPhase>(0);
+  const [pantalla, setPantalla] = useState<Pantalla>('inicio');
+  const [indiceSituacion, setIndiceSituacion] = useState(0);
+  const [haElegido, setHaElegido] = useState(false);
+  const [eleccion, setEleccion] = useState<'nube' | 'sol' | null>(null);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [showScientificBase, setShowScientificBase] = useState(false);
 
-  const currentEmotion = EMOTION_STEPS[currentEmotionIndex];
-  const totalEmotions = EMOTION_STEPS.length;
-  const isLastEmotion = currentEmotionIndex === totalEmotions - 1;
-  
-  // Todas las emociones tienen 3 fases
-  const totalPhases = 3;
-  const isLastPhase = currentEmotionPhase === 2; // Fase 2 es la última
+  const situacionActual = SITUACIONES[indiceSituacion];
+  const esUltimaSituacion = indiceSituacion === SITUACIONES.length - 1;
 
-  // Función para iniciar la actividad (desde la pantalla de preparación)
-  const startActivity = () => {
-    setPhase('emotions');
-    setCurrentEmotionIndex(0);
-    setCurrentEmotionPhase(0);
+  const handleEmpezarReto = () => {
+    setPantalla('situacion');
+    setIndiceSituacion(0);
+    setHaElegido(false);
+    setEleccion(null);
   };
 
-  // Función para avanzar a la siguiente fase de la emoción actual
-  const handleNextPhase = () => {
-    if (currentEmotionPhase < totalPhases - 1) {
-      setCurrentEmotionPhase(prev => (prev + 1) as EmotionPhase);
+  const handleElegirNubeOSol = (opcion: 'nube' | 'sol') => {
+    setEleccion(opcion);
+    setHaElegido(true);
+  };
+
+  const handleSiguiente = () => {
+    if (esUltimaSituacion) {
+      setShowSuccessPopup(true);
     } else {
-      // Si es la última fase de la emoción, avanzar a la siguiente emoción
-      if (currentEmotionIndex < totalEmotions - 1) {
-        setCurrentEmotionIndex(prev => prev + 1);
-        setCurrentEmotionPhase(0);
-      }
+      setIndiceSituacion((i) => i + 1);
+      setHaElegido(false);
+      setEleccion(null);
     }
   };
 
-  // Función para avanzar a la siguiente emoción (desde la última fase)
-  const handleNextEmotion = () => {
-    if (currentEmotionIndex < totalEmotions - 1) {
-      setCurrentEmotionIndex(prev => prev + 1);
-      setCurrentEmotionPhase(0);
-    }
-  };
-
-  // Función para finalizar la actividad
-  const handleFinishActivity = () => {
-    setShowSuccessPopup(true);
-  };
-
-  // Función para reiniciar/repetir
-  const resetActivity = () => {
-    setPhase('preparation');
-    setCurrentEmotionIndex(0);
-    setCurrentEmotionPhase(0);
+  const handleCerrarPopup = () => {
     setShowSuccessPopup(false);
-  };
-
-  // Función para renderizar el contenido según la fase actual
-  const renderPhaseContent = () => {
-    if (!currentEmotion) return null;
-
-    // Fase 0: Primera pregunta con ejemplos (Nube)
-    if (currentEmotionPhase === 0) {
-      return (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          {/* Nube - Izquierda */}
-          <div className="lg:col-span-2 flex flex-col items-center">
-            <div className="flex flex-col items-center">
-              <Cloud className="w-20 h-20 text-gray-400" />
-              <p className="mt-2 text-sm font-semibold text-gray-600 text-center">Nube</p>
-              <p className="text-xs text-gray-500 text-center">Pensamientos limitantes</p>
-            </div>
-          </div>
-
-          {/* Contenido central */}
-          <div className="lg:col-span-8 space-y-4">
-            {/* Pregunta inicial */}
-            <div className="bg-gradient-to-r from-gray-100 to-gray-50 p-6 rounded-xl border-2 border-gray-300">
-              <h3 className="text-xl font-bold text-gray-500 mb-4">
-                {currentEmotion.preguntaInicial}
-              </h3>
-              
-              {/* Ejemplos */}
-              <div className="mt-4">
-                <p className="text-sm font-semibold text-gray-500 mb-3">Ejemplos</p>
-                <div className="space-y-2">
-                  {currentEmotion.ejemplos.map((ejemplo, index) => (
-                    <div
-                      key={index}
-                      className="bg-gray-100 border-l-4 border-gray-500 p-3 rounded-lg"
-                    >
-                      <p className="text-gray-500 leading-relaxed">
-                        • {ejemplo}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Sol - Derecha (vacío en esta fase) */}
-          <div className="lg:col-span-2 flex flex-col items-center opacity-30">
-            <div className="flex flex-col items-center">
-              <Sun className="w-20 h-20 text-yellow-400 fill-yellow-400" />
-              <p className="mt-2 text-sm font-semibold text-yellow-600 text-center">Sol</p>
-              <p className="text-xs text-yellow-500 text-center">Pensamientos potenciadores</p>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    // Fase 1: Pensamientos alternativos (transición hacia el sol)
-    if (currentEmotionPhase === 1) {
-      return (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          {/* Nube - Izquierda */}
-          <div className="lg:col-span-2 flex flex-col items-center opacity-50">
-            <div className="flex flex-col items-center">
-              <Cloud className="w-20 h-20 text-gray-400" />
-              <p className="mt-2 text-sm font-semibold text-gray-600 text-center">Nube</p>
-              <p className="text-xs text-gray-500 text-center">Pensamientos limitantes</p>
-            </div>
-          </div>
-
-          {/* Contenido central - Pensamientos alternativos */}
-          <div className="lg:col-span-8 space-y-4">
-            <div className="bg-gradient-to-r from-gray-50 to-gray-100 p-6 rounded-xl border-2 border-gray-300">
-              <h3 className="text-xl font-bold text-gray-400 mb-4">
-                ¿Qué podrías pensar para {currentEmotion.nombre === 'Enfado' ? 'pasar a sentirte mejor y así llegar hasta el sol?' : 'sentirte mejor?'}
-              </h3>
-              
-              <div className="mt-4">
-                <p className="text-sm font-semibold text-gray-400 mb-3">Por ejemplo</p>
-                <div className="space-y-3">
-                  {currentEmotion.pensamientosAlternativos.map((pensamiento, index) => (
-                    <div
-                      key={index}
-                      className="bg-gray-50 border-l-4 border-gray-400 p-4 rounded-lg shadow-sm"
-                    >
-                      <p className="text-gray-400 leading-relaxed">
-                        "{pensamiento}"
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Sol - Derecha (vacío en esta fase) */}
-          <div className="lg:col-span-2 flex flex-col items-center opacity-50">
-            <div className="flex flex-col items-center">
-              <Sun className="w-20 h-20 text-yellow-400 fill-yellow-400" />
-              <p className="mt-2 text-sm font-semibold text-yellow-600 text-center">Sol</p>
-              <p className="text-xs text-yellow-500 text-center">Pensamientos potenciadores</p>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    // Fase 2: Pregunta final (Sol)
-    if (currentEmotionPhase === 2) {
-      return (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          {/* Nube - Izquierda (vacía en esta fase) */}
-          <div className="lg:col-span-2 flex flex-col items-center opacity-30">
-            <div className="flex flex-col items-center">
-              <Cloud className="w-20 h-20 text-gray-400" />
-              <p className="mt-2 text-sm font-semibold text-gray-600 text-center">Nube</p>
-              <p className="text-xs text-gray-500 text-center">Pensamientos limitantes</p>
-            </div>
-          </div>
-
-          {/* Contenido central - Pregunta final */}
-          <div className="lg:col-span-8">
-            <div className="bg-gradient-to-r from-yellow-50 to-yellow-100 p-6 rounded-xl border-2 border-yellow-400">
-              <h3 className="text-xl font-bold text-yellow-400 mb-2">
-                {currentEmotion.preguntaFinal}
-              </h3>
-              {currentEmotion.ejemploFinal && (
-                <p className="text-yellow-500 italic mt-2">
-                  Por ejemplo: {currentEmotion.ejemploFinal}
-                </p>
-              )}
-            </div>
-          </div>
-
-          {/* Sol - Derecha */}
-          <div className="lg:col-span-2 flex flex-col items-center">
-            <div className="flex flex-col items-center">
-              <Sun className="w-20 h-20 text-yellow-400 fill-yellow-400" />
-              <p className="mt-2 text-sm font-semibold text-yellow-600 text-center">Sol</p>
-              <p className="text-xs text-yellow-500 text-center">Pensamientos potenciadores</p>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    return null;
+    setPantalla('inicio');
+    setIndiceSituacion(0);
+    setHaElegido(false);
+    setEleccion(null);
   };
 
   return (
     <div className="space-y-6">
-      {/* Instrucciones con datos del backend */}
       <ActivityInstructions
         activityType={activityType}
         duracionMin={activityData?.duracion_min}
@@ -328,123 +153,299 @@ const Ses3Act2: React.FC<Ses3Act2Props> = ({
         onShowScientificBase={() => setShowScientificBase(true)}
       />
 
-      {/* Card contenedora única con tamaño fijo */}
       <div className="bg-white/95 backdrop-blur-lg p-6 md:p-8 rounded-2xl shadow-xl border-0">
-        {/* Pantalla de preparación */}
-        {phase === 'preparation' && (
-          <div className="text-center min-h-[350px] flex flex-col items-center justify-center">
-            <div>
-              <h2 className={`text-3xl font-black ${getMainTitleTextClasses(activityType)} mb-4`}>
-                ¡Prepárate!
-              </h2>
-              <p className="text-xl text-gray-700 mb-8">
-                Vamos a trabajar con las emociones y aprender a transformar                 
-                <br />
-                pensamientos limitantes en pensamientos potenciadores.
-                <br />
-                <strong>¡Prepárate para este viaje emocional!</strong>
-              </p>
-              <Button
-                onClick={startActivity}
-                className={getPrimaryButtonClasses(activityType)}
-              >
-                <Play className="w-5 h-5 mr-2" />
-                Empezar Actividad
-              </Button>
+        {/* Pantalla inicial (Nube y Sol como en Gigante/Ratón de Ses1Act2) */}
+        {pantalla === 'inicio' && (
+          <div className="min-h-[350px] flex flex-col items-center justify-center">
+            <div className="w-full max-w-4xl">
+              <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-5">
+                {/* Izquierda: Imagen Nube */}
+                <div className="flex flex-col items-center shrink-0">
+                  <img
+                    src={NUBE_IMAGE_URL}
+                    alt="Nube"
+                    className="h-40 sm:h-52 md:h-56 w-auto object-contain drop-shadow-md block"
+                  />
+                  <span className={`text-sm font-bold -mt-1 leading-tight ${getMainTitleTextClasses(activityType)}`}>Nube</span>
+                </div>
+
+                {/* Centro: Texto y botón */}
+                <div className="flex-1 text-center">
+                  <h2 className={`text-3xl font-black ${getMainTitleTextClasses(activityType)} mb-4`}>
+                    ¡Prepárate!
+                  </h2>
+                  <p className="text-xl text-gray-700 mb-8">
+                    Vamos a trabajar con las emociones y aprender a transformar
+                    <br />
+                    pensamientos limitantes en pensamientos potenciadores.
+                    <br />
+                    <strong>¡Prepárate para este viaje emocional!</strong>
+                  </p>
+                  <Button
+                    onClick={handleEmpezarReto}
+                    className={getPrimaryButtonClasses(activityType)}
+                  >
+                    <Play className="w-5 h-5 mr-2" />
+                    Empezar Reto
+                  </Button>
+                </div>
+
+                {/* Derecha: Imagen Sol */}
+                <div className="flex flex-col items-center shrink-0">
+                  <img
+                    src={SOL_IMAGE_URL}
+                    alt="Sol"
+                    className="h-40 sm:h-52 md:h-56 w-auto object-contain drop-shadow-md block"
+                  />
+                  <span className={`text-sm font-bold -mt-1 leading-tight ${getMainTitleTextClasses(activityType)}`}>Sol</span>
+                </div>
+              </div>
             </div>
           </div>
         )}
 
-        {/* Contenido principal de la actividad - Emociones */}
-        {phase === 'emotions' && currentEmotion && (
+        {/* Pantalla de situación */}
+        {pantalla === 'situacion' && situacionActual && (
           <div className="space-y-6">
-            {/* Header con nombre e imagen de la emoción */}
-            <div className="flex flex-row items-center justify-center gap-4 mb-6">
-              <div className="w-32 h-32 flex items-center justify-center bg-gray-50 rounded-xl overflow-hidden">
-                <img
-                  src={currentEmotion.imagen}
-                  alt={currentEmotion.nombre}
-                  className="w-full h-full object-contain"
-                  onError={(e) => {
-                    e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2VlZSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj57ZW1vY2lvbi5ub21icmV9PC90ZXh0Pjwvc3ZnPg==';
-                  }}
-                />
-              </div>
-              <h2 className="text-3xl md:text-4xl font-black text-braini-green">
-                {currentEmotion.nombre}
-              </h2>
+            {/* Indicador de progreso */}
+            <p className="text-sm font-medium text-gray-500">
+              Situación {indiceSituacion + 1} de {SITUACIONES.length}
+            </p>
+
+            {/* Título de la situación */}
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
+              {situacionActual.titulo}
+            </h2>
+
+            {/* Situación: texto normal, sin recuadro */}
+            <div>
+              <h3 className="text-lg font-semibold text-black uppercase tracking-wide mb-2">
+                Situación
+              </h3>
+              <p className="text-gray-700 leading-relaxed text-lg">
+                {situacionActual.situacionTexto}
+              </p>
             </div>
 
-            {/* Contenido de la fase actual */}
-            {renderPhaseContent()}
+            {/* Nube y Sol debajo de la situación (solo antes de elegir) */}
+            {!haElegido && (
+              <div>
+                <p className="text-lg font-semibold text-gray-700 mb-3">
+                  ¿Dónde se pondrá este pensamiento?
+                </p>
+                <div className="flex flex-row gap-4 justify-start flex-wrap">
+                  <button
+                    type="button"
+                    onClick={() => !haElegido && handleElegirNubeOSol('nube')}
+                    disabled={haElegido}
+                    className={`relative flex flex-col items-center justify-center p-3 rounded-xl border-2 min-w-[130px] transition-all ${
+                      !haElegido
+                        ? 'border-gray-300 hover:border-gray-500 hover:bg-gray-50 cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2'
+                        : situacionActual.respuestaCorrecta === 'nube'
+                          ? `${getLightBgClasses(activityType)} ${getBorderClasses(activityType)} cursor-default`
+                          : eleccion === 'nube'
+                            ? 'border-red-500 bg-red-50 cursor-default'
+                            : 'border-gray-300 bg-gray-50/50 cursor-default'
+                    }`}
+                  >
+                    {haElegido && situacionActual.respuestaCorrecta === 'nube' && (
+                      <span
+                        className="absolute top-1.5 right-1.5 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white/80 shadow-sm"
+                        style={{ backgroundColor: getProgressBarColor(activityType) }}
+                      >
+                        <Check className="h-3.5 w-3.5 text-white stroke-[3]" />
+                      </span>
+                    )}
+                    {haElegido && eleccion === 'nube' && situacionActual.respuestaCorrecta !== 'nube' && (
+                      <span className="absolute top-1.5 right-1.5 flex h-6 w-6 items-center justify-center rounded-full border-2 border-red-500 bg-red-500">
+                        <X className="h-3.5 w-3.5 text-white stroke-[3]" />
+                      </span>
+                    )}
+                    <img
+                      src={NUBE_IMAGE_URL}
+                      alt="Nube - Pensamientos limitantes"
+                      className="w-24 h-24 sm:w-28 sm:h-28 object-contain mb-2"
+                    />
+                    <span className={`text-xs font-semibold ${
+                      !haElegido ? 'text-gray-700' :
+                      situacionActual.respuestaCorrecta === 'nube' ? getMainTitleTextClasses(activityType) :
+                      eleccion === 'nube' ? 'text-red-700' : 'text-gray-500'
+                    }`}>
+                      Nube
+                    </span>
+                    <span className={`text-[10px] mt-0.5 ${
+                      !haElegido ? 'text-gray-500' :
+                      situacionActual.respuestaCorrecta === 'nube' ? getMainTitleTextClasses(activityType) :
+                      eleccion === 'nube' ? 'text-red-600' : 'text-gray-400'
+                    }`}>
+                      Pensamientos limitantes
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => !haElegido && handleElegirNubeOSol('sol')}
+                    disabled={haElegido}
+                    className={`relative flex flex-col items-center justify-center p-3 rounded-xl border-2 min-w-[130px] transition-all ${
+                      !haElegido
+                        ? 'border-yellow-400 hover:border-yellow-600 hover:bg-yellow-50/50 cursor-pointer focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2'
+                        : situacionActual.respuestaCorrecta === 'sol'
+                          ? `${getLightBgClasses(activityType)} ${getBorderClasses(activityType)} cursor-default`
+                          : eleccion === 'sol'
+                            ? 'border-red-500 bg-red-50 cursor-default'
+                            : 'border-yellow-200 bg-yellow-50/30 cursor-default'
+                    }`}
+                  >
+                    {haElegido && situacionActual.respuestaCorrecta === 'sol' && (
+                      <span
+                        className="absolute top-1.5 right-1.5 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white/80 shadow-sm"
+                        style={{ backgroundColor: getProgressBarColor(activityType) }}
+                      >
+                        <Check className="h-3.5 w-3.5 text-white stroke-[3]" />
+                      </span>
+                    )}
+                    {haElegido && eleccion === 'sol' && situacionActual.respuestaCorrecta !== 'sol' && (
+                      <span className="absolute top-1.5 right-1.5 flex h-6 w-6 items-center justify-center rounded-full border-2 border-red-500 bg-red-500">
+                        <X className="h-3.5 w-3.5 text-white stroke-[3]" />
+                      </span>
+                    )}
+                    <img
+                      src={SOL_IMAGE_URL}
+                      alt="Sol - Pensamientos potenciadores"
+                      className="w-24 h-24 sm:w-28 sm:h-28 object-contain mb-2"
+                    />
+                    <span className={`text-xs font-semibold ${
+                      !haElegido ? 'text-yellow-700' :
+                      situacionActual.respuestaCorrecta === 'sol' ? getMainTitleTextClasses(activityType) :
+                      eleccion === 'sol' ? 'text-red-700' : 'text-yellow-600'
+                    }`}>
+                      Sol
+                    </span>
+                    <span className={`text-[10px] mt-0.5 ${
+                      !haElegido ? 'text-yellow-600' :
+                      situacionActual.respuestaCorrecta === 'sol' ? getMainTitleTextClasses(activityType) :
+                      eleccion === 'sol' ? 'text-red-600' : 'text-yellow-500'
+                    }`}>
+                      Pensamientos potenciadores
+                    </span>
+                  </button>
+                </div>
+              </div>
+            )}
 
-            {/* Controles */}
-            <div className="flex flex-wrap justify-center gap-3 mt-8">
-              {!isLastPhase && (
-                <>
-                  <Button
-                    onClick={handleNextPhase}
-                    className={getPrimaryButtonClasses(activityType)}
+            {/* Tras elegir: ¿Dónde se pondrá? (no desaparece) + títulos alineados + Nube | Sol | Pensamientos */}
+            {haElegido && (
+              <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-x-4 gap-y-4 items-start">
+                {/* Columna izquierda: título + Nube y Sol (ancho solo el contenido) */}
+                <div className="min-w-0">
+                  <p className="text-lg font-semibold text-gray-700 mb-3">
+                    ¿Dónde se pondrá este pensamiento?
+                  </p>
+                  <div className="flex flex-row gap-4 justify-start flex-wrap">
+                  <button
+                    type="button"
+                    disabled
+                    className={`relative flex flex-col items-center justify-center p-3 rounded-xl border-2 min-w-[130px] transition-all ${
+                      situacionActual.respuestaCorrecta === 'nube'
+                        ? `${getLightBgClasses(activityType)} ${getBorderClasses(activityType)} cursor-default`
+                        : eleccion === 'nube'
+                          ? 'border-red-500 bg-red-50 cursor-default'
+                          : 'border-gray-300 bg-gray-50/50 cursor-default'
+                    }`}
                   >
-                    Siguiente
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
-                  <Button
-                    onClick={resetActivity}
-                    variant="outline"
-                    className={getOutlineButtonClasses(activityType)}
+                    {situacionActual.respuestaCorrecta === 'nube' && (
+                      <span
+                        className="absolute top-1.5 right-1.5 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white/80 shadow-sm"
+                        style={{ backgroundColor: getProgressBarColor(activityType) }}
+                      >
+                        <Check className="h-3.5 w-3.5 text-white stroke-[3]" />
+                      </span>
+                    )}
+                    {eleccion === 'nube' && situacionActual.respuestaCorrecta !== 'nube' && (
+                      <span className="absolute top-1.5 right-1.5 flex h-6 w-6 items-center justify-center rounded-full border-2 border-red-500 bg-red-500">
+                        <X className="h-3.5 w-3.5 text-white stroke-[3]" />
+                      </span>
+                    )}
+                    <img src={NUBE_IMAGE_URL} alt="Nube" className="w-24 h-24 sm:w-28 sm:h-28 object-contain mb-2" />
+                    <span className={`text-xs font-semibold ${situacionActual.respuestaCorrecta === 'nube' ? getMainTitleTextClasses(activityType) : eleccion === 'nube' ? 'text-red-700' : 'text-gray-500'}`}>Nube</span>
+                    <span className={`text-[10px] mt-0.5 ${situacionActual.respuestaCorrecta === 'nube' ? getMainTitleTextClasses(activityType) : eleccion === 'nube' ? 'text-red-600' : 'text-gray-400'}`}>Pensamientos limitantes</span>
+                  </button>
+                  <button
+                    type="button"
+                    disabled
+                    className={`relative flex flex-col items-center justify-center p-3 rounded-xl border-2 min-w-[130px] transition-all ${
+                      situacionActual.respuestaCorrecta === 'sol'
+                        ? `${getLightBgClasses(activityType)} ${getBorderClasses(activityType)} cursor-default`
+                        : eleccion === 'sol'
+                          ? 'border-red-500 bg-red-50 cursor-default'
+                          : 'border-yellow-200 bg-yellow-50/30 cursor-default'
+                    }`}
                   >
-                    <RotateCcw className="w-4 h-4 mr-2" />
-                    Reiniciar
-                  </Button>
-                </>
-              )}
-              
-              {isLastPhase && !isLastEmotion && (
-                <>
-                  <Button
-                    onClick={handleNextEmotion}
-                    className={getPrimaryButtonClasses(activityType)}
-                  >
-                    Siguiente Emoción
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
-                  <Button
-                    onClick={resetActivity}
-                    variant="outline"
-                    className={getOutlineButtonClasses(activityType)}
-                  >
-                    <RotateCcw className="w-4 h-4 mr-2" />
-                    Reiniciar
-                  </Button>
-                </>
-              )}
-              
-              {isLastPhase && isLastEmotion && (
+                    {situacionActual.respuestaCorrecta === 'sol' && (
+                      <span
+                        className="absolute top-1.5 right-1.5 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white/80 shadow-sm"
+                        style={{ backgroundColor: getProgressBarColor(activityType) }}
+                      >
+                        <Check className="h-3.5 w-3.5 text-white stroke-[3]" />
+                      </span>
+                    )}
+                    {eleccion === 'sol' && situacionActual.respuestaCorrecta !== 'sol' && (
+                      <span className="absolute top-1.5 right-1.5 flex h-6 w-6 items-center justify-center rounded-full border-2 border-red-500 bg-red-500">
+                        <X className="h-3.5 w-3.5 text-white stroke-[3]" />
+                      </span>
+                    )}
+                    <img src={SOL_IMAGE_URL} alt="Sol" className="w-24 h-24 sm:w-28 sm:h-28 object-contain mb-2" />
+                    <span className={`text-xs font-semibold ${situacionActual.respuestaCorrecta === 'sol' ? getMainTitleTextClasses(activityType) : eleccion === 'sol' ? 'text-red-700' : 'text-yellow-600'}`}>Sol</span>
+                    <span className={`text-[10px] mt-0.5 ${situacionActual.respuestaCorrecta === 'sol' ? getMainTitleTextClasses(activityType) : eleccion === 'sol' ? 'text-red-600' : 'text-yellow-500'}`}>Pensamientos potenciadores</span>
+                  </button>
+                  </div>
+                </div>
+                {/* Columna derecha: título fuera del recuadro + recuadro con el grid (pegado a la izquierda) */}
+                <div className="min-w-0">
+                  <p className="text-lg font-semibold text-yellow-800 mb-3">
+                    Pensamientos que pueden ayudar
+                  </p>
+                  <div className="bg-gradient-to-r from-yellow-50 to-amber-50 p-6 rounded-xl border-2 border-yellow-400">
+                  <div className="grid grid-cols-2 gap-3">
+                    {situacionActual.pensamientosAyuda.map((p, i) => (
+                      <div key={i} className="flex items-start gap-2 text-gray-700">
+                        <span className="text-yellow-600 font-bold shrink-0">•</span>
+                        <span className="text-sm">{p}</span>
+                      </div>
+                    ))}
+                  </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {haElegido && (
+              <div className="flex justify-center pt-4">
                 <Button
-                  onClick={handleFinishActivity}
+                  onClick={handleSiguiente}
                   className={getPrimaryButtonClasses(activityType)}
                 >
-                  Terminar Juego
+                  {esUltimaSituacion ? (
+                    'Terminar reto'
+                  ) : (
+                    <>
+                      Siguiente
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </>
+                  )}
                 </Button>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         )}
       </div>
 
-      {/* Popup de éxito */}
       {showSuccessPopup && (
         <SuccessPopup
-          onClose={() => {
-            setShowSuccessPopup(false);
-            // Al cerrar el popup, nos quedamos en la misma página para poder valorar la actividad
-          }}
+          onClose={handleCerrarPopup}
           activityType={activityType}
         />
       )}
 
-      {/* Dialog de Base Científica */}
       <SciBasePopup
         open={showScientificBase}
         onOpenChange={setShowScientificBase}

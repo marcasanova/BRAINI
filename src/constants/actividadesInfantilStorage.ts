@@ -12,3 +12,10 @@ export const RATON_IMAGE_URL = `${ACTIVIDADES_INFANTIL_URL}/Raton.png`;
 // Videos – patadas gigante / ratón (para uso en pasos de la actividad)
 export const PATADAS_GIGANTE_VIDEO_URL = `${ACTIVIDADES_INFANTIL_URL}/PatadasGigante.mp4`;
 export const PATADAS_RATON_VIDEO_URL = `${ACTIVIDADES_INFANTIL_URL}/PatadasRaton.mp4`;
+
+// Imágenes – Nube y Sol (Sesión 3, Actividad 2 - La nube y el sol)
+export const NUBE_IMAGE_URL = `${ACTIVIDADES_INFANTIL_URL}/Nube.png`;
+export const SOL_IMAGE_URL = `${ACTIVIDADES_INFANTIL_URL}/Sol.png`;
+
+// Imagen – Pizza (Sesión 2, Actividad 2 - portada de inicio)
+export const PIZZA_IMAGE_URL = `${ACTIVIDADES_INFANTIL_URL}/Pizza.png`;
