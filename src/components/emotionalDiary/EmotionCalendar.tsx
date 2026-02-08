@@ -8,7 +8,7 @@ interface EmotionalEntry {
   id: number;
   user_id: string;
   child_id: string;
-  emotion_name: string;
+  emotion_names: string[];
   observations: string | null;
   entry_date: string;
   created_at: string;
@@ -57,15 +57,14 @@ const EmotionCalendar: React.FC<EmotionCalendarProps> = ({
   };
 
   const getEmotionColor = (emotionName: string) => {
-    // Colores específicos para cada emoción (basados en la imagen compartida)
     const emotionColors: { [key: string]: string } = {
-      'Alegría': '#FFD93D',    // Amarillo brillante (sun-like)
-      'Tristeza': '#74B9FF',   // Azul claro (light blue)
-      'Miedo': '#5F8DCA',      // Azul medio (con sombra oscura)
-      'Pena': '#81C7E8',       // Azul claro (con corazón roto)
-      'Rabia': '#FF6B6B'       // Rojo intenso (con llamas)
+      'Alegría': '#FFD93D',
+      'Contento': '#66BB6A',
+      'Tristeza': '#74B9FF',
+      'Miedo': '#5F8DCA',
+      'Rabia': '#FF6B6B',
+      'Pena': '#81C7E8'  // compatibilidad con entradas antiguas
     };
-    
     return emotionColors[emotionName] || '#E5E7EB';
   };
 
@@ -118,8 +117,8 @@ const EmotionCalendar: React.FC<EmotionCalendarProps> = ({
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(year, month - 1, day);
       const entry = getEmotionForDate(date);
-      const emotionColor = entry ? getEmotionColor(entry.emotion_name) : '#E5E7EB';
-      const hasEntry = !!entry;
+      const names = Array.isArray(entry?.emotion_names) ? entry.emotion_names : [];
+      const hasEntry = names.length > 0;
       
       days.push(
         <TooltipProvider key={day}>
@@ -128,7 +127,7 @@ const EmotionCalendar: React.FC<EmotionCalendarProps> = ({
               <button
                 onClick={() => onDateSelect(date)}
                 className={`
-                  relative h-10 sm:h-12 rounded-lg transition-all duration-200 text-sm font-medium
+                  relative h-10 sm:h-12 rounded-lg transition-all duration-200 text-sm font-medium flex flex-col items-stretch overflow-hidden
                   ${isSelected(date) 
                     ? '' 
                     : 'hover:bg-gray-50'
@@ -140,35 +139,48 @@ const EmotionCalendar: React.FC<EmotionCalendarProps> = ({
                   backgroundColor: '#35bdb120'
                 } : {}}
               >
-                <span className={`
-                  absolute top-0.5 left-0.5 sm:top-1 sm:left-1 text-[10px] sm:text-xs
-                  ${isToday(date) ? 'text-braini-blue' : 'text-gray-700'}
-                `}>
-                  {day}
-                </span>
-                
-                {/* Indicador de emoción - más prominente */}
+                {/* Fila superior: número del día + icono observaciones */}
+                <div className="flex items-start justify-between flex-shrink-0 min-h-0 px-0.5 pt-0.5 sm:pt-1">
+                  <span className={`
+                    text-[10px] sm:text-xs leading-tight
+                    ${isToday(date) ? 'text-braini-blue' : 'text-gray-700'}
+                  `}>
+                    {day}
+                  </span>
+                  {entry?.observations && (
+                    <Edit3 className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-gray-600 flex-shrink-0" strokeWidth={2.5} />
+                  )}
+                </div>
+
+                {/* Indicador de emociones: una barra o varios puntos según cantidad */}
                 {hasEntry && (
-                  <div 
-                    className="absolute bottom-0.5 left-0.5 right-0.5 sm:bottom-1 sm:left-1 sm:right-1 h-2 sm:h-3 rounded-full shadow-sm"
-                    style={{ backgroundColor: emotionColor }}
-                  />
-                )}
-                
-                {/* Indicador de observaciones */}
-                {entry?.observations && (
-                  <div className="absolute top-0.5 right-0.5 sm:top-1 sm:right-1">
-                    <Edit3 className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-gray-600" strokeWidth={2.5} />
+                  <div className="absolute bottom-0.5 left-0.5 right-0.5 sm:bottom-1 sm:left-1 sm:right-1 flex items-center justify-center gap-0.5 min-h-[6px] sm:min-h-[8px]">
+                    {names.length === 1 ? (
+                      <div
+                        className="h-1.5 sm:h-2 w-full max-w-full rounded-full shadow-sm flex-shrink-0"
+                        style={{ backgroundColor: getEmotionColor(names[0]) }}
+                        aria-hidden
+                      />
+                    ) : (
+                      names.slice(0, 5).map((name, i) => (
+                        <div
+                          key={`${day}-${name}-${i}`}
+                          className="h-1.5 sm:h-2 w-1.5 sm:w-2 rounded-full shadow-sm flex-shrink-0"
+                          style={{ backgroundColor: getEmotionColor(name) }}
+                          aria-hidden
+                        />
+                      ))
+                    )}
                   </div>
                 )}
               </button>
             </TooltipTrigger>
             
-            {/* Tooltip con información de la emoción */}
-            {hasEntry && (
+            {/* Tooltip con información de las emociones */}
+            {hasEntry && entry && (
               <TooltipContent side="top" className="bg-gray-800 text-white text-sm px-3 py-2">
                 <div className="text-center">
-                  <div className="font-medium">{entry.emotion_name}</div>
+                  <div className="font-medium">{entry.emotion_names.join(', ')}</div>
                 </div>
               </TooltipContent>
             )}
@@ -236,11 +248,15 @@ const EmotionCalendar: React.FC<EmotionCalendarProps> = ({
             Emociones del Calendario
           </h4>
           
-          {/* Grid: 3 columnas en todas las pantallas (2 filas: 3+2) */}
+          {/* Grid: 5 emociones (Alegría, Contento, Tristeza, Miedo, Rabia) */}
           <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
             <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg border border-gray-100">
               <div className="h-2.5 sm:h-3 rounded-full shadow-sm flex-shrink-0" style={{ width: '28px', backgroundColor: '#FFD93D' }} />
               <span className="text-[10px] sm:text-xs text-gray-700 font-medium">Alegría</span>
+            </div>
+            <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg border border-gray-100">
+              <div className="h-2.5 sm:h-3 rounded-full shadow-sm flex-shrink-0" style={{ width: '28px', backgroundColor: '#66BB6A' }} />
+              <span className="text-[10px] sm:text-xs text-gray-700 font-medium">Contento</span>
             </div>
             <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg border border-gray-100">
               <div className="h-2.5 sm:h-3 rounded-full shadow-sm flex-shrink-0" style={{ width: '28px', backgroundColor: '#74B9FF' }} />
@@ -249,10 +265,6 @@ const EmotionCalendar: React.FC<EmotionCalendarProps> = ({
             <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg border border-gray-100">
               <div className="h-2.5 sm:h-3 rounded-full shadow-sm flex-shrink-0" style={{ width: '28px', backgroundColor: '#5F8DCA' }} />
               <span className="text-[10px] sm:text-xs text-gray-700 font-medium">Miedo</span>
-            </div>
-            <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg border border-gray-100">
-              <div className="h-2.5 sm:h-3 rounded-full shadow-sm flex-shrink-0" style={{ width: '28px', backgroundColor: '#81C7E8' }} />
-              <span className="text-[10px] sm:text-xs text-gray-700 font-medium">Pena</span>
             </div>
             <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg border border-gray-100">
               <div className="h-2.5 sm:h-3 rounded-full shadow-sm flex-shrink-0" style={{ width: '28px', backgroundColor: '#FF6B6B' }} />

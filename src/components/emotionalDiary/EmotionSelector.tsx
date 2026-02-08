@@ -12,7 +12,7 @@ interface EmotionConfig {
 
 interface EmotionSelectorProps {
   emotions: EmotionConfig[];
-  selectedEmotion: EmotionConfig | null;
+  selectedEmotions: EmotionConfig[];
   onEmotionSelect: (emotion: EmotionConfig) => void;
   disabled?: boolean;
   childName?: string;
@@ -20,7 +20,7 @@ interface EmotionSelectorProps {
 
 const EmotionSelector: React.FC<EmotionSelectorProps> = ({
   emotions,
-  selectedEmotion,
+  selectedEmotions,
   onEmotionSelect,
   disabled = false,
   childName = ''
@@ -39,10 +39,11 @@ const EmotionSelector: React.FC<EmotionSelectorProps> = ({
               : '¿Cómo se siente hoy?'
             }
           </h3>
+          <p className="text-xs sm:text-sm text-gray-500 text-center mb-3">Puedes elegir todas las que quieras</p>
           
           <div className="grid grid-cols-5 gap-2 sm:gap-3 md:gap-4">
             {emotions.map((emotion) => {
-              const isSelected = selectedEmotion?.id === emotion.id;
+              const isSelected = selectedEmotions.some(e => e.id === emotion.id);
               
               return (
                 <Tooltip key={emotion.id}>
@@ -63,9 +64,9 @@ const EmotionSelector: React.FC<EmotionSelectorProps> = ({
                         outlineOffset: '0px'
                       } : {}}
                     >
-                      {/* Imagen de la emoción */}
+                      {/* Imagen de la emoción (~5px menos que el tamaño estándar) */}
                       <div className={`
-                        w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-lg overflow-hidden mb-2 transition-all duration-300
+                        w-[43px] h-[43px] sm:w-[59px] sm:h-[59px] md:w-[75px] md:h-[75px] rounded-lg overflow-hidden mb-2 transition-all duration-300
                       `}>
                         <img
                           src={emotion.imageUrl}
@@ -121,21 +122,24 @@ const EmotionSelector: React.FC<EmotionSelectorProps> = ({
             })}
           </div>
           
-          {selectedEmotion && (
+          {selectedEmotions.length > 0 && (
             <div 
-              className="mt-3 sm:mt-4 p-2.5 sm:p-3 rounded-xl border"
-              style={{
-                backgroundColor: `${selectedEmotion.color}10`,
-                borderColor: `${selectedEmotion.color}30`
-              }}
+              className="mt-3 sm:mt-4 p-2.5 sm:p-3 rounded-xl border border-gray-200 bg-gray-50"
             >
               <p className="text-center text-xs sm:text-sm text-gray-700">
-                <span 
-                  className="font-semibold"
-                  style={{ color: selectedEmotion.color }}
-                >
-                  {selectedEmotion.name}
-                </span> seleccionada
+                {selectedEmotions.length === 1 ? (
+                  <>
+                    <span className="font-semibold" style={{ color: selectedEmotions[0].color }}>
+                      {selectedEmotions[0].name}
+                    </span>{' '}
+                    seleccionada
+                  </>
+                ) : (
+                  <>
+                    <span className="font-semibold">{selectedEmotions.length} emociones</span>
+                    {' '}seleccionadas: {selectedEmotions.map(e => e.name).join(', ')}
+                  </>
+                )}
               </p>
             </div>
           )}

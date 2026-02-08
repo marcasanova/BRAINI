@@ -147,20 +147,9 @@ const ActivityDetail: React.FC = () => {
                   Actividad no encontrada
                 </h1>
               ) : (
-                <>
-                  <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-2" style={{ fontWeight: 900 }}>
-                    {currentActivity.activities.titulo_actividad}
-                  </h1>
-                  <p className="text-lg sm:text-xl md:text-2xl text-white/90 font-medium">
-                    {currentActivity.activities.objetivo || 
-                      (currentActivity.activities.tipo_actividad === 'vinculo_afectivo' 
-                        ? 'Momentos de conexión y fortalecimiento del vínculo familiar a través de gestos y palabras de amor.'
-                        : currentActivity.activities.tipo_actividad === 'acompañamiento_emocional'
-                        ? 'Herramientas y recursos para el apoyo emocional en el día a día, fortaleciendo la autoestima y el bienestar.'
-                        : 'Sin descripción disponible')
-                    }
-                  </p>
-                </>
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white" style={{ fontWeight: 900 }}>
+                  {currentActivity.activities.titulo_actividad}
+                </h1>
               )}
             </div>
 

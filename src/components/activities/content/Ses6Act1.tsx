@@ -37,13 +37,13 @@ interface Emocion {
   id: number;
   nombre: string;
   imagen: string;
-  esNegativa: boolean; // true si debe eliminarse (Enfado, Impaciencia, Rabia, Celos)
+  esNegativa: boolean; // true si debe eliminarse (Enfado, Frustración, Rabia, Celos)
 }
 
 // Emociones negativas (a eliminar)
 const EMOCIONES_NEGATIVAS: Omit<Emocion, 'id' | 'imagen'>[] = [
   { nombre: "Enfado", esNegativa: true },
-  { nombre: "Impaciencia", esNegativa: true },
+  { nombre: "Frustración", esNegativa: true },
   { nombre: "Rabia", esNegativa: true },
   { nombre: "Celos", esNegativa: true },
 ];
@@ -82,7 +82,7 @@ const Ses6Act1: React.FC<Ses6Act1Props> = ({
   // Mapeo de nombres de emociones a IDs e imágenes
   const emocionMap: { [key: string]: { id: number; imagen: string } } = {
     "Enfado": { id: 20, imagen: `${EMOTIONS_INFANTIL_URL}/20.%20Enfado.png` },
-    "Impaciencia": { id: 16, imagen: `${EMOTIONS_INFANTIL_URL}/16.%20Impaciencia.png` },
+    "Frustración": { id: 11, imagen: `${EMOTIONS_INFANTIL_URL}/11.%20Frustracion.png` },
     "Rabia": { id: 5, imagen: `${EMOTIONS_INFANTIL_URL}/5.%20Rabia.png` },
     "Celos": { id: 6, imagen: `${EMOTIONS_INFANTIL_URL}/6.%20Celos.png` },
     "Alegría": { id: 1, imagen: `${EMOTIONS_INFANTIL_URL}/1.%20Alegria.png` },

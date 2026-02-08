@@ -167,7 +167,7 @@ const Ses2Act2: React.FC<Ses2Act2Props> = ({
                 className={getPrimaryButtonClasses(activityType)}
               >
                 <Play className="w-5 h-5 mr-2" />
-                Empezar Actividad
+                Empezar Reto
               </Button>
             </div>
           </div>
@@ -208,7 +208,7 @@ const Ses2Act2: React.FC<Ses2Act2Props> = ({
                       
                       {/* Áreas del cuerpo */}
                       <div>
-                        <h4 className="text-lg font-semibold text-gray-800 mb-2">Áreas a trabajar:</h4>
+                        <h4 className="text-lg font-semibold text-gray-800 mb-2">Zonas del cuerpo:</h4>
                         <div className="flex flex-wrap gap-2">
                           {currentStep.areas.map((area, index) => (
                             <span

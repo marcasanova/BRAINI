@@ -50,20 +50,20 @@ interface Emocion {
 
 const EMOCIONES_ORIGINALES: Emocion[] = [
   { id: 10, nombre: "Ilusión", imagen: `${EMOTIONS_INFANTIL_URL}/10.%20Ilusion.png` },
-  { id: 47, nombre: "Desilusión", imagen: `${EMOTIONS_INFANTIL_URL}/47.%20Desilusion.png` },
+  { id: 5, nombre: "Rabia", imagen: `${EMOTIONS_INFANTIL_URL}/5.%20Rabia.png` },
   { id: 1, nombre: "Alegría", imagen: `${EMOTIONS_INFANTIL_URL}/1.%20Alegria.png` },
   { id: 2, nombre: "Tristeza", imagen: `${EMOTIONS_INFANTIL_URL}/2.%20Tristeza.png` },
   { id: 18, nombre: "Contento", imagen: `${EMOTIONS_INFANTIL_URL}/18.%20Contento.png` },
   { id: 20, nombre: "Enfado", imagen: `${EMOTIONS_INFANTIL_URL}/20.%20Enfado.png` },
   { id: 21, nombre: "Paciencia", imagen: `${EMOTIONS_INFANTIL_URL}/21.%20Paciencia.png` },
-  { id: 16, nombre: "Impaciencia", imagen: `${EMOTIONS_INFANTIL_URL}/16.%20Nerviosismo.png` },
+  { id: 11, nombre: "Frustración", imagen: `${EMOTIONS_INFANTIL_URL}/11.%20Frustracion.png` },
   { id: 12, nombre: "Tranquila", imagen: `${EMOTIONS_INFANTIL_URL}/12.%20Tranquilidad.png` },
   { id: 16, nombre: "Nervioso", imagen: `${EMOTIONS_INFANTIL_URL}/16.%20Nerviosismo.png` },
 ];
 
 /**
  * Actividad 1 - Sesión 3
- * Me gusta, no me gusta: Clasificación de emociones según preferencias
+ * Me hace sentir bien / Me hace sentir regular: Clasificación de emociones
  */
 const Ses3Act1: React.FC<Ses3Act1Props> = ({ 
   userProgress, 
@@ -269,15 +269,15 @@ const Ses3Act1: React.FC<Ses3Act1Props> = ({
             </div>
           </div>
 
-          {/* Segunda y tercera fila: Me gusta y No me gusta (mismo ancho) */}
+          {/* Segunda y tercera fila: Me hace sentir bien / Me hace sentir regular */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-            {/* Fila 2: Me gusta */}
+            {/* Fila 2: Me hace sentir bien */}
             <div>
                   <div className="bg-braini-green/10 border-2 border-braini-green rounded-xl p-4 min-h-[200px]">
                     <div className="flex items-center gap-2 mb-4">
                       <Heart className="w-6 h-6 text-braini-green fill-current" />
                       <h3 className="text-lg font-bold text-braini-green">
-                        Me gusta
+                        Me hace sentir bien
                       </h3>
                       <span className="ml-auto bg-braini-green text-white text-xs font-bold px-2 py-1 rounded-full">
                         {emocionesMeGusta.length}
@@ -330,13 +330,13 @@ const Ses3Act1: React.FC<Ses3Act1Props> = ({
                   </div>
             </div>
 
-            {/* Fila 3: No me gusta */}
+            {/* Fila 3: Me hace sentir regular */}
             <div>
                   <div className="bg-braini-pink/10 border-2 border-braini-pink rounded-xl p-4 min-h-[200px]">
                     <div className="flex items-center gap-2 mb-4">
                       <HeartOff className="w-6 h-6 text-braini-pink" />
                       <h3 className="text-lg font-bold text-braini-pink">
-                        No me gusta
+                        Me hace sentir regular
                       </h3>
                       <span className="ml-auto bg-braini-pink text-white text-xs font-bold px-2 py-1 rounded-full">
                         {emocionesNoMeGusta.length}
@@ -394,8 +394,8 @@ const Ses3Act1: React.FC<Ses3Act1Props> = ({
 
       {/* Modal para clasificar emoción */}
       <Dialog open={showModal} onOpenChange={setShowModal}>
-        <DialogContent className="max-w-md bg-white/95 backdrop-blur-lg">
-          <DialogHeader>
+        <DialogContent className="w-[min(28rem,96vw)] sm:w-[32rem] max-w-[96vw] bg-white/95 backdrop-blur-lg p-6 sm:p-8 pb-8 sm:pb-10">
+          <DialogHeader className="pr-8 sm:pr-0">
             <DialogTitle className="text-xl font-bold text-gray-800">
               Clasificar emoción
             </DialogTitle>
@@ -404,10 +404,11 @@ const Ses3Act1: React.FC<Ses3Act1Props> = ({
             </DialogDescription>
           </DialogHeader>
           {emocionSeleccionada && (
-            <div className="mt-4">
-              <div className="flex flex-col items-center mb-6">
+            <div className="mt-2 sm:mt-4 space-y-6 sm:space-y-8">
+              {/* Imagen y nombre de la emoción */}
+              <div className="flex flex-col items-center">
                 {emocionSeleccionada.imagen ? (
-                  <div className="w-32 h-32 mb-4 rounded-lg overflow-hidden bg-white relative">
+                  <div className="w-28 h-28 sm:w-32 sm:h-32 mb-3 rounded-xl overflow-hidden bg-white border border-gray-100 shadow-sm flex-shrink-0">
                     <img
                       src={emocionSeleccionada.imagen}
                       alt={emocionSeleccionada.nombre}
@@ -423,28 +424,30 @@ const Ses3Act1: React.FC<Ses3Act1Props> = ({
                     <div className="absolute inset-0 hidden items-center justify-center bg-gray-100 text-gray-500 text-4xl font-bold" style={{ display: 'none' }} aria-hidden>{emocionSeleccionada.nombre.charAt(0)}</div>
                   </div>
                 ) : (
-                  <div className="w-32 h-32 mb-4 bg-gray-100 rounded-lg flex items-center justify-center">
+                  <div className="w-28 h-28 sm:w-32 sm:h-32 mb-3 bg-gray-100 rounded-xl flex items-center justify-center flex-shrink-0">
                     <span className="text-4xl">{emocionSeleccionada.nombre.charAt(0)}</span>
                   </div>
                 )}
-                <h3 className="text-2xl font-bold text-gray-800">
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-800 text-center">
                   {emocionSeleccionada.nombre}
                 </h3>
               </div>
-              <div className="flex gap-3">
+
+              {/* Botones: texto completo visible, ventana más ancha */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 w-full">
                 <Button
                   onClick={() => handleClasificar('meGusta')}
-                  className="flex-1 bg-braini-green hover:bg-braini-green-dark text-white font-semibold py-3"
+                  className="w-full bg-braini-green hover:bg-braini-green-dark text-white font-semibold py-3 px-4 text-sm sm:text-base min-h-[44px]"
                 >
-                  <Heart className="w-5 h-5 mr-2 fill-current" />
-                  Me gusta
+                  <Heart className="w-5 h-5 mr-2 flex-shrink-0 fill-current" />
+                  Bien
                 </Button>
                 <Button
                   onClick={() => handleClasificar('noMeGusta')}
-                  className="flex-1 bg-braini-pink hover:bg-braini-pink-dark text-white font-semibold py-3"
+                  className="w-full bg-braini-pink hover:bg-braini-pink-dark text-white font-semibold py-3 px-4 text-sm sm:text-base min-h-[44px]"
                 >
-                  <HeartOff className="w-5 h-5 mr-2" />
-                  No me gusta
+                  <HeartOff className="w-5 h-5 mr-2 flex-shrink-0" />
+                  Regular
                 </Button>
               </div>
             </div>

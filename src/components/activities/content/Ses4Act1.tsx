@@ -61,7 +61,7 @@ const PARES_ORIGINALES: ParEmociones[] = [
   {
     id: 3,
     emocion1: { id: 21, nombre: "Paciencia", imagen: `${EMOTIONS_INFANTIL_URL}/21.%20Paciencia.png` },
-    emocion2: { id: 16, nombre: "Impaciencia", imagen: `${EMOTIONS_INFANTIL_URL}/16.%20Impaciencia.png` }
+    emocion2: { id: 11, nombre: "Frustración", imagen: `${EMOTIONS_INFANTIL_URL}/11.%20Frustracion.png` }
   },
   {
     id: 4,

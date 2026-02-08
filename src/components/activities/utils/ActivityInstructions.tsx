@@ -1,11 +1,10 @@
 import React from 'react';
-import { Info, BookOpen } from 'lucide-react';
+import { BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { formatearTexto } from '@/components/activities/utils/TextFormatter';
 import {
   getInstructionsContainerClasses,
   getDurationTextClasses,
-  getMainTitleTextClasses,
   getBorderClasses,
   getSecondaryButtonClasses,
 } from '@/components/activities/utils/ActivityColors';
@@ -38,22 +37,16 @@ const ActivityInstructions: React.FC<ActivityInstructionsProps> = ({
 
   return (
     <div className={getInstructionsContainerClasses(activityType)}>
-      {/* Título de la sección */}
-      <div className="mb-4 pb-3 border-b-2 border-gray-200">
-        <h3 className={`text-2xl font-bold ${getMainTitleTextClasses(activityType)} flex items-center gap-2`}>
-          <Info className="w-6 h-6" />
-          Información de la actividad
-        </h3>
-      </div>
-
-      {/* Duración */}
-      {duracionMin && duracionMax && (
-        <p className="text-gray-700 leading-relaxed mb-3 text-base">
-          <strong className={getDurationTextClasses(activityType)}>Duración:</strong> {duracionMin} - {duracionMax} minutos
-        </p>
+      {/* Duración como primera línea, luego separador */}
+      {duracionMin != null && duracionMax != null && (
+        <div className="mb-4 pb-3 border-b-2 border-gray-200">
+          <p className="text-gray-700 leading-relaxed text-base font-medium">
+            <strong className={getDurationTextClasses(activityType)}>Duración:</strong> {duracionMin} - {duracionMax} minutos
+          </p>
+        </div>
       )}
 
-      {/* Contenido de la actividad: puede incluir "¿Para qué?" y "¿Cómo se juega?" con ### en el texto */}
+      {/* Contenido: ¿Para qué?, ¿Cómo se juega?, etc. */}
       {comoSeJuega && (
         <div className="text-gray-700 leading-relaxed mb-4">
           <div className="text-sm">{formatearTexto(comoSeJuega)}</div>
