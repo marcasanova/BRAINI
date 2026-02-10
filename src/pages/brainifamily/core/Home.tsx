@@ -153,8 +153,8 @@ const Home = () => {
                             <div className="relative w-full pt-[56.25%] rounded-xl overflow-hidden shadow-md">
                               <iframe
                                 className="absolute inset-0 w-full h-full"
-                                src="https://www.youtube.com/embed/yXWxs8n0Jjs"
-                                title="Pizza para cenar - Misión 0"
+                                src="https://www.youtube.com/embed/D91r2nVlInE"
+                                title="Misión 0 - Vídeo introducción"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                 allowFullScreen
                               />

@@ -232,11 +232,12 @@ const HubPage = () => {
                 <div className="mb-3 sm:mb-4 md:mb-5 lg:mb-6">
                   <div className="h-px" style={{ background: '#f5827b' }}></div>
                 </div>
-                <Link 
-                  to="/brainikids"
+                <a
+                  href="https://www.espaciogenius.net"
                   className="inline-block w-full"
-                  aria-label="Acceder a Braini Kids - Material educativo en Moodle"
-                  onClick={scrollToTop}
+                  aria-label="Acceder a Braini Kids - Material educativo en Moodle (Moodle externo)"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   <Button 
                     className="w-full text-white px-4 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-4 font-bold transition-all text-xs sm:text-sm md:text-base md:hover:opacity-90 md:hover:scale-105"
@@ -250,7 +251,7 @@ const HubPage = () => {
                       <ArrowRight className="ml-1.5 sm:ml-2 w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" />
                     </span>
                   </Button>
-                </Link>
+                </a>
               </div>
             </article>
 

@@ -175,11 +175,9 @@ const Ses3Act2: React.FC<Ses3Act2Props> = ({
                     ¡Prepárate!
                   </h2>
                   <p className="text-xl text-gray-700 mb-8">
-                    Vamos a trabajar con las emociones y aprender a transformar
+                    Algunos pensamientos son como una nube gris… otros como un sol.
                     <br />
-                    pensamientos limitantes en pensamientos potenciadores.
-                    <br />
-                    <strong>¡Prepárate para este viaje emocional!</strong>
+                    <strong>¡Vamos a aprender y descubrir juntos más sobre ellos!</strong>
                   </p>
                   <Button
                     onClick={handleEmpezarReto}
