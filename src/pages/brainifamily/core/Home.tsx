@@ -117,25 +117,49 @@ const Home = () => {
                   <div className="bg-white/95 backdrop-blur-lg p-4 md:p-6 rounded-xl md:rounded-2xl shadow-xl border-0 animate-fade-in">
                     <ul className="space-y-0">
                       <li>
-                        {/* Título y descripción - ancho completo */}
-                        <div className="mb-6">
-                          <div className="text-braini-blue font-bold text-2xl md:text-3xl flex items-center gap-2 mb-4" style={{ fontWeight: 700 }}>
-                            Misión 0. <span className="text-xl md:text-2xl" style={{ fontWeight: 700 }}>¡Comienza la aventura!</span>
+                        {/* Misión 0: Título + bullets a la izquierda, vídeo a la derecha */}
+                        <div className="mb-6 grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-6 items-start">
+                          {/* Columna izquierda: título + bullets */}
+                          <div>
+                            <div
+                              className="text-braini-blue font-bold text-2xl md:text-3xl flex items-center gap-2 mb-4"
+                              style={{ fontWeight: 700 }}
+                            >
+                              Misión 0.{' '}
+                              <span className="text-xl md:text-2xl" style={{ fontWeight: 700 }}>
+                                ¡Comienza la aventura!
+                              </span>
+                            </div>
+                            <ul className="text-sm md:text-base text-gray-600 font-medium space-y-2">
+                              <li className="flex items-start">
+                                <span className="mr-3">•</span>
+                                <span>Esta misión es solo para entender el recorrido y empezar con calma.</span>
+                              </li>
+                              <li className="flex items-start">
+                                <span className="mr-3">•</span>
+                                <span>
+                                  Cada casilla del mapa es un pequeño paso de neurobienestar emocional en familia.
+                                </span>
+                              </li>
+                              <li className="flex items-start">
+                                <span className="mr-3">•</span>
+                                <span>Con él veremos por dónde vamos y todo lo que vamos logrando juntos.</span>
+                              </li>
+                            </ul>
                           </div>
-                          <ul className="text-sm md:text-base text-gray-600 font-medium mb-6 space-y-2">
-                            <li className="flex items-start">
-                              <span className="mr-3">•</span>
-                              <span>Esta misión es solo para entender el recorrido y empezar con calma.</span>
-                            </li>
-                            <li className="flex items-start">
-                              <span className="mr-3">•</span>
-                              <span>Cada casilla del mapaes un pequeño paso de neurobienestar emocional en familia.</span>
-                            </li>
-                            <li className="flex items-start">
-                              <span className="mr-3">•</span>
-                              <span>Con él veremos por dónde vamos y todo lo que vamos logrando juntos.</span>
-                            </li>
-                          </ul>
+
+                          {/* Columna derecha: vídeo de presentación (YouTube) */}
+                          <div className="w-full">
+                            <div className="relative w-full pt-[56.25%] rounded-xl overflow-hidden shadow-md">
+                              <iframe
+                                className="absolute inset-0 w-full h-full"
+                                src="https://www.youtube.com/embed/yXWxs8n0Jjs"
+                                title="Pizza para cenar - Misión 0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                allowFullScreen
+                              />
+                            </div>
+                          </div>
                         </div>
 
                         {/* Dos columnas: mapa a la izquierda, tipos de actividades a la derecha */}
