@@ -1,15 +1,8 @@
 import React from 'react';
 import { getMedalImageForNivelEducativo } from '@/constants/emotionsStorage';
 
-interface UserMedal {
-  id: number;
-  user_id: string;
-  medal_id: number;
-  fecha_obtencion: string;
-}
-
 interface MedalShelfProps {
-  userMedals: UserMedal[];
+  userMedals: Array<{ id: number; medal_id: number; fecha_obtencion: string }>;
   totalMedals: number;
   isLoading: boolean;
   childNivelEducativo?: string | null;

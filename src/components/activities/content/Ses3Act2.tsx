@@ -17,7 +17,7 @@ import {
 interface Ses3Act2Props {
   userProgress?: UserActivity;
   activityId: number;
-  levelId: string;
+  missionId: string;
   userId: string;
   activityType?: string;
   activityData?: {
@@ -96,7 +96,7 @@ type Pantalla = 'inicio' | 'situacion';
 const Ses3Act2: React.FC<Ses3Act2Props> = ({
   userProgress,
   activityId,
-  levelId,
+  missionId,
   userId,
   activityType,
   activityData,

@@ -21,7 +21,7 @@ import {
 interface Ses4Act2Props {
   userProgress?: UserActivity;
   activityId: number;
-  levelId: string;
+  missionId: string;
   userId: string;
   activityType?: string;
   activityData?: {
@@ -74,7 +74,7 @@ const REPETITIONS = 5; // Número de repeticiones
 const Ses4Act2: React.FC<Ses4Act2Props> = ({ 
   userProgress, 
   activityId, 
-  levelId, 
+  missionId, 
   userId,
   activityType = 'relajacion',
   activityData,

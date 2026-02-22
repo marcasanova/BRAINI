@@ -32,7 +32,7 @@ const EMOCION_A_IMAGEN: Record<string, string> = {
 interface Ses2Act1Props {
   userProgress?: UserActivity;
   activityId: number;
-  levelId: string;
+  missionId: string;
   userId: string;
   activityType?: string;
   activityData?: {
@@ -59,7 +59,7 @@ interface Adivinanza {
 const Ses2Act1: React.FC<Ses2Act1Props> = ({ 
   userProgress, 
   activityId, 
-  levelId, 
+  missionId, 
   userId,
   activityType,
   activityData,

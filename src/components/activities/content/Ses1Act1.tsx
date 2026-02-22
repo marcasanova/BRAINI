@@ -15,7 +15,7 @@ import {
 interface Ses1Act1Props {
   userProgress?: UserActivity;
   activityId: number;
-  levelId: string;
+  missionId: string;
   userId: string;
   activityType?: string;
   activityData?: {
@@ -51,7 +51,7 @@ interface JugadaSeleccionada {
 const Ses1Act1: React.FC<Ses1Act1Props> = ({ 
   userProgress, 
   activityId, 
-  levelId, 
+  missionId, 
   userId,
   activityType,
   activityData,

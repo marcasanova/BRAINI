@@ -4,7 +4,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { getMedalImageForNivelEducativo } from '@/constants/emotionsStorage';
 
 interface MedalProps {
-  levelNumber: number;
+  missionNumber: number;
   isEarned: boolean;
   earnedAt?: string;
   onClick?: () => void;
@@ -12,7 +12,7 @@ interface MedalProps {
   childNivelEducativo?: string | null;
 }
 
-const Medal: React.FC<MedalProps> = ({ levelNumber, isEarned, earnedAt, onClick, childNivelEducativo }) => {
+const Medal: React.FC<MedalProps> = ({ missionNumber, isEarned, earnedAt, onClick, childNivelEducativo }) => {
   const medalImage = getMedalImageForNivelEducativo(childNivelEducativo);
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('es-ES', {
@@ -23,8 +23,8 @@ const Medal: React.FC<MedalProps> = ({ levelNumber, isEarned, earnedAt, onClick,
   };
 
   const tooltipContent = isEarned 
-    ? `Nivel ${levelNumber} - Completado el ${formatDate(earnedAt!)}`
-    : `Nivel ${levelNumber} - Pendiente de completar`;
+    ? `Misión ${missionNumber} - Completado el ${formatDate(earnedAt!)}`
+    : `Misión ${missionNumber} - Pendiente de completar`;
 
   return (
     <TooltipProvider>

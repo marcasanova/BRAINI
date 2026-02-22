@@ -22,7 +22,7 @@ import { EMOTIONS_INFANTIL_URL } from '@/constants/emotionsStorage';
 interface Ses4Act1Props {
   userProgress?: UserActivity;
   activityId: number;
-  levelId: string;
+  missionId: string;
   userId: string;
   activityType?: string;
   activityData?: {
@@ -82,7 +82,7 @@ const PARES_ORIGINALES: ParEmociones[] = [
 const Ses4Act1: React.FC<Ses4Act1Props> = ({ 
   userProgress, 
   activityId, 
-  levelId, 
+  missionId, 
   userId,
   activityType,
   activityData,

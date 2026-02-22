@@ -20,7 +20,7 @@ import {
 interface Ses7Act1Props {
   userProgress?: UserActivity;
   activityId: number;
-  levelId: string;
+  missionId: string;
   userId: string;
   activityType?: string;
   activityData?: {
@@ -124,7 +124,7 @@ const EJEMPLO = {
 const Ses7Act1: React.FC<Ses7Act1Props> = ({ 
   userProgress, 
   activityId, 
-  levelId, 
+  missionId, 
   userId,
   activityType,
   activityData,

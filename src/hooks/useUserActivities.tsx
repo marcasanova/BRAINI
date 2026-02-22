@@ -4,7 +4,7 @@ import { supabase } from "../lib/supabaseClient";
 export interface Activity {
   id: number;
   titulo_actividad: string;
-  level_id: number;
+  mission_id: number;
   objetivo?: string;
   duracion_min?: number;
   duracion_max?: number;
@@ -23,7 +23,6 @@ export interface UserActivity {
   puntuacion: number | null;
   opinion: string | null;
   started_at: string | null;
-  completed_at: string | null;
   activities: Activity;
 }
 
@@ -32,7 +31,6 @@ export interface ActivityWithProgress extends Activity {
     puntuacion: number | null;
     opinion: string | null;
     started_at: string | null;
-    completed_at: string | null;
   };
 }
 
@@ -48,16 +46,16 @@ export interface ActivityNavigationProps {
   currentIndex: number;
   totalActivities: number;
   onNavigate: (activityId: number) => void;
-  onBackToLevel: () => void;
+  onBackToMission: () => void;
 }
 
 export interface ActivityRatingProps {
   activityId: number;
-  userId: string;
-  levelId?: number;
+  childId: string;
+  missionId?: number;
   activityType?: string;
   onRatingSubmitted?: () => void;
-  onMedalEarned?: (medal: any) => void;
+  onMedalEarned?: (medal: { id: number; mission_id: number; nombre: string; descripcion: string | null; icono: string; color: string }) => void;
 }
 
 export interface ActivityListProps {
@@ -66,19 +64,18 @@ export interface ActivityListProps {
   loading?: boolean;
 }
 
-export function useUserActivities(userId: string | undefined) {
+export function useUserActivities(childId: string | undefined) {
   const [activities, setActivities] = useState<UserActivity[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-  // Función para forzar actualización
   const refreshActivities = () => {
-    setRefreshTrigger(prev => prev + 1);
+    setRefreshTrigger((prev) => prev + 1);
   };
 
   useEffect(() => {
-    if (!userId) {
+    if (!childId) {
       setActivities([]);
       setLoading(false);
       return;
@@ -88,18 +85,16 @@ export function useUserActivities(userId: string | undefined) {
     setError(null);
 
     supabase
-      .from("parents_activities")
+      .from("child_activities")
       .select(`
         activity_id,
-        rating,
+        puntuacion,
         opinion,
         started_at,
-        completed_at,
         activities (
           id,
           titulo_actividad,
-          descripcion_actividad,
-          level_id,
+          mission_id,
           objetivo,
           duracion_min,
           duracion_max,
@@ -110,7 +105,7 @@ export function useUserActivities(userId: string | undefined) {
           contenido_apoyo
         )
       `)
-      .eq("user_id", userId)
+      .eq("child_id", childId)
       .order("activity_id", { ascending: true })
       .then(({ data, error }) => {
         if (error) {
@@ -125,18 +120,18 @@ export function useUserActivities(userId: string | undefined) {
         }
         setLoading(false);
       });
-  }, [userId, refreshTrigger]);
+  }, [childId, refreshTrigger]);
 
   return { activities, loading, error, refreshActivities };
 }
 
-export function useUserActivitiesByLevel(userId: string | undefined, levelId: number) {
+export function useUserActivitiesByMission(childId: string | undefined, missionId: number) {
   const [activities, setActivities] = useState<UserActivity[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!userId || !levelId) {
+    if (!childId || !missionId) {
       setActivities([]);
       setLoading(false);
       return;
@@ -145,11 +140,10 @@ export function useUserActivitiesByLevel(userId: string | undefined, levelId: nu
     setLoading(true);
     setError(null);
 
-    // Primero obtener los IDs de actividades del nivel específico
     supabase
       .from("activities")
       .select("id")
-      .eq("level_id", levelId)
+      .eq("mission_id", missionId)
       .then(({ data: activityIds, error: activityError }) => {
         if (activityError) {
           setError(activityError.message);
@@ -164,22 +158,19 @@ export function useUserActivitiesByLevel(userId: string | undefined, levelId: nu
           return;
         }
 
-        // Extraer solo los IDs
-        const ids = activityIds.map(a => a.id);
+        const ids = activityIds.map((a) => a.id);
 
-        // Ahora obtener las actividades del usuario para esos IDs específicos
         supabase
-          .from("parents_activities")
+          .from("child_activities")
           .select(`
             activity_id,
             puntuacion,
             opinion,
             started_at,
-            completed_at,
             activities (
               id,
               titulo_actividad,
-              level_id,
+              mission_id,
               objetivo,
               duracion_min,
               duracion_max,
@@ -190,7 +181,7 @@ export function useUserActivitiesByLevel(userId: string | undefined, levelId: nu
               contenido_apoyo
             )
           `)
-          .eq("user_id", userId)
+          .eq("child_id", childId)
           .in("activity_id", ids)
           .order("activity_id", { ascending: true })
           .then(({ data, error }) => {
@@ -207,7 +198,7 @@ export function useUserActivitiesByLevel(userId: string | undefined, levelId: nu
             setLoading(false);
           });
       });
-  }, [userId, levelId]);
+  }, [childId, missionId]);
 
   return { activities, loading, error };
 }

@@ -186,7 +186,6 @@ const Login = () => {
       setEmail('');
       setPassword('');
 
-      // Comprobar si el perfil está completo
       const userId = data.user?.id;
       if (!userId) {
         toast({
@@ -196,11 +195,23 @@ const Login = () => {
         });
         return;
       }
+
+      // Si es maestro, ir al dashboard de maestro
+      const { data: teacherData } = await supabase
+        .from('teachers')
+        .select('id')
+        .eq('id', userId)
+        .maybeSingle();
+
+      if (teacherData) {
+        navigate('/brainifamily/teacher');
+        return;
+      }
       
       // Obtener datos del padre
       const { data: parentData, error: parentError } = await supabase
         .from('parents')
-        .select('profile_completed, is_trial_user')
+        .select('profile_completed')
         .eq('id', userId)
         .single();
       
@@ -237,12 +248,6 @@ const Login = () => {
       // Verificar si el perfil del padre está completo
       if (parentData.profile_completed === false) {
         navigate('/brainifamily/parents-profile');
-        return;
-      }
-      
-      // Verificar si es usuario de prueba (saltar todo el onboarding)
-      if (parentData.is_trial_user === true) {
-        navigate('/brainifamily/home');
         return;
       }
       

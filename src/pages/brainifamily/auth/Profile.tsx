@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import Backgrounds from '@/components/Backgrounds';
 import { supabase } from '@/lib/supabaseClient';
 import { useToast } from '@/hooks/use-toast';
+import { useCurrentChild } from '@/hooks/useCurrentChild';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -22,6 +23,7 @@ const EXPECTATIVAS_PROGRAMA = [
 
 const Profile = () => {
   const { toast } = useToast();
+  const { childId: currentChildId } = useCurrentChild();
   const [parent, setParent] = useState<any>(null);
   const [child, setChild] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -46,14 +48,24 @@ const Profile = () => {
         if (parentError) throw parentError;
         setParent(parentData);
         setParentForm(parentData);
-        // Obtener datos del hijo/a
-        const { data: childData } = await supabase
-          .from('children')
-          .select('*')
-          .eq('parent_id', user.id)
-          .single();
-        setChild(childData);
-        setChildForm(childData || {});
+        // Obtener datos del hijo/a actual (el seleccionado en el contexto)
+        if (currentChildId) {
+          const { data: childData, error: childError } = await supabase
+            .from('children')
+            .select('*')
+            .eq('id', currentChildId)
+            .single();
+          if (!childError) {
+            setChild(childData);
+            setChildForm(childData || {});
+          } else {
+            setChild(null);
+            setChildForm({});
+          }
+        } else {
+          setChild(null);
+          setChildForm({});
+        }
       } catch (err: any) {
         toast({ 
           title: '❌ Error al cargar los datos', 
@@ -65,8 +77,7 @@ const Profile = () => {
       }
     };
     fetchData();
-    // eslint-disable-next-line
-  }, []);
+  }, [currentChildId, toast]);
 
   const handleParentChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setParentForm({ ...parentForm, [e.target.name]: e.target.value });

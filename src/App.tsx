@@ -2,7 +2,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate, useParams } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useParams, Outlet } from "react-router-dom";
+import { CurrentChildProvider } from "./contexts/CurrentChildContext";
 import NotFound from "./pages/support/NotFound";
 import ProtectedRoute from "./components/navigation/ProtectedRoute";
 import UpdatePassword from "./pages/support/UpdatePassword";
@@ -25,11 +26,15 @@ import InteligenciaEmocional from './pages/brainifamily/intelligence/Inteligenci
 import TestTMMSPadres from './pages/brainifamily/intelligence/tests/TestTMMSPadres';
 import TestEmocionalNinos from './pages/brainifamily/intelligence/tests/TestEmocionalNinos';
 import ActivityDetail from './pages/brainifamily/core/ActivityDetail';
+import TeacherRoute from './components/navigation/TeacherRoute';
+import TeacherLayout from './pages/brainifamily/teacher/TeacherLayout';
+import TeacherDashboard from './pages/brainifamily/teacher/Dashboard';
+import TeacherChildView from './pages/brainifamily/teacher/ChildView';
 
 const queryClient = new QueryClient();
 
-// Componente para redirigir rutas de sesión dinámicas
-const SessionRedirect = () => {
+// Redirige rutas legacy /sesion/:id a /brainifamily/sesion/:id
+const MissionRedirect = () => {
   const { id } = useParams<{ id: string }>();
   return <Navigate to={`/brainifamily/sesion/${id}`} replace />;
 };
@@ -58,17 +63,27 @@ const App = () => (
           <Route path="/brainifamily/signup" element={<SignUp />} />
           <Route path="/brainifamily/update-password" element={<UpdatePassword />} />
           
-          {/* BrainiFamily - Protegidas */}
-          <Route path="/brainifamily/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-          <Route path="/brainifamily/parents-profile" element={<ProtectedRoute><ParentsProfile /></ProtectedRoute>} />
-          <Route path="/brainifamily/child-profile" element={<ProtectedRoute><ChildProfile /></ProtectedRoute>} />
-          <Route path="/brainifamily/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-          <Route path="/brainifamily/sesion/:id" element={<ProtectedRoute><Activities /></ProtectedRoute>} />
-          <Route path="/brainifamily/sesion/:levelId/actividad/:activityId" element={<ProtectedRoute><ActivityDetail /></ProtectedRoute>} />
-          <Route path="/brainifamily/diario-emocional" element={<ProtectedRoute><DiarioEmocional /></ProtectedRoute>} />
-          <Route path="/brainifamily/inteligencia-emocional" element={<ProtectedRoute><InteligenciaEmocional /></ProtectedRoute>} />
-          <Route path="/brainifamily/test-tmms-padres" element={<ProtectedRoute><TestTMMSPadres /></ProtectedRoute>} />
-          <Route path="/brainifamily/test-emocional-ninos" element={<ProtectedRoute><TestEmocionalNinos /></ProtectedRoute>} />
+          {/* BrainiFamily - Rutas de maestro (solo teachers) */}
+          <Route path="/brainifamily/teacher" element={<TeacherRoute />}>
+            <Route element={<TeacherLayout />}>
+              <Route index element={<TeacherDashboard />} />
+              <Route path="nino/:childId" element={<TeacherChildView />} />
+            </Route>
+          </Route>
+
+          {/* BrainiFamily - Protegidas (con selector de hijo en contexto) */}
+          <Route element={<ProtectedRoute><CurrentChildProvider><Outlet /></CurrentChildProvider></ProtectedRoute>}>
+            <Route path="/brainifamily/home" element={<Home />} />
+            <Route path="/brainifamily/parents-profile" element={<ParentsProfile />} />
+            <Route path="/brainifamily/child-profile" element={<ChildProfile />} />
+            <Route path="/brainifamily/profile" element={<Profile />} />
+            <Route path="/brainifamily/sesion/:id" element={<Activities />} />
+            <Route path="/brainifamily/sesion/:missionId/actividad/:activityId" element={<ActivityDetail />} />
+            <Route path="/brainifamily/diario-emocional" element={<DiarioEmocional />} />
+            <Route path="/brainifamily/inteligencia-emocional" element={<InteligenciaEmocional />} />
+            <Route path="/brainifamily/test-tmms-padres" element={<TestTMMSPadres />} />
+            <Route path="/brainifamily/test-emocional-ninos" element={<TestEmocionalNinos />} />
+          </Route>
           
           {/* Páginas públicas especiales (mantener) */}
           <Route path="/conferencia" element={<Conferencia />} />
@@ -83,7 +98,7 @@ const App = () => (
           <Route path="/profile" element={<Navigate to="/brainifamily/profile" replace />} />
           <Route path="/diario-emocional" element={<Navigate to="/brainifamily/diario-emocional" replace />} />
           <Route path="/inteligencia-emocional" element={<Navigate to="/brainifamily/inteligencia-emocional" replace />} />
-          <Route path="/sesion/:id" element={<SessionRedirect />} />
+          <Route path="/sesion/:id" element={<MissionRedirect />} />
           <Route path="/test-tmms-padres" element={<Navigate to="/brainifamily/test-tmms-padres" replace />} />
           <Route path="/test-emocional-ninos" element={<Navigate to="/brainifamily/test-emocional-ninos" replace />} />
           

@@ -11,6 +11,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [userExists, setUserExists] = useState<boolean | null>(null);
+  const [isTeacher, setIsTeacher] = useState(false);
 
   useEffect(() => {
     let isMounted = true; // ✅ Prevenir race conditions
@@ -34,7 +35,24 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
           return;
         }
 
-        // 2. Verificar que el usuario existe en la BD (con timeout)
+        // 2. Si es maestro, no entrar al flujo de padre (se redirige en rutas teacher)
+        const { data: teacherData } = await supabase
+          .from('teachers')
+          .select('id')
+          .eq('id', session.user.id)
+          .maybeSingle();
+
+        if (!isMounted) return;
+
+        if (teacherData) {
+          setIsTeacher(true);
+          setUser(null);
+          setUserExists(false);
+          setLoading(false);
+          return;
+        }
+
+        // 3. Verificar que el usuario existe en parents (con timeout)
         const dbCheckPromise = supabase
           .from('parents')
           .select('id')
@@ -45,9 +63,9 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
           setTimeout(() => reject(new Error('BD Timeout')), 8000)
         );
 
-        const { data: parentData, error } = await Promise.race([dbCheckPromise, dbTimeoutPromise]) as any;
+        const { data: parentData, error } = await Promise.race([dbCheckPromise, dbTimeoutPromise]) as { data: { id: string } | null; error: Error | null };
 
-        if (!isMounted) return; // ✅ Componente desmontado
+        if (!isMounted) return;
 
         if (error || !parentData) {
           console.log('Usuario no encontrado en BD, cerrando sesión...', error?.message);
@@ -58,7 +76,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
           return;
         }
 
-        // Usuario existe y tiene sesión válida
         setUser(session.user);
         setUserExists(true);
         setLoading(false);
@@ -88,6 +105,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
         if (event === 'SIGNED_OUT' || !session) {
           setUser(null);
           setUserExists(false);
+          setIsTeacher(false);
           setLoading(false);
           return;
         }
@@ -95,13 +113,29 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
         // Solo verificar BD en eventos específicos para evitar loops
         if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
           try {
+            const { data: teacherData } = await supabase
+              .from('teachers')
+              .select('id')
+              .eq('id', session.user.id)
+              .maybeSingle();
+
+            if (!isMounted) return;
+
+            if (teacherData) {
+              setIsTeacher(true);
+              setUser(null);
+              setUserExists(false);
+              setLoading(false);
+              return;
+            }
+
             const { data: parentData, error } = await supabase
               .from('parents')
               .select('id')
               .eq('id', session.user.id)
               .single();
 
-            if (!isMounted) return; // ✅ Check again after async operation
+            if (!isMounted) return;
 
             if (error || !parentData) {
               console.log('Usuario eliminado detectado, cerrando sesión...', error?.message);
@@ -147,6 +181,10 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
         </div>
       </div>
     );
+  }
+
+  if (isTeacher) {
+    return <Navigate to="/brainifamily/teacher" replace />;
   }
 
   if (!user || !userExists) {

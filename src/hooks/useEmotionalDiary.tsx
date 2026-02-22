@@ -21,7 +21,7 @@ interface EmotionConfig {
   description: string;
 }
 
-export const useEmotionalDiary = () => {
+export const useEmotionalDiary = (childId: string | undefined) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -72,12 +72,11 @@ export const useEmotionalDiary = () => {
     }
   ];
 
-  // Guardar entrada emocional (INSERT/UPDATE) — emotion_names es un array
+  // Guardar entrada emocional (INSERT/UPDATE) por hijo seleccionado
   const saveEmotionEntry = useCallback(async (
     date: Date,
     emotionNames: string[],
-    observations?: string,
-    childId?: string
+    observations?: string
   ): Promise<EmotionalEntry | null> => {
     try {
       setLoading(true);
@@ -86,19 +85,10 @@ export const useEmotionalDiary = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Usuario no autenticado');
 
-      let finalChildId = childId;
+      const finalChildId = childId;
       if (!finalChildId) {
-        const { data: children, error: childrenError } = await supabase
-          .from('children')
-          .select('id')
-          .eq('parent_id', user.id)
-          .limit(1);
-        if (childrenError) throw new Error('No se pudo obtener la información del niño');
-        if (!children || children.length === 0) throw new Error('No se encontró ningún niño asociado a tu cuenta');
-        finalChildId = children[0].id;
-      }
-      if (!finalChildId || typeof finalChildId !== 'string' || finalChildId.length !== 36) {
-        throw new Error('ID del niño no válido');
+        setError('Selecciona un niño para guardar el diario emocional');
+        return null;
       }
 
       const entryDate = formatDateToLocalString(date);
@@ -114,7 +104,7 @@ export const useEmotionalDiary = () => {
       const { data, error: upsertError } = await supabase
         .from('emotional_diary')
         .upsert(payload, {
-          onConflict: 'user_id,entry_date',
+          onConflict: 'user_id,child_id,entry_date',
           returning: 'representation'
         });
 
@@ -126,13 +116,14 @@ export const useEmotionalDiary = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [childId]);
 
-  // Obtener entradas del mes
+  // Obtener entradas del mes del hijo seleccionado
   const getMonthEntries = useCallback(async (
     year: number,
     month: number
   ): Promise<EmotionalEntry[]> => {
+    if (!childId) return [];
     try {
       setLoading(true);
       setError(null);
@@ -140,7 +131,6 @@ export const useEmotionalDiary = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Usuario no autenticado');
 
-      // Calcular primer y último día del mes
       const startDate = new Date(year, month - 1, 1);
       const endDate = new Date(year, month, 0);
 
@@ -148,6 +138,7 @@ export const useEmotionalDiary = () => {
         .from('emotional_diary')
         .select('*')
         .eq('user_id', user.id)
+        .eq('child_id', childId)
         .gte('entry_date', formatDateToLocalString(startDate))
         .lte('entry_date', formatDateToLocalString(endDate))
         .order('entry_date', { ascending: true });
@@ -161,12 +152,13 @@ export const useEmotionalDiary = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [childId]);
 
-  // Obtener entrada de un día específico
+  // Obtener entrada de un día específico del hijo seleccionado
   const getDayEntry = useCallback(async (
     date: Date
   ): Promise<EmotionalEntry | null> => {
+    if (!childId) return null;
     try {
       setLoading(true);
       setError(null);
@@ -174,17 +166,16 @@ export const useEmotionalDiary = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Usuario no autenticado');
 
-      // Usar maybeSingle() en lugar de single() para evitar errores cuando no hay datos
       const { data, error } = await supabase
         .from('emotional_diary')
         .select('*')
         .eq('user_id', user.id)
+        .eq('child_id', childId)
         .eq('entry_date', formatDateToLocalString(date))
-        .maybeSingle(); // Esto no lanza error si no hay datos
+        .maybeSingle();
 
       if (error) throw error;
 
-      // Si no hay datos, data será null (no error)
       return data;
     } catch (err: any) {
       setError(err.message);
@@ -192,7 +183,7 @@ export const useEmotionalDiary = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [childId]);
 
   return {
     EMOTIONS_CONFIG,

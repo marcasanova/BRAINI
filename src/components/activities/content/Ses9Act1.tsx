@@ -20,7 +20,7 @@ import {
 interface Ses9Act1Props {
   userProgress?: UserActivity;
   activityId: number;
-  levelId: string;
+  missionId: string;
   userId: string;
   activityType?: string;
   activityData?: {
@@ -104,7 +104,7 @@ const SITUACIONES: Situacion[] = [
 const Ses9Act1: React.FC<Ses9Act1Props> = ({ 
   userProgress, 
   activityId, 
-  levelId, 
+  missionId, 
   userId,
   activityType,
   activityData,

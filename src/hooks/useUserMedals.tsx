@@ -1,14 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 
-interface UserMedal {
+export interface UserMedal {
   id: number;
-  user_id: string;
+  child_id: string;
   medal_id: number;
   fecha_obtencion: string;
 }
 
-export const useUserMedals = () => {
+export const useUserMedals = (childId: string | undefined) => {
   const [userMedals, setUserMedals] = useState<UserMedal[]>([]);
   const [totalMedals, setTotalMedals] = useState<number>(0);
   const [loading, setLoading] = useState(true);
@@ -18,27 +18,21 @@ export const useUserMedals = () => {
     try {
       setLoading(true);
       setError(null);
-      
-      const { data: { user }, error: authError } = await supabase.auth.getUser();
-      
-      // ✅ Si no hay usuario, limpiar datos pero NO lanzar error
-      if (authError || !user) {
-        console.log('Usuario no autenticado en useUserMedals');
+
+      if (!childId) {
         setUserMedals([]);
         setTotalMedals(0);
-        setError(null); // No es un error real
+        setLoading(false);
         return;
       }
 
-      // Obtener las medallas del usuario
       const { data: userMedalsData, error: userMedalsError } = await supabase
-        .from('parents_medals')
-        .select('id, user_id, medal_id, fecha_obtencion')
-        .eq('user_id', user.id);
+        .from('child_medals')
+        .select('id, child_id, medal_id, fecha_obtencion')
+        .eq('child_id', childId);
 
       if (userMedalsError) throw userMedalsError;
 
-      // Obtener el total de medallas disponibles en la tabla medals
       const { count, error: medalsCountError } = await supabase
         .from('medals')
         .select('*', { count: 'exact', head: true });
@@ -48,17 +42,15 @@ export const useUserMedals = () => {
       setUserMedals(userMedalsData || []);
       setTotalMedals(count || 0);
       setError(null);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error en useUserMedals:', err);
-      setError(err.message);
-      // ✅ En caso de error, limpiar datos para evitar estados inconsistentes
+      setError(err instanceof Error ? err.message : 'Error al cargar medallas');
       setUserMedals([]);
       setTotalMedals(0);
     } finally {
-      // ✅ SIEMPRE ejecutar setLoading(false)
       setLoading(false);
     }
-  }, []);
+  }, [childId]);
 
   useEffect(() => {
     fetchUserMedals();

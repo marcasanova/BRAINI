@@ -20,7 +20,7 @@ import {
 interface Ses5Act2Props {
   userProgress?: UserActivity;
   activityId: number;
-  levelId: string;
+  missionId: string;
   userId: string;
   activityType?: string;
   activityData?: {
@@ -70,7 +70,7 @@ const TOTAL_STEPS = PASOS_HADA.length;
 const Ses5Act2: React.FC<Ses5Act2Props> = ({ 
   userProgress, 
   activityId, 
-  levelId, 
+  missionId, 
   userId,
   activityType = 'relajacion',
   activityData,

@@ -30,7 +30,7 @@ import {
 interface Ses3Act1Props {
   userProgress?: UserActivity;
   activityId: number;
-  levelId: string;
+  missionId: string;
   userId: string;
   activityType?: string;
   activityData?: {
@@ -68,7 +68,7 @@ const EMOCIONES_ORIGINALES: Emocion[] = [
 const Ses3Act1: React.FC<Ses3Act1Props> = ({ 
   userProgress, 
   activityId, 
-  levelId, 
+  missionId, 
   userId,
   activityType,
   activityData,

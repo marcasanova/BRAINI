@@ -20,7 +20,7 @@ import { EMOTIONS_INFANTIL_URL } from '@/constants/emotionsStorage';
 interface Ses10Act1Props {
   userProgress?: UserActivity;
   activityId: number;
-  levelId: string;
+  missionId: string;
   userId: string;
   activityType?: string;
   activityData?: {
@@ -71,7 +71,7 @@ const emocionMap: { [key: string]: { id: number; imagen: string } } = {
 const Ses10Act1: React.FC<Ses10Act1Props> = ({ 
   userProgress, 
   activityId, 
-  levelId, 
+  missionId, 
   userId,
   activityType,
   activityData,

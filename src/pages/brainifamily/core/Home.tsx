@@ -1,82 +1,87 @@
 import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Backgrounds from '@/components/Backgrounds';
 import { supabase } from '@/lib/supabaseClient';
-import { useUserSessions } from '@/hooks/useUserLevels';
+import { useCurrentChild } from '@/hooks/useCurrentChild';
+import { useMissions } from '@/hooks/useMissions';
 import { useUserMedals } from '@/hooks/useUserMedals';
-import SessionList from '@/components/levels/LevelList';
+import MissionList from '@/components/missions/MissionList';
 import MedalShelf from '@/components/medals/MedalShelf';
 import MapDownload from '@/components/MapDownload';
 import { useToast } from '@/hooks/use-toast';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+
+interface MedalHighlightState {
+  missionIdCompleted?: number;
+  missionIdNextUnlocked?: number;
+}
 
 const Home = () => {
-  const [userId, setUserId] = useState<string | undefined>(undefined);
-  const [childName, setChildName] = useState<string | undefined>(undefined);
-  const [childNivelEducativo, setChildNivelEducativo] = useState<string | undefined>(undefined);
-  const [userMedalsMap, setUserMedalsMap] = useState<Map<number, string>>(new Map()); // Map<levelId, fecha_obtencion>
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { child, childId, children: childrenList, setCurrentChildId, loading: childLoading } = useCurrentChild();
+  const [userMedalsMap, setUserMedalsMap] = useState<Map<number, string>>(new Map());
   const [medalsLoading, setMedalsLoading] = useState(true);
+  const [medalHighlight, setMedalHighlight] = useState<MedalHighlightState>({});
   const { toast } = useToast();
 
   useEffect(() => {
-    const loadUserData = async () => {
+    if (!childId) {
+      setMedalsLoading(false);
+      return;
+    }
+    const loadMedalsMap = async () => {
       try {
-        const { data: { user }, error: authError } = await supabase.auth.getUser();
-        
-        if (authError) {
-          console.error('Error de autenticación:', authError);
-          setMedalsLoading(false);
-          return;
-        }
+        const { data: medalsData, error: medalsError } = await supabase
+          .from('child_medals')
+          .select('medal_id, fecha_obtencion')
+          .eq('child_id', childId);
 
-        setUserId(user?.id);
-        
-        if (user?.id) {
-          try {
-            // Buscar el nombre del niño en la tabla children
-            const { data: childData, error } = await supabase
-              .from('children')
-              .select('nombre, nivel_educativo')
-              .eq('parent_id', user.id)
-              .single();
-            
-            if (childData?.nombre) {
-              setChildName(childData.nombre);
-            }
-          if (childData?.nivel_educativo) {
-            setChildNivelEducativo(childData.nivel_educativo);
-          }
-
-            // Obtener medallas del usuario para el Map
-            const { data: medalsData, error: medalsError } = await supabase
-              .from('parents_medals')
-              .select('medal_id, fecha_obtencion')
-              .eq('user_id', user.id);
-
-            if (medalsError) {
-              console.error('Error al obtener medallas:', medalsError);
-            } else {
-              const medalsMap = new Map<number, string>();
-              medalsData?.forEach((medal) => {
-                medalsMap.set(medal.medal_id, medal.fecha_obtencion);
-              });
-              setUserMedalsMap(medalsMap);
-            }
-          } catch (error) {
-            console.error('Error cargando datos del usuario:', error);
-          }
+        if (medalsError) {
+          console.error('Error al obtener medallas:', medalsError);
+        } else {
+          const medalsMap = new Map<number, string>();
+          medalsData?.forEach((medal) => {
+            medalsMap.set(medal.medal_id, medal.fecha_obtencion);
+          });
+          setUserMedalsMap(medalsMap);
         }
       } catch (error) {
-        console.error('Error general:', error);
+        console.error('Error cargando medallas:', error);
       } finally {
-        // ✅ SIEMPRE ejecutar setMedalsLoading(false)
         setMedalsLoading(false);
       }
     };
+    loadMedalsMap();
+  }, [childId]);
 
-    loadUserData();
-  }, []);
+  const { missions, loading, error } = useMissions(childId);
+  const { userMedals, totalMedals, loading: medalsShelfLoading } = useUserMedals(childId);
 
-  const { sessions, loading, error } = useUserSessions(userId);
-  const { userMedals, totalMedals, loading: medalsShelfLoading } = useUserMedals();
+  // Al llegar desde "Guardar medalla", mostrar highlights en la lista de misiones y limpiar location.state
+  useEffect(() => {
+    const state = location.state as { playMedalAnimation?: boolean; missionIdCompleted?: number; missionIdNextUnlocked?: number } | null;
+    if (state?.playMedalAnimation && state.missionIdCompleted != null) {
+      setMedalHighlight({
+        missionIdCompleted: state.missionIdCompleted,
+        missionIdNextUnlocked: state.missionIdNextUnlocked,
+      });
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state, location.pathname, navigate]);
+
+  // Quitar highlights tras 2.5s
+  useEffect(() => {
+    if (medalHighlight.missionIdCompleted == null) return;
+    const t = setTimeout(() => setMedalHighlight({}), 2500);
+    return () => clearTimeout(t);
+  }, [medalHighlight.missionIdCompleted]);
 
   return (
     <Backgrounds 
@@ -88,17 +93,31 @@ const Home = () => {
       <div className="h-full flex flex-col relative z-10">
         <div className="container mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-6 flex-1 flex flex-col min-h-0">
           <div className="max-w-5xl mx-auto w-full flex flex-col min-h-0">
-            {/* Header con título - Fijo en la parte superior */}
-            <div className="mb-4 md:mb-6 animate-fade-in flex-shrink-0">
+            {/* Header con título y selector de hijo (solo si hay más de uno) */}
+            <div className="mb-4 md:mb-6 animate-fade-in flex-shrink-0 flex flex-col sm:flex-row sm:items-center gap-3">
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white" style={{ fontWeight: 900 }}>
-                {childName ? `${childName} ¡Empieza la aventura!` : '¡Empieza la aventura!'}
+                {child?.nombre ? `${child.nombre} ¡Empieza la aventura!` : '¡Empieza la aventura!'}
               </h1>
+              {childrenList.length > 1 && (
+                <Select value={child?.id ?? ''} onValueChange={setCurrentChildId}>
+                  <SelectTrigger className="w-full sm:w-auto min-w-[180px] bg-white/95 border-white text-gray-800 font-medium shadow-md hover:bg-white">
+                    <SelectValue placeholder="Elegir niño/a" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {childrenList.map((c) => (
+                      <SelectItem key={c.id} value={c.id}>
+                        {c.nombre}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
             </div>
 
             {/* Área de contenido con scroll */}
             <div className="flex-1 overflow-y-auto min-h-0">
-              {loading || medalsLoading ? (
-                <div className="text-center text-white/90 py-8 font-medium">Cargando sesiones...</div>
+              {childLoading || loading || medalsLoading ? (
+                <div className="text-center text-white/90 py-8 font-medium">Cargando misiones...</div>
               ) : error ? (
                 <div className="text-center text-red-200 py-8 font-medium">{error}</div>
               ) : (
@@ -109,7 +128,7 @@ const Home = () => {
                       userMedals={userMedals} 
                       totalMedals={totalMedals}
                       isLoading={medalsShelfLoading}
-                      childNivelEducativo={childNivelEducativo}
+                      childNivelEducativo={child?.nivel_educativo ?? undefined}
                     />
                   </div>
 
@@ -262,10 +281,16 @@ const Home = () => {
                     </ul>
                   </div>
 
-                  {/* Resto de sesiones */}
+                  {/* Resto de misiones */}
                   <div className="bg-white/95 backdrop-blur-lg p-4 md:p-6 rounded-xl md:rounded-2xl shadow-xl border-0 animate-fade-in">
                     <ul className="space-y-3 md:space-y-4">
-                      <SessionList sessions={sessions} userMedals={userMedalsMap} childNivelEducativo={childNivelEducativo} />
+                      <MissionList
+                        missions={missions}
+                        userMedals={userMedalsMap}
+                        childNivelEducativo={child?.nivel_educativo ?? undefined}
+                        highlightMissionCompleted={medalHighlight.missionIdCompleted}
+                        highlightMissionUnlocked={medalHighlight.missionIdNextUnlocked}
+                      />
                     </ul>
                   </div>
                 </div>

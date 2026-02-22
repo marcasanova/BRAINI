@@ -4,11 +4,12 @@ import EmotionSelector from '@/components/emotionalDiary/EmotionSelector';
 import EmotionEntry from '@/components/emotionalDiary/EmotionEntry';
 import EmotionCalendar from '@/components/emotionalDiary/EmotionCalendar';
 import { useEmotionalDiary } from '@/hooks/useEmotionalDiary';
+import { useCurrentChild } from '@/hooks/useCurrentChild';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/lib/supabaseClient';
 
 const DiarioEmocional = () => {
   const { toast } = useToast();
+  const { child, childId } = useCurrentChild();
   const {
     EMOTIONS_CONFIG,
     saveEmotionEntry,
@@ -17,9 +18,8 @@ const DiarioEmocional = () => {
     loading,
     error,
     clearError
-  } = useEmotionalDiary();
+  } = useEmotionalDiary(childId);
 
-  // Estados del componente (varias emociones por día)
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedEmotions, setSelectedEmotions] = useState<{ id: number; name: string; imageUrl: string; color: string; description: string }[]>([]);
   const [observations, setObservations] = useState('');
@@ -28,41 +28,16 @@ const DiarioEmocional = () => {
     year: new Date().getFullYear(),
     month: new Date().getMonth() + 1
   });
-  const [childName, setChildName] = useState<string>('');
 
-  // Cargar nombre del child
-  useEffect(() => {
-    const fetchChildName = async () => {
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
-
-        const { data: childData } = await supabase
-          .from('children')
-          .select('nombre')
-          .eq('parent_id', user.id)
-          .single();
-
-        if (childData?.nombre) {
-          setChildName(childData.nombre);
-        }
-      } catch (err) {
-        console.error('Error al cargar el nombre del child:', err);
-      }
-    };
-
-    fetchChildName();
-  }, []);
-
-  // Cargar entradas del mes actual al montar el componente
+  // Recargar entradas del mes al cambiar mes o hijo seleccionado
   useEffect(() => {
     loadMonthEntries();
-  }, [currentMonth]);
+  }, [currentMonth, childId]);
 
-  // Cargar entrada del día seleccionado
+  // Recargar entrada del día al cambiar fecha o hijo seleccionado
   useEffect(() => {
     loadDayEntry();
-  }, [selectedDate]);
+  }, [selectedDate, childId]);
 
   // Cargar entradas del mes
   const loadMonthEntries = async () => {
@@ -206,13 +181,15 @@ const DiarioEmocional = () => {
                     Diario Emocional
                   </h1>
                   <p className="text-lg sm:text-xl md:text-2xl text-white/90 font-medium">
-                    {childName 
+                    {child?.nombre 
                       ? (
                         <>
-                          Registra y observa las emociones de <span className="font-black" style={{ fontWeight: 800 }}>{childName}</span> día a día
+                          Registra y observa las emociones de <span className="font-black" style={{ fontWeight: 800 }}>{child.nombre}</span> día a día
                         </>
                       )
-                      : 'Registra y observa las emociones día a día'
+                      : childId
+                        ? 'Cargando...'
+                        : 'Selecciona un niño para ver su diario emocional'
                     }
                   </p>
                 </div>
@@ -231,8 +208,8 @@ const DiarioEmocional = () => {
                   emotions={EMOTIONS_CONFIG}
                   selectedEmotions={selectedEmotions}
                   onEmotionSelect={handleEmotionSelect}
-                  disabled={loading}
-                  childName={childName}
+                  disabled={loading || !childId}
+                  childName={child?.nombre ?? ''}
                 />
               </div>
 
@@ -242,7 +219,7 @@ const DiarioEmocional = () => {
                   observations={observations}
                   onObservationsChange={handleObservationsChange}
                   disabled={selectedEmotions.length === 0}
-                  childName={childName}
+                  childName={child?.nombre ?? ''}
                 />
               </div>
 
@@ -250,7 +227,7 @@ const DiarioEmocional = () => {
               <div className="flex-shrink-0 flex justify-center pt-2">
                 <button
                   onClick={handleSave}
-                  disabled={selectedEmotions.length === 0 || loading}
+                  disabled={selectedEmotions.length === 0 || loading || !childId}
                   className={`
                     w-full max-w-md px-4 sm:px-6 md:px-8 py-2.5 sm:py-3 rounded-xl font-semibold text-sm sm:text-base md:text-lg transition-all duration-300 transform
                     ${selectedEmotions.length > 0 && !loading

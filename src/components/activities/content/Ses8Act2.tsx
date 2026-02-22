@@ -20,7 +20,7 @@ import {
 interface Ses8Act2Props {
   userProgress?: UserActivity;
   activityId: number;
-  levelId: string;
+  missionId: string;
   userId: string;
   activityType?: string;
   activityData?: {
@@ -87,7 +87,7 @@ const TOTAL_STEPS = WHALE_STEPS.length;
 const Ses8Act2: React.FC<Ses8Act2Props> = ({ 
   userProgress, 
   activityId, 
-  levelId, 
+  missionId, 
   userId,
   activityType = 'relajacion',
   activityData,

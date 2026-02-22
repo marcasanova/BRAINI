@@ -20,7 +20,7 @@ import {
 interface Ses7Act2Props {
   userProgress?: UserActivity;
   activityId: number;
-  levelId: string;
+  missionId: string;
   userId: string;
   activityType?: string;
   activityData?: {
@@ -41,7 +41,7 @@ const BREATHING_DURATION = 20; // Duración de la respiración en segundos
 const Ses7Act2: React.FC<Ses7Act2Props> = ({ 
   userProgress, 
   activityId, 
-  levelId, 
+  missionId, 
   userId,
   activityType = 'relajacion',
   activityData,

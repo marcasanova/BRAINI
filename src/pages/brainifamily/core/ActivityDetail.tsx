@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { supabase } from '@/lib/supabaseClient';
-import { useUserActivitiesByLevel } from '@/hooks/useUserActivities';
+import { useCurrentChild } from '@/hooks/useCurrentChild';
+import { useUserActivitiesByMission } from '@/hooks/useUserActivities';
 import { UserActivity } from '@/hooks/useUserActivities';
 import Backgrounds from '@/components/Backgrounds';
 import ActivityNavigation from '@/components/activities/ActivityNavigation';
@@ -34,21 +34,17 @@ import {
 } from '@/components/activities/utils/ActivityColors';
 
 const ActivityDetail: React.FC = () => {
-  const { levelId, activityId } = useParams<{ levelId: string; activityId: string }>();
+  const { missionId: missionIdParam, activityId } = useParams<{ missionId: string; activityId: string }>();
   const navigate = useNavigate();
-  const [userId, setUserId] = useState<string | undefined>(undefined);
+  const { childId } = useCurrentChild();
   const [loading, setLoading] = useState(true);
 
-  // Obtener el usuario logeado
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setUserId(user?.id);
-      setLoading(false);
-    });
-  }, []);
+  const missionId = parseInt(missionIdParam || '0', 10);
+  const { activities, loading: activitiesLoading } = useUserActivitiesByMission(childId, missionId);
 
-  // Obtener actividades del usuario para este nivel
-  const { activities, loading: activitiesLoading } = useUserActivitiesByLevel(userId, parseInt(levelId || '0'));
+  useEffect(() => {
+    if (childId) setLoading(false);
+  }, [childId]);
 
   const handlePuzzleComplete = () => {
     // Navegar a la siguiente actividad si existe, sino volver a la sesión
@@ -56,20 +52,20 @@ const ActivityDetail: React.FC = () => {
     const nextActivity = currentIndex < activities.length - 1 ? activities[currentIndex + 1] : null;
     
     if (nextActivity) {
-      navigate(`/brainifamily/sesion/${levelId}/actividad/${nextActivity.activities.id}`);
+      navigate(`/brainifamily/sesion/${missionIdParam}/actividad/${nextActivity.activities.id}`);
     } else {
-      navigate(`/brainifamily/sesion/${levelId}?fromActivity=true`);
+      navigate(`/brainifamily/sesion/${missionIdParam}?fromActivity=true`);
     }
   };
 
   // Función para navegar entre actividades
   const handleActivityNavigate = (newActivityId: number) => {
-    navigate(`/brainifamily/sesion/${levelId}/actividad/${newActivityId}`);
+    navigate(`/brainifamily/sesion/${missionIdParam}/actividad/${newActivityId}`);
   };
 
   // Función para volver a la sesión
-  const handleBackToSession = () => {
-    navigate(`/brainifamily/sesion/${levelId}`);
+  const handleBackToMission = () => {
+    navigate(`/brainifamily/sesion/${missionIdParam}`);
   };
 
   // Obtener información de navegación
@@ -132,7 +128,7 @@ const ActivityDetail: React.FC = () => {
                     currentIndex={currentIndex}
                     totalActivities={totalActivities}
                     onNavigate={handleActivityNavigate}
-                    onBackToLevel={handleBackToSession}
+                    onBackToMission={handleBackToMission}
                   />
                 </div>
               )}
@@ -181,8 +177,8 @@ const ActivityDetail: React.FC = () => {
                         <Ses1Act1 
                           userProgress={currentActivity}
                           activityId={currentActivity.activities.id}
-                          levelId={levelId!}
-                          userId={userId!}
+                          missionId={missionIdParam!}
+                          userId={childId!}
                           activityType={currentActivity.activities.tipo_actividad}
                           activityData={{
                             duracion_min: currentActivity.activities.duracion_min,
@@ -190,14 +186,14 @@ const ActivityDetail: React.FC = () => {
                             como_se_juega: currentActivity.activities.como_se_juega,
                             investigacion_beneficios: currentActivity.activities.investigacion_beneficios
                           }}
-                          onPuzzleComplete={handleBackToSession}
+                          onPuzzleComplete={handleBackToMission}
                         />
                       ) : currentActivity.activities.id === 2 ? (
                         <Ses1Act2 
                           userProgress={currentActivity}
                           activityId={currentActivity.activities.id}
-                          levelId={levelId!}
-                          userId={userId!}
+                          missionId={missionIdParam!}
+                          userId={childId!}
                           activityType={currentActivity.activities.tipo_actividad}
                           activityData={{
                             duracion_min: currentActivity.activities.duracion_min,
@@ -205,14 +201,14 @@ const ActivityDetail: React.FC = () => {
                             como_se_juega: currentActivity.activities.como_se_juega,
                             investigacion_beneficios: currentActivity.activities.investigacion_beneficios
                           }}
-                          onPuzzleComplete={handleBackToSession}
+                          onPuzzleComplete={handleBackToMission}
                         />
                       ) : currentActivity.activities.id === 3 ? (
                         <Ses2Act1 
                           userProgress={currentActivity}
                           activityId={currentActivity.activities.id}
-                          levelId={levelId!}
-                          userId={userId!}
+                          missionId={missionIdParam!}
+                          userId={childId!}
                           activityType={currentActivity.activities.tipo_actividad}
                           activityData={{
                             duracion_min: currentActivity.activities.duracion_min,
@@ -220,14 +216,14 @@ const ActivityDetail: React.FC = () => {
                             como_se_juega: currentActivity.activities.como_se_juega,
                             investigacion_beneficios: currentActivity.activities.investigacion_beneficios
                           }}
-                          onPuzzleComplete={handleBackToSession}
+                          onPuzzleComplete={handleBackToMission}
                         />
                       ) : currentActivity.activities.id === 4 ? (
                         <Ses2Act2 
                           userProgress={currentActivity}
                           activityId={currentActivity.activities.id}
-                          levelId={levelId!}
-                          userId={userId!}
+                          missionId={missionIdParam!}
+                          userId={childId!}
                           activityType={currentActivity.activities.tipo_actividad}
                           activityData={{
                             duracion_min: currentActivity.activities.duracion_min,
@@ -235,14 +231,14 @@ const ActivityDetail: React.FC = () => {
                             como_se_juega: currentActivity.activities.como_se_juega,
                             investigacion_beneficios: currentActivity.activities.investigacion_beneficios
                           }}
-                          onPuzzleComplete={handleBackToSession}
+                          onPuzzleComplete={handleBackToMission}
                         />
                       ) : currentActivity.activities.id === 6 ? (
                         <Ses3Act1 
                           userProgress={currentActivity}
                           activityId={currentActivity.activities.id}
-                          levelId={levelId!}
-                          userId={userId!}
+                          missionId={missionIdParam!}
+                          userId={childId!}
                           activityType={currentActivity.activities.tipo_actividad}
                           activityData={{
                             duracion_min: currentActivity.activities.duracion_min,
@@ -250,14 +246,14 @@ const ActivityDetail: React.FC = () => {
                             como_se_juega: currentActivity.activities.como_se_juega,
                             investigacion_beneficios: currentActivity.activities.investigacion_beneficios
                           }}
-                          onPuzzleComplete={handleBackToSession}
+                          onPuzzleComplete={handleBackToMission}
                         />
                       ) : currentActivity.activities.id === 7 ? (
                         <Ses3Act2 
                           userProgress={currentActivity}
                           activityId={currentActivity.activities.id}
-                          levelId={levelId!}
-                          userId={userId!}
+                          missionId={missionIdParam!}
+                          userId={childId!}
                           activityType={currentActivity.activities.tipo_actividad}
                           activityData={{
                             duracion_min: currentActivity.activities.duracion_min,
@@ -265,14 +261,14 @@ const ActivityDetail: React.FC = () => {
                             como_se_juega: currentActivity.activities.como_se_juega,
                             investigacion_beneficios: currentActivity.activities.investigacion_beneficios
                           }}
-                          onPuzzleComplete={handleBackToSession}
+                          onPuzzleComplete={handleBackToMission}
                         />
                       ) : currentActivity.activities.id === 8 ? (
                         <Ses4Act1 
                           userProgress={currentActivity}
                           activityId={currentActivity.activities.id}
-                          levelId={levelId!}
-                          userId={userId!}
+                          missionId={missionIdParam!}
+                          userId={childId!}
                           activityType={currentActivity.activities.tipo_actividad}
                           activityData={{
                             duracion_min: currentActivity.activities.duracion_min,
@@ -280,14 +276,14 @@ const ActivityDetail: React.FC = () => {
                             como_se_juega: currentActivity.activities.como_se_juega,
                             investigacion_beneficios: currentActivity.activities.investigacion_beneficios
                           }}
-                          onPuzzleComplete={handleBackToSession}
+                          onPuzzleComplete={handleBackToMission}
                         />
                       ) : currentActivity.activities.id === 9 ? (
                         <Ses4Act2 
                           userProgress={currentActivity}
                           activityId={currentActivity.activities.id}
-                          levelId={levelId!}
-                          userId={userId!}
+                          missionId={missionIdParam!}
+                          userId={childId!}
                           activityType={currentActivity.activities.tipo_actividad}
                           activityData={{
                             duracion_min: currentActivity.activities.duracion_min,
@@ -295,14 +291,14 @@ const ActivityDetail: React.FC = () => {
                             como_se_juega: currentActivity.activities.como_se_juega,
                             investigacion_beneficios: currentActivity.activities.investigacion_beneficios
                           }}
-                          onPuzzleComplete={handleBackToSession}
+                          onPuzzleComplete={handleBackToMission}
                         />
                       ) : currentActivity.activities.id === 10 ? (
                         <Ses5Act1 
                           userProgress={currentActivity}
                           activityId={currentActivity.activities.id}
-                          levelId={levelId!}
-                          userId={userId!}
+                          missionId={missionIdParam!}
+                          userId={childId!}
                           activityType={currentActivity.activities.tipo_actividad}
                           activityData={{
                             duracion_min: currentActivity.activities.duracion_min,
@@ -310,14 +306,14 @@ const ActivityDetail: React.FC = () => {
                             como_se_juega: currentActivity.activities.como_se_juega,
                             investigacion_beneficios: currentActivity.activities.investigacion_beneficios
                           }}
-                          onPuzzleComplete={handleBackToSession}
+                          onPuzzleComplete={handleBackToMission}
                         />
                       ) : currentActivity.activities.id === 11 ? (
                         <Ses5Act2 
                           userProgress={currentActivity}
                           activityId={currentActivity.activities.id}
-                          levelId={levelId!}
-                          userId={userId!}
+                          missionId={missionIdParam!}
+                          userId={childId!}
                           activityType={currentActivity.activities.tipo_actividad}
                           activityData={{
                             duracion_min: currentActivity.activities.duracion_min,
@@ -325,14 +321,14 @@ const ActivityDetail: React.FC = () => {
                             como_se_juega: currentActivity.activities.como_se_juega,
                             investigacion_beneficios: currentActivity.activities.investigacion_beneficios
                           }}
-                          onPuzzleComplete={handleBackToSession}
+                          onPuzzleComplete={handleBackToMission}
                         />
                       ) : currentActivity.activities.id === 24 ? (
                         <Ses6Act1 
                           userProgress={currentActivity}
                           activityId={currentActivity.activities.id}
-                          levelId={levelId!}
-                          userId={userId!}
+                          missionId={missionIdParam!}
+                          userId={childId!}
                           activityType={currentActivity.activities.tipo_actividad}
                           activityData={{
                             duracion_min: currentActivity.activities.duracion_min,
@@ -340,14 +336,14 @@ const ActivityDetail: React.FC = () => {
                             como_se_juega: currentActivity.activities.como_se_juega,
                             investigacion_beneficios: currentActivity.activities.investigacion_beneficios
                           }}
-                          onPuzzleComplete={handleBackToSession}
+                          onPuzzleComplete={handleBackToMission}
                         />
                       ) : currentActivity.activities.id === 25 ? (
                         <Ses7Act1 
                           userProgress={currentActivity}
                           activityId={currentActivity.activities.id}
-                          levelId={levelId!}
-                          userId={userId!}
+                          missionId={missionIdParam!}
+                          userId={childId!}
                           activityType={currentActivity.activities.tipo_actividad}
                           activityData={{
                             duracion_min: currentActivity.activities.duracion_min,
@@ -355,14 +351,14 @@ const ActivityDetail: React.FC = () => {
                             como_se_juega: currentActivity.activities.como_se_juega,
                             investigacion_beneficios: currentActivity.activities.investigacion_beneficios
                           }}
-                          onPuzzleComplete={handleBackToSession}
+                          onPuzzleComplete={handleBackToMission}
                         />
                       ) : currentActivity.activities.id === 26 ? (
                         <Ses8Act1 
                           userProgress={currentActivity}
                           activityId={currentActivity.activities.id}
-                          levelId={levelId!}
-                          userId={userId!}
+                          missionId={missionIdParam!}
+                          userId={childId!}
                           activityType={currentActivity.activities.tipo_actividad}
                           activityData={{
                             duracion_min: currentActivity.activities.duracion_min,
@@ -370,14 +366,14 @@ const ActivityDetail: React.FC = () => {
                             como_se_juega: currentActivity.activities.como_se_juega,
                             investigacion_beneficios: currentActivity.activities.investigacion_beneficios
                           }}
-                          onPuzzleComplete={handleBackToSession}
+                          onPuzzleComplete={handleBackToMission}
                         />
                       ) : currentActivity.activities.id === 27 ? (
                         <Ses9Act1 
                           userProgress={currentActivity}
                           activityId={currentActivity.activities.id}
-                          levelId={levelId!}
-                          userId={userId!}
+                          missionId={missionIdParam!}
+                          userId={childId!}
                           activityType={currentActivity.activities.tipo_actividad}
                           activityData={{
                             duracion_min: currentActivity.activities.duracion_min,
@@ -385,14 +381,14 @@ const ActivityDetail: React.FC = () => {
                             como_se_juega: currentActivity.activities.como_se_juega,
                             investigacion_beneficios: currentActivity.activities.investigacion_beneficios
                           }}
-                          onPuzzleComplete={handleBackToSession}
+                          onPuzzleComplete={handleBackToMission}
                         />
                       ) : currentActivity.activities.id === 28 ? (
                         <Ses10Act1 
                           userProgress={currentActivity}
                           activityId={currentActivity.activities.id}
-                          levelId={levelId!}
-                          userId={userId!}
+                          missionId={missionIdParam!}
+                          userId={childId!}
                           activityType={currentActivity.activities.tipo_actividad}
                           activityData={{
                             duracion_min: currentActivity.activities.duracion_min,
@@ -400,14 +396,14 @@ const ActivityDetail: React.FC = () => {
                             como_se_juega: currentActivity.activities.como_se_juega,
                             investigacion_beneficios: currentActivity.activities.investigacion_beneficios
                           }}
-                          onPuzzleComplete={handleBackToSession}
+                          onPuzzleComplete={handleBackToMission}
                         />
                       ) : currentActivity.activities.id === 30 ? (
                         <Ses6Act2 
                           userProgress={currentActivity}
                           activityId={currentActivity.activities.id}
-                          levelId={levelId!}
-                          userId={userId!}
+                          missionId={missionIdParam!}
+                          userId={childId!}
                           activityType={currentActivity.activities.tipo_actividad}
                           activityData={{
                             duracion_min: currentActivity.activities.duracion_min,
@@ -415,14 +411,14 @@ const ActivityDetail: React.FC = () => {
                             como_se_juega: currentActivity.activities.como_se_juega,
                             investigacion_beneficios: currentActivity.activities.investigacion_beneficios
                           }}
-                          onPuzzleComplete={handleBackToSession}
+                          onPuzzleComplete={handleBackToMission}
                         />
                       ) : currentActivity.activities.id === 31 ? (
                         <Ses7Act2 
                           userProgress={currentActivity}
                           activityId={currentActivity.activities.id}
-                          levelId={levelId!}
-                          userId={userId!}
+                          missionId={missionIdParam!}
+                          userId={childId!}
                           activityType={currentActivity.activities.tipo_actividad}
                           activityData={{
                             duracion_min: currentActivity.activities.duracion_min,
@@ -430,14 +426,14 @@ const ActivityDetail: React.FC = () => {
                             como_se_juega: currentActivity.activities.como_se_juega,
                             investigacion_beneficios: currentActivity.activities.investigacion_beneficios
                           }}
-                          onPuzzleComplete={handleBackToSession}
+                          onPuzzleComplete={handleBackToMission}
                         />
                       ) : currentActivity.activities.id === 32 ? (
                         <Ses8Act2 
                           userProgress={currentActivity}
                           activityId={currentActivity.activities.id}
-                          levelId={levelId!}
-                          userId={userId!}
+                          missionId={missionIdParam!}
+                          userId={childId!}
                           activityType={currentActivity.activities.tipo_actividad}
                           activityData={{
                             duracion_min: currentActivity.activities.duracion_min,
@@ -445,14 +441,14 @@ const ActivityDetail: React.FC = () => {
                             como_se_juega: currentActivity.activities.como_se_juega,
                             investigacion_beneficios: currentActivity.activities.investigacion_beneficios
                           }}
-                          onPuzzleComplete={handleBackToSession}
+                          onPuzzleComplete={handleBackToMission}
                         />
                       ) : currentActivity.activities.id === 33 ? (
                         <Ses9Act2 
                           userProgress={currentActivity}
                           activityId={currentActivity.activities.id}
-                          levelId={levelId!}
-                          userId={userId!}
+                          missionId={missionIdParam!}
+                          userId={childId!}
                           activityType={currentActivity.activities.tipo_actividad}
                           activityData={{
                             duracion_min: currentActivity.activities.duracion_min,
@@ -460,7 +456,7 @@ const ActivityDetail: React.FC = () => {
                             como_se_juega: currentActivity.activities.como_se_juega,
                             investigacion_beneficios: currentActivity.activities.investigacion_beneficios
                           }}
-                          onPuzzleComplete={handleBackToSession}
+                          onPuzzleComplete={handleBackToMission}
                         />
                       ) : (
                         // Contenido genérico para el resto de actividades
@@ -493,11 +489,11 @@ const ActivityDetail: React.FC = () => {
                     </div>
 
                     {/* Componente de valoración */}
-                    {userId && (
+{childId && (
                       <ActivityRating 
-                        activityId={parseInt(activityId!)} 
-                        userId={userId}
-                        levelId={parseInt(levelId!)}
+                        activityId={parseInt(activityId!, 10)}
+                        childId={childId}
+                        missionId={missionId}
                         activityType={currentActivity?.activities.tipo_actividad}
                         onRatingSubmitted={() => {
                           // Opcional: refrescar datos o mostrar mensaje
@@ -506,7 +502,7 @@ const ActivityDetail: React.FC = () => {
                           // Cuando se gana medalla, navegar de vuelta a la sesión
                           // La medalla se mostrará desde Activities.tsx
                           setTimeout(() => {
-                            navigate(`/brainifamily/sesion/${levelId}?medalEarned=true`);
+                            navigate(`/brainifamily/sesion/${missionIdParam}?medalEarned=true`);
                           }, 1000);
                         }}
                       />

@@ -27,7 +27,7 @@ import {
 interface Ses1Act2Props {
   userProgress?: UserActivity;
   activityId: number;
-  levelId: string;
+  missionId: string;
   userId: string;
   activityType?: string;
   activityData?: {
@@ -73,7 +73,7 @@ const STEP_CONFIGS: Record<Step, StepConfig> = {
 const Ses1Act2: React.FC<Ses1Act2Props> = ({ 
   userProgress, 
   activityId, 
-  levelId, 
+  missionId, 
   userId,
   activityType,
   activityData,

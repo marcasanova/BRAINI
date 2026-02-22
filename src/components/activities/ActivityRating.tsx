@@ -8,8 +8,8 @@ import { ActivityRatingProps } from '@/hooks/useUserActivities';
 
 const ActivityRating: React.FC<ActivityRatingProps> = ({ 
   activityId, 
-  userId,
-  levelId,
+  childId,
+  missionId,
   activityType,
   onRatingSubmitted,
   onMedalEarned
@@ -39,14 +39,13 @@ const ActivityRating: React.FC<ActivityRatingProps> = ({
     }
   };
 
-  // Cargar valoración existente
   useEffect(() => {
     const loadExistingRating = async () => {
-      if (userId && activityId) {
+      if (childId && activityId) {
         const { data, error } = await supabase
-          .from('parents_activities')
+          .from('child_activities')
           .select('puntuacion, opinion')
-          .eq('user_id', userId)
+          .eq('child_id', childId)
           .eq('activity_id', activityId)
           .single();
 
@@ -59,59 +58,40 @@ const ActivityRating: React.FC<ActivityRatingProps> = ({
     };
 
     loadExistingRating();
-  }, [userId, activityId]);
+  }, [childId, activityId]);
 
   const handleStarClick = (starValue: number) => {
     setRating(starValue);
   };
 
-  // Función para verificar si el nivel se completó y se ganó medalla
-  const checkLevelCompletion = async (currentLevelId: number) => {
+  // Solo mostrar popup de medalla cuando la misión acaba de completarse (4ª actividad valorada).
+  // No comprobamos child_medals: el trigger en BD ya inserta la medalla; mostramos el popup si la misión está completada tras esta valoración.
+  const checkMissionCompletion = async (currentMissionId: number) => {
+    if (!onMedalEarned || !childId) return;
     try {
-      // Esperar un poco para que el trigger se ejecute
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 400));
 
-      // Verificar si el nivel se completó
-      const { data: levelData, error: levelError } = await supabase
-        .from('parents_levels')
+      const { data: missionData, error: missionError } = await supabase
+        .from('child_missions')
         .select('status, completed_at')
-        .eq('user_id', userId)
-        .eq('level_id', currentLevelId)
+        .eq('child_id', childId)
+        .eq('mission_id', currentMissionId)
         .single();
 
-      if (levelError) {
-        return;
-      }
+      if (missionError || !missionData) return;
+      if (missionData.status !== 'completed' || !missionData.completed_at) return;
 
-      // Si el nivel se completó, obtener la medalla
-      if (levelData.status === 'completed' && levelData.completed_at) {
-        // Obtener la medalla que corresponde a este nivel
-        const { data: medalData, error: medalError } = await supabase
-          .from('medals')
-          .select('id, level_id, nombre, descripcion, icono, color')
-          .eq('level_id', currentLevelId)
-          .single();
+      const { data: medalData, error: medalError } = await supabase
+        .from('medals')
+        .select('id, mission_id, nombre, descripcion, icono, color')
+        .eq('mission_id', currentMissionId)
+        .single();
 
-        if (medalError || !medalData) {
-          return;
-        }
-
-        // Verificar si la medalla ya existe antes de mostrarla
-        const { data: existingMedal, error: checkError } = await supabase
-          .from('parents_medals')
-          .select('medal_id')
-          .eq('user_id', userId)
-          .eq('medal_id', medalData.id)
-          .single();
-
-        // Solo mostrar medalla si no existe (es nueva)
-        if (!checkError && !existingMedal && onMedalEarned) {
-          onMedalEarned(medalData);
-        }
+      if (!medalError && medalData) {
+        onMedalEarned(medalData);
       }
     } catch (error) {
-      // Silenciar errores en la verificación
-      console.error('Error al verificar completado del nivel:', error);
+      console.error('Error al verificar completado de la misión:', error);
     }
   };
 
@@ -161,9 +141,9 @@ const ActivityRating: React.FC<ActivityRatingProps> = ({
       };
 
       const { error } = await supabase
-        .from('parents_activities')
+        .from('child_activities')
         .update(updateData)
-        .eq('user_id', userId)
+        .eq('child_id', childId)
         .eq('activity_id', activityId);
 
       if (error) throw error;
@@ -183,11 +163,8 @@ const ActivityRating: React.FC<ActivityRatingProps> = ({
         description: "Nos ayuda a seguir mejorando Braini Emotions.",
       });
 
-      // Verificar si se completó el nivel y se ganó medalla (sin bloquear la UI)
-      if (levelId) {
-        checkLevelCompletion(levelId).catch(() => {
-          // Silenciar errores en la verificación de medalla
-        });
+      if (missionId != null) {
+        checkMissionCompletion(missionId).catch(() => {});
       }
 
       if (onRatingSubmitted) {

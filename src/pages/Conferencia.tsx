@@ -66,18 +66,7 @@ const Conferencia = () => {
       if (signUpError) throw signUpError;
       if (!authData.user) throw new Error('No se pudo crear el usuario');
 
-      // 2. Auto-verificar email llamando a la función RPC
-      const { error: verifyError } = await supabase.rpc('auto_verify_trial_user', {
-        user_id: authData.user.id
-      });
-
-      if (verifyError) {
-        console.error('Error auto-verificando:', verifyError);
-      } else {
-        console.log('[Conferencia] auto_verify_trial_user ejecutada correctamente para', authData.user.id);
-      }
-
-      // 3. Hacer login automático PRIMERO (necesario para que RLS funcione)
+      // 2. Hacer login automático (necesario para que RLS funcione)
       const { error: signInError, data: signInData } = await supabase.auth.signInWithPassword({
         email: email.trim(),
         password: password
@@ -88,16 +77,14 @@ const Conferencia = () => {
       if (signInError) throw signInError;
       if (!signInData.user) throw new Error('No se pudo iniciar sesión');
 
-      // 4. Crear o actualizar registro en parents (upsert para evitar conflictos)
+      // 3. Crear o actualizar registro en parents (upsert para evitar conflictos)
       const { error: parentError } = await supabase
         .from('parents')
         .upsert({
           id: signInData.user.id,
           email: email.trim(),
           nombre: nombre.trim(),
-          profile_completed: true,
-          is_trial_user: true,
-          max_levels: 10
+          profile_completed: true
         }, {
           onConflict: 'id'
         });
@@ -106,28 +93,9 @@ const Conferencia = () => {
 
       if (parentError) throw parentError;
 
-      // DEBUG extra: comprobar qué se ha guardado realmente en parents
-      const { data: parentRow, error: parentFetchError } = await supabase
-        .from('parents')
-        .select('id, email, is_trial_user')
-        .eq('id', signInData.user.id)
-        .single();
-
-      console.log('[Conferencia] parents row after upsert', { parentRow, parentFetchError });
-
-      // DEBUG extra: comprobar qué niveles se han creado para este usuario
-      const { data: levelsRows, error: levelsError } = await supabase
-        .from('parents_levels')
-        .select('level_id')
-        .eq('user_id', signInData.user.id)
-        .order('level_id', { ascending: true });
-
-      console.log('[Conferencia] parents_levels rows for user', { levelsRows, levelsError });
-
-      // 5. Éxito - redirigir a home
       toast({
         title: "🎉 ¡Bienvenido/a a Braini Emotions!",
-        description: "Tu cuenta de prueba ha sido creada correctamente. ¡Disfruta de las sesiones!",
+        description: "Tu cuenta ha sido creada correctamente. ¡Disfruta de las sesiones!",
       });
 
       setTimeout(() => navigate('/brainifamily/home'), 1000);

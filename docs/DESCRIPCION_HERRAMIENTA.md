@@ -123,7 +123,7 @@ Con esto, la herramienta no solo ofrece actividades, sino también **evaluación
 ## 4. Base técnica (resumen)
 
 - **Frontend**: aplicación **React** (TypeScript) con **Vite**, **React Router**, **Tailwind CSS** y componentes **shadcn/ui**.
-- **Backend y datos**: **Supabase** (autenticación, base de datos y almacenamiento). Tablas relevantes incluyen: usuarios/padres, hijos (`children`), sesiones (`levels`), progreso por sesión (`parents_levels`), actividades y progreso por actividad, medallas (`medals`, `parents_medals`), y entradas del diario emocional.
+- **Backend y datos**: **Supabase** (autenticación, base de datos y almacenamiento). Tablas relevantes incluyen: usuarios/padres (`parents`), hijos (`children`), misiones (`missions`), progreso por hijo y misión (`child_missions`), actividades y progreso por actividad (`child_activities`), medallas (`medals`, `child_medals`), y entradas del diario emocional.
 - **Estado y datos**: **TanStack React Query** para gestión de datos asíncronos; hooks propios para sesiones, actividades, medallas y diario emocional.
 - **Rutas protegidas**: solo usuarios autenticados acceden a home, perfiles, sesiones, actividades, diario y tests.
 

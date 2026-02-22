@@ -21,7 +21,7 @@ import {
 interface Ses2Act2Props {
   userProgress?: UserActivity;
   activityId: number;
-  levelId: string;
+  missionId: string;
   userId: string;
   activityType?: string;
   activityData?: {
@@ -79,7 +79,7 @@ const PIZZA_STEPS: PizzaStep[] = [
 const Ses2Act2: React.FC<Ses2Act2Props> = ({ 
   userProgress, 
   activityId, 
-  levelId, 
+  missionId, 
   userId,
   activityType,
   activityData,

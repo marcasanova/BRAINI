@@ -21,7 +21,7 @@ import { EMOTIONS_INFANTIL_URL } from '@/constants/emotionsStorage';
 interface Ses5Act1Props {
   userProgress?: UserActivity;
   activityId: number;
-  levelId: string;
+  missionId: string;
   userId: string;
   activityType?: string;
   activityData?: {
@@ -85,7 +85,7 @@ const PAGINA_FINAL = {
 const Ses5Act1: React.FC<Ses5Act1Props> = ({ 
   userProgress, 
   activityId, 
-  levelId, 
+  missionId, 
   userId,
   activityType,
   activityData,

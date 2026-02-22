@@ -3,11 +3,11 @@ import Medal from './Medal';
 
 interface MedalGridProps {
   medals: Array<{
-    levelNumber: number;
+    missionNumber: number;
     isEarned: boolean;
     earnedAt?: string;
   } | null>;
-  onMedalClick: (levelNumber: number) => void;
+  onMedalClick: (missionNumber: number) => void;
 }
 
 const MedalGrid: React.FC<MedalGridProps> = ({ medals, onMedalClick }) => {
@@ -19,19 +19,19 @@ const MedalGrid: React.FC<MedalGridProps> = ({ medals, onMedalClick }) => {
           <div key={index} className="flex flex-col items-center">
             {medal ? (
               <Medal
-                levelNumber={medal.levelNumber}
+                missionNumber={medal.missionNumber}
                 isEarned={medal.isEarned}
                 earnedAt={medal.earnedAt}
-                onClick={() => onMedalClick(medal.levelNumber)}
+                onClick={() => onMedalClick(medal.missionNumber)}
               />
             ) : (
               <div className="w-16 h-16 border-2 border-dashed border-gray-300 bg-gray-50 rounded-full flex items-center justify-center">
                 <div className="w-6 h-6 text-gray-300">?</div>
               </div>
             )}
-            {/* Número del nivel */}
+            {/* Número de misión */}
             <span className="text-xs text-gray-500 mt-2 font-medium">
-              N{index + 1}
+              M{index + 1}
             </span>
           </div>
         ))}

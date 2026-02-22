@@ -52,7 +52,7 @@ const ParentsProfile = () => {
         
         const { data, error: fetchError } = await supabase
           .from('parents')
-          .select('profile_completed, nombre, relacion_con_menor, is_trial_user')
+          .select('profile_completed, nombre, relacion_con_menor')
           .eq('id', user.id)
           .single();
         
@@ -60,12 +60,6 @@ const ParentsProfile = () => {
         
         if (data) {
           if (data.profile_completed) {
-            navigate('/brainifamily/home');
-            return;
-          }
-          
-          // Verificar si es usuario de prueba (saltar onboarding)
-          if (data.is_trial_user === true) {
             navigate('/brainifamily/home');
             return;
           }

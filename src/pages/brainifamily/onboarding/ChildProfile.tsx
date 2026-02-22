@@ -59,23 +59,6 @@ const ChildProfile = () => {
         const { data: { user }, error: userError } = await supabase.auth.getUser();
         if (userError || !user) throw new Error('No se pudo obtener el usuario autenticado.');
         
-        // Verificar si es usuario de prueba (saltar onboarding)
-        const { data: parentData, error: parentError } = await supabase
-          .from('parents')
-          .select('is_trial_user')
-          .eq('id', user.id)
-          .single();
-        
-        if (parentError && parentError.code !== 'PGRST116') {
-          // Error real, no solo "no encontrado"
-          throw parentError;
-        }
-        
-        if (parentData?.is_trial_user === true) {
-          navigate('/brainifamily/home');
-          return;
-        }
-        
         const { data, error: fetchError } = await supabase
           .from('children')
           .select('profile_completed')

@@ -21,7 +21,7 @@ import { EMOTIONS_INFANTIL_URL } from '@/constants/emotionsStorage';
 interface Ses6Act1Props {
   userProgress?: UserActivity;
   activityId: number;
-  levelId: string;
+  missionId: string;
   userId: string;
   activityType?: string;
   activityData?: {
@@ -64,7 +64,7 @@ const EMOCIONES_POSITIVAS: Omit<Emocion, 'id' | 'imagen'>[] = [
 const Ses6Act1: React.FC<Ses6Act1Props> = ({ 
   userProgress, 
   activityId, 
-  levelId, 
+  missionId, 
   userId,
   activityType,
   activityData,

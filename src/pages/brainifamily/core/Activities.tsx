@@ -1,22 +1,22 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/lib/supabaseClient";
-import { SESSION_STATUS } from "@/constants/levelStatus";
-import { UserSession } from "@/hooks/useUserLevels";
-import { useUserSessions } from "@/hooks/useUserLevels";
-import { useUserActivitiesByLevel } from "@/hooks/useUserActivities";
+import { MissionWithProgress } from "@/hooks/useMissions";
+import { useCurrentChild } from "@/hooks/useCurrentChild";
+import { useMissions } from "@/hooks/useMissions";
+import { useUserActivitiesByMission } from "@/hooks/useUserActivities";
 import { UserActivity } from "@/hooks/useUserActivities";
 import Backgrounds from '@/components/Backgrounds';
-import SessionNavigation from '@/components/levels/LevelNavigation';
+import MissionNavigation from '@/components/missions/MissionNavigation';
 import MedalAnimation from '@/components/medals/MedalAnimation';
 import ActivityList from '@/components/activities/ActivityList';
 import { formatearDescripcionMision } from '@/components/activities/utils/TextFormatter';
 
 interface Medal {
   id: number;
-  level_id: number;
+  mission_id: number;
   nombre: string;
-  descripcion: string;
+  descripcion: string | null;
   icono: string;
   color: string;
 }
@@ -25,73 +25,42 @@ const Activities: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
-  const [userId, setUserId] = useState<string | undefined>(undefined);
-  const [session, setSession] = useState<UserSession | null>(null);
+  const { child, childId } = useCurrentChild();
+  const [currentMission, setCurrentMission] = useState<MissionWithProgress | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [earnedMedal, setEarnedMedal] = useState<Medal | null>(null);
-  const [childNivelEducativo, setChildNivelEducativo] = useState<string | null>(null);
   const [isReturningFromActivity, setIsReturningFromActivity] = useState(false);
 
-  // Obtener el usuario logeado
-  useEffect(() => {
-    supabase.auth.getUser().then(async ({ data: { user } }) => {
-      const userId = user?.id;
-      setUserId(userId);
-
-      if (userId) {
-        // Obtener nivel educativo del niño para decidir la imagen de medalla
-        try {
-          const { data: childData } = await supabase
-            .from('children')
-            .select('nivel_educativo')
-            .eq('parent_id', userId)
-            .single();
-
-          if (childData?.nivel_educativo) {
-            setChildNivelEducativo(childData.nivel_educativo);
-          }
-        } catch (error) {
-          console.error('Error obteniendo nivel educativo del niño:', error);
-        }
-      }
-    });
-  }, []);
-
-  // Obtener todas las sesiones del usuario para navegación
-  const { sessions, loading: sessionsLoading, getAdjacentSessions, refreshSessions } = useUserSessions(userId);
+  const { missions, loading: missionsLoading, getAdjacentMissions, refreshMissions } = useMissions(childId);
 
   // Función para manejar cuando se gana una medalla
   const handleMedalEarned = useCallback((medal: Medal) => {
     // Solo mostrar medalla si no estamos volviendo de una actividad
     if (!isReturningFromActivity) {
       setEarnedMedal(medal);
-      // Refrescar las sesiones para mostrar el progreso actualizado
-      refreshSessions();
+      refreshMissions();
     }
-  }, [isReturningFromActivity, refreshSessions]);
+  }, [isReturningFromActivity, refreshMissions]);
 
-  // Función para verificar si se ganó medalla
   const checkForMedal = useCallback(async () => {
-    if (!userId || !id) return;
+    if (!childId || !id) return;
 
     try {
-      // Verificar si el nivel está completado
-      const { data: levelData, error: levelError } = await supabase
-        .from('parents_levels')
+      const { data: missionData, error: missionError } = await supabase
+        .from('child_missions')
         .select('status, completed_at')
-        .eq('user_id', userId)
-        .eq('level_id', id)
+        .eq('child_id', childId)
+        .eq('mission_id', parseInt(id!, 10))
         .single();
 
-      if (levelError || !levelData) return;
+      if (missionError || !missionData) return;
 
-      // Si el nivel se completó, obtener la medalla
-      if (levelData.status === 'completed' && levelData.completed_at) {
+      if (missionData.status === 'completed' && missionData.completed_at) {
         const { data: medalData, error: medalError } = await supabase
           .from('medals')
-          .select('id, level_id, nombre, descripcion, icono, color')
-          .eq('level_id', parseInt(id!))
+          .select('id, mission_id, nombre, descripcion, icono, color')
+          .eq('mission_id', parseInt(id!, 10))
           .single();
 
         if (!medalError && medalData) {
@@ -101,7 +70,7 @@ const Activities: React.FC = () => {
     } catch (error) {
       console.error('Error al verificar medalla:', error);
     }
-  }, [userId, id, handleMedalEarned]);
+  }, [childId, id, handleMedalEarned]);
 
   // Detectar si volvemos de una actividad o si se ganó medalla
   useEffect(() => {
@@ -119,57 +88,53 @@ const Activities: React.FC = () => {
       }, 2000);
     }
 
-    if (medalEarned === 'true' && userId) {
-      // Verificar si se ganó medalla y mostrarla
+    if (medalEarned === 'true' && childId) {
       checkForMedal();
-      // Limpiar el parámetro de la URL
       navigate(`/brainifamily/sesion/${id}`, { replace: true });
     }
-  }, [location.search, navigate, id, userId, checkForMedal]);
+  }, [location.search, navigate, id, childId, checkForMedal]);
 
-  // Obtener la sesión del usuario
   useEffect(() => {
-    if (!userId || !id) return;
+    if (!childId || !id) return;
     setLoading(true);
     setError(null);
     supabase
-      .from("parents_levels")
+      .from("child_missions")
       .select(
         `
-        level_id,
+        mission_id,
         status,
-        levels (
+        missions (
           id,
           titulo,
           descripcion
         )
         `
       )
-      .eq("user_id", userId)
-      .eq("level_id", id)
+      .eq("child_id", childId)
+      .eq("mission_id", parseInt(id!, 10))
       .single()
       .then(({ data, error }) => {
         if (error || !data) {
           setError("No se encontró la misión o no tienes acceso.");
-          setSession(null);
+          setCurrentMission(null);
           setLoading(false);
         } else {
           const mapped = {
             ...data,
-            levels: Array.isArray(data.levels) ? data.levels[0] : data.levels,
-          } as UserSession;
-          setSession(mapped);
+            missions: Array.isArray(data.missions) ? data.missions[0] : data.missions,
+          } as MissionWithProgress;
+          setCurrentMission(mapped);
           setLoading(false);
         }
       });
-  }, [userId, id]);
+  }, [childId, id]);
 
-  // Obtener actividades del usuario para este nivel
-  const { activities, loading: activitiesLoading, error: activitiesError } = useUserActivitiesByLevel(userId, session?.levels.id || 0);
+  const { activities, loading: activitiesLoading, error: activitiesError } = useUserActivitiesByMission(childId, currentMission?.missions?.id ?? 0);
 
   // Función para navegar entre sesiones
-  const handleNavigate = (levelId: number) => {
-    navigate(`/brainifamily/sesion/${levelId}`);
+  const handleNavigate = (missionId: number) => {
+    navigate(`/brainifamily/sesion/${missionId}`);
   };
 
   // Función para manejar click en actividad
@@ -177,16 +142,21 @@ const Activities: React.FC = () => {
     navigate(`/brainifamily/sesion/${id}/actividad/${activityId}`);
   };
 
-  // Función para cerrar la animación de medalla y navegar a home
-  const handleMedalClose = () => {
-    setEarnedMedal(null);
-    // Siempre navegar a la página principal donde están todos los niveles
-    navigate('/brainifamily/home');
-  };
+  const { previousMission, nextMission, currentIndex, totalMissions } = getAdjacentMissions(parseInt(id!, 10));
 
-  // Obtener sesiones adyacentes para navegación
-  const { previousSession, nextSession, currentIndex, totalSessions } = getAdjacentSessions(parseInt(id!));
-  const isLastSession = currentIndex === totalSessions - 1;
+  const handleMedalClose = () => {
+    const missionIdCompleted = parseInt(id!, 10);
+    const missionIdNextUnlocked = nextMission?.missions?.id ?? undefined;
+    setEarnedMedal(null);
+    navigate('/brainifamily/home', {
+      state: {
+        playMedalAnimation: true,
+        missionIdCompleted,
+        missionIdNextUnlocked,
+      },
+    });
+  };
+  const isLastMission = currentIndex === totalMissions - 1;
 
   return (
     <Backgrounds 
@@ -201,21 +171,21 @@ const Activities: React.FC = () => {
             {/* Header fijo - No hace scroll */}
             <div className="mb-4 md:mb-6 animate-fade-in flex-shrink-0 space-y-4">
               {/* Navegación entre sesiones - Arriba del todo */}
-              {!loading && !sessionsLoading && !activitiesLoading && session && (
+              {!loading && !missionsLoading && !activitiesLoading && currentMission && (
                 <div className="mb-4">
-                  <SessionNavigation
-                    currentLevelId={parseInt(id!)}
-                    previousSession={previousSession}
-                    nextSession={nextSession}
+                  <MissionNavigation
+                    currentMissionId={parseInt(id!)}
+                    previousMission={previousMission}
+                    nextMission={nextMission}
                     currentIndex={currentIndex}
-                    totalSessions={totalSessions}
-                    onNavigate={handleNavigate}
+                    totalMissions={totalMissions}
+                    onNavigate={(missionId) => handleNavigate(missionId)}
                   />
                 </div>
               )}
 
               {/* Título y subtítulo de la sesión */}
-              {loading || sessionsLoading || activitiesLoading ? (
+              {loading || missionsLoading || activitiesLoading ? (
                 <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white" style={{ fontWeight: 900 }}>
                   Cargando misión...
                 </h1>
@@ -223,15 +193,15 @@ const Activities: React.FC = () => {
                 <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white" style={{ fontWeight: 900 }}>
                   {error || activitiesError}
                 </h1>
-              ) : session ? (
+              ) : currentMission ? (
                 <>
                   <div className="mb-2">
                     <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-1" style={{ fontWeight: 900 }}>
-                      Misión {session.levels.id}. <span className="text-xl sm:text-2xl md:text-3xl font-bold" style={{ fontWeight: 700 }}>{session.levels.titulo}</span>
+                      Misión {currentMission.missions.id}. <span className="text-xl sm:text-2xl md:text-3xl font-bold" style={{ fontWeight: 700 }}>{currentMission.missions.titulo}</span>
                     </h1>
                   </div>
                   <div className="text-lg sm:text-xl md:text-2xl text-white/90 font-medium">
-                    {formatearDescripcionMision(session.levels.descripcion)}
+                    {formatearDescripcionMision(currentMission.missions.descripcion ?? '')}
                   </div>
                 </>
               ) : null}
@@ -239,11 +209,11 @@ const Activities: React.FC = () => {
 
             {/* Área de contenido con scroll */}
             <div className="flex-1 overflow-y-auto min-h-0">
-              {loading || sessionsLoading || activitiesLoading ? (
+              {loading || missionsLoading || activitiesLoading ? (
                 <div className="text-center text-white/90 py-8 font-medium">Cargando misión...</div>
               ) : error || activitiesError ? (
                 <div className="text-center text-red-200 py-8 font-medium">{error || activitiesError}</div>
-              ) : !session ? (
+              ) : !currentMission ? (
                 <div className="text-center text-white/90 py-8 font-medium">No se encontró la misión</div>
               ) : (
                 <div className="space-y-4 md:space-y-5 pb-20 md:pb-4">
@@ -273,7 +243,7 @@ const Activities: React.FC = () => {
       {earnedMedal && (
         <MedalAnimation
           medal={earnedMedal}
-          childNivelEducativo={childNivelEducativo}
+          childNivelEducativo={child?.nivel_educativo ?? undefined}
           onClose={handleMedalClose}
         />
       )}
