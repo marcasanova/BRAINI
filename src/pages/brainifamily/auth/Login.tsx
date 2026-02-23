@@ -251,15 +251,17 @@ const Login = () => {
         return;
       }
       
-      // Verificar si el perfil del hijo está completo
-      const { data: childData, error: childError } = await supabase
+      // Verificar si el perfil del hijo está completo — limit(1) evita 406
+      const { data: childRows, error: childError } = await supabase
         .from('children')
         .select('profile_completed')
         .eq('parent_id', userId)
-        .single();
+        .order('created_at', { ascending: true })
+        .limit(1);
       
-      if (childError && childError.code !== 'PGRST116') {
-        // Error real, no solo "no encontrado"
+      const childData = childRows?.[0] ?? null;
+      
+      if (childError) {
         toast({
           title: "❌ Error al cargar el perfil del menor",
           description: "No se pudo cargar la información del perfil del menor. Por favor, intenta iniciar sesión de nuevo.",

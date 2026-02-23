@@ -6,6 +6,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/lib/supabaseClient';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle } from 'lucide-react';
+import { useCurrentChildContext } from '@/contexts/CurrentChildContext';
 
 // Rutas de assets públicos
 const logoBraini = '/logo/logoBraini.png';
@@ -50,6 +51,7 @@ const ChildProfile = () => {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { refetch: refetchChildren } = useCurrentChildContext();
 
   useEffect(() => {
     const checkChildExists = async () => {
@@ -59,13 +61,16 @@ const ChildProfile = () => {
         const { data: { user }, error: userError } = await supabase.auth.getUser();
         if (userError || !user) throw new Error('No se pudo obtener el usuario autenticado.');
         
-        const { data, error: fetchError } = await supabase
+        const { data: rows, error: fetchError } = await supabase
           .from('children')
           .select('profile_completed')
           .eq('parent_id', user.id)
-          .single();
+          .order('created_at', { ascending: true })
+          .limit(1);
         
-        if (fetchError && fetchError.code !== 'PGRST116') throw fetchError;
+        if (fetchError) throw fetchError;
+        
+        const data = rows?.[0] ?? null;
         
         // Si existe y profile_completed = true, redirigir a home
         if (data?.profile_completed === true) {
@@ -75,13 +80,15 @@ const ChildProfile = () => {
         
         // Si existe pero profile_completed = false, cargar los datos existentes
         if (data && data.profile_completed === false) {
-          const { data: childData, error: childFetchError } = await supabase
+          const { data: childRows, error: childFetchError } = await supabase
             .from('children')
             .select('nombre, apellidos, genero, nivel_educativo')
             .eq('parent_id', user.id)
-            .single();
+            .order('created_at', { ascending: true })
+            .limit(1);
           
-          if (!childFetchError && childData) {
+          if (!childFetchError && childRows?.[0]) {
+            const childData = childRows[0];
             setForm({
               nombre: childData.nombre || '',
               apellidos: childData.apellidos || '',
@@ -171,31 +178,33 @@ const ChildProfile = () => {
         profile_completed: true,
       };
 
-      // Verificar si ya existe un registro (perfil incompleto)
-      const { data: existingChild, error: checkError } = await supabase
+      // Verificar si ya existe un registro (perfil incompleto) — limit(1) evita 406
+      const { data: rows, error: checkError } = await supabase
         .from('children')
         .select('id')
         .eq('parent_id', user.id)
-        .single();
+        .order('created_at', { ascending: true })
+        .limit(1);
+
+      const existingChild = rows?.[0] ?? null;
 
       let error;
       
-      if (checkError && checkError.code === 'PGRST116') {
+      if (checkError) {
+        error = checkError;
+      } else if (!existingChild) {
         // No existe, crear nuevo registro
         const { error: insertError } = await supabase
           .from('children')
           .insert(datosHijo);
         error = insertError;
-      } else if (!checkError && existingChild) {
+      } else {
         // Existe, actualizar registro existente
         const { error: updateError } = await supabase
           .from('children')
           .update(datosHijo)
           .eq('id', existingChild.id);
         error = updateError;
-      } else {
-        // Error al verificar
-        error = checkError;
       }
 
       if (error) {
@@ -235,6 +244,8 @@ const ChildProfile = () => {
         variant: 'default' 
       });
       
+      // Refrescar lista de hijos en el contexto para que Home muestre misiones al instante
+      if (refetchChildren) await refetchChildren();
       setTimeout(() => navigate('/brainifamily/home'), 1200);
     } catch (err: any) {
       // Error ya manejado arriba
