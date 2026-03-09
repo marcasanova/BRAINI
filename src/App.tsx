@@ -2,12 +2,13 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate, useParams, Outlet } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useParams, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import { CurrentChildProvider } from "./contexts/CurrentChildContext";
 import NotFound from "./pages/support/NotFound";
 import ProtectedRoute from "./components/navigation/ProtectedRoute";
 import UpdatePassword from "./pages/support/UpdatePassword";
-import HubPage from './pages/HubPage';
+import LandingPage from './pages/LandingPage';
 import BrainiKidsLanding from './pages/brainikids/BrainiKidsLanding';
 import BrainiJuniorsLanding from './pages/brainijuniors/BrainiJuniorsLanding';
 import BrainiFamilyLanding from './pages/brainifamily/BrainiFamilyLanding';
@@ -39,15 +40,30 @@ const MissionRedirect = () => {
   return <Navigate to={`/brainifamily/sesion/${id}`} replace />;
 };
 
+// Si Supabase redirige a la raíz con hash de recuperación, llevar a la página de cambiar contraseña
+const RecoveryRedirectGuard = () => {
+  const { pathname, hash } = useLocation();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (pathname !== "/" || !hash) return;
+    const params = new URLSearchParams(hash.replace(/^#/, ""));
+    if (params.get("type") === "recovery" && params.get("access_token")) {
+      navigate(`/brainifamily/update-password${hash}`, { replace: true });
+    }
+  }, [pathname, hash, navigate]);
+  return null;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <RecoveryRedirectGuard />
         <Routes>
           {/* Hub Principal */}
-          <Route path="/" element={<HubPage />} />
+          <Route path="/" element={<LandingPage />} />
           
           {/* BrainiKids - Landing */}
           <Route path="/brainikids" element={<BrainiKidsLanding />} />

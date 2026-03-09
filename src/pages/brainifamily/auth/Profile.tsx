@@ -25,6 +25,7 @@ const Profile = () => {
   const { toast } = useToast();
   const { childId: currentChildId } = useCurrentChild();
   const [parent, setParent] = useState<any>(null);
+  const [children, setChildren] = useState<any[]>([]);
   const [child, setChild] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [editParent, setEditParent] = useState(false);
@@ -39,7 +40,6 @@ const Profile = () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) throw new Error('No autenticado');
-        // Obtener datos del parent
         const { data: parentData, error: parentError } = await supabase
           .from('parents')
           .select('*')
@@ -48,24 +48,16 @@ const Profile = () => {
         if (parentError) throw parentError;
         setParent(parentData);
         setParentForm(parentData);
-        // Obtener datos del hijo/a actual (el seleccionado en el contexto)
-        if (currentChildId) {
-          const { data: childData, error: childError } = await supabase
-            .from('children')
-            .select('*')
-            .eq('id', currentChildId)
-            .single();
-          if (!childError) {
-            setChild(childData);
-            setChildForm(childData || {});
-          } else {
-            setChild(null);
-            setChildForm({});
-          }
-        } else {
-          setChild(null);
-          setChildForm({});
-        }
+        const { data: childrenData, error: childrenError } = await supabase
+          .from('children')
+          .select('*')
+          .eq('parent_id', user.id)
+          .order('created_at', { ascending: true });
+        if (childrenError) throw childrenError;
+        setChildren(childrenData ?? []);
+        setChild(null);
+        setChildForm({});
+        setEditChild(false);
       } catch (err: any) {
         toast({ 
           title: '❌ Error al cargar los datos', 
@@ -77,7 +69,7 @@ const Profile = () => {
       }
     };
     fetchData();
-  }, [currentChildId, toast]);
+  }, [toast]);
 
   const handleParentChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setParentForm({ ...parentForm, [e.target.name]: e.target.value });
@@ -114,6 +106,7 @@ const Profile = () => {
   };
 
   const saveChild = async () => {
+    if (!child?.id) return;
     try {
       setLoading(true);
       const { error } = await supabase
@@ -122,6 +115,7 @@ const Profile = () => {
         .eq('id', child.id);
       if (error) throw error;
       setChild(childForm);
+      setChildren((prev) => prev.map((ch) => (ch.id === child.id ? { ...ch, ...childForm } : ch)));
       setEditChild(false);
       setAccordionValue('');
       toast({ 
@@ -635,8 +629,26 @@ const Profile = () => {
                 </Accordion>
               </Card>
 
-              {/* 2. Datos del Hijo/a */}
-              <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0">
+              {/* 2. Datos de cada hijo/a */}
+              {children.length === 0 ? (
+                <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0">
+                  <CardContent className="py-12">
+                    <div className="text-center">
+                      <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Baby className="w-8 h-8 text-gray-400" />
+                      </div>
+                      <p className="text-gray-500 font-medium">No hay datos de hijos/as registrados</p>
+                      <p className="text-sm text-gray-400 mt-1">Los datos aparecerán aquí cuando se registren</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              ) : (
+                children.map((c) => {
+                  const childAccordionValue = 'child-info-' + c.id;
+                  const isEditingThis = editChild && child?.id === c.id;
+                  const displayChild = isEditingThis ? child : c;
+                  return (
+              <Card key={c.id} className="bg-white/95 backdrop-blur-lg shadow-xl border-0">
                 <CardHeader className="pb-3 sm:pb-4">
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
                     <div className="flex items-center gap-2 sm:gap-3">
@@ -645,9 +657,9 @@ const Profile = () => {
                       </div>
                       <div className="min-w-0">
                         <CardTitle className="text-base sm:text-lg md:text-xl text-gray-800">
-                          Datos de {child?.nombre ? child.nombre : 'Hijo/a'}
+                          Datos de {displayChild?.nombre ? displayChild.nombre : 'Hijo/a'}
                         </CardTitle>
-                        {editChild && (
+                        {isEditingThis && (
                           <p className="text-[10px] sm:text-xs text-braini-pink font-medium mt-0.5 sm:mt-1 flex items-center gap-1">
                             <Edit3 className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                             Modo edición
@@ -655,25 +667,25 @@ const Profile = () => {
                         )}
                       </div>
                     </div>
-                    {child && !editChild ? (
+                    {!isEditingThis ? (
                       <div className="flex gap-1.5 sm:gap-2 w-full sm:w-auto">
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => {
-                            setAccordionValue(accordionValue === 'child-info' ? '' : 'child-info');
-                          }}
+                          onClick={() => setAccordionValue(accordionValue === childAccordionValue ? '' : childAccordionValue)}
                           className="border-gray-300 text-gray-700 hover:bg-gray-50 text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2 flex-1 sm:flex-initial"
                         >
                           <Eye className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                          <span className="hidden sm:inline">{accordionValue === 'child-info' ? 'Ocultar' : 'Ver'}</span>
+                          <span className="hidden sm:inline">{accordionValue === childAccordionValue ? 'Ocultar' : 'Ver'}</span>
                         </Button>
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => {
+                            setChild(c);
+                            setChildForm({ ...c });
                             setEditChild(true);
-                            setAccordionValue('child-info');
+                            setAccordionValue(childAccordionValue);
                           }}
                           className="border-braini-pink text-braini-pink hover:bg-braini-pink hover:text-white text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2 flex-1 sm:flex-initial"
                         >
@@ -681,14 +693,15 @@ const Profile = () => {
                           Editar
                         </Button>
                       </div>
-                    ) : child && editChild ? (
+                    ) : (
                       <div className="flex gap-1.5 sm:gap-2 w-full sm:w-auto">
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => {
                             setEditChild(false);
-                            setChildForm(child);
+                            setChild(null);
+                            setChildForm({});
                             setAccordionValue('');
                           }}
                           className="border-gray-300 text-gray-700 hover:bg-gray-50 text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2 flex-1 sm:flex-initial"
@@ -698,10 +711,7 @@ const Profile = () => {
                         </Button>
                         <Button
                           size="sm"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            saveChild();
-                          }}
+                          onClick={(e) => { e.preventDefault(); saveChild(); }}
                           disabled={!hasChildChanges || loading}
                           className="bg-braini-pink hover:bg-braini-pink-dark text-white font-semibold text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2 flex-1 sm:flex-initial disabled:opacity-50 disabled:cursor-not-allowed"
                         >
@@ -709,15 +719,14 @@ const Profile = () => {
                           Guardar
                         </Button>
                       </div>
-                    ) : null}
+                    )}
                   </div>
                 </CardHeader>
                 <Accordion type="single" collapsible value={accordionValue} onValueChange={setAccordionValue} className="w-full">
-                  <AccordionItem value="child-info" className="border-none">
+                  <AccordionItem value={childAccordionValue} className="border-none">
                     <AccordionContent>
                       <CardContent className="pt-0">
-                        {child ? (
-                          editChild ? (
+                        {isEditingThis ? (
                             <form className="space-y-3 sm:space-y-4" onSubmit={e => { e.preventDefault(); saveChild(); }}>
                               {/* Información Personal */}
                               <div className="space-y-3 sm:space-y-4 bg-braini-pink/10 p-3 sm:p-4 rounded-lg border border-braini-pink/20">
@@ -843,97 +852,86 @@ const Profile = () => {
                                 </div>
                               </div>
                             </form>
-                          ) : (
+                        ) : (
                             <div className="space-y-3 sm:space-y-4">
-                              {/* Información Personal */}
                               <div className="space-y-2 sm:space-y-3 bg-braini-pink/10 p-3 sm:p-4 rounded-lg border border-braini-pink/20">
-                                <h4 className="font-semibold text-gray-800 text-sm sm:text-base">
-                                  Información Personal
-                                </h4>
+                                <h4 className="font-semibold text-gray-800 text-sm sm:text-base">Información Personal</h4>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3">
                                   <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
                                     <Baby className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink flex-shrink-0" />
                                     <div className="min-w-0 flex-1">
                                       <p className="text-[10px] sm:text-xs text-gray-500 font-medium">Nombre</p>
-                                      <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">{child?.nombre || 'No especificado'}</p>
+                                      <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">{c?.nombre || 'No especificado'}</p>
                                     </div>
                                   </div>
                                   <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
                                     <Baby className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink flex-shrink-0" />
                                     <div className="min-w-0 flex-1">
                                       <p className="text-[10px] sm:text-xs text-gray-500 font-medium">Apellidos</p>
-                                      <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">{child?.apellidos || 'No especificado'}</p>
+                                      <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">{c?.apellidos || 'No especificado'}</p>
                                     </div>
                                   </div>
                                   <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
                                     <CreditCard className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink flex-shrink-0" />
                                     <div className="min-w-0 flex-1">
                                       <p className="text-[10px] sm:text-xs text-gray-500 font-medium">DNI</p>
-                                      <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">{child?.dni || 'No especificado'}</p>
+                                      <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">{c?.dni || 'No especificado'}</p>
                                     </div>
                                   </div>
                                   <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
                                     <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink flex-shrink-0" />
                                     <div className="min-w-0 flex-1">
                                       <p className="text-[10px] sm:text-xs text-gray-500 font-medium">Género</p>
-                                      <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">{child?.genero || 'No especificado'}</p>
+                                      <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">{c?.genero || 'No especificado'}</p>
                                     </div>
                                   </div>
                                   <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
                                     <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink flex-shrink-0" />
                                     <div className="min-w-0 flex-1">
                                       <p className="text-[10px] sm:text-xs text-gray-500 font-medium">Fecha de nacimiento</p>
-                                      <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">{child?.fecha_nacimiento || 'No especificado'}</p>
+                                      <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">{c?.fecha_nacimiento || 'No especificado'}</p>
                                     </div>
                                   </div>
                                 </div>
                               </div>
-
-                              {/* Información Educativa */}
                               <div className="space-y-2 sm:space-y-3 bg-braini-pink/10 p-3 sm:p-4 rounded-lg border border-braini-pink/20">
-                                <h4 className="font-semibold text-gray-800 text-sm sm:text-base">
-                                  Información Educativa
-                                </h4>
+                                <h4 className="font-semibold text-gray-800 text-sm sm:text-base">Información Educativa</h4>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3">
                                   <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
                                     <School className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink flex-shrink-0" />
                                     <div className="min-w-0 flex-1">
                                       <p className="text-[10px] sm:text-xs text-gray-500 font-medium">Centro escolar</p>
-                                      <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">{child?.centro_escolar || 'No especificado'}</p>
+                                      <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">{c?.centro_escolar || 'No especificado'}</p>
                                     </div>
                                   </div>
                                   <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
                                     <GraduationCap className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink flex-shrink-0" />
                                     <div className="min-w-0 flex-1">
                                       <p className="text-[10px] sm:text-xs text-gray-500 font-medium">Nivel educativo</p>
-                                      <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">{child?.nivel_educativo || 'No especificado'}</p>
+                                      <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">{c?.nivel_educativo || 'No especificado'}</p>
                                     </div>
                                   </div>
                                 </div>
                               </div>
-
-                              {/* Características Socioemocionales */}
-                              {(child?.fortalezas || child?.debilidades) && (
+                              {(c?.fortalezas || c?.debilidades) && (
                                 <div className="space-y-2 sm:space-y-3 bg-braini-pink/10 p-3 sm:p-4 rounded-lg border border-braini-pink/20">
-                                  <h4 className="font-semibold text-gray-800 text-sm sm:text-base">
-                                    Características Socioemocionales
-                                  </h4>
+                                  <h4 className="font-semibold text-gray-800 text-sm sm:text-base">Características Socioemocionales</h4>
                                   <div className="space-y-2 sm:space-y-3">
-                                    {child?.fortalezas && (
+                                    {c?.fortalezas && (
                                       <div className="flex items-start gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
                                         <Brain className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink mt-0.5 flex-shrink-0" />
                                         <div className="min-w-0 flex-1">
                                           <p className="text-[10px] sm:text-xs text-gray-500 font-medium">Fortalezas</p>
-                                          <p className="font-semibold text-gray-800 text-xs sm:text-sm break-words">{child.fortalezas}</p>
+                                          <p className="font-semibold text-gray-800 text-xs sm:text-sm break-words">{c.fortalezas}</p>
                                         </div>
                                       </div>
                                     )}
-                                    {child?.debilidades && (
+                                    {c?.debilidades && (
                                       <div className="flex items-start gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
                                         <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink mt-0.5 flex-shrink-0" />
                                         <div className="min-w-0 flex-1">
                                           <p className="text-[10px] sm:text-xs text-gray-500 font-medium">Debilidades</p>
-                                          <p className="font-semibold text-gray-800 text-xs sm:text-sm break-words">{child.debilidades}</p>
+                                          <p className="font-semibold text-gray-800 text-xs sm:text-sm break-words">{c.debilidades}</p>
                                         </div>
                                       </div>
                                     )}
@@ -941,21 +939,15 @@ const Profile = () => {
                                 </div>
                               )}
                             </div>
-                          )
-                        ) : (
-                          <div className="text-center py-12">
-                            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                              <Baby className="w-8 h-8 text-gray-400" />
-                            </div>
-                            <p className="text-gray-500 font-medium">No hay datos de hijo/a registrados</p>
-                            <p className="text-sm text-gray-400 mt-1">Los datos aparecerán aquí cuando se registren</p>
-                          </div>
                         )}
                       </CardContent>
                     </AccordionContent>
                   </AccordionItem>
                 </Accordion>
               </Card>
+                  );
+                })
+              )}
 
               {/* 3. Resultados de Tests */}
               <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0">

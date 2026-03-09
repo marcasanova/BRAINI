@@ -19,6 +19,10 @@ import { Eye, EyeOff } from 'lucide-react';
 // Rutas de assets públicos
 const logoBraini = '/logo/logoBraini.png';
 
+// URL a la que Supabase redirige tras el enlace "Restablecer contraseña".
+// Debe coincidir con una de las "Redirect URLs" en Supabase: Authentication → URL Configuration.
+const PASSWORD_RECOVERY_REDIRECT = '/brainifamily/update-password';
+
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -63,8 +67,13 @@ const Login = () => {
 
     setIsResetting(true);
     try {
+      // URL exacta que debe coincidir con una de "Redirect URLs" en Supabase (sin barra final).
+      const redirectTo = `${window.location.origin}${PASSWORD_RECOVERY_REDIRECT}`;
+      if (import.meta.env.DEV) {
+        console.log('[Password reset] redirectTo enviado a Supabase:', redirectTo);
+      }
       const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
-        redirectTo: `${window.location.origin}/brainifamily/update-password`,
+        redirectTo,
       });
 
       if (error) throw error;
@@ -208,10 +217,10 @@ const Login = () => {
         return;
       }
       
-      // Obtener datos del padre
+      // Obtener datos del padre (incl. children_count para flujo multi-hijo)
       const { data: parentData, error: parentError } = await supabase
         .from('parents')
-        .select('profile_completed')
+        .select('profile_completed, children_count')
         .eq('id', userId)
         .single();
       
@@ -251,15 +260,13 @@ const Login = () => {
         return;
       }
       
-      // Verificar si el perfil del hijo está completo — limit(1) evita 406
+      const parentChildrenCount = parentData.children_count != null ? Math.min(5, Math.max(1, Number(parentData.children_count))) : 1;
+      
       const { data: childRows, error: childError } = await supabase
         .from('children')
         .select('profile_completed')
         .eq('parent_id', userId)
-        .order('created_at', { ascending: true })
-        .limit(1);
-      
-      const childData = childRows?.[0] ?? null;
+        .order('created_at', { ascending: true });
       
       if (childError) {
         toast({
@@ -270,13 +277,15 @@ const Login = () => {
         return;
       }
       
-      // Si no existe el registro o si existe pero profile_completed = false, ir a completar perfil
-      if (!childData || childData.profile_completed === false) {
+      const children = childRows ?? [];
+      const hasEnoughChildren = children.length >= parentChildrenCount;
+      const allCompleted = children.length > 0 && children.every((c: { profile_completed: boolean }) => c.profile_completed);
+      
+      if (!hasEnoughChildren || !allCompleted) {
         navigate('/brainifamily/child-profile');
         return;
       }
       
-      // Perfil completo, ir directamente a Home
       navigate('/brainifamily/home');
     } catch (error) {
       // Manejar errores inesperados

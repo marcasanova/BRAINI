@@ -4,7 +4,7 @@
  * - EMOTIONS_INFANTIL_URL: usado en actividades, diario y medallas.
  *   Formato general emociones: "{numero}.%20{Nombre}.png"
  *
- * - EMOTIONS_PRIMARIA_STORAGE_URL: usado en HubPage y landings (BrainiFamilyLanding).
+ * - EMOTIONS_PRIMARIA_STORAGE_URL: usado en LandingPage y landings (BrainiFamilyLanding).
  *   Formato general emociones: "{numero}.%20{Nombre}.jpg"
  */
 export const EMOTIONS_INFANTIL_URL =

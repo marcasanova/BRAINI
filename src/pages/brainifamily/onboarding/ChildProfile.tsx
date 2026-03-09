@@ -53,49 +53,57 @@ const ChildProfile = () => {
   const navigate = useNavigate();
   const { refetch: refetchChildren } = useCurrentChildContext();
 
+  const [childrenCount, setChildrenCount] = useState<number>(1);
+  const [childrenList, setChildrenList] = useState<Array<{ id: string; nombre: string; apellidos: string | null; genero: string | null; nivel_educativo: string | null; profile_completed: boolean }>>([]);
+  const [editingChildId, setEditingChildId] = useState<string | null>(null);
+
   useEffect(() => {
-    const checkChildExists = async () => {
+    const loadParentAndChildren = async () => {
       setLoading(true);
       setError('');
       try {
         const { data: { user }, error: userError } = await supabase.auth.getUser();
         if (userError || !user) throw new Error('No se pudo obtener el usuario autenticado.');
         
-        const { data: rows, error: fetchError } = await supabase
+        const { data: parentRow, error: parentError } = await supabase
+          .from('parents')
+          .select('children_count')
+          .eq('id', user.id)
+          .single();
+        
+        if (parentError) throw parentError;
+        const N = parentRow?.children_count != null ? Math.min(5, Math.max(1, Number(parentRow.children_count))) : 1;
+        setChildrenCount(N);
+        
+        const { data: childrenData, error: childrenError } = await supabase
           .from('children')
-          .select('profile_completed')
+          .select('id, nombre, apellidos, genero, nivel_educativo, profile_completed')
           .eq('parent_id', user.id)
-          .order('created_at', { ascending: true })
-          .limit(1);
+          .order('created_at', { ascending: true });
         
-        if (fetchError) throw fetchError;
+        if (childrenError) throw childrenError;
+        const list = (childrenData ?? []) as typeof childrenList;
+        setChildrenList(list);
         
-        const data = rows?.[0] ?? null;
-        
-        // Si existe y profile_completed = true, redirigir a home
-        if (data?.profile_completed === true) {
+        // ¿Todos los N hijos creados y completados?
+        if (list.length >= N && list.every((c) => c.profile_completed)) {
           navigate('/brainifamily/home');
           return;
         }
         
-        // Si existe pero profile_completed = false, cargar los datos existentes
-        if (data && data.profile_completed === false) {
-          const { data: childRows, error: childFetchError } = await supabase
-            .from('children')
-            .select('nombre, apellidos, genero, nivel_educativo')
-            .eq('parent_id', user.id)
-            .order('created_at', { ascending: true })
-            .limit(1);
-          
-          if (!childFetchError && childRows?.[0]) {
-            const childData = childRows[0];
-            setForm({
-              nombre: childData.nombre || '',
-              apellidos: childData.apellidos || '',
-              genero: childData.genero || '',
-              nivel_educativo: childData.nivel_educativo || '',
-            });
-          }
+        // ¿Hay que editar el primer hijo incompleto?
+        const firstIncomplete = list.find((c) => !c.profile_completed);
+        if (firstIncomplete) {
+          setEditingChildId(firstIncomplete.id);
+          setForm({
+            nombre: firstIncomplete.nombre || '',
+            apellidos: firstIncomplete.apellidos || '',
+            genero: firstIncomplete.genero || '',
+            nivel_educativo: firstIncomplete.nivel_educativo || '',
+          });
+        } else {
+          setEditingChildId(null);
+          setForm({ nombre: '', apellidos: '', genero: '', nivel_educativo: '' });
         }
       } catch (err: any) {
         setError(err.message || 'Error al comprobar los datos.');
@@ -103,7 +111,7 @@ const ChildProfile = () => {
         setLoading(false);
       }
     };
-    checkChildExists();
+    loadParentAndChildren();
   }, [navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -178,75 +186,78 @@ const ChildProfile = () => {
         profile_completed: true,
       };
 
-      // Verificar si ya existe un registro (perfil incompleto) — limit(1) evita 406
-      const { data: rows, error: checkError } = await supabase
-        .from('children')
-        .select('id')
-        .eq('parent_id', user.id)
-        .order('created_at', { ascending: true })
-        .limit(1);
-
-      const existingChild = rows?.[0] ?? null;
-
-      let error;
-      
-      if (checkError) {
-        error = checkError;
-      } else if (!existingChild) {
-        // No existe, crear nuevo registro
-        const { error: insertError } = await supabase
-          .from('children')
-          .insert(datosHijo);
-        error = insertError;
-      } else {
-        // Existe, actualizar registro existente
+      let err: { message: string } | null = null;
+      if (editingChildId) {
         const { error: updateError } = await supabase
           .from('children')
           .update(datosHijo)
-          .eq('id', existingChild.id);
-        error = updateError;
+          .eq('id', editingChildId);
+        err = updateError;
+      } else {
+        const { error: insertError } = await supabase
+          .from('children')
+          .insert(datosHijo);
+        err = insertError;
       }
 
-      if (error) {
+      if (err) {
         let errorTitle = 'Error al guardar el perfil del niño/niña';
         let errorDescription = '';
-
-        if (error.message.includes('dni_formato_valido_opcional')) {
+        if (err.message.includes('dni_formato_valido_opcional')) {
           errorDescription = 'El DNI/NIE no tiene un formato válido. Debe ser 8 números y una letra (ej: 12345678A).';
-        } else if (error.message.includes('dni_unico')) {
+        } else if (err.message.includes('dni_unico')) {
           errorTitle = 'DNI/NIE duplicado';
           errorDescription = 'Ya existe un niño/niña registrado con ese DNI/NIE. Por favor, verifica los datos.';
-        } else if (error.message.includes('parent_unico')) {
-          errorTitle = 'Ya tienes un niño/niña registrado';
-          errorDescription = 'Solo puedes registrar un niño/niña por cuenta. Si necesitas registrar otro, contacta con soporte.';
-        } else if (error.message.includes('nombre') || error.message.includes('apellidos')) {
+        } else if (err.message.includes('nombre') || err.message.includes('apellidos')) {
           errorDescription = 'Por favor, verifica que el nombre y los apellidos estén correctamente completados.';
-        } else if (error.message.includes('nivel_educativo')) {
+        } else if (err.message.includes('nivel_educativo')) {
           errorDescription = 'Por favor, selecciona el nivel educativo del niño/niña.';
-        } else if (error.message.includes('genero')) {
+        } else if (err.message.includes('genero')) {
           errorDescription = 'Por favor, selecciona el género del niño/niña.';
         } else {
-          errorDescription = error.message || 'No se pudieron guardar los datos. Por favor, inténtalo de nuevo.';
+          errorDescription = err.message || 'No se pudieron guardar los datos. Por favor, inténtalo de nuevo.';
         }
-
         setError(errorDescription);
-        toast({ 
-          title: '🌱 Seguimos intentándolo', 
-          description: 'El perfil del niño o la niña no se ha guardado todavía. Revisamos los datos con calma y volvemos a probar.', 
-          variant: 'destructive' 
-        });
-        throw error;
+        toast({ title: '🌱 Seguimos intentándolo', description: 'El perfil no se ha guardado. Revisa los datos y vuelve a intentarlo.', variant: 'destructive' });
+        throw err;
       }
 
+      const childIndex = editingChildId ? childrenList.findIndex((c) => c.id === editingChildId)! + 1 : childrenList.length + 1;
+      const isLast = editingChildId 
+        ? childrenList.every((c) => c.id === editingChildId || c.profile_completed)
+        : childrenList.length + 1 >= childrenCount;
+      
       toast({ 
-        title: '🎉 ¡Todo listo!', 
-        description: 'El perfil está guardado. Ya podéis empezar a disfrutar de Braini Emotions juntos.', 
+        title: '🎉 Perfil guardado', 
+        description: isLast ? 'Todos los perfiles están listos. Ya podéis disfrutar de Braini Emotions.' : `Hijo ${childIndex} de ${childrenCount} guardado. Sigue con el siguiente.`, 
         variant: 'default' 
       });
       
-      // Refrescar lista de hijos en el contexto para que Home muestre misiones al instante
       if (refetchChildren) await refetchChildren();
-      setTimeout(() => navigate('/brainifamily/home'), 1200);
+      
+      if (isLast) {
+        setTimeout(() => navigate('/brainifamily/home'), 1200);
+      } else {
+        setForm({ nombre: '', apellidos: '', genero: '', nivel_educativo: '' });
+        setEditingChildId(null);
+        setTouched({});
+        const { data: newList } = await supabase
+          .from('children')
+          .select('id, nombre, apellidos, genero, nivel_educativo, profile_completed')
+          .eq('parent_id', user.id)
+          .order('created_at', { ascending: true });
+        setChildrenList((newList ?? []) as typeof childrenList);
+        const nextIncomplete = (newList ?? []).find((c: { profile_completed: boolean }) => !c.profile_completed);
+        if (nextIncomplete) {
+          setEditingChildId((nextIncomplete as { id: string }).id);
+          setForm({
+            nombre: (nextIncomplete as { nombre?: string }).nombre || '',
+            apellidos: (nextIncomplete as { apellidos?: string | null }).apellidos || '',
+            genero: (nextIncomplete as { genero?: string | null }).genero || '',
+            nivel_educativo: (nextIncomplete as { nivel_educativo?: string | null }).nivel_educativo || '',
+          });
+        }
+      }
     } catch (err: any) {
       // Error ya manejado arriba
     } finally {
@@ -299,10 +310,10 @@ const ChildProfile = () => {
                 />
               </div>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-2 sm:mb-3" style={{ fontWeight: 900 }}>
-                Información básica
+                {childrenCount <= 1 ? 'Información básica' : `Hijo ${editingChildId ? childrenList.findIndex((c) => c.id === editingChildId) + 1 : childrenList.length + 1} de ${childrenCount}`}
               </h1>
               <p className="text-white text-lg sm:text-xl lg:text-2xl" style={{ fontWeight: 400 }}>
-                Datos personales del niño/niña
+                {childrenCount <= 1 ? 'Datos personales del niño/niña' : 'Datos personales de este niño/niña'}
               </p>
             </div>
           </div>
@@ -454,7 +465,7 @@ const ChildProfile = () => {
                       ) : (
                         <div className="flex items-center justify-center gap-2">
                           <CheckCircle className="w-5 h-5" />
-                          <span>Completar perfil</span>
+                          <span>{childrenList.length + (editingChildId ? 0 : 1) >= childrenCount ? 'Completar y terminar' : 'Guardar y continuar'}</span>
                         </div>
                       )}
                     </Button>
