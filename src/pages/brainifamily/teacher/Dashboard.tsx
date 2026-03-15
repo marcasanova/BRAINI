@@ -10,7 +10,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, BookOpen } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Users, BookOpen, GraduationCap, Sparkles, AlertCircle } from 'lucide-react';
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -26,90 +30,238 @@ const Dashboard: React.FC = () => {
 
   const { children, loading, error } = useTeacherChildren(childIds);
 
+  const totalClasses = classes.length;
+  const totalStudentsAllClasses = useMemo(() => {
+    const ids = new Set<string>();
+    classes.forEach((cls: { child_ids?: string[] } | undefined) => {
+      (cls?.child_ids ?? []).forEach((id) => ids.add(id));
+    });
+    return ids.size;
+  }, [classes]);
+
+  const studentsInSelectedClass = childIds.length;
+  const hasChildren = !loading && !error && children.length > 0;
+
   if (!teacher) return null;
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-800">Mis clases</h1>
-        <p className="text-gray-600 mt-1">Elige una clase para ver los niños y su progreso.</p>
-      </div>
-
-      {classes.length === 0 ? (
-        <Card>
-          <CardContent className="py-8 text-center text-gray-500">
-            <BookOpen className="w-12 h-12 mx-auto mb-2 opacity-50" />
-            <p>No tienes clases asignadas.</p>
+    <div className="space-y-8 max-w-6xl mx-auto">
+      <section className="grid gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(0,1.2fr)] items-start">
+        <Card className="relative overflow-hidden border-none bg-gradient-to-r from-braini-blue to-braini-turquoise text-white shadow-lg">
+          <CardHeader className="pb-4">
+            <CardTitle className="flex items-center gap-3 text-2xl">
+              <GraduationCap className="h-7 w-7" />
+              <span>
+                Bienvenido/a,{' '}
+                <span className="font-semibold">
+                  {teacher.nombre || 'profesor/a'}
+                </span>
+              </span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-4">
+            <p className="text-sm md:text-base text-blue-50/90">
+              Gestiona tus clases, acompaña el progreso emocional y celebra los logros
+              de tus alumnos desde un panel pensado para ti.
+            </p>
+            <div className="flex flex-wrap gap-3 text-xs md:text-sm">
+              <Badge
+                variant="secondary"
+                className="bg-white/15 text-white border-white/30 backdrop-blur"
+              >
+                {totalClasses}{' '}
+                {totalClasses === 1 ? 'clase asignada' : 'clases asignadas'}
+              </Badge>
+              <Badge
+                variant="secondary"
+                className="bg-white/15 text-white border-white/30 backdrop-blur"
+              >
+                {totalStudentsAllClasses}{' '}
+                {totalStudentsAllClasses === 1
+                  ? 'alumno en total'
+                  : 'alumnos en total'}
+              </Badge>
+              {selectedClass && (
+                <Badge
+                  variant="secondary"
+                  className="bg-white/15 text-white border-white/30 backdrop-blur"
+                >
+                  {studentsInSelectedClass}{' '}
+                  {studentsInSelectedClass === 1 ? 'alumno en' : 'alumnos en'} "
+                  {selectedClass.name}"
+                </Badge>
+              )}
+            </div>
           </CardContent>
+          <div className="pointer-events-none absolute inset-y-0 right-[-40px] opacity-30">
+            <div className="h-full w-40 bg-gradient-to-b from-white/40 to-transparent blur-3xl" />
+          </div>
         </Card>
-      ) : (
-        <>
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <BookOpen className="w-5 h-5" />
-                Clase
+
+        <div className="grid w-full gap-4 sm:grid-cols-2 lg:grid-cols-1">
+          <Card className="border border-braini-blue/20 bg-white/80 backdrop-blur">
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Sparkles className="h-4 w-4 text-braini-yellow" />
+                Resumen rápido
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-3 text-sm text-gray-700">
+              <p>
+                Estás viendo el panel de{' '}
+                <span className="font-semibold">
+                  {selectedClass?.name || 'tus clases'}
+                </span>
+                . Selecciona otra clase para cambiar el grupo de alumnos.
+              </p>
+              <Separator className="my-2" />
+              <div className="grid grid-cols-2 gap-3 text-xs md:text-sm">
+                <div>
+                  <p className="text-gray-500">Clases activas</p>
+                  <p className="text-lg font-semibold text-gray-900">
+                    {totalClasses || '—'}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-gray-500">Alumnos en la clase</p>
+                  <p className="text-lg font-semibold text-gray-900">
+                    {studentsInSelectedClass || '—'}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          {error && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Error al cargar alumnos</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+        </div>
+      </section>
+
+      {classes.length === 0 ? (
+        <section>
+          <Card className="border-dashed border-2 border-gray-200 bg-white/70 backdrop-blur-sm">
+            <CardContent className="py-10 text-center text-gray-600 flex flex-col items-center gap-3">
+              <BookOpen className="w-12 h-12 mx-auto mb-2 text-gray-300" />
+              <p className="text-base font-medium">
+                Aún no tienes clases asignadas.
+              </p>
+              <p className="text-sm max-w-md">
+                Cuando se vinculen tus grupos, podrás ver aquí sus nombres, progreso
+                emocional y logros para acompañarles mejor en el aula.
+              </p>
+            </CardContent>
+          </Card>
+        </section>
+      ) : (
+        <section className="grid gap-6 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,2fr)] items-start">
+          <Card className="bg-white/90 backdrop-blur-sm">
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <BookOpen className="w-5 h-5 text-braini-blue" />
+                Gestión de clases
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-1">
+                <p className="text-sm text-gray-600">
+                  Elige una clase para ver el listado de alumnos y acceder a su panel
+                  individual.
+                </p>
+              </div>
               <Select
                 value={String(selectedClassIndex)}
                 onValueChange={(v) => setSelectedClassIndex(Number(v))}
               >
-                <SelectTrigger className="w-full max-w-xs">
+                <SelectTrigger className="w-full max-w-sm">
                   <SelectValue placeholder="Selecciona una clase" />
                 </SelectTrigger>
                 <SelectContent>
-                  {classes.map((cls, idx) => (
+                  {classes.map((cls: { name: string }, idx: number) => (
                     <SelectItem key={cls.name} value={String(idx)}>
                       {cls.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
+              {selectedClass && (
+                <div className="mt-2 rounded-lg border border-dashed border-gray-200 bg-gray-50/70 px-4 py-3 text-sm text-gray-700">
+                  <p className="font-medium text-gray-800">
+                    Clase seleccionada: {selectedClass.name}
+                  </p>
+                  <p className="text-xs text-gray-600 mt-1">
+                    {studentsInSelectedClass}{' '}
+                    {studentsInSelectedClass === 1
+                      ? 'alumno asignado'
+                      : 'alumnos asignados'}{' '}
+                    a este grupo.
+                  </p>
+                </div>
+              )}
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Users className="w-5 h-5" />
-                Niños de {selectedClass?.name ?? 'la clase'}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {loading && (
-                <div className="py-8 text-center text-gray-500">Cargando niños...</div>
+          <Card className="bg-white/90 backdrop-blur-sm">
+            <CardHeader className="flex flex-row items-center justify-between gap-3">
+              <div>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Users className="w-5 h-5 text-braini-blue" />
+                  Alumnado de {selectedClass?.name ?? 'la clase'}
+                </CardTitle>
+              </div>
+              {hasChildren && (
+                <Badge variant="outline" className="text-xs">
+                  {children.length}{' '}
+                  {children.length === 1 ? 'alumno' : 'alumnos'} en la lista
+                </Badge>
               )}
-              {error && (
-                <div className="py-4 text-center text-red-600">{error}</div>
+            </CardHeader>
+            <CardContent className="pt-0">
+              {loading && (
+                <div className="py-8 text-center text-gray-500">
+                  Cargando alumnos...
+                </div>
               )}
               {!loading && !error && children.length === 0 && (
                 <div className="py-8 text-center text-gray-500">
-                  No hay niños en esta clase.
+                  No hay alumnos en esta clase.
                 </div>
               )}
-              {!loading && !error && children.length > 0 && (
-                <ul className="space-y-2">
-                  {children.map((child) => (
-                    <li key={child.id}>
-                      <button
-                        type="button"
-                        onClick={() => navigate(`/brainifamily/teacher/nino/${child.id}`)}
-                        className="w-full text-left px-4 py-3 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 hover:border-braini-blue transition flex items-center justify-between"
-                      >
-                        <span className="font-medium text-gray-800">
-                          {child.nombre} {child.apellidos ?? ''}
-                        </span>
-                        <span className="text-sm text-gray-500">Ver progreso →</span>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
+              {hasChildren && (
+                <ScrollArea className="h-[360px] pr-2">
+                  <ul className="space-y-3 py-4">
+                    {children.map((child) => (
+                      <li key={child.id}>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            navigate(`/brainifamily/teacher/nino/${child.id}`)
+                          }
+                          className="group flex w-full items-center justify-between gap-3 rounded-xl border border-gray-200 bg-white/80 px-4 py-3 text-left shadow-sm transition hover:-translate-y-[1px] hover:border-braini-blue/60 hover:shadow-md"
+                        >
+                          <div className="flex flex-col">
+                            <span className="font-medium text-gray-900">
+                              {child.nombre} {child.apellidos ?? ''}
+                            </span>
+                            <span className="text-xs text-gray-500">
+                              Pulsa para ver el progreso emocional y las misiones.
+                            </span>
+                          </div>
+                          <span className="text-xs font-medium text-braini-blue group-hover:underline">
+                            Ver progreso
+                          </span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </ScrollArea>
               )}
             </CardContent>
           </Card>
-        </>
+        </section>
       )}
     </div>
   );
