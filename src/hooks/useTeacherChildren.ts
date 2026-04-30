@@ -8,15 +8,19 @@ export interface TeacherChild {
   nivel_educativo: string | null;
 }
 
-export function useTeacherChildren(childIds: string[]) {
+/**
+ * Alumnos de una clase (`children.class_id`).
+ */
+export function useTeacherChildren(classId: string | null) {
   const [children, setChildren] = useState<TeacherChild[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchChildren = useCallback(async () => {
-    if (!childIds.length) {
+    if (!classId) {
       setChildren([]);
       setLoading(false);
+      setError(null);
       return;
     }
     try {
@@ -25,7 +29,9 @@ export function useTeacherChildren(childIds: string[]) {
       const { data, error: fetchError } = await supabase
         .from('children')
         .select('id, nombre, apellidos, nivel_educativo')
-        .in('id', childIds);
+        .eq('class_id', classId)
+        .eq('active', true)
+        .order('nombre');
 
       if (fetchError) throw fetchError;
       setChildren((data ?? []) as TeacherChild[]);
@@ -35,7 +41,7 @@ export function useTeacherChildren(childIds: string[]) {
     } finally {
       setLoading(false);
     }
-  }, [childIds.join(',')]);
+  }, [classId]);
 
   useEffect(() => {
     fetchChildren();

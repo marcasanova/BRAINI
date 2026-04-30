@@ -28,9 +28,16 @@ import TestTMMSPadres from './pages/brainifamily/intelligence/tests/TestTMMSPadr
 import TestEmocionalNinos from './pages/brainifamily/intelligence/tests/TestEmocionalNinos';
 import ActivityDetail from './pages/brainifamily/core/ActivityDetail';
 import TeacherRoute from './components/navigation/TeacherRoute';
+import AdminRoute from './components/navigation/AdminRoute';
+import DirectorRoute from './components/navigation/DirectorRoute';
 import TeacherLayout from './pages/brainifamily/teacher/TeacherLayout';
 import TeacherDashboard from './pages/brainifamily/teacher/Dashboard';
 import TeacherChildView from './pages/brainifamily/teacher/ChildView';
+import AdminDashboard from './pages/brainifamily/admin/AdminDashboard';
+import DirectorDashboard from './pages/brainifamily/director/DirectorDashboard';
+import CompleteTeacherInvite from './pages/brainifamily/invite/CompleteTeacherInvite';
+import CompleteParentInvite from './pages/brainifamily/invite/CompleteParentInvite';
+import CompleteDirectorInvite from './pages/brainifamily/invite/CompleteDirectorInvite';
 
 const queryClient = new QueryClient();
 
@@ -78,6 +85,17 @@ const App = () => (
           <Route path="/brainifamily/login" element={<Login />} />
           <Route path="/brainifamily/signup" element={<SignUp />} />
           <Route path="/brainifamily/update-password" element={<UpdatePassword />} />
+
+          <Route path="/brainifamily/invite/director" element={<CompleteDirectorInvite />} />
+          <Route path="/brainifamily/invite/teacher" element={<CompleteTeacherInvite />} />
+          <Route path="/brainifamily/invite/parent" element={<CompleteParentInvite />} />
+
+          <Route path="/brainifamily/admin" element={<AdminRoute />}>
+            <Route index element={<AdminDashboard />} />
+          </Route>
+          <Route path="/brainifamily/director" element={<DirectorRoute />}>
+            <Route index element={<DirectorDashboard />} />
+          </Route>
           
           {/* BrainiFamily - Rutas de maestro (solo teachers) */}
           <Route path="/brainifamily/teacher" element={<TeacherRoute />}>

@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import NavbarLandings from '@/components/navigation/NavbarLandings';
 import { EMOTIONS_INFANTIL_URL } from '@/constants/emotionsStorage';
+import { CONTACT_EMAIL } from '@/constants/contact';
 
 // Rutas de assets públicos (archivos en public/)
 const logoBraini = '/logo/logoBraini.png';
@@ -630,8 +631,8 @@ const BrainiFamilyLanding = () => {
                     <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
                     <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
                   </svg>
-                  <a href="mailto:hola@brainiemotions.com" className="text-white text-xs sm:text-sm hover:text-white/80 transition-colors break-all" aria-label="Enviar email a hola@brainiemotions.com">
-                    hola@brainiemotions.com
+                  <a href={`mailto:${CONTACT_EMAIL}`} className="text-white text-xs sm:text-sm hover:text-white/80 transition-colors break-all" aria-label={`Enviar email a ${CONTACT_EMAIL}`}>
+                    {CONTACT_EMAIL}
                   </a>
                 </div>
                 <div className="flex items-center">

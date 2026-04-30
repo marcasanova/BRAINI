@@ -1,172 +1,134 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabaseClient';
-import { User } from '@supabase/supabase-js';
+import { fetchMyRole } from '@/lib/myRole';
+import type { User } from '@supabase/supabase-js';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
 }
 
+type StaffRedirect = 'admin' | 'director' | 'teacher' | null;
+
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [userExists, setUserExists] = useState<boolean | null>(null);
-  const [isTeacher, setIsTeacher] = useState(false);
+  const [staffRedirect, setStaffRedirect] = useState<StaffRedirect>(null);
 
   useEffect(() => {
-    let isMounted = true; // ✅ Prevenir race conditions
-    
-    const checkUser = async () => {
-      try {
-        // 1. Verificar sesión con timeout
-        const sessionPromise = supabase.auth.getSession();
-        const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Timeout')), 10000)
-        );
-        
-        const { data: { session } } = await Promise.race([sessionPromise, timeoutPromise]) as any;
-        
-        if (!isMounted) return; // ✅ Componente desmontado
-        
-        if (!session?.user) {
-          setUser(null);
-          setUserExists(false);
-          setLoading(false);
-          return;
-        }
+    let isMounted = true;
 
-        // 2. Si es maestro, no entrar al flujo de padre (se redirige en rutas teacher)
-        const { data: teacherData } = await supabase
-          .from('teachers')
-          .select('id')
-          .eq('id', session.user.id)
-          .maybeSingle();
-
+    async function resolveSession(session: {
+      user: User;
+    } | null) {
+      if (!session?.user) {
         if (!isMounted) return;
+        setUser(null);
+        setUserExists(false);
+        setStaffRedirect(null);
+        setLoading(false);
+        return;
+      }
 
-        if (teacherData) {
-          setIsTeacher(true);
-          setUser(null);
-          setUserExists(false);
-          setLoading(false);
-          return;
-        }
+      const rolePayload = await fetchMyRole();
 
-        // 3. Verificar que el usuario existe en parents (con timeout)
-        const dbCheckPromise = supabase
-          .from('parents')
-          .select('id')
-          .eq('id', session.user.id)
-          .single();
-          
-        const dbTimeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('BD Timeout')), 8000)
-        );
+      if (!isMounted) return;
 
-        const { data: parentData, error } = await Promise.race([dbCheckPromise, dbTimeoutPromise]) as { data: { id: string } | null; error: Error | null };
+      if (rolePayload?.role === 'super_admin') {
+        setStaffRedirect('admin');
+        setUser(null);
+        setUserExists(false);
+        setLoading(false);
+        return;
+      }
+      if (rolePayload?.role === 'director') {
+        setStaffRedirect('director');
+        setUser(null);
+        setUserExists(false);
+        setLoading(false);
+        return;
+      }
+      if (rolePayload?.role === 'teacher') {
+        setStaffRedirect('teacher');
+        setUser(null);
+        setUserExists(false);
+        setLoading(false);
+        return;
+      }
 
-        if (!isMounted) return;
+      const { data: parentRow } = await supabase
+        .from('parents')
+        .select('id')
+        .eq('id', session.user.id)
+        .maybeSingle();
 
-        if (error || !parentData) {
-          console.log('Usuario no encontrado en BD, cerrando sesión...', error?.message);
-          await supabase.auth.signOut();
-          setUser(null);
-          setUserExists(false);
-          setLoading(false);
-          return;
-        }
+      if (!isMounted) return;
 
+      if (parentRow) {
         setUser(session.user);
         setUserExists(true);
+        setStaffRedirect(null);
         setLoading(false);
-      } catch (error: any) {
-        console.error('Error verificando usuario:', error.message);
+        return;
+      }
+
+      if (rolePayload?.role === 'parent') {
+        console.warn('Rol parent en user_roles sin fila en parents');
+      }
+
+      await supabase.auth.signOut();
+      setUser(null);
+      setUserExists(false);
+      setStaffRedirect(null);
+      setLoading(false);
+    }
+
+    (async () => {
+      try {
+        const sessionPromise = supabase.auth.getSession();
+        const timeoutPromise = new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('Timeout')), 10000),
+        );
+        const {
+          data: { session },
+        } = (await Promise.race([sessionPromise, timeoutPromise])) as {
+          data: { session: { user: User } | null };
+        };
+        await resolveSession(session);
+      } catch (e) {
+        console.error('ProtectedRoute:', e);
         if (isMounted) {
           setUser(null);
           setUserExists(false);
+          setStaffRedirect(null);
           setLoading(false);
         }
       }
-    };
+    })();
 
-    checkUser();
-    
-    return () => {
-      isMounted = false; // ✅ Cleanup
-    };
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (!isMounted) return;
 
-    // Escuchar cambios de autenticación
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log('Auth state change:', event, session?.user?.id);
-        
-        if (!isMounted) return; // ✅ Prevenir updates en componente desmontado
-        
-        if (event === 'SIGNED_OUT' || !session) {
-          setUser(null);
-          setUserExists(false);
-          setIsTeacher(false);
-          setLoading(false);
-          return;
-        }
-
-        // Solo verificar BD en eventos específicos para evitar loops
-        if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
-          try {
-            const { data: teacherData } = await supabase
-              .from('teachers')
-              .select('id')
-              .eq('id', session.user.id)
-              .maybeSingle();
-
-            if (!isMounted) return;
-
-            if (teacherData) {
-              setIsTeacher(true);
-              setUser(null);
-              setUserExists(false);
-              setLoading(false);
-              return;
-            }
-
-            const { data: parentData, error } = await supabase
-              .from('parents')
-              .select('id')
-              .eq('id', session.user.id)
-              .single();
-
-            if (!isMounted) return;
-
-            if (error || !parentData) {
-              console.log('Usuario eliminado detectado, cerrando sesión...', error?.message);
-              await supabase.auth.signOut();
-              setUser(null);
-              setUserExists(false);
-            } else {
-              setUser(session.user);
-              setUserExists(true);
-            }
-            setLoading(false);
-          } catch (error) {
-            console.error('Error verificando usuario en auth change:', error);
-            if (isMounted) {
-              setUser(null);
-              setUserExists(false);
-              setLoading(false);
-            }
-          }
-        } else {
-          // Para otros eventos, solo actualizar el usuario sin verificar BD
-          setUser(session.user);
-          setUserExists(true);
-          setLoading(false);
-        }
+      if (event === 'SIGNED_OUT' || !session) {
+        setUser(null);
+        setUserExists(false);
+        setStaffRedirect(null);
+        setLoading(false);
+        return;
       }
-    );
+
+      if (event === 'SIGNED_IN') {
+        setLoading(true);
+        await resolveSession(session);
+      }
+    });
 
     return () => {
-      subscription.unsubscribe();
       isMounted = false;
+      subscription.unsubscribe();
     };
   }, []);
 
@@ -177,13 +139,19 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
           <div className="w-12 h-12 bg-braini-blue rounded-full mx-auto mb-4 flex items-center justify-center animate-pulse">
             <span className="text-white text-xl">🧠</span>
           </div>
-          <p className="text-gray-600">Loading...</p>
+          <p className="text-gray-600">Cargando...</p>
         </div>
       </div>
     );
   }
 
-  if (isTeacher) {
+  if (staffRedirect === 'admin') {
+    return <Navigate to="/brainifamily/admin" replace />;
+  }
+  if (staffRedirect === 'director') {
+    return <Navigate to="/brainifamily/director" replace />;
+  }
+  if (staffRedirect === 'teacher') {
     return <Navigate to="/brainifamily/teacher" replace />;
   }
 

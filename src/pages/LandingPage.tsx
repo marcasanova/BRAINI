@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Users, GraduationCap, Heart } from 'lucide-react';
+import { CONTACT_EMAIL, CTA_REUNION_MAILTO } from '@/constants/contact';
 
 // Rutas de assets públicos
 const logoBraini = '/logo/logoBraini.png';
 const logoInstagram = '/LogoInstagram.svg';
-
-// CTA: mismo destino para todos los botones de reunión estratégica
-const CTA_REUNION_URL = 'mailto:hola@brainiemotions.com?subject=Solicitar%20reuni%C3%B3n%20estrat%C3%A9gica%20Braini%20Emotions';
 
 const LandingPage = () => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -49,20 +47,19 @@ const LandingPage = () => {
 
   return (
     <main
-      className="min-h-screen bg-white font-montserrat relative overflow-hidden transition-colors duration-300"
+      className="min-h-screen bg-white font-montserrat relative overflow-x-hidden transition-colors duration-300"
       role="main"
       aria-label="Landing Braini Emotions - Neurobienestar emocional para centros educativos"
     >
       {/* ——— 1. HERO ——— */}
       <section
-        className="pt-0 pb-12 sm:pb-16 md:h-screen md:pb-0"
-        style={{ background: '#ffffff' }}
+        className="relative overflow-hidden bg-white pt-0 pb-10 sm:pb-14 lg:min-h-[min(100dvh,56rem)] lg:pb-0 lg:flex lg:flex-col"
         aria-label="Hero - Convierta su centro en referente"
       >
-        <div className="w-full h-full">
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_520px] gap-0 items-stretch h-full">
+        <div className="w-full flex-1 min-h-0 min-w-0 max-w-[1920px] mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(280px,520px)] gap-0 lg:gap-0 lg:min-h-[min(100dvh,56rem)] lg:items-stretch">
             <div
-              className={`h-full flex flex-col justify-start transition-all duration-600 ease-out ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-0'} pt-10 px-6 sm:px-10 lg:pl-16 lg:pr-10`}
+              className={`min-w-0 flex flex-col justify-start lg:justify-center transition-all duration-600 ease-out ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-0'} pt-8 sm:pt-10 px-4 sm:px-8 lg:pl-12 xl:pl-16 lg:pr-8 lg:py-10`}
             >
               <div className="flex items-center gap-3 mb-3 self-start">
                 <img
@@ -79,7 +76,7 @@ const LandingPage = () => {
 
               <div className="flex-1 flex flex-col justify-center">
                 <h1
-                  className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 leading-tight"
+                  className="text-2xl min-[380px]:text-3xl sm:text-4xl lg:text-[2.35rem] xl:text-5xl font-black text-gray-900 leading-tight"
                   style={{ fontWeight: 900 }}
                 >
                   Convierta su centro como
@@ -95,9 +92,9 @@ const LandingPage = () => {
                   Un sistema que integra <strong>alumnado, docentes</strong> y <strong>familias</strong> para convertir el bienestar emocional en una práctica educativa real de centro.
                 </p>
 
-                <a href={CTA_REUNION_URL} className="inline-block mt-6" aria-label="Solicitar reunión estratégica">
+                <a href={CTA_REUNION_MAILTO} className="block sm:inline-block w-full sm:w-auto mt-6" aria-label="Solicitar reunión estratégica">
                   <Button
-                    className="text-white px-7 sm:px-10 py-4 sm:py-5 font-bold text-base sm:text-lg transition-all md:hover:opacity-90 md:hover:scale-105"
+                    className="w-full sm:w-auto text-white px-7 sm:px-10 py-4 sm:py-5 font-bold text-base sm:text-lg transition-all md:hover:opacity-90 md:hover:scale-105"
                     style={{ background: '#7ea4df', border: 'none' }}
                   >
                     <span className="flex items-center justify-center gap-2">
@@ -114,13 +111,15 @@ const LandingPage = () => {
             </div>
 
             <div
-              className={`h-full transition-all duration-600 ease-out ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-0'}`}
+              className={`relative min-h-0 w-full max-w-[520px] mx-auto lg:mx-0 lg:max-w-none lg:justify-self-end lg:h-full lg:self-stretch transition-all duration-600 ease-out ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-0'}`}
             >
-              <div className="w-full h-full max-w-[520px] overflow-hidden justify-self-end">
+              {/* Móvil/tablet: caja con ratio acotada para que la imagen no desborde */}
+              <div className="relative mt-6 sm:mt-8 lg:mt-0 w-full overflow-hidden rounded-none aspect-[5/6] max-h-[min(72dvh,520px)] sm:aspect-[4/3] sm:max-h-[min(65dvh,480px)] md:aspect-[16/10] md:max-h-[min(58dvh,440px)] lg:absolute lg:inset-0 lg:aspect-auto lg:max-h-none lg:h-full">
                 <img
                   src="/landing/Seccion1.jpg"
                   alt="Familia y alumnado en actividad emocional"
-                  className="w-full h-full object-cover"
+                  className="absolute inset-0 w-full h-full object-cover object-top lg:object-center"
+                  sizes="(max-width: 1023px) 100vw, 520px"
                 />
               </div>
             </div>
@@ -129,7 +128,7 @@ const LandingPage = () => {
       </section>
 
       {/* ——— 2. NUEVO DESAFÍO EMOCIONAL ——— */}
-      <section className="py-12 sm:py-16 md:py-20 px-3 sm:px-4 bg-white" aria-label="Nuevo desafío emocional">
+      <section className="relative isolate overflow-hidden py-12 sm:py-16 md:py-20 px-3 sm:px-4" style={{ background: '#FFF9F1' }} aria-label="Nuevo desafío emocional">
         <div className="max-w-5xl mx-auto text-center">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-black leading-tight mb-8 sm:mb-10" style={{ fontWeight: 900, color: '#111827' }}>
             Los centros educativos afrontan
@@ -140,7 +139,7 @@ const LandingPage = () => {
           <div className="relative max-w-5xl mx-auto">
             {/* Decoración tipo flechas (suave) */}
             <svg
-              className="pointer-events-none absolute inset-0"
+              className="pointer-events-none absolute inset-0 w-full h-full"
               viewBox="0 0 1200 220"
               preserveAspectRatio="none"
             >
@@ -224,7 +223,7 @@ const LandingPage = () => {
       </section>
 
       {/* ——— 3. SISTEMA ESTRATÉGICO 360º ——— */}
-      <section className="py-12 sm:py-16 md:py-20 px-3 sm:px-4 bg-white" aria-label="Sistema estratégico 360º de centro">
+      <section className="py-12 sm:py-16 md:py-20 px-3 sm:px-4" style={{ background: '#EEF4FF' }} aria-label="Sistema estratégico 360º de centro">
         <div className="max-w-5xl mx-auto">
           <div className="flex flex-col">
             <div
@@ -325,20 +324,20 @@ const LandingPage = () => {
           <p className="text-gray-700 text-base sm:text-lg text-center mb-3" style={{ fontWeight: 600 }}>
             Con participación académica:
           </p>
-          <div className="flex justify-center items-start gap-6 sm:gap-10 mb-4">
-            <div className="flex flex-col items-center">
+          <div className="flex flex-wrap justify-center items-start gap-6 sm:gap-10 mb-4">
+            <div className="flex flex-col items-center min-w-0 max-w-[46%] sm:max-w-none">
               <img
                 src="/unis/logo_alicante.png"
                 alt="Universitat d'Alacant"
-                className="h-[64px] sm:h-[80px] w-auto"
+                className="h-12 sm:h-16 md:h-20 w-auto max-w-full object-contain"
               />
               <p className="text-gray-700 text-xs sm:text-sm font-medium mt-2">Universitat d'Alacant</p>
             </div>
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col items-center min-w-0 max-w-[46%] sm:max-w-none">
               <img
                 src="/unis/logo_cadiz.png"
                 alt="Universidad de Cádiz"
-                className="h-[64px] sm:h-[80px] w-auto"
+                className="h-12 sm:h-16 md:h-20 w-auto max-w-full object-contain"
               />
               <p className="text-gray-700 text-xs sm:text-sm font-medium mt-2">Universidad de Cádiz</p>
             </div>
@@ -350,7 +349,7 @@ const LandingPage = () => {
       </section>
 
       {/* ——— 5. IMPLANTACIÓN (3 años) ——— */}
-      <section className="py-12 sm:py-16 md:py-20 px-3 sm:px-4 bg-white" aria-label="Hoja de ruta 3 años">
+      <section className="py-12 sm:py-16 md:py-20 px-3 sm:px-4" style={{ background: '#FFF6E9' }} aria-label="Hoja de ruta 3 años">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-gray-900 text-left mb-6 sm:mb-8" style={{ fontWeight: 900 }}>
             Implantación progresiva diseñada sin sobrecargar al equipo docente.
@@ -360,10 +359,10 @@ const LandingPage = () => {
             El modelo Braini Emotions se despliega de forma gradual y sostenida, garantizando una integración real y natural en el proyecto educativo del centro, respetando los tiempos y el ritmo de trabajo del equipo docente.
           </p>
 
-          {/* Stepper horizontal (desktop) */}
-          <div className="hidden md:block">
-            <div className="flex items-center justify-center gap-6">
-              <div className="flex flex-col items-start" style={{ minWidth: 260 }}>
+          {/* Stepper horizontal (pantallas anchas; tablet en vertical para evitar overflow) */}
+          <div className="hidden lg:block">
+            <div className="flex items-center justify-center gap-3 xl:gap-6">
+              <div className="flex flex-col items-start shrink-0 min-w-0 xl:min-w-[200px]">
                 <div
                   className="w-14 h-14 rounded-full flex items-center justify-center"
                   style={{ background: '#7ea4df' }}
@@ -372,9 +371,9 @@ const LandingPage = () => {
                 </div>
               </div>
 
-              <div className="flex-1 h-3 rounded-full" style={{ background: '#7ea4df' }} />
+              <div className="flex-1 min-w-[1.5rem] h-3 rounded-full" style={{ background: '#7ea4df' }} />
 
-              <div className="flex flex-col items-center" style={{ minWidth: 260 }}>
+              <div className="flex flex-col items-center shrink-0 min-w-0 xl:min-w-[200px]">
                 <div
                   className="w-14 h-14 rounded-full flex items-center justify-center"
                   style={{ background: '#35bdb1' }}
@@ -383,9 +382,9 @@ const LandingPage = () => {
                 </div>
               </div>
 
-              <div className="flex-1 h-3 rounded-full" style={{ background: '#35bdb1' }} />
+              <div className="flex-1 min-w-[1.5rem] h-3 rounded-full" style={{ background: '#35bdb1' }} />
 
-              <div className="flex flex-col items-end" style={{ minWidth: 260 }}>
+              <div className="flex flex-col items-end shrink-0 min-w-0 xl:min-w-[200px]">
                 <div
                   className="w-14 h-14 rounded-full flex items-center justify-center"
                   style={{ background: '#f5827b' }}
@@ -395,20 +394,20 @@ const LandingPage = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
-              <div className="text-left">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
+              <div className="text-left lg:text-left">
                 <p className="text-lg font-bold text-gray-900" style={{ fontWeight: 800 }}>
                   Año 1 – Inicio en Educación Infantil
                 </p>
                 <p className="text-gray-700 mt-3">Inicio en Educación Infantil.</p>
               </div>
-              <div className="text-center">
+              <div className="text-left lg:text-center">
                 <p className="text-lg font-bold text-gray-900" style={{ fontWeight: 800 }}>
                   Año 2 – Extensión a Primaria
                 </p>
                 <p className="text-gray-700 mt-3">Extensión progresiva a Primaria.</p>
               </div>
-              <div className="text-right">
+              <div className="text-left lg:text-right">
                 <p className="text-lg font-bold text-gray-900" style={{ fontWeight: 800 }}>
                   Año 3 – Modelo plenamente integrado
                 </p>
@@ -417,8 +416,8 @@ const LandingPage = () => {
             </div>
           </div>
 
-          {/* Stepper vertical (mobile) */}
-          <div className="md:hidden">
+          {/* Stepper vertical (hasta < lg) */}
+          <div className="lg:hidden">
             <div className="flex flex-col gap-8">
               <div className="flex items-start gap-4">
                 <div className="w-14 h-14 rounded-full flex items-center justify-center" style={{ background: '#7ea4df' }}>
@@ -462,22 +461,23 @@ const LandingPage = () => {
 
       {/* ——— 6. IMPACTO ESTRATÉGICO ——— */}
       <section
-        className="py-12 sm:py-16 md:py-20 px-3 sm:px-4 relative overflow-hidden"
+        className="relative isolate overflow-hidden py-12 sm:py-16 md:py-20 px-3 sm:px-4"
         aria-label="Impacto estratégico"
       >
-        {/* Background image */}
+        {/* Background image: contenida en la sección, sin interacción */}
         <div
-          className="absolute inset-0"
+          className="pointer-events-none absolute inset-0 z-0 bg-no-repeat"
           style={{
             backgroundImage: 'url(/landing/Seccion6.jpg)',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
+          aria-hidden
         />
         {/* Overlay para legibilidad */}
-        <div className="absolute inset-0" style={{ background: 'rgba(255,255,255,0.78)' }} />
+        <div className="pointer-events-none absolute inset-0 z-0" style={{ background: 'rgba(255,255,255,0.78)' }} aria-hidden />
 
-        <div className="relative z-10 max-w-5xl mx-auto">
+        <div className="relative z-10 max-w-5xl mx-auto min-w-0">
           <h2
             className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-10"
             style={{ color: '#1f2937', fontWeight: 700 }}
@@ -485,10 +485,8 @@ const LandingPage = () => {
             Impacto estratégico para el centro
           </h2>
 
-          <p className="text-gray-800 text-base sm:text-lg text-center leading-relaxed mb-8 sm:mb-10" style={{ fontWeight: 500 }}>
-            Braini Emotions supone una decisión de liderazgo para la identidad y el
-            <br />
-            posicionamiento del centro educativo.
+          <p className="text-gray-800 text-base sm:text-lg text-center leading-relaxed mb-8 sm:mb-10 max-w-3xl mx-auto px-1" style={{ fontWeight: 500 }}>
+            Braini Emotions supone una decisión de liderazgo para la identidad y el posicionamiento del centro educativo.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
@@ -532,8 +530,8 @@ const LandingPage = () => {
       </section>
 
       {/* ——— 7. PARA QUIÉN ES ——— */}
-      <section className="py-12 sm:py-16 md:py-20 px-3 sm:px-4" style={{ background: '#7ea4df' }} aria-label="Para quién es Braini">
-        <div className="max-w-6xl mx-auto text-center">
+      <section className="relative isolate overflow-hidden py-12 sm:py-16 md:py-20 px-3 sm:px-4" style={{ background: '#7ea4df' }} aria-label="Para quién es Braini">
+        <div className="max-w-6xl mx-auto text-center min-w-0 px-1">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-6 sm:mb-8" style={{ fontWeight: 700 }}>
             Centros para los que este modelo tiene sentido:
           </h2>
@@ -558,29 +556,30 @@ const LandingPage = () => {
 
       {/* ——— 8. DESCUBRA SI… ——— */}
       <section
-        className="relative overflow-hidden"
+        className="relative isolate overflow-hidden"
         aria-label="Descubra si Braini puede transformar su centro"
         style={{
           backgroundColor: '#ffffff',
         }}
       >
-        {/* Background photo */}
+        {/* Background photo: solo dentro de esta sección */}
         <div
-          className="absolute inset-0"
+          className="pointer-events-none absolute inset-0 z-0 bg-no-repeat"
           style={{
             backgroundImage: 'url(/landing/Seccion8.jpg)',
             backgroundSize: 'cover',
             backgroundPosition: 'center top',
           }}
+          aria-hidden
         />
 
         {/* Soft overlay to make the blue panel pop */}
-        <div className="absolute inset-0" style={{ background: 'rgba(255,255,255,0.25)' }} />
+        <div className="pointer-events-none absolute inset-0 z-0" style={{ background: 'rgba(255,255,255,0.25)' }} aria-hidden />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20">
-          <div className="min-h-[420px] md:min-h-[520px] flex items-center">
+        <div className="relative z-10 max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20">
+          <div className="min-h-[min(22rem,52dvh)] sm:min-h-[min(24rem,48dvh)] md:min-h-[min(26rem,45dvh)] lg:min-h-[min(28rem,42dvh)] flex items-center py-4 md:py-6">
             <div
-              className="bg-[#7ea4df] rounded-2xl p-6 sm:p-8 md:p-10 max-w-xl"
+              className="bg-[#7ea4df] rounded-2xl p-6 sm:p-8 md:p-10 w-full max-w-xl min-w-0"
               style={{
                 boxShadow: '0 16px 40px rgba(0,0,0,0.12)',
               }}
@@ -601,9 +600,9 @@ const LandingPage = () => {
                 valorar si el modelo Braini puede integrarse en su proyecto educativo.
               </p>
 
-              <a href={CTA_REUNION_URL} className="inline-block mt-6" aria-label="Solicitar reunión estratégica">
+              <a href={CTA_REUNION_MAILTO} className="block sm:inline-block w-full sm:w-auto mt-6" aria-label="Solicitar reunión estratégica">
                 <Button
-                  className="font-bold text-base sm:text-lg transition-all md:hover:opacity-90 md:hover:scale-105"
+                  className="w-full sm:w-auto font-bold text-base sm:text-lg transition-all md:hover:opacity-90 md:hover:scale-105"
                   style={{ background: '#ffffff', border: 'none', color: '#7ea4df' }}
                 >
                   <span className="flex items-center justify-center gap-2">
@@ -622,12 +621,12 @@ const LandingPage = () => {
       </section>
 
       {/* ——— 9. TESTIMONIOS ——— */}
-      <section className="py-12 sm:py-16 md:py-20 px-3 sm:px-4" style={{ background: '#f0f6fc' }} aria-label="Testimonios">
-        <div className="max-w-4xl mx-auto">
+      <section className="relative isolate overflow-x-hidden py-12 sm:py-16 md:py-20 px-3 sm:px-4" style={{ background: '#f0f6fc' }} aria-label="Testimonios">
+        <div className="max-w-6xl xl:max-w-7xl mx-auto min-w-0">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-6 sm:mb-8" style={{ color: '#1f2937', fontWeight: 700 }}>
             TESTIMONIOS
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 min-w-0">
             {[
               {
                 quote:
@@ -662,7 +661,7 @@ const LandingPage = () => {
             ].map((t, idx) => (
               <div
                 key={idx}
-                className="bg-white/90 rounded-xl p-6 shadow-sm border border-white/50 backdrop-blur-sm"
+                className="min-w-0 bg-white/90 rounded-xl p-6 shadow-sm border border-white/50 backdrop-blur-sm"
                 style={{ boxShadow: '0 10px 25px -5px rgba(0,0,0,0.06)' }}
               >
                 <div
@@ -685,17 +684,12 @@ const LandingPage = () => {
 
       {/* ——— FOOTER ——— */}
       <footer
-        className="py-12 sm:py-16 relative overflow-hidden"
+        className="relative isolate overflow-x-hidden py-12 sm:py-16"
         style={{ background: '#f5827b' }}
         aria-label="Footer Braini Emotions"
       >
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute -top-16 -left-10 w-40 h-40 sm:w-72 sm:h-72 bg-white/15 rounded-full" />
-          <div className="absolute -bottom-24 -right-10 w-[220px] h-[220px] sm:w-[420px] sm:h-[420px] bg-white/15 rounded-full" />
-        </div>
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+        <div className="max-w-7xl mx-auto min-w-0 px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start min-w-0">
             <div>
               <div className="flex items-center mb-3">
                 <img src={logoBraini} alt="Braini Emotions" className="w-9 h-9 object-contain" />
@@ -708,20 +702,20 @@ const LandingPage = () => {
               </p>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-2 min-w-0">
               <p className="text-white font-bold text-sm sm:text-base" style={{ fontWeight: 800 }}>
                 Contacto
               </p>
               <a
-                href="mailto:hola@brainiemotions.com"
-                className="flex items-center text-white text-sm hover:text-white/90"
-                aria-label="Enviar email hola@brainiemotions.com"
+                href={`mailto:${CONTACT_EMAIL}`}
+                className="flex items-center text-white text-sm hover:text-white/90 break-words"
+                aria-label={`Enviar email a ${CONTACT_EMAIL}`}
               >
                 <svg className="w-4 h-4 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                   <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                   <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
                 </svg>
-                hola@brainiemotions.com
+                {CONTACT_EMAIL}
               </a>
               <a
                 href="tel:+34646982440"

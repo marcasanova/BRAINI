@@ -128,7 +128,6 @@ const SignUp = () => {
         }
 
         // 4. Login automático después del registro
-        // El trigger creacion_parent creará automáticamente el registro en parents
         const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
           email,
           password
@@ -166,8 +165,16 @@ const SignUp = () => {
           return;
         }
 
-        // 5. Guardar el nombre en la BD para pre-llenarlo en el onboarding
-        // El trigger creacion_parent ya creó el registro en parents, ahora actualizamos el nombre
+        // 5. Crear rol + fila en parents vía RPC (alineado con backend)
+        const normalizedEmail = email.trim().toLowerCase();
+        const { error: rpcError } = await supabase.rpc('register_parent', {
+          p_email: normalizedEmail,
+          p_nombre: nombre.trim(),
+        });
+        if (rpcError) {
+          console.warn('register_parent:', rpcError.message);
+        }
+
         const { error: updateError } = await supabase
           .from('parents')
           .update({ nombre: nombre.trim() })
@@ -175,7 +182,6 @@ const SignUp = () => {
 
         if (updateError) {
           console.error('Error guardando nombre:', updateError);
-          // No bloqueamos el flujo si falla, el usuario puede ingresarlo manualmente
         }
 
         // 6. Éxito - redirigir a onboarding

@@ -5,6 +5,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/lib/supabaseClient';
+import { fetchMyRole } from '@/lib/myRole';
+import { navigateParentAfterLogin } from '@/lib/parentPostLogin';
 import {
   Dialog,
   DialogContent,
@@ -205,88 +207,52 @@ const Login = () => {
         return;
       }
 
-      // Si es maestro, ir al dashboard de maestro
-      const { data: teacherData } = await supabase
-        .from('teachers')
+      const rolePayload = await fetchMyRole();
+      if (!rolePayload) {
+        toast({
+          title: "❌ Error al cargar tu rol",
+          description: "No pudimos obtener tu perfil en la plataforma. Inténtalo de nuevo en unos segundos.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const role = rolePayload.role;
+
+      if (role === 'super_admin') {
+        navigate('/brainifamily/admin');
+        return;
+      }
+      if (role === 'director') {
+        navigate('/brainifamily/director');
+        return;
+      }
+      if (role === 'teacher') {
+        navigate('/brainifamily/teacher');
+        return;
+      }
+      if (role === 'parent') {
+        await navigateParentAfterLogin(navigate, userId, toast);
+        return;
+      }
+
+      const { data: legacyParent } = await supabase
+        .from('parents')
         .select('id')
         .eq('id', userId)
         .maybeSingle();
 
-      if (teacherData) {
-        navigate('/brainifamily/teacher');
+      if (legacyParent) {
+        await navigateParentAfterLogin(navigate, userId, toast);
         return;
       }
-      
-      // Obtener datos del padre (incl. children_count para flujo multi-hijo)
-      const { data: parentData, error: parentError } = await supabase
-        .from('parents')
-        .select('profile_completed, children_count')
-        .eq('id', userId)
-        .single();
-      
-      if (parentError) {
-        // Si el error es que no existe el registro, crearlo automáticamente
-        if (parentError.code === 'PGRST116') {
-          // El trigger debería haber creado el registro, pero si no existe, redirigir a onboarding
-          toast({
-            title: "🌱 Nos queda un paso",
-            description: "Necesitas completar el perfil para continuar. Te acompaño al formulario.",
-            variant: "default"
-          });
-          navigate('/brainifamily/parents-profile');
-          return;
-        } else {
-          toast({
-            title: "❌ Error al cargar tu perfil",
-            description: "No se pudo cargar la información de tu perfil. Por favor, intenta iniciar sesión de nuevo.",
-            variant: "destructive"
-          });
-          return;
-        }
-      }
-      
-      if (!parentData) {
-        toast({
-          title: "❌ Perfil no encontrado",
-          description: "No se encontró tu perfil de usuario. Por favor, contacta con soporte o intenta registrarte de nuevo.",
-          variant: "destructive"
-        });
-        return;
-      }
-      
-      // Verificar si el perfil del padre está completo
-      if (parentData.profile_completed === false) {
-        navigate('/brainifamily/parents-profile');
-        return;
-      }
-      
-      const parentChildrenCount = parentData.children_count != null ? Math.min(5, Math.max(1, Number(parentData.children_count))) : 1;
-      
-      const { data: childRows, error: childError } = await supabase
-        .from('children')
-        .select('profile_completed')
-        .eq('parent_id', userId)
-        .order('created_at', { ascending: true });
-      
-      if (childError) {
-        toast({
-          title: "❌ Error al cargar el perfil del menor",
-          description: "No se pudo cargar la información del perfil del menor. Por favor, intenta iniciar sesión de nuevo.",
-          variant: "destructive"
-        });
-        return;
-      }
-      
-      const children = childRows ?? [];
-      const hasEnoughChildren = children.length >= parentChildrenCount;
-      const allCompleted = children.length > 0 && children.every((c: { profile_completed: boolean }) => c.profile_completed);
-      
-      if (!hasEnoughChildren || !allCompleted) {
-        navigate('/brainifamily/child-profile');
-        return;
-      }
-      
-      navigate('/brainifamily/home');
+
+      toast({
+        title: '🌱 Completa tu registro',
+        description:
+          'Tu cuenta aún no tiene perfil de familia. Te llevamos al formulario inicial.',
+      });
+      navigate('/brainifamily/parents-profile');
     } catch (error) {
       // Manejar errores inesperados
       const err = error as Error;
@@ -503,16 +469,10 @@ const Login = () => {
               {/* Línea separadora */}
               <div className="mt-4 sm:mt-6 border-t border-gray-200"></div>
 
-              {/* Enlace a Registro */}
+              {/* Acceso por invitación */}
               <div className="mt-4 sm:mt-6 text-center">
                 <p className="text-gray-600 text-xs sm:text-sm md:text-base">
-                  ¿No tienes una cuenta?{' '}
-                  <Link 
-                    to="/brainifamily/signup" 
-                    className="text-braini-blue hover:text-braini-blue-dark font-medium hover:underline transition-colors"
-                  >
-                    Regístrate
-                  </Link>
+                  El acceso se realiza mediante invitación de tu centro o del equipo BRAINI.
                 </p>
               </div>
             </form>

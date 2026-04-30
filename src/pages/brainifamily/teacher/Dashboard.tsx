@@ -1,6 +1,6 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTeacher } from '@/hooks/useTeacher';
+import { useTeacher, normalizeCourseName } from '@/hooks/useTeacher';
 import { useTeacherChildren } from '@/hooks/useTeacherChildren';
 import {
   Select,
@@ -19,27 +19,37 @@ import { Users, BookOpen, GraduationCap, Sparkles, AlertCircle } from 'lucide-re
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const { teacher } = useTeacher();
-  const [selectedClassIndex, setSelectedClassIndex] = useState<number>(0);
+  const [selectedClassId, setSelectedClassId] = useState<string | null>(null);
 
-  const classes = useMemo(() => teacher?.classes?.classes ?? [], [teacher]);
-  const selectedClass = classes[selectedClassIndex];
-  const childIds = useMemo(
-    () => selectedClass?.child_ids ?? [],
-    [selectedClass]
+  useEffect(() => {
+    const list = teacher?.classList ?? [];
+    if (list.length === 0) {
+      setSelectedClassId(null);
+      return;
+    }
+    setSelectedClassId((prev) => {
+      if (prev && list.some((c) => c.id === prev)) return prev;
+      return list[0].id;
+    });
+  }, [teacher?.classList]);
+
+  const selectedClass = useMemo(
+    () => teacher?.classList.find((c) => c.id === selectedClassId) ?? null,
+    [teacher?.classList, selectedClassId],
   );
 
-  const { children, loading, error } = useTeacherChildren(childIds);
+  const { children, loading, error } = useTeacherChildren(selectedClassId);
 
-  const totalClasses = classes.length;
+  const totalClasses = teacher?.classList.length ?? 0;
   const totalStudentsAllClasses = useMemo(() => {
-    const ids = new Set<string>();
-    classes.forEach((cls: { child_ids?: string[] } | undefined) => {
-      (cls?.child_ids ?? []).forEach((id) => ids.add(id));
-    });
-    return ids.size;
-  }, [classes]);
+    if (!teacher) return 0;
+    return Object.values(teacher.classStudentCounts).reduce((a, b) => a + b, 0);
+  }, [teacher]);
 
-  const studentsInSelectedClass = childIds.length;
+  const studentsInSelectedClass = selectedClassId
+    ? (teacher?.classStudentCounts[selectedClassId] ?? 0)
+    : 0;
+
   const hasChildren = !loading && !error && children.length > 0;
 
   if (!teacher) return null;
@@ -141,17 +151,16 @@ const Dashboard: React.FC = () => {
         </div>
       </section>
 
-      {classes.length === 0 ? (
+      {totalClasses === 0 ? (
         <section>
           <Card className="border-dashed border-2 border-gray-200 bg-white/70 backdrop-blur-sm">
             <CardContent className="py-10 text-center text-gray-600 flex flex-col items-center gap-3">
               <BookOpen className="w-12 h-12 mx-auto mb-2 text-gray-300" />
-              <p className="text-base font-medium">
-                Aún no tienes clases asignadas.
-              </p>
+              <p className="text-base font-medium">Aún no tienes clases creadas.</p>
               <p className="text-sm max-w-md">
-                Cuando se vinculen tus grupos, podrás ver aquí sus nombres, progreso
-                emocional y logros para acompañarles mejor en el aula.
+                Las clases se gestionan en la base de datos (tabla <code className="text-xs bg-gray-100 px-1 rounded">classes</code>) con tu <code className="text-xs bg-gray-100 px-1 rounded">teacher_id</code>.
+                Cuando existan, aparecerán aquí con sus alumnos vinculados por{' '}
+                <code className="text-xs bg-gray-100 px-1 rounded">class_id</code>.
               </p>
             </CardContent>
           </Card>
@@ -173,18 +182,22 @@ const Dashboard: React.FC = () => {
                 </p>
               </div>
               <Select
-                value={String(selectedClassIndex)}
-                onValueChange={(v) => setSelectedClassIndex(Number(v))}
+                value={selectedClassId ?? ''}
+                onValueChange={(v) => setSelectedClassId(v)}
               >
                 <SelectTrigger className="w-full max-w-sm">
                   <SelectValue placeholder="Selecciona una clase" />
                 </SelectTrigger>
                 <SelectContent>
-                  {classes.map((cls: { name: string }, idx: number) => (
-                    <SelectItem key={cls.name} value={String(idx)}>
-                      {cls.name}
-                    </SelectItem>
-                  ))}
+                  {teacher.classList.map((cls) => {
+                    const cn = normalizeCourseName(cls.courses);
+                    const label = cn ? `${cls.name} (${cn})` : cls.name;
+                    return (
+                      <SelectItem key={cls.id} value={cls.id}>
+                        {label}
+                      </SelectItem>
+                    );
+                  })}
                 </SelectContent>
               </Select>
               {selectedClass && (
@@ -192,6 +205,11 @@ const Dashboard: React.FC = () => {
                   <p className="font-medium text-gray-800">
                     Clase seleccionada: {selectedClass.name}
                   </p>
+                  {normalizeCourseName(selectedClass.courses) && (
+                    <p className="text-xs text-gray-600 mt-1">
+                      Curso: {normalizeCourseName(selectedClass.courses)}
+                    </p>
+                  )}
                   <p className="text-xs text-gray-600 mt-1">
                     {studentsInSelectedClass}{' '}
                     {studentsInSelectedClass === 1
@@ -227,7 +245,8 @@ const Dashboard: React.FC = () => {
               )}
               {!loading && !error && children.length === 0 && (
                 <div className="py-8 text-center text-gray-500">
-                  No hay alumnos en esta clase.
+                  No hay alumnos con esta clase asignada (
+                  <code className="text-xs">children.class_id</code>).
                 </div>
               )}
               {hasChildren && (
