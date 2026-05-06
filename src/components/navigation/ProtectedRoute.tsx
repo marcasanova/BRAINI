@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabaseClient';
 import { fetchMyRole } from '@/lib/myRole';
@@ -15,15 +15,28 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [userExists, setUserExists] = useState<boolean | null>(null);
   const [staffRedirect, setStaffRedirect] = useState<StaffRedirect>(null);
+  const latestResolveRunRef = useRef(0);
+  const userRef = useRef<User | null>(null);
+
+  useEffect(() => {
+    userRef.current = user;
+  }, [user]);
 
   useEffect(() => {
     let isMounted = true;
 
-    async function resolveSession(session: {
+    function isStaleRun(runId: number) {
+      return !isMounted || runId !== latestResolveRunRef.current;
+    }
+
+    async function resolveSession(
+      session: {
       user: User;
-    } | null) {
+      } | null,
+      runId: number,
+    ) {
       if (!session?.user) {
-        if (!isMounted) return;
+        if (isStaleRun(runId)) return;
         setUser(null);
         setUserExists(false);
         setStaffRedirect(null);
@@ -33,7 +46,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
       const rolePayload = await fetchMyRole();
 
-      if (!isMounted) return;
+      if (isStaleRun(runId)) return;
 
       if (rolePayload?.role === 'super_admin') {
         setStaffRedirect('admin');
@@ -63,7 +76,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
         .eq('id', session.user.id)
         .maybeSingle();
 
-      if (!isMounted) return;
+      if (isStaleRun(runId)) return;
 
       if (parentRow) {
         setUser(session.user);
@@ -77,11 +90,35 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
         console.warn('Rol parent en user_roles sin fila en parents');
       }
 
-      await supabase.auth.signOut();
+      // No forzamos signOut aquí para evitar cierres de sesión por validaciones lentas.
       setUser(null);
       setUserExists(false);
       setStaffRedirect(null);
       setLoading(false);
+    }
+
+    async function resolveSessionWithTimeout(
+      session: { user: User } | null,
+      timeoutMs = 10000,
+    ) {
+      const runId = ++latestResolveRunRef.current;
+      try {
+        const resolvePromise = resolveSession(session, runId);
+        const timeoutPromise = new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('Resolve session timeout')), timeoutMs),
+        );
+        await Promise.race([resolvePromise, timeoutPromise]);
+      } catch (error) {
+        console.error('ProtectedRoute resolveSessionWithTimeout:', error);
+        if (isStaleRun(runId)) return;
+        // Fallback seguro: mantenemos sesión local y evitamos expulsar al usuario.
+        if (session?.user) {
+          setUser(session.user);
+          setUserExists(true);
+          setStaffRedirect(null);
+        }
+        setLoading(false);
+      }
     }
 
     (async () => {
@@ -95,7 +132,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
         } = (await Promise.race([sessionPromise, timeoutPromise])) as {
           data: { session: { user: User } | null };
         };
-        await resolveSession(session);
+        await resolveSessionWithTimeout(session);
       } catch (e) {
         console.error('ProtectedRoute:', e);
         if (isMounted) {
@@ -109,7 +146,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
       if (!isMounted) return;
 
       if (event === 'SIGNED_OUT' || !session) {
@@ -120,9 +157,26 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
         return;
       }
 
-      if (event === 'SIGNED_IN') {
+      // No recalculamos acceso en cada refresh de token para evitar bloqueos
+      // al volver de pestaña. Solo revalidamos en eventos de cambio real de sesión.
+      if (event === 'TOKEN_REFRESHED') {
+        if (!userRef.current) {
+          setUser(session.user);
+          setUserExists(true);
+        }
+        setLoading(false);
+        return;
+      }
+
+      if (
+        event === 'SIGNED_IN' ||
+        event === 'INITIAL_SESSION' ||
+        event === 'USER_UPDATED'
+      ) {
         setLoading(true);
-        await resolveSession(session);
+        window.setTimeout(() => {
+          void resolveSessionWithTimeout(session, 8000);
+        }, 0);
       }
     });
 

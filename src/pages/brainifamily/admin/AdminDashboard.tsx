@@ -7,6 +7,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { useToast } from '@/hooks/use-toast';
 import { Building2, Copy, LogOut, School, Shield, UserPlus, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { copyToClipboard } from '@/lib/clipboard';
 
 interface SchoolRow {
   id: string;
@@ -35,31 +36,6 @@ interface DirectorRow {
   school_id: string;
   active: boolean;
   created_at: string;
-}
-
-async function copyToClipboard(text: string): Promise<boolean> {
-  if (navigator.clipboard?.writeText) {
-    try {
-      await navigator.clipboard.writeText(text);
-      return true;
-    } catch {
-      // fallback below
-    }
-  }
-  try {
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    ta.setAttribute('readonly', '');
-    ta.style.position = 'fixed';
-    ta.style.opacity = '0';
-    document.body.appendChild(ta);
-    ta.select();
-    const ok = document.execCommand('copy');
-    document.body.removeChild(ta);
-    return ok;
-  } catch {
-    return false;
-  }
 }
 
 const AdminDashboard: React.FC = () => {
@@ -242,50 +218,50 @@ const AdminDashboard: React.FC = () => {
   const completedInvites = directorInvites.filter((i) => i.status === 'completed').length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-6">
-      <div className="max-w-3xl mx-auto space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-braini-blue/10 via-white to-braini-turquoise/10 p-6">
+      <div className="max-w-6xl mx-auto space-y-8">
         <header className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <Shield className="w-10 h-10 text-amber-400" />
+            <Shield className="w-10 h-10 text-braini-blue" />
             <div>
-              <h1 className="text-2xl font-bold">Super admin</h1>
-              <p className="text-slate-400 text-sm">Gestión de centros (BRAINI)</p>
+              <h1 className="text-2xl font-bold text-gray-900">Super admin</h1>
+              <p className="text-gray-600 text-sm">Gestión de centros (BRAINI)</p>
             </div>
           </div>
-          <Button variant="outline" onClick={handleLogout} className="border-slate-600 text-white hover:bg-slate-700">
+          <Button variant="outline" onClick={handleLogout}>
             <LogOut className="w-4 h-4 mr-2" />
             Cerrar sesión
           </Button>
         </header>
 
         <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Card className="bg-slate-800/80 border-slate-700 text-white">
+          <Card className="bg-white/90 border-braini-blue/20">
             <CardContent className="pt-6">
-              <p className="text-xs text-slate-400">Centros</p>
-              <p className="text-2xl font-semibold">{schools.length}</p>
+              <p className="text-xs text-gray-500">Centros</p>
+              <p className="text-2xl font-semibold text-gray-900">{schools.length}</p>
             </CardContent>
           </Card>
-          <Card className="bg-slate-800/80 border-slate-700 text-white">
+          <Card className="bg-white/90 border-braini-blue/20">
             <CardContent className="pt-6">
-              <p className="text-xs text-slate-400">Directores</p>
-              <p className="text-2xl font-semibold">{directors.length}</p>
+              <p className="text-xs text-gray-500">Directores</p>
+              <p className="text-2xl font-semibold text-gray-900">{directors.length}</p>
             </CardContent>
           </Card>
-          <Card className="bg-slate-800/80 border-slate-700 text-white">
+          <Card className="bg-white/90 border-braini-blue/20">
             <CardContent className="pt-6">
-              <p className="text-xs text-slate-400">Invitaciones pendientes</p>
-              <p className="text-2xl font-semibold">{pendingInvites}</p>
+              <p className="text-xs text-gray-500">Invitaciones pendientes</p>
+              <p className="text-2xl font-semibold text-gray-900">{pendingInvites}</p>
             </CardContent>
           </Card>
-          <Card className="bg-slate-800/80 border-slate-700 text-white">
+          <Card className="bg-white/90 border-braini-blue/20">
             <CardContent className="pt-6">
-              <p className="text-xs text-slate-400">Invitaciones completadas</p>
-              <p className="text-2xl font-semibold">{completedInvites}</p>
+              <p className="text-xs text-gray-500">Invitaciones completadas</p>
+              <p className="text-2xl font-semibold text-gray-900">{completedInvites}</p>
             </CardContent>
           </Card>
         </section>
 
-        <Card className="bg-slate-800/80 border-slate-700 text-white">
+        <Card className="bg-white/90 border-braini-blue/20">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
               <School className="w-5 h-5" />
@@ -301,17 +277,17 @@ const AdminDashboard: React.FC = () => {
                   value={schoolName}
                   onChange={(e) => setSchoolName(e.target.value)}
                   placeholder="Ej. CEIP San Francisco"
-                  className="mt-1 bg-slate-900 border-slate-600"
+                  className="mt-1 bg-white"
                 />
               </div>
-              <Button type="submit" disabled={loadingSchool} className="bg-amber-500 hover:bg-amber-600 text-slate-900">
+              <Button type="submit" disabled={loadingSchool} className="bg-braini-turquoise hover:bg-braini-turquoise-dark text-white">
                 {loadingSchool ? 'Creando...' : 'Crear con RPC admin_create_school'}
               </Button>
             </form>
           </CardContent>
         </Card>
 
-        <Card className="bg-slate-800/80 border-slate-700 text-white">
+        <Card className="bg-white/90 border-braini-blue/20">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
               <UserPlus className="w-5 h-5" />
@@ -326,7 +302,7 @@ const AdminDashboard: React.FC = () => {
                   id="director-school"
                   value={selectedSchoolId}
                   onChange={(e) => setSelectedSchoolId(e.target.value)}
-                  className="mt-1 w-full rounded-md border border-slate-600 bg-slate-900 px-3 py-2 text-sm"
+                  className="mt-1 w-full rounded-md border border-input bg-white px-3 py-2 text-sm"
                 >
                   <option value="">Selecciona centro</option>
                   {schools.map((s) => (
@@ -344,10 +320,10 @@ const AdminDashboard: React.FC = () => {
                   value={directorEmail}
                   onChange={(e) => setDirectorEmail(e.target.value)}
                   placeholder="direccion@colegio.es"
-                  className="mt-1 bg-slate-900 border-slate-600"
+                  className="mt-1 bg-white"
                 />
               </div>
-              <Button type="submit" disabled={loadingInvite || schools.length === 0} className="bg-cyan-500 hover:bg-cyan-600 text-slate-900">
+              <Button type="submit" disabled={loadingInvite || schools.length === 0} className="bg-braini-blue hover:bg-braini-blue-dark text-white">
                 {loadingInvite ? 'Generando...' : 'Generar enlace de invitación'}
               </Button>
             </form>
@@ -356,11 +332,11 @@ const AdminDashboard: React.FC = () => {
               <div className="mt-4 space-y-2">
                 <Label>Último enlace generado</Label>
                 <div className="flex gap-2">
-                  <Input value={lastInviteLink} readOnly className="bg-slate-900 border-slate-600 text-xs" />
+                  <Input value={lastInviteLink} readOnly className="bg-white text-xs" />
                   <Button
                     type="button"
                     variant="outline"
-                    className="border-slate-600 text-white hover:bg-slate-700"
+                    className="border-braini-blue/30 text-gray-700 hover:bg-braini-blue/10"
                     onClick={async () => {
                       const copied = await copyToClipboard(lastInviteLink);
                       toast(
@@ -385,7 +361,7 @@ const AdminDashboard: React.FC = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-slate-800/80 border-slate-700 text-white">
+        <Card className="bg-white/90 border-braini-blue/20">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
               <Users className="w-5 h-5" />
@@ -394,16 +370,16 @@ const AdminDashboard: React.FC = () => {
           </CardHeader>
           <CardContent>
             {listLoading ? (
-              <p className="text-slate-400">Cargando...</p>
+              <p className="text-gray-500">Cargando...</p>
             ) : directors.length === 0 ? (
-              <p className="text-slate-400">Aún no hay directores registrados.</p>
+              <p className="text-gray-500">Aún no hay directores registrados.</p>
             ) : (
               <ul className="space-y-2">
                 {directors.map((d) => (
-                  <li key={d.id} className="border-b border-slate-700 py-2 last:border-0">
-                    <p className="text-sm font-medium">{d.nombre}</p>
-                    <p className="text-xs text-slate-400">{d.email ?? '-'}</p>
-                    <p className="text-xs text-slate-500">
+                  <li key={d.id} className="border-b border-gray-100 py-2 last:border-0">
+                    <p className="text-sm font-medium text-gray-900">{d.nombre}</p>
+                    <p className="text-xs text-gray-600">{d.email ?? '-'}</p>
+                    <p className="text-xs text-gray-500">
                       Centro: {schoolNameById(d.school_id)} | Alta: {formatDate(d.created_at)}
                     </p>
                   </li>
@@ -413,7 +389,7 @@ const AdminDashboard: React.FC = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-slate-800/80 border-slate-700 text-white">
+        <Card className="bg-white/90 border-braini-blue/20">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
               <Building2 className="w-5 h-5" />
@@ -422,27 +398,27 @@ const AdminDashboard: React.FC = () => {
           </CardHeader>
           <CardContent>
             {listLoading ? (
-              <p className="text-slate-400">Cargando...</p>
+              <p className="text-gray-500">Cargando...</p>
             ) : directorInvites.length === 0 ? (
-              <p className="text-slate-400">Aún no hay invitaciones de directores.</p>
+              <p className="text-gray-500">Aún no hay invitaciones de directores.</p>
             ) : (
               <ul className="space-y-3">
                 {directorInvites.map((inv) => {
                   const inviteLink = `${window.location.origin}/brainifamily/invite/director?token=${encodeURIComponent(inv.token)}`;
                   return (
-                    <li key={inv.id} className="border border-slate-700 rounded-md p-3 bg-slate-900/30">
-                      <p className="text-sm font-medium">{inv.email}</p>
-                      <p className="text-xs text-slate-400">Centro: {schoolNameById(inv.school_id)}</p>
-                      <p className="text-xs text-slate-400">
+                    <li key={inv.id} className="border border-braini-blue/20 rounded-md p-3 bg-white">
+                      <p className="text-sm font-medium text-gray-900">{inv.email}</p>
+                      <p className="text-xs text-gray-600">Centro: {schoolNameById(inv.school_id)}</p>
+                      <p className="text-xs text-gray-600">
                         Estado: <span className="font-medium">{inv.status}</span> | Caduca: {formatDate(inv.expires_at)}
                       </p>
-                      <p className="text-xs text-slate-500">Creada: {formatDate(inv.created_at)}</p>
+                      <p className="text-xs text-gray-500">Creada: {formatDate(inv.created_at)}</p>
                       <div className="mt-2 flex items-center gap-2">
-                        <Input value={inviteLink} readOnly className="bg-slate-900 border-slate-600 text-xs" />
+                        <Input value={inviteLink} readOnly className="bg-white text-xs" />
                         <Button
                           type="button"
                           variant="outline"
-                          className="border-slate-600 text-white hover:bg-slate-700"
+                          className="border-braini-blue/30 text-gray-700 hover:bg-braini-blue/10"
                           onClick={async () => {
                             const copied = await copyToClipboard(inviteLink);
                             toast(
@@ -467,24 +443,24 @@ const AdminDashboard: React.FC = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-slate-800/80 border-slate-700 text-white">
+        <Card className="bg-white/90 border-braini-blue/20">
           <CardHeader>
             <CardTitle className="text-lg">Centros registrados</CardTitle>
           </CardHeader>
           <CardContent>
             {listLoading ? (
-              <p className="text-slate-400">Cargando…</p>
+              <p className="text-gray-500">Cargando…</p>
             ) : schools.length === 0 ? (
-              <p className="text-slate-400">Aún no hay centros.</p>
+              <p className="text-gray-500">Aún no hay centros.</p>
             ) : (
               <ul className="space-y-2">
                 {schools.map((s) => (
                   <li
                     key={s.id}
-                    className="flex justify-between items-center py-2 border-b border-slate-700 last:border-0"
+                    className="flex justify-between items-center py-2 border-b border-gray-100 last:border-0"
                   >
-                    <span>{s.name}</span>
-                    <span className="text-xs text-slate-500 font-mono">{s.id.slice(0, 8)}…</span>
+                    <span className="text-gray-900">{s.name}</span>
+                    <span className="text-xs text-gray-500 font-mono">{s.id.slice(0, 8)}…</span>
                   </li>
                 ))}
               </ul>

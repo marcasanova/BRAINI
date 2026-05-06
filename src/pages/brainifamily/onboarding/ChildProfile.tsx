@@ -37,7 +37,6 @@ const STEPS = [
 ];
 
 const ChildProfile = () => {
-  const [currentStep, setCurrentStep] = useState(1);
   const [form, setForm] = useState({
     nombre: '',
     apellidos: '',
@@ -53,7 +52,6 @@ const ChildProfile = () => {
   const navigate = useNavigate();
   const { refetch: refetchChildren } = useCurrentChildContext();
 
-  const [childrenCount, setChildrenCount] = useState<number>(1);
   const [childrenList, setChildrenList] = useState<Array<{ id: string; nombre: string; apellidos: string | null; genero: string | null; nivel_educativo: string | null; profile_completed: boolean }>>([]);
   const [editingChildId, setEditingChildId] = useState<string | null>(null);
 
@@ -64,17 +62,7 @@ const ChildProfile = () => {
       try {
         const { data: { user }, error: userError } = await supabase.auth.getUser();
         if (userError || !user) throw new Error('No se pudo obtener el usuario autenticado.');
-        
-        const { data: parentRow, error: parentError } = await supabase
-          .from('parents')
-          .select('children_count')
-          .eq('id', user.id)
-          .single();
-        
-        if (parentError) throw parentError;
-        const N = parentRow?.children_count != null ? Math.min(5, Math.max(1, Number(parentRow.children_count))) : 1;
-        setChildrenCount(N);
-        
+
         const { data: childrenData, error: childrenError } = await supabase
           .from('children')
           .select('id, nombre, apellidos, genero, nivel_educativo, profile_completed')
@@ -84,9 +72,18 @@ const ChildProfile = () => {
         if (childrenError) throw childrenError;
         const list = (childrenData ?? []) as typeof childrenList;
         setChildrenList(list);
-        
-        // ¿Todos los N hijos creados y completados?
-        if (list.length >= N && list.every((c) => c.profile_completed)) {
+
+        if (list.length === 0) {
+          toast({
+            title: 'No hay hijos vinculados todavía',
+            description: 'Tu centro educativo debe enviarte una invitación para asociar un hijo o hija.',
+          });
+          navigate('/brainifamily/home');
+          return;
+        }
+
+        // Si todos están completos, onboarding terminado.
+        if (list.every((c) => c.profile_completed)) {
           navigate('/brainifamily/home');
           return;
         }
@@ -145,31 +142,13 @@ const ChildProfile = () => {
   };
 
   const isCurrentStepValid = () => {
-    const currentStepConfig = STEPS.find(s => s.id === currentStep);
+    const currentStepConfig = STEPS[0];
     if (!currentStepConfig) return false;
 
     return currentStepConfig.fields.every(field => {
       return validations[field as keyof typeof validations]();
     });
   };
-
-  const handleNext = () => {
-    // Ya no hay múltiples pasos, esta función ya no se usa
-    // Pero la mantenemos por si acaso hay lógica que la llame
-    if (isCurrentStepValid()) {
-      // Si el paso es válido, se puede enviar el formulario
-    } else {
-      const currentStepConfig = STEPS.find(s => s.id === currentStep);
-      if (currentStepConfig) {
-        const newTouched: { [k: string]: boolean } = {};
-        currentStepConfig.fields.forEach(field => {
-          newTouched[field] = true;
-        });
-        setTouched(prev => ({ ...prev, ...newTouched }));
-      }
-    }
-  };
-
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -186,19 +165,21 @@ const ChildProfile = () => {
         profile_completed: true,
       };
 
-      let err: { message: string } | null = null;
-      if (editingChildId) {
-        const { error: updateError } = await supabase
-          .from('children')
-          .update(datosHijo)
-          .eq('id', editingChildId);
-        err = updateError;
-      } else {
-        const { error: insertError } = await supabase
-          .from('children')
-          .insert(datosHijo);
-        err = insertError;
+      if (!editingChildId) {
+        setError('No hay ningún perfil pendiente por completar.');
+        toast({
+          title: 'Sin perfiles pendientes',
+          description: 'No encontramos un hijo pendiente para completar ahora mismo.',
+          variant: 'destructive',
+        });
+        return;
       }
+
+      const { error: updateError } = await supabase
+        .from('children')
+        .update(datosHijo)
+        .eq('id', editingChildId);
+      const err = updateError;
 
       if (err) {
         let errorTitle = 'Error al guardar el perfil del niño/niña';
@@ -222,14 +203,15 @@ const ChildProfile = () => {
         throw err;
       }
 
-      const childIndex = editingChildId ? childrenList.findIndex((c) => c.id === editingChildId)! + 1 : childrenList.length + 1;
-      const isLast = editingChildId 
-        ? childrenList.every((c) => c.id === editingChildId || c.profile_completed)
-        : childrenList.length + 1 >= childrenCount;
+      const childIndex = childrenList.findIndex((c) => c.id === editingChildId) + 1;
+      const isLast = childrenList.every(
+        (c) => c.id === editingChildId || c.profile_completed,
+      );
+      const totalChildren = childrenList.length;
       
       toast({ 
         title: '🎉 Perfil guardado', 
-        description: isLast ? 'Todos los perfiles están listos. Ya podéis disfrutar de Braini Emotions.' : `Hijo ${childIndex} de ${childrenCount} guardado. Sigue con el siguiente.`, 
+        description: isLast ? 'Todos los perfiles están listos. Ya podéis disfrutar de Braini Emotions.' : `Hijo ${childIndex} de ${totalChildren} guardado. Sigue con el siguiente.`, 
         variant: 'default' 
       });
       
@@ -310,10 +292,10 @@ const ChildProfile = () => {
                 />
               </div>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-2 sm:mb-3" style={{ fontWeight: 900 }}>
-                {childrenCount <= 1 ? 'Información básica' : `Hijo ${editingChildId ? childrenList.findIndex((c) => c.id === editingChildId) + 1 : childrenList.length + 1} de ${childrenCount}`}
+                {childrenList.length <= 1 ? 'Información básica' : `Hijo ${Math.max(1, childrenList.findIndex((c) => c.id === editingChildId) + 1)} de ${childrenList.length}`}
               </h1>
               <p className="text-white text-lg sm:text-xl lg:text-2xl" style={{ fontWeight: 400 }}>
-                {childrenCount <= 1 ? 'Datos personales del niño/niña' : 'Datos personales de este niño/niña'}
+                {childrenList.length <= 1 ? 'Datos personales del niño/niña' : 'Datos personales de este niño/niña'}
               </p>
             </div>
           </div>
@@ -465,7 +447,7 @@ const ChildProfile = () => {
                       ) : (
                         <div className="flex items-center justify-center gap-2">
                           <CheckCircle className="w-5 h-5" />
-                          <span>{childrenList.length + (editingChildId ? 0 : 1) >= childrenCount ? 'Completar y terminar' : 'Guardar y continuar'}</span>
+                          <span>{childrenList.every((c) => c.id === editingChildId || c.profile_completed) ? 'Completar y terminar' : 'Guardar y continuar'}</span>
                         </div>
                       )}
                     </Button>

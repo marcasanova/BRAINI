@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link, useSearchParams, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -7,24 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { supabase } from '@/lib/supabaseClient';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, GraduationCap } from 'lucide-react';
-
-function describeInviteError(data: unknown): string | null {
-  if (!data || typeof data !== 'object') return null;
-  const o = data as Record<string, unknown>;
-  if (typeof o.message === 'string') return o.message;
-  const code = o.error;
-  if (code === 'email_already_registered') {
-    return 'Este correo ya tiene cuenta. Inicia sesión o contacta con el centro.';
-  }
-  if (code === 'invite_not_valid_or_expired') {
-    return 'La invitación no es válida o ha caducado.';
-  }
-  if (code === 'invalid_invite') {
-    return 'Enlace de invitación no válido.';
-  }
-  if (typeof code === 'string') return code;
-  return null;
-}
+import { inviteErrorDescription, inviteErrorTitle } from '@/lib/inviteErrors';
 
 const CompleteTeacherInvite: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -33,15 +16,78 @@ const CompleteTeacherInvite: React.FC = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [loadingInvite, setLoadingInvite] = useState(false);
+  const [inviteInfo, setInviteInfo] = useState<{
+    email: string;
+    schoolName: string | null;
+    schoolId: string | null;
+    expiresAt: string | null;
+  } | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!token) return;
+    let cancelled = false;
+    (async () => {
+      setLoadingInvite(true);
+      const { data, error } = await supabase.functions.invoke('complete-teacher-invite', {
+        body: { token, action: 'preview' },
+      });
+      setLoadingInvite(false);
+      if (cancelled) return;
+
+      if (error) {
+        toast({
+          title: inviteErrorTitle(data),
+          description: inviteErrorDescription(data, 'teacher') ?? error.message,
+          variant: 'destructive',
+        });
+        return;
+      }
+      const body = data as {
+        ok?: boolean;
+        email?: string;
+        school_name?: string | null;
+        school_id?: string | null;
+        expires_at?: string | null;
+      } | null;
+      if (body?.ok !== true || !body.email) {
+        toast({
+          title: inviteErrorTitle(body),
+          description: inviteErrorDescription(body, 'teacher'),
+          variant: 'destructive',
+        });
+        return;
+      }
+      setInviteInfo({
+        email: body.email,
+        schoolName: body.school_name ?? null,
+        schoolId: body.school_id ?? null,
+        expiresAt: body.expires_at ?? null,
+      });
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [token]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!token) {
       toast({
         title: 'Enlace incompleto',
-        description: 'Falta el token en la URL. Usa el enlace que te envió el centro.',
+        description:
+          'Este enlace no trae el código de invitación. Abre de nuevo el email del centro y pulsa el botón original.',
+        variant: 'destructive',
+      });
+      return;
+    }
+    if (nombre.trim().length < 2) {
+      toast({
+        title: 'Nombre requerido',
+        description:
+          'Escribe tu nombre con al menos 2 caracteres para poder crear correctamente tu perfil de docente.',
         variant: 'destructive',
       });
       return;
@@ -49,7 +95,8 @@ const CompleteTeacherInvite: React.FC = () => {
     if (password.length < 6) {
       toast({
         title: 'Contraseña demasiado corta',
-        description: 'Usa al menos 6 caracteres.',
+        description:
+          'La contraseña debe tener 6 o más caracteres. Te recomendamos usar letras y números para mayor seguridad.',
         variant: 'destructive',
       });
       return;
@@ -60,16 +107,15 @@ const CompleteTeacherInvite: React.FC = () => {
       body: {
         token,
         password,
-        nombre: nombre.trim() || null,
+        nombre: nombre.trim(),
       },
     });
     setSubmitting(false);
 
     if (error) {
-      const msg = describeInviteError(data) ?? error.message;
       toast({
-        title: 'No se pudo completar la invitación',
-        description: msg,
+        title: inviteErrorTitle(data),
+        description: inviteErrorDescription(data, 'teacher') ?? error.message,
         variant: 'destructive',
       });
       return;
@@ -78,8 +124,8 @@ const CompleteTeacherInvite: React.FC = () => {
     const body = data as { ok?: boolean; error?: string } | null;
     if (body && body.ok !== true) {
       toast({
-        title: 'No se pudo completar la invitación',
-        description: describeInviteError(body) ?? 'Respuesta inesperada del servidor.',
+        title: inviteErrorTitle(body),
+        description: inviteErrorDescription(body, 'teacher'),
         variant: 'destructive',
       });
       return;
@@ -87,21 +133,22 @@ const CompleteTeacherInvite: React.FC = () => {
 
     toast({
       title: 'Cuenta de docente activada',
-      description: 'Inicia sesión con el email de la invitación y la contraseña que acabas de crear.',
+      description:
+        'Tu cuenta ya está lista. Entra con el correo de la invitación y la contraseña que acabas de definir.',
     });
     navigate('/brainifamily/login');
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md shadow-lg">
+    <div className="min-h-screen bg-gradient-to-br from-braini-blue/10 via-white to-braini-turquoise/10 flex items-center justify-center p-4">
+      <Card className="w-full max-w-md shadow-lg border-braini-blue/20">
         <CardHeader className="text-center">
-          <div className="mx-auto w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mb-2">
-            <GraduationCap className="w-7 h-7 text-blue-600" />
+          <div className="mx-auto w-12 h-12 rounded-full bg-braini-turquoise/10 flex items-center justify-center mb-2">
+            <GraduationCap className="w-7 h-7 text-braini-turquoise-dark" />
           </div>
           <CardTitle>Completar invitación — docente</CardTitle>
           <p className="text-sm text-muted-foreground font-normal">
-            Establece tu contraseña para acceder al panel de maestro.
+            Establece tu nombre y contraseña para acceder al panel de maestro.
           </p>
         </CardHeader>
         <CardContent>
@@ -110,19 +157,52 @@ const CompleteTeacherInvite: React.FC = () => {
               Este enlace no incluye token. Solicita un nuevo enlace al centro.
             </p>
           )}
+          {loadingInvite && (
+            <p className="text-sm text-muted-foreground mb-4">Cargando datos de la invitación...</p>
+          )}
+          {inviteInfo && (
+            <div className="rounded-md border border-braini-blue/20 bg-braini-blue/5 p-3 mb-4 space-y-1 text-sm">
+              <p>
+                <span className="font-semibold">Correo invitado:</span>{' '}
+                <span>{inviteInfo.email}</span>
+              </p>
+              <p>
+                <span className="font-semibold">Centro:</span>{' '}
+                <span>{inviteInfo.schoolName ?? inviteInfo.schoolId ?? 'No disponible'}</span>
+              </p>
+              {inviteInfo.expiresAt && (
+                <p>
+                  <span className="font-semibold">Caduca:</span>{' '}
+                  <span>{new Date(inviteInfo.expiresAt).toLocaleString()}</span>
+                </p>
+              )}
+            </div>
+          )}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <Label htmlFor="nombre">Nombre (opcional)</Label>
+              <Label htmlFor="invite-email">Correo de la invitación</Label>
+              <Input
+                id="invite-email"
+                value={inviteInfo?.email ?? '—'}
+                readOnly
+                disabled
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="nombre">Nombre *</Label>
               <Input
                 id="nombre"
                 value={nombre}
                 onChange={(e) => setNombre(e.target.value)}
                 autoComplete="name"
+                minLength={2}
+                required
                 className="mt-1"
               />
             </div>
             <div>
-              <Label htmlFor="password">Contraseña</Label>
+              <Label htmlFor="password">Contraseña *</Label>
               <div className="relative mt-1">
                 <Input
                   id="password"
@@ -131,6 +211,7 @@ const CompleteTeacherInvite: React.FC = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   autoComplete="new-password"
                   minLength={6}
+                  required
                 />
                 <button
                   type="button"
@@ -142,15 +223,10 @@ const CompleteTeacherInvite: React.FC = () => {
                 </button>
               </div>
             </div>
-            <Button type="submit" className="w-full" disabled={submitting || !token}>
+            <Button type="submit" className="w-full bg-braini-turquoise hover:bg-braini-turquoise-dark text-white" disabled={submitting || !token}>
               {submitting ? 'Activando…' : 'Activar cuenta'}
             </Button>
           </form>
-          <p className="text-center text-sm text-muted-foreground mt-4">
-            <Link to="/brainifamily/login" className="text-blue-600 hover:underline">
-              Volver al inicio de sesión
-            </Link>
-          </p>
         </CardContent>
       </Card>
     </div>

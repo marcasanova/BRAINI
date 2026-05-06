@@ -17,7 +17,7 @@ export async function navigateParentAfterLogin(
 ): Promise<void> {
   const { data: parentData, error: parentError } = await supabase
     .from('parents')
-    .select('profile_completed, children_count')
+    .select('profile_completed')
     .eq('id', userId)
     .single();
 
@@ -44,11 +44,6 @@ export async function navigateParentAfterLogin(
     return;
   }
 
-  const parentChildrenCount =
-    parentData.children_count != null
-      ? Math.min(5, Math.max(1, Number(parentData.children_count)))
-      : 1;
-
   const { data: childRows, error: childError } = await supabase
     .from('children')
     .select('profile_completed')
@@ -65,12 +60,11 @@ export async function navigateParentAfterLogin(
   }
 
   const children = childRows ?? [];
-  const hasEnoughChildren = children.length >= parentChildrenCount;
-  const allCompleted =
-    children.length > 0 &&
-    children.every((c: { profile_completed: boolean }) => c.profile_completed);
+  const hasIncompleteChild = children.some(
+    (c: { profile_completed: boolean }) => c.profile_completed === false,
+  );
 
-  if (!hasEnoughChildren || !allCompleted) {
+  if (hasIncompleteChild) {
     navigate('/brainifamily/child-profile');
     return;
   }

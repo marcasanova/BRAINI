@@ -31,7 +31,7 @@ import TeacherRoute from './components/navigation/TeacherRoute';
 import AdminRoute from './components/navigation/AdminRoute';
 import DirectorRoute from './components/navigation/DirectorRoute';
 import TeacherLayout from './pages/brainifamily/teacher/TeacherLayout';
-import TeacherDashboard from './pages/brainifamily/teacher/Dashboard';
+import TeacherDashboard from './pages/brainifamily/teacher/TeacherDashboard';
 import TeacherChildView from './pages/brainifamily/teacher/ChildView';
 import AdminDashboard from './pages/brainifamily/admin/AdminDashboard';
 import DirectorDashboard from './pages/brainifamily/director/DirectorDashboard';

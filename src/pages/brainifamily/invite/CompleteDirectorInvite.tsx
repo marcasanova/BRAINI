@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -7,24 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { supabase } from '@/lib/supabaseClient';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, Building2 } from 'lucide-react';
-
-function describeInviteError(data: unknown): string | null {
-  if (!data || typeof data !== 'object') return null;
-  const o = data as Record<string, unknown>;
-  if (typeof o.message === 'string') return o.message;
-  const code = o.error;
-  if (code === 'email_already_registered') {
-    return 'Este correo ya tiene cuenta. Contacta con el administrador para completar el alta.';
-  }
-  if (code === 'invite_not_valid_or_expired') {
-    return 'La invitación no es válida o ha caducado.';
-  }
-  if (code === 'invalid_invite') {
-    return 'Enlace de invitación no válido.';
-  }
-  if (typeof code === 'string') return code;
-  return null;
-}
+import { inviteErrorDescription, inviteErrorTitle } from '@/lib/inviteErrors';
 
 const CompleteDirectorInvite: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -54,7 +37,14 @@ const CompleteDirectorInvite: React.FC = () => {
       setLoadingInvite(false);
       if (cancelled) return;
 
-      if (error) return;
+      if (error) {
+        toast({
+          title: inviteErrorTitle(data),
+          description: inviteErrorDescription(data, 'director') ?? error.message,
+          variant: 'destructive',
+        });
+        return;
+      }
       const body = data as {
         ok?: boolean;
         email?: string;
@@ -62,7 +52,14 @@ const CompleteDirectorInvite: React.FC = () => {
         school_id?: string | null;
         expires_at?: string | null;
       } | null;
-      if (body?.ok !== true || !body.email) return;
+      if (body?.ok !== true || !body.email) {
+        toast({
+          title: inviteErrorTitle(body),
+          description: inviteErrorDescription(body, 'director'),
+          variant: 'destructive',
+        });
+        return;
+      }
       setInviteInfo({
         email: body.email,
         schoolName: body.school_name ?? null,
@@ -80,7 +77,8 @@ const CompleteDirectorInvite: React.FC = () => {
     if (!token) {
       toast({
         title: 'Enlace incompleto',
-        description: 'Falta el token en la URL. Usa el enlace que te envió el administrador.',
+        description:
+          'Este enlace no trae el código de invitación. Abre de nuevo el email del administrador y pulsa el enlace original.',
         variant: 'destructive',
       });
       return;
@@ -88,7 +86,8 @@ const CompleteDirectorInvite: React.FC = () => {
     if (nombre.trim().length < 2) {
       toast({
         title: 'Nombre requerido',
-        description: 'Indica tu nombre (mínimo 2 caracteres).',
+        description:
+          'Escribe tu nombre con al menos 2 caracteres para crear correctamente tu perfil de dirección.',
         variant: 'destructive',
       });
       return;
@@ -96,7 +95,8 @@ const CompleteDirectorInvite: React.FC = () => {
     if (password.length < 6) {
       toast({
         title: 'Contraseña demasiado corta',
-        description: 'Usa al menos 6 caracteres.',
+        description:
+          'La contraseña debe tener 6 o más caracteres. Añade combinación de letras y números para mayor seguridad.',
         variant: 'destructive',
       });
       return;
@@ -113,10 +113,9 @@ const CompleteDirectorInvite: React.FC = () => {
     setSubmitting(false);
 
     if (error) {
-      const msg = describeInviteError(data) ?? error.message;
       toast({
-        title: 'No se pudo completar la invitación',
-        description: msg,
+        title: inviteErrorTitle(data),
+        description: inviteErrorDescription(data, 'director') ?? error.message,
         variant: 'destructive',
       });
       return;
@@ -125,8 +124,8 @@ const CompleteDirectorInvite: React.FC = () => {
     const body = data as { ok?: boolean; error?: string } | null;
     if (body && body.ok !== true) {
       toast({
-        title: 'No se pudo completar la invitación',
-        description: describeInviteError(body) ?? 'Respuesta inesperada del servidor.',
+        title: inviteErrorTitle(body),
+        description: inviteErrorDescription(body, 'director'),
         variant: 'destructive',
       });
       return;
@@ -134,21 +133,22 @@ const CompleteDirectorInvite: React.FC = () => {
 
     toast({
       title: 'Cuenta de dirección activada',
-      description: 'Ya puedes iniciar sesión con el correo de la invitación y tu nueva contraseña.',
+      description:
+        'Alta completada. Ya puedes iniciar sesión con el correo de la invitación y la contraseña que acabas de crear.',
     });
     navigate('/brainifamily/login');
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-white to-slate-100 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md shadow-lg">
+    <div className="min-h-screen bg-gradient-to-br from-braini-blue/10 via-white to-braini-turquoise/10 flex items-center justify-center p-4">
+      <Card className="w-full max-w-md shadow-lg border-braini-blue/20">
         <CardHeader className="text-center">
-          <div className="mx-auto w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mb-2">
-            <Building2 className="w-7 h-7 text-slate-700" />
+          <div className="mx-auto w-12 h-12 rounded-full bg-braini-blue/10 flex items-center justify-center mb-2">
+            <Building2 className="w-7 h-7 text-braini-blue" />
           </div>
           <CardTitle>Completar invitación - dirección</CardTitle>
           <p className="text-sm text-muted-foreground font-normal">
-            Define tu contraseña para acceder al panel de dirección del centro.
+            Define tu nombre y contraseña para acceder al panel de dirección del centro.
           </p>
         </CardHeader>
         <CardContent>
@@ -161,7 +161,7 @@ const CompleteDirectorInvite: React.FC = () => {
             <p className="text-sm text-muted-foreground mb-4">Cargando datos de la invitación...</p>
           )}
           {inviteInfo && (
-            <div className="rounded-md border bg-slate-50 p-3 mb-4 space-y-1 text-sm">
+            <div className="rounded-md border border-braini-blue/20 bg-braini-blue/5 p-3 mb-4 space-y-1 text-sm">
               <p>
                 <span className="font-semibold">Correo invitado:</span>{' '}
                 <span>{inviteInfo.email}</span>
@@ -223,15 +223,10 @@ const CompleteDirectorInvite: React.FC = () => {
                 </button>
               </div>
             </div>
-            <Button type="submit" className="w-full" disabled={submitting || !token}>
+            <Button type="submit" className="w-full bg-braini-blue hover:bg-braini-blue-dark text-white" disabled={submitting || !token}>
               {submitting ? 'Activando...' : 'Activar cuenta'}
             </Button>
           </form>
-          <p className="text-center text-sm text-muted-foreground mt-4">
-            <Link to="/brainifamily/login" className="text-blue-600 hover:underline">
-              Volver al inicio de sesión
-            </Link>
-          </p>
         </CardContent>
       </Card>
     </div>

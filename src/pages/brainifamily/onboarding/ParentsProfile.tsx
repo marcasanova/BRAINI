@@ -19,15 +19,13 @@ const RELACIONES = [
 ];
 
 
-const NUMERO_HIJOS_OPCIONES = [1, 2, 3, 4, 5] as const;
-
 // Configuración de pasos
 const STEPS = [
   {
     id: 1,
     title: '¡Hola! Conozcámonos',
     subtitle: 'Empecemos con lo básico',
-    fields: ['nombre', 'relacion_con_menor', 'children_count']
+    fields: ['nombre', 'relacion_con_menor']
   }
 ];
 
@@ -36,7 +34,6 @@ const ParentsProfile = () => {
   const [form, setForm] = useState({
     nombre: '',
     relacion_con_menor: '',
-    children_count: 1 as number,
   });
   const [touched, setTouched] = useState<{ [k: string]: boolean }>({});
   const [error, setError] = useState('');
@@ -55,7 +52,7 @@ const ParentsProfile = () => {
         
         const { data, error: fetchError } = await supabase
           .from('parents')
-          .select('profile_completed, nombre, relacion_con_menor, children_count')
+          .select('profile_completed, nombre, relacion_con_menor')
           .eq('id', user.id)
           .single();
         
@@ -67,11 +64,9 @@ const ParentsProfile = () => {
             return;
           }
           
-          const count = data.children_count != null ? Math.min(5, Math.max(1, Number(data.children_count))) : 1;
           setForm({
             nombre: data.nombre || '',
             relacion_con_menor: data.relacion_con_menor || '',
-            children_count: count,
           });
         } else {
           throw new Error('No se encontró el perfil del usuario.');
@@ -94,7 +89,6 @@ const ParentsProfile = () => {
   const validations = {
     nombre: () => form.nombre.trim().length >= 2,
     relacion_con_menor: () => form.relacion_con_menor !== '',
-    children_count: () => form.children_count >= 1 && form.children_count <= 5,
   };
 
   const getFieldError = (fieldName: string): string => {
@@ -105,8 +99,6 @@ const ParentsProfile = () => {
         return !validations.nombre() ? 'El nombre debe tener al menos 2 caracteres' : '';
       case 'relacion_con_menor':
         return !validations.relacion_con_menor() ? 'Selecciona tu relación con el menor' : '';
-      case 'children_count':
-        return !validations.children_count() ? 'Selecciona el número de hijos (1 a 5)' : '';
       default:
         return '';
     }
@@ -150,7 +142,6 @@ const ParentsProfile = () => {
         nombre: form.nombre,
         relacion_con_menor: form.relacion_con_menor,
         profile_completed: true,
-        children_count: form.children_count,
       };
 
       const { error: updateError } = await supabase
@@ -179,12 +170,9 @@ const ParentsProfile = () => {
         ? 'tutor/a'
         : 'padre/madre';
 
-      const numHijos = form.children_count;
       toast({ 
         title: '💛 Perfil guardado', 
-        description: numHijos === 1 
-          ? 'Tu perfil está listo. Ahora vamos a crear el perfil del niño o la niña.'
-          : `Tu perfil está listo. Ahora vamos a crear los perfiles de los ${numHijos} niños/niñas, uno por uno.`, 
+        description: 'Tu perfil está listo. Ahora completa los datos del niño o niña vinculado a tu invitación.', 
         variant: 'default' 
       });
       
@@ -324,41 +312,6 @@ const ParentsProfile = () => {
                     <p className="text-[11px] sm:text-xs text-gray-500 leading-tight" style={{ fontWeight: 400 }}>
                       Indica tu relación con el niño/niña
                     </p>
-                  </div>
-
-                  {/* Número de hijos a registrar */}
-                  <div className="space-y-1.5 sm:space-y-2">
-                    <Label htmlFor="children_count" className="text-sm sm:text-base font-semibold text-gray-700" style={{ fontWeight: 600 }}>
-                      Número de hijos a registrar *
-                    </Label>
-                    <select
-                      id="children_count"
-                      name="children_count"
-                      value={form.children_count}
-                      onChange={(e) => {
-                        const v = parseInt(e.target.value, 10);
-                        setForm((prev) => ({ ...prev, children_count: isNaN(v) ? 1 : v }));
-                        setTouched((prev) => ({ ...prev, children_count: true }));
-                      }}
-                      disabled={isSubmitting}
-                      className={`w-full border-2 rounded-md p-2.5 sm:p-3 text-base sm:text-sm transition-colors ${
-                        getFieldError('children_count') 
-                          ? 'border-red-500 focus:border-red-500' 
-                          : 'border-gray-200 focus:border-braini-blue'
-                      }`}
-                    >
-                      {NUMERO_HIJOS_OPCIONES.map((n) => (
-                        <option key={n} value={n}>
-                          {n} {n === 1 ? 'hijo' : 'hijos'}
-                        </option>
-                      ))}
-                    </select>
-                    <p className="text-[11px] sm:text-xs text-gray-500 leading-tight" style={{ fontWeight: 400 }}>
-                      Selecciona cuántos niños/niñas vas a registrar (mínimo 1, máximo 5)
-                    </p>
-                    {getFieldError('children_count') && (
-                      <span className="text-red-500 text-xs mt-1 block">{getFieldError('children_count')}</span>
-                    )}
                   </div>
 
                   {/* Botón Submit */}
