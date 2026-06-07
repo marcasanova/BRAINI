@@ -48,6 +48,10 @@ export function inviteErrorDescription(data: unknown, flow: InviteFlow = 'parent
       return 'La contraseña introducida no coincide con la cuenta de ese correo. Revisa mayúsculas/minúsculas y vuelve a intentarlo, o usa «¿Has olvidado tu contraseña?» para recuperarla.';
     case 'email_already_registered':
       return teacherDirectorRegistered;
+    case 'role_conflict':
+      return 'Este correo ya pertenece a un usuario con otro rol en Braini (familia, profesor o director) y no puede reutilizarse para esta invitación. Usa un correo distinto o contacta con el centro.';
+    case 'email_role_conflict':
+      return 'Este correo ya está asociado a un profesor o director y no puede usarse como cuenta de familia. Indica un correo distinto para el padre o tutor.';
     case 'cannot_create_user':
       return 'No se ha podido crear la cuenta. El correo podría estar en uso o haber un problema temporal. Prueba más tarde o contacta con el centro.';
     case 'cannot_complete_invite':
@@ -84,6 +88,9 @@ export function inviteErrorTitle(data: unknown): string {
       return 'Contraseña incorrecta';
     case 'email_already_registered':
       return 'Correo ya registrado';
+    case 'role_conflict':
+    case 'email_role_conflict':
+      return 'Correo en uso con otro rol';
     case 'cannot_create_user':
       return 'No se pudo crear la cuenta';
     case 'cannot_complete_invite':

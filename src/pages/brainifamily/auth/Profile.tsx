@@ -50,11 +50,15 @@ const Profile = () => {
         setParentForm(parentData);
         const { data: childrenData, error: childrenError } = await supabase
           .from('children')
-          .select('*')
+          .select('*, schools ( name )')
           .eq('parent_id', user.id)
           .order('created_at', { ascending: true });
         if (childrenError) throw childrenError;
-        setChildren(childrenData ?? []);
+        const childrenWithSchool = (childrenData ?? []).map((row: any) => {
+          const school = Array.isArray(row.schools) ? row.schools[0] : row.schools;
+          return { ...row, school_name: school?.name ?? null };
+        });
+        setChildren(childrenWithSchool);
         setChild(null);
         setChildForm({});
         setEditChild(false);
@@ -82,12 +86,18 @@ const Profile = () => {
   const saveParent = async () => {
     try {
       setLoading(true);
+      const parentUpdatePayload = {
+        nombre: parentForm.nombre ?? null,
+        apellidos: parentForm.apellidos ?? null,
+        telefono_contacto: parentForm.telefono_contacto ?? null,
+        relacion_con_menor: parentForm.relacion_con_menor ?? null,
+      };
       const { error } = await supabase
         .from('parents')
-        .update(parentForm)
+        .update(parentUpdatePayload)
         .eq('id', parent.id);
       if (error) throw error;
-      setParent(parentForm);
+      setParent((prev: any) => ({ ...(prev ?? {}), ...parentUpdatePayload }));
       setEditParent(false);
       setAccordionValue('');
       toast({ 
@@ -109,13 +119,23 @@ const Profile = () => {
     if (!child?.id) return;
     try {
       setLoading(true);
+      const childUpdatePayload = {
+        nombre: childForm.nombre ?? null,
+        apellidos: childForm.apellidos ?? null,
+        dni: childForm.dni ?? null,
+        genero: childForm.genero ?? null,
+        fortalezas: childForm.fortalezas ?? null,
+        debilidades: childForm.debilidades ?? null,
+      };
       const { error } = await supabase
         .from('children')
-        .update(childForm)
+        .update(childUpdatePayload)
         .eq('id', child.id);
       if (error) throw error;
-      setChild(childForm);
-      setChildren((prev) => prev.map((ch) => (ch.id === child.id ? { ...ch, ...childForm } : ch)));
+      setChild((prev: any) => ({ ...(prev ?? {}), ...childUpdatePayload }));
+      setChildren((prev) =>
+        prev.map((ch) => (ch.id === child.id ? { ...ch, ...childUpdatePayload } : ch)),
+      );
       setEditChild(false);
       setAccordionValue('');
       toast({ 
@@ -378,9 +398,9 @@ const Profile = () => {
                                     <option value="">Selecciona una opción</option>
                                     <option value="madre">Madre</option>
                                     <option value="padre">Padre</option>
-                                    <option value="abuelo/a">Abuelo/a</option>
-                                    <option value="tutor/a">Tutor/a</option>
-                                    <option value="otros">Otros</option>
+                                    <option value="abuelo_a">Abuelo/a</option>
+                                    <option value="tutor_a">Tutor/a</option>
+                                    <option value="otro">Otro</option>
                                   </select>
                                 </div>
                               </div>
@@ -779,24 +799,6 @@ const Profile = () => {
                                       <option value="prefiero_no_decirlo">Prefiero no decirlo</option>
                                     </select>
                                   </div>
-                                  <div className="space-y-1.5 sm:space-y-2">
-                                    <Label htmlFor="child-nivel_educativo" className="text-xs sm:text-sm">Nivel educativo</Label>
-                                    <select
-                                      id="child-nivel_educativo"
-                                      name="nivel_educativo"
-                                      value={childForm.nivel_educativo || ''}
-                                      onChange={handleChildChange}
-                                      className="w-full border-2 border-gray-200 rounded-md p-2 sm:p-2.5 text-base sm:text-sm focus:border-braini-pink"
-                                    >
-                                      <option value="">Selecciona una opción</option>
-                                      <option value="infantil_3">Infantil 3 años</option>
-                                      <option value="infantil_4">Infantil 4 años</option>
-                                      <option value="infantil_5">Infantil 5 años</option>
-                                      <option value="primaria_1">1º Ed. Primaria</option>
-                                      <option value="primaria_2">2º Ed. Primaria</option>
-                                      <option value="otro">Otro</option>
-                                    </select>
-                                  </div>
                                 </div>
                               </div>
 
@@ -810,10 +812,18 @@ const Profile = () => {
                                     <Label htmlFor="child-centro_escolar" className="text-xs sm:text-sm">Centro escolar</Label>
                                     <Input
                                       id="child-centro_escolar"
-                                      name="centro_escolar"
-                                      value={childForm.centro_escolar || ''}
-                                      onChange={handleChildChange}
-                                      className="border-2 border-gray-200 focus:border-braini-pink text-base sm:text-sm py-2 sm:py-2.5"
+                                      value={childForm.school_name || 'Asignado por la clase'}
+                                      disabled
+                                      className="border-2 border-gray-200 bg-gray-50 text-base sm:text-sm py-2 sm:py-2.5"
+                                    />
+                                  </div>
+                                  <div className="space-y-1.5 sm:space-y-2">
+                                    <Label htmlFor="child-nivel_educativo_readonly" className="text-xs sm:text-sm">Nivel educativo</Label>
+                                    <Input
+                                      id="child-nivel_educativo_readonly"
+                                      value={childForm.nivel_educativo || 'Asignado por la clase'}
+                                      disabled
+                                      className="border-2 border-gray-200 bg-gray-50 text-base sm:text-sm py-2 sm:py-2.5"
                                     />
                                   </div>
                                 </div>
@@ -901,7 +911,7 @@ const Profile = () => {
                                     <School className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink flex-shrink-0" />
                                     <div className="min-w-0 flex-1">
                                       <p className="text-[10px] sm:text-xs text-gray-500 font-medium">Centro escolar</p>
-                                      <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">{c?.centro_escolar || 'No especificado'}</p>
+                                      <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">{c?.school_name || 'No especificado'}</p>
                                     </div>
                                   </div>
                                   <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">

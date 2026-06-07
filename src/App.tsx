@@ -12,11 +12,8 @@ import LandingPage from './pages/LandingPage';
 import BrainiKidsLanding from './pages/brainikids/BrainiKidsLanding';
 import BrainiJuniorsLanding from './pages/brainijuniors/BrainiJuniorsLanding';
 import BrainiFamilyLanding from './pages/brainifamily/BrainiFamilyLanding';
-import Conferencia from './pages/Conferencia';
-import TestGenius from './pages/TestGenius';
 // BrainiFamily imports
 import Login from "./pages/brainifamily/auth/Login";
-import SignUp from "./pages/brainifamily/auth/SignUp";
 import Home from "./pages/brainifamily/core/Home";
 import ParentsProfile from './pages/brainifamily/onboarding/ParentsProfile';
 import ChildProfile from './pages/brainifamily/onboarding/ChildProfile';
@@ -81,9 +78,8 @@ const App = () => (
           {/* BrainiFamily - Landing */}
           <Route path="/brainifamily" element={<BrainiFamilyLanding />} />
           
-          {/* BrainiFamily - Auth */}
+          {/* BrainiFamily - Auth (acceso solo por invitación) */}
           <Route path="/brainifamily/login" element={<Login />} />
-          <Route path="/brainifamily/signup" element={<SignUp />} />
           <Route path="/brainifamily/update-password" element={<UpdatePassword />} />
 
           <Route path="/brainifamily/invite/director" element={<CompleteDirectorInvite />} />
@@ -119,12 +115,8 @@ const App = () => (
             <Route path="/brainifamily/test-emocional-ninos" element={<TestEmocionalNinos />} />
           </Route>
           
-          {/* Páginas públicas especiales (mantener) */}
-          <Route path="/conferencia" element={<Conferencia />} />
-          <Route path="/test-genius" element={<TestGenius />} />
-          
           {/* Redirects para compatibilidad con rutas antiguas */}
-          <Route path="/signup" element={<Navigate to="/brainifamily/signup" replace />} />
+          <Route path="/signup" element={<Navigate to="/brainifamily/login" replace />} />
           <Route path="/login" element={<Navigate to="/brainifamily/login" replace />} />
           <Route path="/home" element={<Navigate to="/brainifamily/home" replace />} />
           <Route path="/parents-profile" element={<Navigate to="/brainifamily/parents-profile" replace />} />

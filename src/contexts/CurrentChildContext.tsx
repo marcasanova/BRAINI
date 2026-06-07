@@ -1,5 +1,3 @@
-import { useOutlet } from "react-router-dom";
-import { useOutlet } from "react-router-dom";
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -13,6 +11,26 @@ export interface Child {
   nivel_educativo: string | null;
   course_id: number | null;
   profile_completed: boolean;
+  school_id: string | null;
+  /**
+   * Nombre del centro. Requiere que el rol `parent` pueda leer `public.schools`
+   * de su(s) hijo(s) (política RLS). Si no hay acceso, será null y la UI
+   * mostrará una alternativa sin romper.
+   */
+  school_name: string | null;
+}
+
+// Forma cruda que devuelve PostgREST con el join a schools(name).
+interface ChildRow {
+  id: string;
+  parent_id: string;
+  nombre: string;
+  apellidos: string | null;
+  nivel_educativo: string | null;
+  course_id: number | null;
+  profile_completed: boolean;
+  school_id: string | null;
+  schools: { name: string | null } | { name: string | null }[] | null;
 }
 
 interface CurrentChildContextValue {
@@ -65,12 +83,27 @@ export function CurrentChildProvider({ children }: { children: React.ReactNode }
       }
       const { data, error: fetchError } = await supabase
         .from("children")
-        .select("id, parent_id, nombre, apellidos, nivel_educativo, course_id, profile_completed")
+        .select(
+          "id, parent_id, nombre, apellidos, nivel_educativo, course_id, profile_completed, school_id, schools ( name )",
+        )
         .eq("parent_id", user.id)
         .order("created_at", { ascending: true });
 
       if (fetchError) throw fetchError;
-      const list = (data ?? []) as Child[];
+      const list: Child[] = ((data ?? []) as ChildRow[]).map((row) => {
+        const school = Array.isArray(row.schools) ? row.schools[0] : row.schools;
+        return {
+          id: row.id,
+          parent_id: row.parent_id,
+          nombre: row.nombre,
+          apellidos: row.apellidos,
+          nivel_educativo: row.nivel_educativo,
+          course_id: row.course_id,
+          profile_completed: row.profile_completed,
+          school_id: row.school_id,
+          school_name: school?.name ?? null,
+        };
+      });
       setChildrenList(list);
 
       const stored = getStoredChildId();

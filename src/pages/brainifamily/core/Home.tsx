@@ -106,7 +106,7 @@ const Home = () => {
                   <SelectContent>
                     {childrenList.map((c) => (
                       <SelectItem key={c.id} value={c.id}>
-                        {c.nombre}
+                        {c.school_name ? `${c.nombre} · ${c.school_name}` : c.nombre}
                       </SelectItem>
                     ))}
                   </SelectContent>

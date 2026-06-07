@@ -205,6 +205,50 @@ serve(async (req: Request) => {
       return { failed: false };
     }
 
+    // Mapea los códigos de error de complete_parent_invite a respuesta HTTP + mensaje
+    function mapCompleteError(
+      code: string,
+    ): { status: number; body: Record<string, unknown> } {
+      switch (code) {
+        case "email_mismatch":
+          return {
+            status: 403,
+            body: {
+              error: "invite_email_mismatch",
+              message:
+                "Esta invitación es para otro correo. Usa el correo indicado en el enlace.",
+            },
+          };
+        case "role_conflict":
+          return {
+            status: 409,
+            body: {
+              error: "role_conflict",
+              message:
+                "Este correo ya pertenece a un usuario con otro rol (profesor o director) y no puede usarse como familiar.",
+            },
+          };
+        case "child_already_linked_other_parent":
+          return {
+            status: 409,
+            body: {
+              error: "child_already_linked_other_parent",
+              message: "Este alumno ya está vinculado a otra cuenta.",
+            },
+          };
+        case "invalid_or_expired_invite":
+          return {
+            status: 400,
+            body: {
+              error: "invite_not_valid_or_expired",
+              message: "La invitación no es válida o ha caducado.",
+            },
+          };
+        default:
+          return { status: 400, body: { error: code } };
+      }
+    }
+
     function isLikelyEndUserAccessJwt(token: string): boolean {
       if (!token) return false;
       // Evitar usar claves de proyecto como si fueran JWT de usuario.
@@ -259,13 +303,11 @@ serve(async (req: Request) => {
         const fail = parentCompleteFailed(completeData);
         if (fail.failed) {
           console.error("complete_parent_invite returned ok=false:", fail.code);
-          return new Response(
-            JSON.stringify({ error: fail.code === "email_mismatch" ? "invite_email_mismatch" : fail.code }),
-            {
-              status: fail.code === "email_mismatch" ? 403 : 400,
-              headers: { ...corsHeaders, "Content-Type": "application/json" },
-            },
-          );
+          const mapped = mapCompleteError(fail.code);
+          return new Response(JSON.stringify(mapped.body), {
+            status: mapped.status,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
         }
 
         const c = completeData as ParentCompleteResult;
@@ -380,15 +422,11 @@ serve(async (req: Request) => {
           console.error("rollback deleteUser error:", delErr.message);
         }
       }
-      return new Response(
-        JSON.stringify({
-          error: failAfterAuth.code === "email_mismatch" ? "invite_email_mismatch" : failAfterAuth.code,
-        }),
-        {
-          status: failAfterAuth.code === "email_mismatch" ? 403 : 400,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        },
-      );
+      const mapped = mapCompleteError(failAfterAuth.code);
+      return new Response(JSON.stringify(mapped.body), {
+        status: mapped.status,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     const c2 = completeData as ParentCompleteResult;

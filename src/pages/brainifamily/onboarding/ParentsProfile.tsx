@@ -13,9 +13,9 @@ const logoBraini = '/logo/logoBraini.png';
 const RELACIONES = [
   'madre',
   'padre',
-  'abuelo/a',
-  'tutor/a',
-  'otros',
+  'abuelo_a',
+  'tutor_a',
+  'otro',
 ];
 
 
@@ -159,17 +159,6 @@ const ParentsProfile = () => {
         throw updateError;
       }
 
-      // Personalizar mensaje según la relación con el menor
-      const relacionTexto = form.relacion_con_menor === 'madre' 
-        ? 'madre' 
-        : form.relacion_con_menor === 'padre'
-        ? 'padre'
-        : form.relacion_con_menor === 'abuelo/a'
-        ? 'abuelo/a'
-        : form.relacion_con_menor === 'tutor/a'
-        ? 'tutor/a'
-        : 'padre/madre';
-
       toast({ 
         title: '💛 Perfil guardado', 
         description: 'Tu perfil está listo. Ahora completa los datos del niño o niña vinculado a tu invitación.', 
@@ -303,7 +292,13 @@ const ParentsProfile = () => {
                     >
                       <option value="">Selecciona una opción</option>
                       {RELACIONES.map((rel) => (
-                        <option key={rel} value={rel}>{rel}</option>
+                        <option key={rel} value={rel}>
+                          {rel === 'abuelo_a'
+                            ? 'abuelo/a'
+                            : rel === 'tutor_a'
+                              ? 'tutor/a'
+                              : rel}
+                        </option>
                       ))}
                     </select>
                     {getFieldError('relacion_con_menor') && (

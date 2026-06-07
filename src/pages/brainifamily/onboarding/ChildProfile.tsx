@@ -17,22 +17,13 @@ const GENEROS = [
   { value: 'prefiero_no_decirlo', label: 'Prefiero no decirlo' },
 ];
 
-const NIVELES_EDUCATIVOS = [
-  { value: 'infantil_3', label: 'Infantil 3 años' },
-  { value: 'infantil_4', label: 'Infantil 4 años' },
-  { value: 'infantil_5', label: 'Infantil 5 años' },
-  { value: 'primaria_1', label: '1º Ed. Primaria' },
-  { value: 'primaria_2', label: '2º Ed. Primaria' },
-  { value: 'otro', label: 'Otro' },
-];
-
 // Configuración de pasos
 const STEPS = [
   {
     id: 1,
     title: 'Información básica',
     subtitle: 'Datos personales del niño/niña',
-    fields: ['nombre', 'apellidos', 'genero', 'nivel_educativo']
+    fields: ['nombre', 'apellidos', 'genero', 'fecha_nacimiento']
   }
 ];
 
@@ -41,6 +32,7 @@ const ChildProfile = () => {
     nombre: '',
     apellidos: '',
     genero: '',
+    fecha_nacimiento: '',
     nivel_educativo: '',
   });
 
@@ -52,7 +44,7 @@ const ChildProfile = () => {
   const navigate = useNavigate();
   const { refetch: refetchChildren } = useCurrentChildContext();
 
-  const [childrenList, setChildrenList] = useState<Array<{ id: string; nombre: string; apellidos: string | null; genero: string | null; nivel_educativo: string | null; profile_completed: boolean }>>([]);
+  const [childrenList, setChildrenList] = useState<Array<{ id: string; nombre: string; apellidos: string | null; genero: string | null; fecha_nacimiento: string | null; nivel_educativo: string | null; profile_completed: boolean }>>([]);
   const [editingChildId, setEditingChildId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -65,7 +57,7 @@ const ChildProfile = () => {
 
         const { data: childrenData, error: childrenError } = await supabase
           .from('children')
-          .select('id, nombre, apellidos, genero, nivel_educativo, profile_completed')
+          .select('id, nombre, apellidos, genero, fecha_nacimiento, nivel_educativo, profile_completed')
           .eq('parent_id', user.id)
           .order('created_at', { ascending: true });
         
@@ -96,11 +88,12 @@ const ChildProfile = () => {
             nombre: firstIncomplete.nombre || '',
             apellidos: firstIncomplete.apellidos || '',
             genero: firstIncomplete.genero || '',
+            fecha_nacimiento: firstIncomplete.fecha_nacimiento || '',
             nivel_educativo: firstIncomplete.nivel_educativo || '',
           });
         } else {
           setEditingChildId(null);
-          setForm({ nombre: '', apellidos: '', genero: '', nivel_educativo: '' });
+          setForm({ nombre: '', apellidos: '', genero: '', fecha_nacimiento: '', nivel_educativo: '' });
         }
       } catch (err: any) {
         setError(err.message || 'Error al comprobar los datos.');
@@ -117,11 +110,23 @@ const ChildProfile = () => {
     setTouched((prev) => ({ ...prev, [name]: true }));
   };
 
+  const isValidBirthDate = (value: string): boolean => {
+    if (!value) return false;
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return false;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (date > today) return false;
+    // Rango razonable para alumnado (no anterior a 1990).
+    const minDate = new Date('1990-01-01');
+    return date >= minDate;
+  };
+
   const validations = {
     nombre: () => form.nombre.trim().length >= 2,
     apellidos: () => form.apellidos.trim().length >= 2,
     genero: () => form.genero !== '',
-    nivel_educativo: () => form.nivel_educativo !== '',
+    fecha_nacimiento: () => isValidBirthDate(form.fecha_nacimiento),
   };
 
   const getFieldError = (fieldName: string): string => {
@@ -134,8 +139,8 @@ const ChildProfile = () => {
         return !validations.apellidos() ? 'Los apellidos deben tener al menos 2 caracteres' : '';
       case 'genero':
         return !validations.genero() ? 'Selecciona el género del niño/niña' : '';
-      case 'nivel_educativo':
-        return !validations.nivel_educativo() ? 'Selecciona el nivel educativo del niño/niña' : '';
+      case 'fecha_nacimiento':
+        return !validations.fecha_nacimiento() ? 'Introduce una fecha de nacimiento válida' : '';
       default:
         return '';
     }
@@ -160,7 +165,10 @@ const ChildProfile = () => {
       if (userError || !user) throw new Error('No se pudo obtener el usuario autenticado.');
 
       const datosHijo = {
-        ...form,
+        nombre: form.nombre,
+        apellidos: form.apellidos,
+        genero: form.genero,
+        fecha_nacimiento: form.fecha_nacimiento,
         parent_id: user.id,
         profile_completed: true,
       };
@@ -191,8 +199,6 @@ const ChildProfile = () => {
           errorDescription = 'Ya existe un niño/niña registrado con ese DNI/NIE. Por favor, verifica los datos.';
         } else if (err.message.includes('nombre') || err.message.includes('apellidos')) {
           errorDescription = 'Por favor, verifica que el nombre y los apellidos estén correctamente completados.';
-        } else if (err.message.includes('nivel_educativo')) {
-          errorDescription = 'Por favor, selecciona el nivel educativo del niño/niña.';
         } else if (err.message.includes('genero')) {
           errorDescription = 'Por favor, selecciona el género del niño/niña.';
         } else {
@@ -220,12 +226,12 @@ const ChildProfile = () => {
       if (isLast) {
         setTimeout(() => navigate('/brainifamily/home'), 1200);
       } else {
-        setForm({ nombre: '', apellidos: '', genero: '', nivel_educativo: '' });
+        setForm({ nombre: '', apellidos: '', genero: '', fecha_nacimiento: '', nivel_educativo: '' });
         setEditingChildId(null);
         setTouched({});
         const { data: newList } = await supabase
           .from('children')
-          .select('id, nombre, apellidos, genero, nivel_educativo, profile_completed')
+          .select('id, nombre, apellidos, genero, fecha_nacimiento, nivel_educativo, profile_completed')
           .eq('parent_id', user.id)
           .order('created_at', { ascending: true });
         setChildrenList((newList ?? []) as typeof childrenList);
@@ -236,6 +242,7 @@ const ChildProfile = () => {
             nombre: (nextIncomplete as { nombre?: string }).nombre || '',
             apellidos: (nextIncomplete as { apellidos?: string | null }).apellidos || '',
             genero: (nextIncomplete as { genero?: string | null }).genero || '',
+            fecha_nacimiento: (nextIncomplete as { fecha_nacimiento?: string | null }).fecha_nacimiento || '',
             nivel_educativo: (nextIncomplete as { nivel_educativo?: string | null }).nivel_educativo || '',
           });
         }
@@ -394,37 +401,44 @@ const ChildProfile = () => {
                       <span className="text-red-500 text-xs mt-1 block">{getFieldError('genero')}</span>
                     )}
                   </div>
-                  
-                  {/* Campo Nivel educativo */}
+
+                  {/* Campo Fecha de nacimiento */}
                   <div className="space-y-1.5 sm:space-y-2">
-                    <Label htmlFor="nivel_educativo" className="text-sm sm:text-base font-semibold text-gray-700" style={{ fontWeight: 600 }}>
-                      Nivel educativo *
+                    <Label htmlFor="fecha_nacimiento" className="text-sm sm:text-base font-semibold text-gray-700" style={{ fontWeight: 600 }}>
+                      Fecha de nacimiento *
                     </Label>
-                    <select
-                      id="nivel_educativo"
-                      name="nivel_educativo"
-                      value={form.nivel_educativo}
+                    <Input
+                      id="fecha_nacimiento"
+                      name="fecha_nacimiento"
+                      type="date"
+                      value={form.fecha_nacimiento}
                       onChange={handleChange}
-                      disabled={isSubmitting}
-                      className={`w-full border-2 rounded-md p-2.5 sm:p-3 text-base sm:text-sm transition-colors ${
-                        getFieldError('nivel_educativo') 
-                          ? 'border-red-500 focus:border-red-500' 
+                      max={new Date().toISOString().split('T')[0]}
+                      className={`border-2 transition-colors text-base sm:text-sm py-2.5 sm:py-3 ${
+                        getFieldError('fecha_nacimiento')
+                          ? 'border-red-500 focus:border-red-500'
                           : 'border-gray-200 focus:border-braini-blue'
                       }`}
-                    >
-                      <option value="">Selecciona una opción</option>
-                      {NIVELES_EDUCATIVOS.map((nivel) => (
-                        <option key={nivel.value} value={nivel.value}>
-                          {nivel.label}
-                        </option>
-                      ))}
-                    </select>
-                    <p className="text-[11px] sm:text-xs text-gray-500 leading-tight" style={{ fontWeight: 400 }}>
-                      Selecciona el nivel educativo actual del niño/niña
-                    </p>
-                    {getFieldError('nivel_educativo') && (
-                      <span className="text-red-500 text-xs mt-1 block">{getFieldError('nivel_educativo')}</span>
+                      disabled={isSubmitting}
+                    />
+                    {getFieldError('fecha_nacimiento') && (
+                      <span className="text-red-500 text-xs mt-1 block">{getFieldError('fecha_nacimiento')}</span>
                     )}
+                  </div>
+                  
+                  <div className="space-y-1.5 sm:space-y-2">
+                    <Label htmlFor="nivel_educativo_readonly" className="text-sm sm:text-base font-semibold text-gray-700" style={{ fontWeight: 600 }}>
+                      Nivel educativo
+                    </Label>
+                    <Input
+                      id="nivel_educativo_readonly"
+                      value={form.nivel_educativo || 'Se asigna desde la clase'}
+                      disabled
+                      className="border-2 border-gray-200 bg-gray-50 text-base sm:text-sm py-2.5 sm:py-3"
+                    />
+                    <p className="text-[11px] sm:text-xs text-gray-500 leading-tight" style={{ fontWeight: 400 }}>
+                      Este dato se asigna automáticamente según la clase del menor.
+                    </p>
                   </div>
 
                   {/* Botón Submit */}

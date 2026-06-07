@@ -247,12 +247,16 @@ const Login = () => {
         return;
       }
 
+      // Modelo solo-invitación: una cuenta autenticada sin rol ni perfil de
+      // familia es una cuenta no vinculada a ningún centro. No permitimos
+      // auto-registro: cerramos sesión e indicamos cómo obtener acceso.
+      await supabase.auth.signOut();
       toast({
-        title: '🌱 Completa tu registro',
+        title: 'Tu cuenta no tiene acceso',
         description:
-          'Tu cuenta aún no tiene perfil de familia. Te llevamos al formulario inicial.',
+          'Esta cuenta no está vinculada a ningún centro. El acceso a Braini Family es solo por invitación: pide al centro o al profesor de tu hijo/a que te envíe el enlace de invitación.',
+        variant: 'destructive',
       });
-      navigate('/brainifamily/parents-profile');
     } catch (error) {
       // Manejar errores inesperados
       const err = error as Error;

@@ -8,6 +8,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { fetchMyRole } from '@/lib/myRole';
 import { useToast } from '@/hooks/use-toast';
 import { copyToClipboard } from '@/lib/clipboard';
+import { staffInviteRpcMessage } from '@/lib/teacherInviteRpcMessages';
 import { BookOpen, Building2, Copy, GraduationCap, LogOut, MailPlus, Users } from 'lucide-react';
 
 interface TeacherRow {
@@ -226,20 +227,11 @@ const DirectorDashboard: React.FC = () => {
     }
 
     const payload = data as { ok?: boolean; error?: string; token?: string } | null;
-    if (payload?.ok === false && payload?.error) {
+    const token = payload?.token;
+    if (payload?.ok !== true || !token) {
       toast({
         title: 'No se pudo crear la invitación',
-        description: payload.error,
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    const token = payload?.token;
-    if (!token) {
-      toast({
-        title: 'Respuesta inválida',
-        description: 'No se recibió token para el enlace.',
+        description: staffInviteRpcMessage(data, 'teacher'),
         variant: 'destructive',
       });
       return;

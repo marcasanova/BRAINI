@@ -37,10 +37,6 @@ const BrainiFamilyLanding = () => {
     navigate('/brainifamily/login');
   };
 
-  const handleSignUp = () => {
-    navigate('/brainifamily/signup');
-  };
-
   // SEO: Actualizar meta tags dinámicamente
   useEffect(() => {
     document.title = 'Braini Family - Programa de Neurobienestar Emocional';
@@ -48,7 +44,7 @@ const BrainiFamilyLanding = () => {
     // Actualizar meta description
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'Braini Family: Programa interactivo de 25 sesiones para desarrollar la inteligencia emocional en familia. Accede a la herramienta completa.');
+      metaDescription.setAttribute('content', 'Braini Family: Programa interactivo de 25 sesiones para desarrollar la inteligencia emocional en familia. Acceso para familias invitadas por su centro educativo.');
     }
 
     // Actualizar canonical
@@ -170,35 +166,27 @@ const BrainiFamilyLanding = () => {
             </p>
           </header>
 
-          {/* CTA Card con Promoción */}
+          {/* CTA Card - Acceso por invitación */}
           <div 
             className="bg-white rounded-xl p-4 sm:p-6 md:p-8 shadow-2xl relative z-10 w-full max-w-[90%] sm:max-w-md md:max-w-lg lg:max-w-2xl mx-auto mb-8 sm:mb-12"
             style={{
               boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
             }}
           >
-            <h3 className="text-gray-900 text-base sm:text-lg md:text-xl font-bold mb-4 sm:mb-6 text-center" style={{ fontWeight: 700 }}>
-              ¡Apúntate y aprovecha nuestra promoción!
+            <h3 className="text-gray-900 text-base sm:text-lg md:text-xl font-bold mb-3 sm:mb-4 text-center" style={{ fontWeight: 700 }}>
+              Acceso para familias invitadas
             </h3>
-            
-            {/* Lista Numerada */}
-            <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
-              <div className="text-left">
-                <p className="text-gray-900 text-sm sm:text-base md:text-lg">
-                  <span style={{ fontWeight: 600 }}>1-</span> Evaluar la <span style={{ color: '#7ea4df', fontWeight: 600 }}>Inteligencia Emocional</span> de tu hijo.
-                </p>
-              </div>
-              <div className="text-left">
-                <p className="text-gray-900 text-sm sm:text-base md:text-lg">
-                  <span style={{ fontWeight: 600 }}>2-</span> Disfrutar de <span style={{ color: '#7ea4df', fontWeight: 600 }}>3</span> sesiones emocionales completamente <span style={{ color: '#7ea4df', fontWeight: 600 }}>GRATIS</span>.
-                </p>
-              </div>
-            </div>
 
-            {/* Botones de Acción */}
-            <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4">
+            <p className="text-gray-600 text-sm sm:text-base text-center mb-6 sm:mb-8 leading-relaxed">
+              Braini Family es una herramienta para centros educativos. Tu cuenta se crea desde el
+              <span style={{ color: '#7ea4df', fontWeight: 600 }}> enlace de invitación</span> que te envía el centro o el profesor de tu hijo/a.
+              Si ya tienes cuenta, inicia sesión.
+            </p>
+
+            {/* Botón de Acceso */}
+            <div className="flex justify-center items-center">
               <Button 
-                onClick={handleSignUp}
+                onClick={handleLogin}
                 className="text-white px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 font-bold transition-all text-sm sm:text-base md:text-lg md:hover:opacity-90 md:hover:scale-105 w-full sm:w-auto"
                 style={{ 
                   background: '#7ea4df',
@@ -206,20 +194,7 @@ const BrainiFamilyLanding = () => {
                   minWidth: 'auto'
                 }}
               >
-                Conseguirlo Gratis
-              </Button>
-              <Button 
-                onClick={handleLogin}
-                variant="outline"
-                className="px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 font-bold transition-all text-sm sm:text-base md:text-lg md:hover:opacity-90 md:hover:scale-105 w-full sm:w-auto border-2 bg-white"
-                style={{ 
-                  borderColor: '#7ea4df',
-                  color: '#7ea4df',
-                  backgroundColor: 'white',
-                  minWidth: 'auto'
-                }}
-              >
-                Ya estás registrado
+                Iniciar sesión
               </Button>
             </div>
           </div>

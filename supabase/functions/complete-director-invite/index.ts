@@ -173,6 +173,26 @@ serve(async (req: Request) => {
       });
     }
 
+    // El RPC puede devolver { ok:false, error } sin lanzar excepción
+    if (!completeData || (completeData as { ok?: boolean }).ok !== true) {
+      const code = (completeData as { error?: string })?.error ??
+        "cannot_complete_invite";
+      console.error("complete_director_invite returned ok=false:", code);
+      const { error: delErr } = await supabaseAdmin.auth.admin.deleteUser(userId);
+      if (delErr) {
+        console.error("rollback deleteUser error:", delErr.message);
+      }
+      const status = code === "role_conflict"
+        ? 409
+        : code === "email_mismatch"
+        ? 403
+        : 400;
+      return new Response(JSON.stringify({ error: code }), {
+        status,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     return new Response(
       JSON.stringify({
         ok: true,

@@ -8,6 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Building2, Copy, LogOut, School, Shield, UserPlus, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { copyToClipboard } from '@/lib/clipboard';
+import { staffInviteRpcMessage } from '@/lib/teacherInviteRpcMessages';
 
 interface SchoolRow {
   id: string;
@@ -188,12 +189,12 @@ const AdminDashboard: React.FC = () => {
       return;
     }
 
-    const payload = data as { token?: string } | null;
+    const payload = data as { ok?: boolean; token?: string } | null;
     const token = payload?.token;
-    if (!token) {
+    if (payload?.ok !== true || !token) {
       toast({
-        title: 'Respuesta inválida',
-        description: 'No se recibió token para construir el enlace.',
+        title: 'No se pudo crear la invitación',
+        description: staffInviteRpcMessage(data, 'director'),
         variant: 'destructive',
       });
       return;

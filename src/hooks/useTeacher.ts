@@ -6,6 +6,7 @@ export interface TeacherClassRecord {
   id: string;
   name: string;
   course_id: number;
+  nivel_educativo: string | null;
   courses?: { nombre: string } | { nombre: string }[] | null;
 }
 
@@ -70,7 +71,7 @@ export function useTeacher() {
 
       const { data: classRows, error: classErr } = await supabase
         .from('classes')
-        .select('id, name, course_id, courses ( nombre )')
+        .select('id, name, course_id, nivel_educativo, courses ( nombre )')
         .eq('teacher_id', authUser.id)
         .eq('active', true)
         .order('name');

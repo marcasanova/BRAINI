@@ -42,6 +42,54 @@ import {
 } from 'lucide-react';
 
 type CourseRow = { id: number; nombre: string };
+type NivelEducativoValue =
+  | 'infantil_3'
+  | 'infantil_4'
+  | 'infantil_5'
+  | 'primaria_1'
+  | 'primaria_2'
+  | 'primaria_3'
+  | 'primaria_4'
+  | 'primaria_5'
+  | 'primaria_6';
+
+const NIVELES_INFANTIL: Array<{ value: NivelEducativoValue; label: string }> = [
+  { value: 'infantil_3', label: 'Infantil 3 años' },
+  { value: 'infantil_4', label: 'Infantil 4 años' },
+  { value: 'infantil_5', label: 'Infantil 5 años' },
+];
+
+const NIVELES_PRIMARIA: Array<{ value: NivelEducativoValue; label: string }> = [
+  { value: 'primaria_1', label: '1º Primaria' },
+  { value: 'primaria_2', label: '2º Primaria' },
+  { value: 'primaria_3', label: '3º Primaria' },
+  { value: 'primaria_4', label: '4º Primaria' },
+  { value: 'primaria_5', label: '5º Primaria' },
+  { value: 'primaria_6', label: '6º Primaria' },
+];
+
+function inferCourseStage(courseName: string | null | undefined): 'infantil' | 'primaria' | null {
+  const n = (courseName ?? '').toLowerCase();
+  if (n.includes('infantil')) return 'infantil';
+  if (n.includes('primaria')) return 'primaria';
+  return null;
+}
+
+function nivelLabel(value: string | null | undefined): string {
+  if (!value) return 'Sin nivel';
+  const map: Record<string, string> = {
+    infantil_3: 'Infantil 3 años',
+    infantil_4: 'Infantil 4 años',
+    infantil_5: 'Infantil 5 años',
+    primaria_1: '1º Primaria',
+    primaria_2: '2º Primaria',
+    primaria_3: '3º Primaria',
+    primaria_4: '4º Primaria',
+    primaria_5: '5º Primaria',
+    primaria_6: '6º Primaria',
+  };
+  return map[value] ?? value;
+}
 
 /** Recuerda la clase activa al ir al detalle de un alumno y volver al panel. */
 const TEACHER_SELECTED_CLASS_KEY = 'brainifamily_teacher_selected_class_id';
@@ -67,6 +115,7 @@ const TeacherDashboard: React.FC = () => {
   const [dialogClassOpen, setDialogClassOpen] = useState(false);
   const [newClassName, setNewClassName] = useState('');
   const [newClassCourseId, setNewClassCourseId] = useState<string>('');
+  const [newClassNivelEducativo, setNewClassNivelEducativo] = useState<string>('');
   const [newClassYear, setNewClassYear] = useState('');
   const [submittingClass, setSubmittingClass] = useState(false);
 
@@ -180,6 +229,15 @@ const TeacherDashboard: React.FC = () => {
       });
       return;
     }
+    if (!newClassNivelEducativo) {
+      toast({
+        title: 'Nivel educativo',
+        description:
+          'Selecciona el nivel educativo de la clase. Este nivel se heredará automáticamente al registrar alumnado.',
+        variant: 'destructive',
+      });
+      return;
+    }
 
     setSubmittingClass(true);
     const { data, error: insErr } = await supabase
@@ -188,6 +246,7 @@ const TeacherDashboard: React.FC = () => {
         school_id: teacher.school_id,
         teacher_id: teacher.id,
         course_id: cid,
+        nivel_educativo: newClassNivelEducativo,
         name,
         academic_year: newClassYear.trim() || null,
       })
@@ -214,10 +273,33 @@ const TeacherDashboard: React.FC = () => {
     setDialogClassOpen(false);
     setNewClassName('');
     setNewClassCourseId('');
+    setNewClassNivelEducativo('');
     setNewClassYear('');
     await refetchTeacher();
     if (data?.id) setSelectedClassId(data.id);
   };
+
+  const selectedCourseNameForNewClass = useMemo(() => {
+    if (!newClassCourseId) return null;
+    const row = courses.find((c) => String(c.id) === newClassCourseId);
+    return row?.nombre ?? null;
+  }, [courses, newClassCourseId]);
+
+  const selectedCourseStageForNewClass = useMemo(
+    () => inferCourseStage(selectedCourseNameForNewClass),
+    [selectedCourseNameForNewClass],
+  );
+
+  const availableNivelesForNewClass = useMemo(() => {
+    if (selectedCourseStageForNewClass === 'infantil') return NIVELES_INFANTIL;
+    if (selectedCourseStageForNewClass === 'primaria') return NIVELES_PRIMARIA;
+    return [] as Array<{ value: NivelEducativoValue; label: string }>;
+  }, [selectedCourseStageForNewClass]);
+
+  useEffect(() => {
+    if (availableNivelesForNewClass.some((n) => n.value === newClassNivelEducativo)) return;
+    setNewClassNivelEducativo('');
+  }, [availableNivelesForNewClass, newClassNivelEducativo]);
 
   const handleCreateStudent = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -263,7 +345,6 @@ const TeacherDashboard: React.FC = () => {
         apellidos: newStudentApellidos.trim() || null,
         class_id: selectedClassId,
         parent_id: null,
-        course_id: selectedClass.course_id,
         profile_completed: false,
       })
       .select('id')
@@ -546,6 +627,9 @@ const TeacherDashboard: React.FC = () => {
                         </p>
                       )}
                       <p className="text-xs text-gray-600 mt-1">
+                        Nivel: {nivelLabel(selectedClass.nivel_educativo)}
+                      </p>
+                      <p className="text-xs text-gray-600 mt-1">
                         {studentsInSelectedClass}{' '}
                         {studentsInSelectedClass === 1
                           ? 'alumno asignado'
@@ -742,6 +826,36 @@ const TeacherDashboard: React.FC = () => {
               )}
             </div>
             <div>
+              <Label htmlFor="tc-level">Nivel educativo</Label>
+              <Select
+                value={newClassNivelEducativo}
+                onValueChange={setNewClassNivelEducativo}
+                disabled={!newClassCourseId || availableNivelesForNewClass.length === 0}
+              >
+                <SelectTrigger id="tc-level" className="mt-1">
+                  <SelectValue
+                    placeholder={
+                      !newClassCourseId
+                        ? 'Selecciona primero el curso'
+                        : availableNivelesForNewClass.length === 0
+                          ? 'El curso no es Infantil/Primaria'
+                          : 'Selecciona nivel'
+                    }
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableNivelesForNewClass.map((n) => (
+                    <SelectItem key={n.value} value={n.value}>
+                      {n.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground mt-1">
+                Este nivel se heredará automáticamente al crear alumnado en esta clase.
+              </p>
+            </div>
+            <div>
               <Label htmlFor="tc-year">Curso académico (opcional)</Label>
               <Input
                 id="tc-year"
@@ -761,7 +875,12 @@ const TeacherDashboard: React.FC = () => {
               </Button>
               <Button
                 type="submit"
-                disabled={submittingClass || courses.length === 0}
+                disabled={
+                  submittingClass ||
+                  courses.length === 0 ||
+                  !newClassCourseId ||
+                  !newClassNivelEducativo
+                }
                 className="bg-braini-blue hover:bg-braini-blue-dark text-white"
               >
                 {submittingClass ? 'Guardando…' : 'Crear clase'}
