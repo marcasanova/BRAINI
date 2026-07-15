@@ -1,4 +1,4 @@
-import type { MyRolePayload } from "@/lib/myRole";
+import type { MyRolePayload } from "@/integrations/supabase/rpc/roles";
 
 export const roles = {
   superAdmin: { role: "super_admin", user_id: "u-super" } satisfies MyRolePayload,

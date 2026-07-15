@@ -16,7 +16,7 @@ export default defineConfig({
     include: ["src/**/*.test.{ts,tsx}"],
     coverage: {
       provider: "v8",
-      include: ["src/lib/**", "src/integrations/**"],
+      include: ["src/shared/lib/**", "src/integrations/**"],
       reporter: ["text", "html"],
     },
   },

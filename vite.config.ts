@@ -26,7 +26,7 @@ export default defineConfig({
           if (id.includes("node_modules/@radix-ui")) {
             return "vendor-radix";
           }
-          if (id.includes("/components/activities/content/")) {
+          if (id.includes("/products/brainifamily/features/activities/content/")) {
             return "activities-puzzles";
           }
         },
