@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Navigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { fetchMyRole } from '@/integrations/supabase/rpc/roles';
+import { fetchParentExists } from '@/integrations/supabase/queries/children';
+import { myRoleKeys } from '@/products/brainifamily/hooks/useMyRole';
 import type { User } from '@supabase/supabase-js';
 
 interface ProtectedRouteProps {
@@ -11,6 +14,7 @@ interface ProtectedRouteProps {
 type StaffRedirect = 'admin' | 'director' | 'teacher' | null;
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+  const queryClient = useQueryClient();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [userExists, setUserExists] = useState<boolean | null>(null);
@@ -44,7 +48,11 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
         return;
       }
 
-      const rolePayload = await fetchMyRole();
+      const rolePayload = await queryClient.fetchQuery({
+        queryKey: myRoleKeys.all,
+        queryFn: fetchMyRole,
+        staleTime: 60_000,
+      });
 
       if (isStaleRun(runId)) return;
 
@@ -70,15 +78,11 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
         return;
       }
 
-      const { data: parentRow } = await supabase
-        .from('parents')
-        .select('id')
-        .eq('id', session.user.id)
-        .maybeSingle();
+      const parentExists = await fetchParentExists(session.user.id);
 
       if (isStaleRun(runId)) return;
 
-      if (parentRow) {
+      if (parentExists) {
         setUser(session.user);
         setUserExists(true);
         setStaffRedirect(null);

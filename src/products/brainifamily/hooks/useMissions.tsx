@@ -1,76 +1,30 @@
-import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  fetchChildMissions,
+  missionKeys,
+  type MissionWithProgress,
+} from '@/integrations/supabase/queries/missions';
 
-export interface MissionWithProgress {
-  mission_id: number;
-  status: "locked" | "current" | "completed";
-  missions: {
-    id: number;
-    titulo: string;
-    descripcion: string | null;
-  };
-}
+export type { MissionWithProgress };
 
 export function useMissions(childId: string | undefined) {
-  const [missions, setMissions] = useState<MissionWithProgress[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const queryClient = useQueryClient();
+  const {
+    data: missions = [],
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: missionKeys.byChild(childId ?? ''),
+    queryFn: () => fetchChildMissions(childId!),
+    enabled: !!childId,
+  });
 
   const refreshMissions = () => {
-    setRefreshTrigger((prev) => prev + 1);
+    if (!childId) return;
+    void queryClient.invalidateQueries({ queryKey: missionKeys.byChild(childId) });
+    void refetch();
   };
-
-  useEffect(() => {
-    const loadMissions = async () => {
-      if (!childId) {
-        setMissions([]);
-        setLoading(false);
-        setError(null);
-        return;
-      }
-
-      try {
-        setLoading(true);
-        setError(null);
-
-        const { data, error } = await supabase
-          .from("child_missions")
-          .select(
-            `
-            mission_id,
-            status,
-            missions (
-              id,
-              titulo,
-              descripcion
-            )
-            `
-          )
-          .eq("child_id", childId)
-          .order("mission_id", { ascending: true });
-
-        if (error) throw error;
-
-        type Row = { mission_id: number; status: string; missions: MissionWithProgress['missions'] | MissionWithProgress['missions'][] };
-        const mapped = (data as Row[]).map((item) => ({
-          ...item,
-          missions: Array.isArray(item.missions) ? item.missions[0] : item.missions,
-        })) as MissionWithProgress[];
-
-        setMissions(mapped);
-        setError(null);
-      } catch (err: unknown) {
-        console.error("Error cargando misiones:", err);
-        setError(err instanceof Error ? err.message : "Error al cargar las misiones");
-        setMissions([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadMissions();
-  }, [childId, refreshTrigger]);
 
   const getAdjacentMissions = (currentMissionId: number) => {
     const currentIndex = missions.findIndex((m) => m.missions.id === currentMissionId);
@@ -79,5 +33,11 @@ export function useMissions(childId: string | undefined) {
     return { previousMission, nextMission, currentIndex, totalMissions: missions.length };
   };
 
-  return { missions, loading, error, getAdjacentMissions, refreshMissions };
+  return {
+    missions,
+    loading: isLoading,
+    error: error instanceof Error ? error.message : error ? String(error) : null,
+    getAdjacentMissions,
+    refreshMissions,
+  };
 }

@@ -1,5 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import {
+  fetchClassChildren,
+  fetchPendingInvitesByChildIds,
+} from '@/integrations/supabase/queries/children';
 
 export interface TeacherChild {
   id: string;
@@ -31,51 +34,18 @@ export function useTeacherChildren(classId: string | null) {
     try {
       setLoading(true);
       setError(null);
-      const { data, error: fetchError } = await supabase
-        .from('children')
-        .select('id, nombre, apellidos, nivel_educativo, parent_id')
-        .eq('class_id', classId)
-        .eq('active', true)
-        .order('nombre');
 
-      if (fetchError) throw fetchError;
-      const base = (data ?? []) as Array<{
-        id: string;
-        nombre: string;
-        apellidos: string | null;
-        nivel_educativo: string | null;
-        parent_id: string | null;
-      }>;
-
+      const base = await fetchClassChildren(classId);
       const childIds = base.map((c) => c.id);
-      const inviteByChildId: Record<
-        string,
-        { token: string; email: string | null }
-      > = {};
+      const invites = await fetchPendingInvitesByChildIds(childIds);
 
-      if (childIds.length > 0) {
-        const nowIso = new Date().toISOString();
-        const { data: invites, error: inviteError } = await supabase
-          .from('parent_invited')
-          .select('child_id, token, email, created_at, expires_at')
-          .in('child_id', childIds)
-          .eq('status', 'pending')
-          .gt('expires_at', nowIso)
-          .order('created_at', { ascending: false });
-
-        if (inviteError) throw inviteError;
-
-        for (const inv of invites ?? []) {
-          const childId = (inv as { child_id?: string }).child_id;
-          if (!childId) continue;
-          if (!inviteByChildId[childId]) {
-            inviteByChildId[childId] = {
-              token: String((inv as { token?: string }).token ?? ''),
-              email: ((inv as { email?: string | null }).email ?? null) as
-                | string
-                | null,
-            };
-          }
+      const inviteByChildId: Record<string, { token: string; email: string | null }> = {};
+      for (const inv of invites) {
+        if (!inviteByChildId[inv.child_id]) {
+          inviteByChildId[inv.child_id] = {
+            token: inv.token,
+            email: inv.email,
+          };
         }
       }
 
