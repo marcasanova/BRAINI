@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { useTeacherContext } from '@/products/brainifamily/contexts/TeacherContext';
 import { normalizeCourseName } from '@/products/brainifamily/hooks/useTeacher';
 import { useTeacherChildren } from '@/products/brainifamily/hooks/useTeacherChildren';

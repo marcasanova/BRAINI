@@ -1,5 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
-import type { NavigateFunction } from 'react-router-dom';
+import type { NavigateFunction } from 'react-router';
 
 type ToastLike = (opts: {
   title: string;

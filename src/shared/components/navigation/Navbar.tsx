@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
 import { useIsMobile } from '@/shared/hooks/use-mobile';
 import { Home, BookOpen, User, Award } from 'lucide-react';
 

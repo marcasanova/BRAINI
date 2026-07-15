@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/shared/ui/button';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import NavbarLandings from '@/shared/components/navigation/NavbarLandings';
 import { EMOTIONS_INFANTIL_URL } from '@/shared/lib/constants/emotionsStorage';
 import { CONTACT_EMAIL } from '@/shared/lib/constants/contact';

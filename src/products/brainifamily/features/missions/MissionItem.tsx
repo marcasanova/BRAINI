@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { MISSION_STATUS } from "@/shared/lib/constants/missionStatus";
 import Medal from "@/products/brainifamily/features/medals/Medal";
 

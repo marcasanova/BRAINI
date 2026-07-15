@@ -4,7 +4,7 @@ import { Label } from '@/shared/ui/label';
 import { Button } from '@/shared/ui/button';
 import { useToast } from '@/shared/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { CheckCircle } from 'lucide-react';
 import { useCurrentChildContext } from '@/products/brainifamily/contexts/CurrentChildContext';
 

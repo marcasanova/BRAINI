@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { MissionWithProgress } from "@/products/brainifamily/hooks/useMissions";
 import { useCurrentChild } from "@/products/brainifamily/hooks/useCurrentChild";

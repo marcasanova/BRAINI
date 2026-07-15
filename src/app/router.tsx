@@ -8,7 +8,7 @@ import {
   Outlet,
   useLocation,
   useNavigate,
-} from "react-router-dom";
+} from "react-router";
 import { useEffect } from "react";
 import RouteLoading from "./RouteLoading";
 import { CurrentChildProvider } from "@/products/brainifamily/contexts/CurrentChildContext";

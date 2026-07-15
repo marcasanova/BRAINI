@@ -1,5 +1,5 @@
 import React from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router';
 import { Button } from '@/shared/ui/button';
 import { LayoutDashboard, LogOut } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';

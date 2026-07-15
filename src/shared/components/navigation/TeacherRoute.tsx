@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router';
 import { useTeacherContext } from '@/products/brainifamily/contexts/TeacherContext';
 
 /**

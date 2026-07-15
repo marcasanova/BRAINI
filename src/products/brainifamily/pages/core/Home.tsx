@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
 import { useCurrentChild } from '@/products/brainifamily/hooks/useCurrentChild';
 import { useMissions } from '@/products/brainifamily/hooks/useMissions';
 import { useUserMedals } from '@/products/brainifamily/hooks/useUserMedals';

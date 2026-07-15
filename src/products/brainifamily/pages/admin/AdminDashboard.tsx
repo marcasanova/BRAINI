@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/shared/hooks/use-toast';
 import { Building2, Copy, LogOut, School, Shield, UserPlus, Users } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { copyToClipboard } from '@/shared/lib/clipboard';
 import { staffInviteRpcMessage } from '@/products/brainifamily/lib/teacherInviteRpcMessages';
 

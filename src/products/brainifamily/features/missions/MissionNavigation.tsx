@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@/shared/ui/button';
 import { ChevronLeft, ChevronRight, Lock, Trophy, Home } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { MissionWithProgress } from '@/products/brainifamily/hooks/useMissions';
 
 interface MissionNavigationProps {

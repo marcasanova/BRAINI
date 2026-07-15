@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router';
 import { useCurrentChild } from '@/products/brainifamily/hooks/useCurrentChild';
 import { useUserActivitiesByMission } from '@/products/brainifamily/hooks/useUserActivities';
 import Backgrounds from '@/shared/components/Backgrounds';
