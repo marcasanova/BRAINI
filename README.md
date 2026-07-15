@@ -1,73 +1,70 @@
-# Welcome to your Lovable project
+# BRAINI — Braini Emotions
 
-## Project info
+Plataforma de neurobienestar e inteligencia emocional educativa. Hub multi-producto (Braini Kids, Braini Juniors, Braini Family) con app B2B **Braini Family** para centros, docentes y familias.
 
-**URL**: https://lovable.dev/projects/6d52735c-ac11-4ccf-b120-cfb057e58c97
+## Requisitos
 
-## How can I edit this code?
+- **Node.js** 20.19+ o 22.12+ (recomendado: 22.x)
+- **npm** 9+
 
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/6d52735c-ac11-4ccf-b120-cfb057e58c97) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+## Configuración local
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+git clone https://github.com/marcasanova/BRAINI.git
+cd BRAINI
+npm install
 ```
 
-**Edit a file directly in GitHub**
+Crea un archivo `.env` en la raíz:
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```env
+VITE_SUPABASE_URL=https://tu-proyecto.supabase.co
+VITE_SUPABASE_ANON_KEY=tu_clave_anon
+```
 
-**Use GitHub Codespaces**
+## Scripts
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+| Script | Descripción |
+|--------|-------------|
+| `npm run dev` | Servidor de desarrollo (puerto 8080) |
+| `npm run build` | Build de producción |
+| `npm run preview` | Preview del build |
+| `npm run lint` | ESLint |
+| `npm run test` | Vitest en modo watch |
+| `npm run test:run` | Vitest una pasada (CI / pre-push) |
+| `npm run test:coverage` | Cobertura de tests |
+| `npm run test:e2e` | Playwright E2E completo |
+| `npm run test:e2e:smoke` | Playwright smoke (rápido, post-fase) |
+| `npm run verify` | `lint` + `test:run` + `build` |
 
-## What technologies are used for this project?
+## Testing
 
-This project is built with:
+Estructura **híbrida** (todo versionado en git):
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+```
+src/**/*.test.ts(x)     # tests junto al código
+tests/setup/            # Vitest, MSW, test-utils
+tests/fixtures/         # datos fake
+tests/e2e/              # Playwright smoke y flows
+```
 
-## How can I deploy this project?
+- **Unit / integración:** Vitest + React Testing Library + MSW (sin tocar Supabase remoto).
+- **E2E smoke:** Playwright contra rutas públicas y redirects.
+- **E2E autenticado (opcional):** copia `.env.test.example` → `.env.test` con usuario de staging.
 
-Simply open [Lovable](https://lovable.dev/projects/6d52735c-ac11-4ccf-b120-cfb057e58c97) and click on Share -> Publish.
+Artefactos generados (`coverage/`, `playwright-report/`, etc.) están en `.gitignore`.
 
-## Can I connect a custom domain to my Lovable project?
+## Documentación técnica
 
-Yes, you can!
+Ver [docs/README.md](docs/README.md) — fuente de verdad B2B v2.0 (onboarding, roles, modelo de datos, TDD).
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## Despliegue
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+Hosting estático en **Vercel** (`vercel.json` rewrites SPA). Variables de entorno: `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`.
+
+## Stack
+
+- React 18 + TypeScript + Vite
+- Tailwind CSS + shadcn/ui
+- Supabase (Auth, PostgreSQL, Storage, Edge Functions)
+- React Router, TanStack Query
