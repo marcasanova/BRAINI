@@ -99,7 +99,7 @@ const MedalAnimation: React.FC<MedalAnimationProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Overlay con blur */}
       <div 
-        className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-500 ${
+        className={`absolute inset-0 bg-black/60 backdrop-blur-xs transition-opacity duration-500 ${
           isVisible ? 'opacity-100' : 'opacity-0'
         }`}
       />
@@ -211,7 +211,7 @@ const MedalAnimation: React.FC<MedalAnimationProps> = ({
           >
             <Button
               onClick={onClose}
-              className="bg-gradient-to-r from-braini-blue to-braini-blue-light hover:from-braini-blue-dark hover:to-braini-blue text-white font-semibold py-3 px-8 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 text-lg min-w-[200px] animate-fade-in-up"
+              className="bg-linear-to-r from-braini-blue to-braini-blue-light hover:from-braini-blue-dark hover:to-braini-blue text-white font-semibold py-3 px-8 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 text-lg min-w-[200px] animate-fade-in-up"
             >
               <img 
                 src={medalImage} 
@@ -224,7 +224,7 @@ const MedalAnimation: React.FC<MedalAnimationProps> = ({
         </div>
 
         {/* Efecto de brillo en los bordes */}
-        <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-transparent via-braini-blue/5 to-transparent animate-pulse" />
+        <div className="absolute inset-0 rounded-3xl bg-linear-to-r from-transparent via-braini-blue/5 to-transparent animate-pulse" />
       </div>
     </div>
   );

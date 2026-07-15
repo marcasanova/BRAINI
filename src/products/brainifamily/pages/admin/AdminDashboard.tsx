@@ -219,7 +219,7 @@ const AdminDashboard: React.FC = () => {
   const completedInvites = directorInvites.filter((i) => i.status === 'completed').length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-braini-blue/10 via-white to-braini-turquoise/10 p-6">
+    <div className="min-h-screen bg-linear-to-br from-braini-blue/10 via-white to-braini-turquoise/10 p-6">
       <div className="max-w-6xl mx-auto space-y-8">
         <header className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">

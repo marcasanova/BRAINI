@@ -56,7 +56,7 @@ const ActivityList: React.FC<ActivityListProps> = ({
 
   // Función para obtener clases del número según tipo
   const getNumberClasses = (type: string) => {
-    const baseClasses = 'w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 font-black text-sm';
+    const baseClasses = 'w-6 h-6 rounded-lg flex items-center justify-center shrink-0 font-black text-sm';
     
     switch (type) {
       case 'inteligencia_emocional':
@@ -105,13 +105,13 @@ const ActivityList: React.FC<ActivityListProps> = ({
     
     switch (type) {
       case 'inteligencia_emocional':
-        return `${baseClasses} bg-gradient-to-br from-braini-blue/5 to-braini-blue/10 border-braini-blue/30 hover:shadow-xl hover:border-braini-blue/50`;
+        return `${baseClasses} bg-linear-to-br from-braini-blue/5 to-braini-blue/10 border-braini-blue/30 hover:shadow-xl hover:border-braini-blue/50`;
       case 'regulacion_emocional':
-        return `${baseClasses} bg-gradient-to-br from-braini-turquoise/5 to-braini-turquoise/10 border-braini-turquoise/30 hover:shadow-xl hover:border-braini-turquoise/50`;
+        return `${baseClasses} bg-linear-to-br from-braini-turquoise/5 to-braini-turquoise/10 border-braini-turquoise/30 hover:shadow-xl hover:border-braini-turquoise/50`;
       case 'vinculo_afectivo':
-        return `${baseClasses} bg-gradient-to-br from-braini-pink/5 to-braini-pink/10 border-braini-pink/30 hover:shadow-xl hover:border-braini-pink/50`;
+        return `${baseClasses} bg-linear-to-br from-braini-pink/5 to-braini-pink/10 border-braini-pink/30 hover:shadow-xl hover:border-braini-pink/50`;
       case 'acompañamiento_emocional':
-        return `${baseClasses} bg-gradient-to-br from-braini-yellow/5 to-braini-yellow/10 border-braini-yellow/30 hover:shadow-xl hover:border-braini-yellow/50`;
+        return `${baseClasses} bg-linear-to-br from-braini-yellow/5 to-braini-yellow/10 border-braini-yellow/30 hover:shadow-xl hover:border-braini-yellow/50`;
       default:
         return `${baseClasses} bg-white border-gray-200 hover:shadow-lg hover:border-gray-300`;
     }
@@ -190,17 +190,17 @@ const ActivityList: React.FC<ActivityListProps> = ({
   return (
     <div className="space-y-4">
       {/* Indicador de progreso */}
-      <div className="mb-6 p-4 sm:p-5 bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-xl border border-gray-200/60 shadow-sm">
+      <div className="mb-6 p-4 sm:p-5 bg-linear-to-br from-gray-50 to-gray-100/50 rounded-xl border border-gray-200/60 shadow-xs">
         <div className="flex items-center justify-between mb-3">
           <span className="text-sm font-semibold text-gray-700">Progreso de esta misión</span>
           <span className="text-sm font-bold text-braini-blue">{completedCount} / {totalCount}</span>
         </div>
         <div className="w-full bg-gray-200/80 rounded-full h-3 overflow-hidden shadow-inner">
           <div 
-            className="h-full rounded-full transition-all duration-700 ease-out bg-gradient-to-r from-braini-blue to-braini-blue-dark shadow-sm relative overflow-hidden"
+            className="h-full rounded-full transition-all duration-700 ease-out bg-linear-to-r from-braini-blue to-braini-blue-dark shadow-xs relative overflow-hidden"
             style={{ width: `${(completedCount / totalCount) * 100}%` }}
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
+            <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
           </div>
         </div>
         {progressMessage && (
@@ -269,7 +269,7 @@ const ActivityList: React.FC<ActivityListProps> = ({
               </div>
 
               {/* Flecha de navegación */}
-              <div className="ml-4 flex-shrink-0">
+              <div className="ml-4 shrink-0">
                 <div className={iconClasses.container}>
                   <svg className={iconClasses.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

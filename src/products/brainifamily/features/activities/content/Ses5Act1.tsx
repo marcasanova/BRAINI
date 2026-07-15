@@ -312,7 +312,7 @@ const Ses5Act1: React.FC<Ses5Act1Props> = ({
         <p 
           key={`linea-${lineaIndex}`} 
           className={`${esDialogo 
-            ? 'italic text-gray-800 pl-6 pr-4 py-3 my-4 border-l-4 border-pink-300 bg-pink-50/50 rounded-r-lg shadow-sm' 
+            ? 'italic text-gray-800 pl-6 pr-4 py-3 my-4 border-l-4 border-pink-300 bg-pink-50/50 rounded-r-lg shadow-xs' 
             : 'mb-4'
           }`}
         >

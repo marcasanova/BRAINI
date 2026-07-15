@@ -63,7 +63,7 @@ const TeacherActivityList: React.FC<TeacherActivityListProps> = ({ childId }) =>
               )}
               {a.opinion?.trim() && (
                 <div className="flex items-start gap-1 mt-2 text-sm text-gray-600">
-                  <MessageSquare className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                  <MessageSquare className="w-4 h-4 shrink-0 mt-0.5" />
                   <span className="italic">{a.opinion}</span>
                 </div>
               )}

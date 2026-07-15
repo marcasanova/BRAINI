@@ -52,13 +52,13 @@ const TeacherMissionList: React.FC<TeacherMissionListProps> = ({ childId }) => {
               className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 bg-gray-50/50"
             >
               {m.status === MISSION_STATUS.LOCKED && (
-                <Lock className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                <Lock className="w-5 h-5 text-gray-400 shrink-0" />
               )}
               {m.status === MISSION_STATUS.CURRENT && (
-                <Circle className="w-5 h-5 text-braini-blue flex-shrink-0" />
+                <Circle className="w-5 h-5 text-braini-blue shrink-0" />
               )}
               {m.status === MISSION_STATUS.COMPLETED && (
-                <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                <CheckCircle className="w-5 h-5 text-green-500 shrink-0" />
               )}
               <div className="flex-1 min-w-0">
                 <span className="font-medium text-gray-800">

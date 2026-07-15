@@ -15,8 +15,8 @@ const TeacherLayout: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-pink-50">
-      <header className="sticky top-0 z-20 bg-white/95 backdrop-blur border-b border-gray-200 shadow-sm">
+    <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-pink-50">
+      <header className="sticky top-0 z-20 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-xs">
         <div className="container mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <img src="/logo/logoBraini.png" alt="BRAINI" className="h-8 w-auto" />

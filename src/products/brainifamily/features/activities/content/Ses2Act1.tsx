@@ -370,7 +370,7 @@ const Ses2Act1: React.FC<Ses2Act1Props> = ({
                         >
                           {imageSrc ? (
                             <div className="flex flex-col items-center gap-2">
-                              <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center bg-white rounded-lg overflow-hidden flex-shrink-0 relative">
+                              <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center bg-white rounded-lg overflow-hidden shrink-0 relative">
                                 <img
                                   src={imageSrc}
                                   alt={option}

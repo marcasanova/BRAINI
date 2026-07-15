@@ -195,7 +195,7 @@ const TestTMMSPadres = () => {
           <div className="container mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-6 flex-1 flex flex-col min-h-0">
             <div className="max-w-4xl mx-auto w-full">
             {/* Header de resultados */}
-            <div className="mb-4 md:mb-6 animate-fade-in flex-shrink-0">
+            <div className="mb-4 md:mb-6 animate-fade-in shrink-0">
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-2" style={{ fontWeight: 900 }}>
                 Resultados del Test TMMS-24
               </h1>
@@ -292,7 +292,7 @@ const TestTMMSPadres = () => {
                   <ul className="space-y-3">
                     {results.recommendations.map((recommendation, index) => (
                       <li key={index} className="flex items-start gap-3">
-                        <div className="w-2 h-2 bg-gray-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <div className="w-2 h-2 bg-gray-400 rounded-full mt-2 shrink-0"></div>
                         <span className="text-gray-600 text-sm md:text-base">{recommendation}</span>
                       </li>
                     ))}
@@ -335,7 +335,7 @@ const TestTMMSPadres = () => {
         <div className="container mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-6 flex-1 flex flex-col min-h-0">
           <div className="max-w-4xl mx-auto w-full">
           {/* Header */}
-          <div className="mb-4 md:mb-6 animate-fade-in flex-shrink-0">
+          <div className="mb-4 md:mb-6 animate-fade-in shrink-0">
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-2" style={{ fontWeight: 900 }}>
               Test TMMS-24 para Padres
             </h1>

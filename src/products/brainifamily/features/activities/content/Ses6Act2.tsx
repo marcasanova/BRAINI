@@ -224,7 +224,7 @@ const Ses6Act2: React.FC<Ses6Act2Props> = ({
                     <strong className={getMainTitleTextClasses(activityType)}>3º.</strong> Esas manos juntas serán tu <strong>trompa de elefante</strong>.
                   </p>
                 </div>
-                <div className="bg-gradient-to-r from-braini-turquoise/10 to-braini-turquoise/5 p-4 rounded-lg border border-braini-turquoise/20 text-center">
+                <div className="bg-linear-to-r from-braini-turquoise/10 to-braini-turquoise/5 p-4 rounded-lg border border-braini-turquoise/20 text-center">
                   <p className="text-lg font-bold text-gray-800">
                     ¡Ya eres un elefante y vas a respirar como ellos! 🐘
                   </p>

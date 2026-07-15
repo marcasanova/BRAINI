@@ -248,7 +248,7 @@ const DirectorDashboard: React.FC = () => {
   const pendingInvites = teacherInvites.filter((i) => String(i.status) === 'pending').length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-braini-blue/10 via-white to-braini-turquoise/10 p-6">
+    <div className="min-h-screen bg-linear-to-br from-braini-blue/10 via-white to-braini-turquoise/10 p-6">
       <div className="max-w-4xl mx-auto space-y-8">
         <header className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">

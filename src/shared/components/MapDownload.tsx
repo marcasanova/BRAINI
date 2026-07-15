@@ -26,7 +26,7 @@ const MapDownload: React.FC<MapDownloadProps> = ({
           href={MAPA_AVENTURA_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="block rounded-xl overflow-hidden border-2 border-braini-blue/20 shadow-lg mb-4 focus:outline-none focus:ring-2 focus:ring-braini-blue"
+          className="block rounded-xl overflow-hidden border-2 border-braini-blue/20 shadow-lg mb-4 focus:outline-hidden focus:ring-2 focus:ring-braini-blue"
         >
           <img
             src={MAPA_AVENTURA_URL}

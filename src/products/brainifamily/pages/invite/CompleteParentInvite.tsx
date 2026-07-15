@@ -361,7 +361,7 @@ const CompleteParentInvite: React.FC = () => {
   const showForm = token && !previewLoading && !previewBlocked && inviteInfo;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-braini-blue/10 via-white to-braini-pink/10 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-linear-to-br from-braini-blue/10 via-white to-braini-pink/10 flex items-center justify-center p-4">
       <Card className="w-full max-w-md shadow-lg border-braini-blue/20">
         <CardHeader className="text-center">
           <div className="mx-auto w-12 h-12 rounded-full bg-braini-pink/15 flex items-center justify-center mb-2">

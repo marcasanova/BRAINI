@@ -12,15 +12,15 @@ export const getPrimaryButtonClasses = (activityType?: string): string => {
   
   switch (activityType) {
     case 'inteligencia_emocional':
-      return `${baseClasses} bg-gradient-to-r from-braini-blue to-braini-blue-light hover:from-braini-blue-dark hover:to-braini-blue`;
+      return `${baseClasses} bg-linear-to-r from-braini-blue to-braini-blue-light hover:from-braini-blue-dark hover:to-braini-blue`;
     case 'regulacion_emocional':
-      return `${baseClasses} bg-gradient-to-r from-braini-turquoise to-braini-turquoise-light hover:from-braini-turquoise-dark hover:to-braini-turquoise`;
+      return `${baseClasses} bg-linear-to-r from-braini-turquoise to-braini-turquoise-light hover:from-braini-turquoise-dark hover:to-braini-turquoise`;
     case 'vinculo_afectivo':
-      return `${baseClasses} bg-gradient-to-r from-braini-pink to-braini-pink-light hover:from-braini-pink-dark hover:to-braini-pink`;
+      return `${baseClasses} bg-linear-to-r from-braini-pink to-braini-pink-light hover:from-braini-pink-dark hover:to-braini-pink`;
     case 'acompañamiento_emocional':
-      return `${baseClasses} bg-gradient-to-r from-braini-yellow to-braini-yellow-light hover:from-braini-yellow-dark hover:to-braini-yellow`;
+      return `${baseClasses} bg-linear-to-r from-braini-yellow to-braini-yellow-light hover:from-braini-yellow-dark hover:to-braini-yellow`;
     default:
-      return `${baseClasses} bg-gradient-to-r from-braini-blue to-braini-blue-light hover:from-braini-blue-dark hover:to-braini-blue`;
+      return `${baseClasses} bg-linear-to-r from-braini-blue to-braini-blue-light hover:from-braini-blue-dark hover:to-braini-blue`;
   }
 };
 
@@ -52,15 +52,15 @@ export const getInstructionsContainerClasses = (activityType?: string): string =
   
   switch (activityType) {
     case 'inteligencia_emocional':
-      return `${baseClasses} bg-gradient-to-r from-braini-blue/10 to-braini-blue/5 border-braini-blue/20`;
+      return `${baseClasses} bg-linear-to-r from-braini-blue/10 to-braini-blue/5 border-braini-blue/20`;
     case 'regulacion_emocional':
-      return `${baseClasses} bg-gradient-to-r from-braini-turquoise/10 to-braini-turquoise/5 border-braini-turquoise/20`;
+      return `${baseClasses} bg-linear-to-r from-braini-turquoise/10 to-braini-turquoise/5 border-braini-turquoise/20`;
     case 'vinculo_afectivo':
-      return `${baseClasses} bg-gradient-to-r from-braini-pink/10 to-braini-pink/5 border-braini-pink/20`;
+      return `${baseClasses} bg-linear-to-r from-braini-pink/10 to-braini-pink/5 border-braini-pink/20`;
     case 'acompañamiento_emocional':
-      return `${baseClasses} bg-gradient-to-r from-braini-yellow/10 to-braini-yellow/5 border-braini-yellow/20`;
+      return `${baseClasses} bg-linear-to-r from-braini-yellow/10 to-braini-yellow/5 border-braini-yellow/20`;
     default:
-      return `${baseClasses} bg-gradient-to-r from-braini-blue/10 to-braini-blue/5 border-braini-blue/20`;
+      return `${baseClasses} bg-linear-to-r from-braini-blue/10 to-braini-blue/5 border-braini-blue/20`;
   }
 };
 

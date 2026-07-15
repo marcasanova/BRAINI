@@ -290,7 +290,7 @@ const Ses5Act2: React.FC<Ses5Act2Props> = ({
                 <h3 className={`text-2xl font-bold ${getMainTitleTextClasses(activityType)} mb-3`}>
                   Agradecimiento final
                 </h3>
-                <div className="bg-gradient-to-r from-braini-turquoise/10 to-braini-turquoise/5 p-6 rounded-xl border border-braini-turquoise/20 max-w-2xl mx-auto mb-6">
+                <div className="bg-linear-to-r from-braini-turquoise/10 to-braini-turquoise/5 p-6 rounded-xl border border-braini-turquoise/20 max-w-2xl mx-auto mb-6">
                   <p className="text-lg text-gray-700 font-medium leading-relaxed italic">
                     Pon la mano en el corazón y di:
                   </p>

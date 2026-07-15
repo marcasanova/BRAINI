@@ -288,7 +288,7 @@ const UpdatePassword = () => {
                   <button
                     type="button"
                     onClick={() => setShowPassword((v) => !v)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-braini-blue/20 transition-colors"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-hidden focus:ring-2 focus:ring-braini-blue/20 transition-colors"
                     tabIndex={-1}
                     aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                   >
@@ -319,7 +319,7 @@ const UpdatePassword = () => {
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword((v) => !v)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-braini-blue/20 transition-colors"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-hidden focus:ring-2 focus:ring-braini-blue/20 transition-colors"
                     tabIndex={-1}
                     aria-label={showConfirmPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                   >

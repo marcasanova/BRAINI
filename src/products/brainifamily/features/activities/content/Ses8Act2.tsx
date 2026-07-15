@@ -225,7 +225,7 @@ const Ses8Act2: React.FC<Ses8Act2Props> = ({
                 <h3 className={`text-2xl font-bold ${getMainTitleTextClasses(activityType)} mb-3`}>
                   {currentStep.nombre}
                 </h3>
-                <div className="bg-gradient-to-r from-braini-turquoise/10 to-braini-turquoise/5 p-6 rounded-xl border border-braini-turquoise/20 max-w-2xl mx-auto">
+                <div className="bg-linear-to-r from-braini-turquoise/10 to-braini-turquoise/5 p-6 rounded-xl border border-braini-turquoise/20 max-w-2xl mx-auto">
                   <div className="text-lg text-gray-700 font-medium leading-relaxed">
                     {formatearTexto(currentStep.contenido)}
                   </div>
@@ -263,7 +263,7 @@ const Ses8Act2: React.FC<Ses8Act2Props> = ({
                   Abre los ojos
                 </h3>
                 <div className="space-y-4 text-left max-w-2xl mx-auto mt-6">
-                  <div className="bg-gradient-to-r from-blue-50 to-blue-100 p-5 rounded-xl border border-blue-300">
+                  <div className="bg-linear-to-r from-blue-50 to-blue-100 p-5 rounded-xl border border-blue-300">
                     <p className="text-lg text-gray-700 font-medium leading-relaxed mb-3">
                       <strong className={getMainTitleTextClasses(activityType)}>Abre los ojos</strong>, te sientes tranquilo/a, feliz.
                     </p>

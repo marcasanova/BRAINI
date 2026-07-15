@@ -169,7 +169,7 @@ const Activities: React.FC = () => {
         <div className="container mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-6 flex-1 flex flex-col min-h-0">
           <div className="max-w-5xl mx-auto w-full flex flex-col min-h-0">
             {/* Header fijo - No hace scroll */}
-            <div className="mb-4 md:mb-6 animate-fade-in flex-shrink-0 space-y-4">
+            <div className="mb-4 md:mb-6 animate-fade-in shrink-0 space-y-4">
               {/* Navegación entre sesiones - Arriba del todo */}
               {!loading && !missionsLoading && !activitiesLoading && currentMission && (
                 <div className="mb-4">

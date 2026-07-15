@@ -323,7 +323,7 @@ const Ses1Act2: React.FC<Ses1Act2Props> = ({
         {phase === 'legs' && (
           <div className="min-h-[350px] flex flex-col">
             {/* Paso actual: izquierda = video + temporizador; derecha = texto */}
-            <div className="bg-gradient-to-r from-braini-turquoise/10 to-braini-turquoise/5 p-6 rounded-xl border-2 border-braini-turquoise/30 mb-6">
+            <div className="bg-linear-to-r from-braini-turquoise/10 to-braini-turquoise/5 p-6 rounded-xl border-2 border-braini-turquoise/30 mb-6">
               <div className="flex flex-col md:flex-row items-center md:items-center gap-6">
                 {/* Izquierda: video(s) */}
                 <div className="flex flex-col items-center shrink-0">
@@ -450,7 +450,7 @@ const Ses1Act2: React.FC<Ses1Act2Props> = ({
               <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-4">
                 <Button
                   onClick={repeatLegs}
-                  className="bg-gradient-to-r from-braini-turquoise to-braini-turquoise-light hover:from-braini-turquoise-dark hover:to-braini-turquoise text-white font-semibold px-8 py-3 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 text-lg"
+                  className="bg-linear-to-r from-braini-turquoise to-braini-turquoise-light hover:from-braini-turquoise-dark hover:to-braini-turquoise text-white font-semibold px-8 py-3 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 text-lg"
                 >
                   <Footprints className="w-5 h-5 mr-2" />
                   Repetir

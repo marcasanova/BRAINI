@@ -27,7 +27,7 @@ const MedalShelf: React.FC<MedalShelfProps> = ({ userMedals, totalMedals, isLoad
       <div className="flex items-center justify-between gap-3">
         {/* Sección izquierda - Icono y número */}
         <div className="flex items-center gap-2">
-          <div className="w-12 h-12 md:w-14 md:h-14 bg-white rounded-lg flex items-center justify-center shadow-sm overflow-hidden border border-gray-200">
+          <div className="w-12 h-12 md:w-14 md:h-14 bg-white rounded-lg flex items-center justify-center shadow-xs overflow-hidden border border-gray-200">
             <img 
               src={medalImage} 
               alt="Medalla Braini" 

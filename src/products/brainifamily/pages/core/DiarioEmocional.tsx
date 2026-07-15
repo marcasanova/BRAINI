@@ -174,7 +174,7 @@ const DiarioEmocional = () => {
         <div className="container mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-6 flex-1 flex flex-col min-h-0">
           <div className="max-w-7xl mx-auto w-full flex flex-col min-h-0">
             {/* Header con título - Fijo en la parte superior */}
-            <div className="mb-6 md:mb-8 animate-fade-in flex-shrink-0">
+            <div className="mb-6 md:mb-8 animate-fade-in shrink-0">
               <div className="flex flex-col gap-4 mb-4">
                 <div className="flex-1">
                   <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-2" style={{ fontWeight: 900 }}>
@@ -203,7 +203,7 @@ const DiarioEmocional = () => {
             {/* Columna izquierda: Selector de emociones y observaciones */}
             <div className="flex flex-col space-y-4 sm:space-y-5 md:space-y-6">
               {/* Selector de emociones */}
-              <div className="flex-shrink-0">
+              <div className="shrink-0">
                 <EmotionSelector
                   emotions={EMOTIONS_CONFIG}
                   selectedEmotions={selectedEmotions}
@@ -224,7 +224,7 @@ const DiarioEmocional = () => {
               </div>
 
               {/* Botón de guardar */}
-              <div className="flex-shrink-0 flex justify-center pt-2">
+              <div className="shrink-0 flex justify-center pt-2">
                 <button
                   onClick={handleSave}
                   disabled={selectedEmotions.length === 0 || loading || !childId}

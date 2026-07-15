@@ -139,7 +139,7 @@ const NavbarLandings: React.FC<NavbarLandingsProps> = ({ currentPage }) => {
                 {item.label}
                 {active && (
                   <span 
-                    className="absolute bottom-0 left-0 right-0 h-1 rounded-full transition-all duration-300 shadow-sm"
+                    className="absolute bottom-0 left-0 right-0 h-1 rounded-full transition-all duration-300 shadow-xs"
                     style={{ 
                       backgroundColor: activeColor,
                       boxShadow: `0 2px 4px ${activeColor}60`
@@ -158,7 +158,7 @@ const NavbarLandings: React.FC<NavbarLandingsProps> = ({ currentPage }) => {
 
   return (
     <header 
-      className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 md:px-8 pt-1 sm:pt-2 pb-1 sm:pb-2 backdrop-blur-sm shadow-md transition-all duration-300"
+      className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 md:px-8 pt-1 sm:pt-2 pb-1 sm:pb-2 backdrop-blur-xs shadow-md transition-all duration-300"
       style={{ background: navbarBackground }}
     >
       <div className="max-w-7xl mx-auto">
@@ -167,7 +167,7 @@ const NavbarLandings: React.FC<NavbarLandingsProps> = ({ currentPage }) => {
           <div className="flex items-center gap-3 sm:gap-4 md:gap-5">
             <Link 
               to="/" 
-              className="flex items-center flex-shrink-0 transition-transform duration-300 hover:scale-110 active:scale-95"
+              className="flex items-center shrink-0 transition-transform duration-300 hover:scale-110 active:scale-95"
               aria-label="Ir a la página principal de Braini Emotions"
             >
               <img 
@@ -281,7 +281,7 @@ const NavbarLandings: React.FC<NavbarLandingsProps> = ({ currentPage }) => {
                             onClick={handleLinkClick}
                             className={`relative px-4 py-3 rounded-lg text-base font-medium transition-all duration-300 ${
                               active
-                                ? 'bg-gray-100 text-gray-900 font-bold shadow-sm'
+                                ? 'bg-gray-100 text-gray-900 font-bold shadow-xs'
                                 : 'text-gray-700 hover:bg-gray-50 hover:translate-x-1'
                             }`}
                             style={{

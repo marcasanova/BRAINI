@@ -238,7 +238,7 @@ const Ses3Act2: React.FC<Ses3Act2Props> = ({
                     disabled={haElegido}
                     className={`relative flex flex-col items-center justify-center p-3 rounded-xl border-2 min-w-[130px] transition-all ${
                       !haElegido
-                        ? 'border-gray-300 hover:border-gray-500 hover:bg-gray-50 cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2'
+                        ? 'border-gray-300 hover:border-gray-500 hover:bg-gray-50 cursor-pointer focus:outline-hidden focus:ring-2 focus:ring-gray-400 focus:ring-offset-2'
                         : situacionActual.respuestaCorrecta === 'nube'
                           ? `${getLightBgClasses(activityType)} ${getBorderClasses(activityType)} cursor-default`
                           : eleccion === 'nube'
@@ -248,15 +248,15 @@ const Ses3Act2: React.FC<Ses3Act2Props> = ({
                   >
                     {haElegido && situacionActual.respuestaCorrecta === 'nube' && (
                       <span
-                        className="absolute top-1.5 right-1.5 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white/80 shadow-sm"
+                        className="absolute top-1.5 right-1.5 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white/80 shadow-xs"
                         style={{ backgroundColor: getProgressBarColor(activityType) }}
                       >
-                        <Check className="h-3.5 w-3.5 text-white stroke-[3]" />
+                        <Check className="h-3.5 w-3.5 text-white stroke-3" />
                       </span>
                     )}
                     {haElegido && eleccion === 'nube' && situacionActual.respuestaCorrecta !== 'nube' && (
                       <span className="absolute top-1.5 right-1.5 flex h-6 w-6 items-center justify-center rounded-full border-2 border-red-500 bg-red-500">
-                        <X className="h-3.5 w-3.5 text-white stroke-[3]" />
+                        <X className="h-3.5 w-3.5 text-white stroke-3" />
                       </span>
                     )}
                     <img
@@ -285,7 +285,7 @@ const Ses3Act2: React.FC<Ses3Act2Props> = ({
                     disabled={haElegido}
                     className={`relative flex flex-col items-center justify-center p-3 rounded-xl border-2 min-w-[130px] transition-all ${
                       !haElegido
-                        ? 'border-yellow-400 hover:border-yellow-600 hover:bg-yellow-50/50 cursor-pointer focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2'
+                        ? 'border-yellow-400 hover:border-yellow-600 hover:bg-yellow-50/50 cursor-pointer focus:outline-hidden focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2'
                         : situacionActual.respuestaCorrecta === 'sol'
                           ? `${getLightBgClasses(activityType)} ${getBorderClasses(activityType)} cursor-default`
                           : eleccion === 'sol'
@@ -295,15 +295,15 @@ const Ses3Act2: React.FC<Ses3Act2Props> = ({
                   >
                     {haElegido && situacionActual.respuestaCorrecta === 'sol' && (
                       <span
-                        className="absolute top-1.5 right-1.5 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white/80 shadow-sm"
+                        className="absolute top-1.5 right-1.5 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white/80 shadow-xs"
                         style={{ backgroundColor: getProgressBarColor(activityType) }}
                       >
-                        <Check className="h-3.5 w-3.5 text-white stroke-[3]" />
+                        <Check className="h-3.5 w-3.5 text-white stroke-3" />
                       </span>
                     )}
                     {haElegido && eleccion === 'sol' && situacionActual.respuestaCorrecta !== 'sol' && (
                       <span className="absolute top-1.5 right-1.5 flex h-6 w-6 items-center justify-center rounded-full border-2 border-red-500 bg-red-500">
-                        <X className="h-3.5 w-3.5 text-white stroke-[3]" />
+                        <X className="h-3.5 w-3.5 text-white stroke-3" />
                       </span>
                     )}
                     <img
@@ -352,15 +352,15 @@ const Ses3Act2: React.FC<Ses3Act2Props> = ({
                   >
                     {situacionActual.respuestaCorrecta === 'nube' && (
                       <span
-                        className="absolute top-1.5 right-1.5 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white/80 shadow-sm"
+                        className="absolute top-1.5 right-1.5 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white/80 shadow-xs"
                         style={{ backgroundColor: getProgressBarColor(activityType) }}
                       >
-                        <Check className="h-3.5 w-3.5 text-white stroke-[3]" />
+                        <Check className="h-3.5 w-3.5 text-white stroke-3" />
                       </span>
                     )}
                     {eleccion === 'nube' && situacionActual.respuestaCorrecta !== 'nube' && (
                       <span className="absolute top-1.5 right-1.5 flex h-6 w-6 items-center justify-center rounded-full border-2 border-red-500 bg-red-500">
-                        <X className="h-3.5 w-3.5 text-white stroke-[3]" />
+                        <X className="h-3.5 w-3.5 text-white stroke-3" />
                       </span>
                     )}
                     <img src={NUBE_IMAGE_URL} alt="Nube" className="w-24 h-24 sm:w-28 sm:h-28 object-contain mb-2" />
@@ -380,15 +380,15 @@ const Ses3Act2: React.FC<Ses3Act2Props> = ({
                   >
                     {situacionActual.respuestaCorrecta === 'sol' && (
                       <span
-                        className="absolute top-1.5 right-1.5 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white/80 shadow-sm"
+                        className="absolute top-1.5 right-1.5 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white/80 shadow-xs"
                         style={{ backgroundColor: getProgressBarColor(activityType) }}
                       >
-                        <Check className="h-3.5 w-3.5 text-white stroke-[3]" />
+                        <Check className="h-3.5 w-3.5 text-white stroke-3" />
                       </span>
                     )}
                     {eleccion === 'sol' && situacionActual.respuestaCorrecta !== 'sol' && (
                       <span className="absolute top-1.5 right-1.5 flex h-6 w-6 items-center justify-center rounded-full border-2 border-red-500 bg-red-500">
-                        <X className="h-3.5 w-3.5 text-white stroke-[3]" />
+                        <X className="h-3.5 w-3.5 text-white stroke-3" />
                       </span>
                     )}
                     <img src={SOL_IMAGE_URL} alt="Sol" className="w-24 h-24 sm:w-28 sm:h-28 object-contain mb-2" />
@@ -402,7 +402,7 @@ const Ses3Act2: React.FC<Ses3Act2Props> = ({
                   <p className="text-lg font-semibold text-yellow-800 mb-3">
                     Pensamientos que pueden ayudar
                   </p>
-                  <div className="bg-gradient-to-r from-yellow-50 to-amber-50 p-6 rounded-xl border-2 border-yellow-400">
+                  <div className="bg-linear-to-r from-yellow-50 to-amber-50 p-6 rounded-xl border-2 border-yellow-400">
                   <div className="grid grid-cols-2 gap-3">
                     {situacionActual.pensamientosAyuda.map((p, i) => (
                       <div key={i} className="flex items-start gap-2 text-gray-700">

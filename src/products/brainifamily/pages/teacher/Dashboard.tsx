@@ -460,10 +460,10 @@ const TeacherDashboard: React.FC = () => {
   if (!teacher) return null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-braini-blue/10 via-white to-braini-turquoise/10 p-6">
+    <div className="min-h-screen bg-linear-to-br from-braini-blue/10 via-white to-braini-turquoise/10 p-6">
       <div className="space-y-8 max-w-6xl mx-auto">
         <section className="grid gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(0,1.2fr)] items-start">
-          <Card className="relative overflow-hidden border-none bg-gradient-to-r from-braini-blue to-braini-turquoise text-white shadow-lg">
+          <Card className="relative overflow-hidden border-none bg-linear-to-r from-braini-blue to-braini-turquoise text-white shadow-lg">
             <CardHeader className="pb-4">
               <CardTitle className="flex items-center gap-3 text-2xl">
                 <GraduationCap className="h-7 w-7" />
@@ -482,14 +482,14 @@ const TeacherDashboard: React.FC = () => {
               <div className="flex flex-wrap gap-3 text-xs md:text-sm">
                 <Badge
                   variant="secondary"
-                  className="bg-white/15 text-white border-white/30 backdrop-blur"
+                  className="bg-white/15 text-white border-white/30 backdrop-blur-sm"
                 >
                   {totalClasses}{' '}
                   {totalClasses === 1 ? 'clase' : 'clases'}
                 </Badge>
                 <Badge
                   variant="secondary"
-                  className="bg-white/15 text-white border-white/30 backdrop-blur"
+                  className="bg-white/15 text-white border-white/30 backdrop-blur-sm"
                 >
                   {totalStudentsAllClasses}{' '}
                   {totalStudentsAllClasses === 1
@@ -499,7 +499,7 @@ const TeacherDashboard: React.FC = () => {
                 {selectedClass && (
                   <Badge
                     variant="secondary"
-                    className="bg-white/15 text-white border-white/30 backdrop-blur"
+                    className="bg-white/15 text-white border-white/30 backdrop-blur-sm"
                   >
                     {studentsInSelectedClass}{' '}
                     {studentsInSelectedClass === 1 ? 'alumno en' : 'alumnos en'}{' '}
@@ -509,12 +509,12 @@ const TeacherDashboard: React.FC = () => {
               </div>
             </CardContent>
             <div className="pointer-events-none absolute inset-y-0 right-[-40px] opacity-30">
-              <div className="h-full w-40 bg-gradient-to-b from-white/40 to-transparent blur-3xl" />
+              <div className="h-full w-40 bg-linear-to-b from-white/40 to-transparent blur-3xl" />
             </div>
           </Card>
 
           <div className="grid w-full gap-4 sm:grid-cols-2 lg:grid-cols-1">
-            <Card className="border border-braini-blue/20 bg-white/80 backdrop-blur">
+            <Card className="border border-braini-blue/20 bg-white/80 backdrop-blur-sm">
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center gap-2 text-base">
                   <Sparkles className="h-4 w-4 text-braini-yellow" />
@@ -557,7 +557,7 @@ const TeacherDashboard: React.FC = () => {
         </section>
 
         <section className="grid gap-6 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,2fr)] items-start">
-          <Card className="bg-white/90 backdrop-blur-sm border-braini-blue/20">
+          <Card className="bg-white/90 backdrop-blur-xs border-braini-blue/20">
             <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-3">
               <CardTitle className="text-lg flex items-center gap-2">
                 <BookOpen className="w-5 h-5 text-braini-blue" />
@@ -644,7 +644,7 @@ const TeacherDashboard: React.FC = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-white/90 backdrop-blur-sm border-braini-blue/20">
+          <Card className="bg-white/90 backdrop-blur-xs border-braini-blue/20">
             <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-3">
               <div>
                 <CardTitle className="text-lg flex items-center gap-2">
@@ -709,7 +709,7 @@ const TeacherDashboard: React.FC = () => {
                       const hasPendingInvite = Boolean(child.pending_invite_token);
                       return (
                         <li key={child.id}>
-                          <div className="flex flex-col gap-2 rounded-xl border border-gray-200 bg-white/80 p-2 shadow-sm transition hover:border-braini-blue/40 sm:flex-row sm:items-center sm:gap-3">
+                          <div className="flex flex-col gap-2 rounded-xl border border-gray-200 bg-white/80 p-2 shadow-xs transition hover:border-braini-blue/40 sm:flex-row sm:items-center sm:gap-3">
                             <button
                               type="button"
                               onClick={() =>

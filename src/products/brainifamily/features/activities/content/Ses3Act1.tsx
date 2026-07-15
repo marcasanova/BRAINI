@@ -298,7 +298,7 @@ const Ses3Act1: React.FC<Ses3Act1Props> = ({
                           >
                             <div className="flex items-center gap-3">
                               {emocion.imagen ? (
-                                <div className="w-12 h-12 flex-shrink-0 rounded-lg overflow-hidden bg-white relative">
+                                <div className="w-12 h-12 shrink-0 rounded-lg overflow-hidden bg-white relative">
                                   <img
                                     src={emocion.imagen}
                                     alt={emocion.nombre}
@@ -314,7 +314,7 @@ const Ses3Act1: React.FC<Ses3Act1Props> = ({
                                   <div className="absolute inset-0 hidden items-center justify-center bg-gray-100 text-gray-500 font-bold" style={{ display: 'none' }} aria-hidden>{emocion.nombre.charAt(0)}</div>
                                 </div>
                               ) : (
-                                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center shrink-0">
                                   <span className="text-lg">{emocion.nombre.charAt(0)}</span>
                                 </div>
                               )}
@@ -357,7 +357,7 @@ const Ses3Act1: React.FC<Ses3Act1Props> = ({
                           >
                             <div className="flex items-center gap-3">
                               {emocion.imagen ? (
-                                <div className="w-12 h-12 flex-shrink-0 rounded-lg overflow-hidden bg-white relative">
+                                <div className="w-12 h-12 shrink-0 rounded-lg overflow-hidden bg-white relative">
                                   <img
                                     src={emocion.imagen}
                                     alt={emocion.nombre}
@@ -373,7 +373,7 @@ const Ses3Act1: React.FC<Ses3Act1Props> = ({
                                   <div className="absolute inset-0 hidden items-center justify-center bg-gray-100 text-gray-500 font-bold" style={{ display: 'none' }} aria-hidden>{emocion.nombre.charAt(0)}</div>
                                 </div>
                               ) : (
-                                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center shrink-0">
                                   <span className="text-lg">{emocion.nombre.charAt(0)}</span>
                                 </div>
                               )}
@@ -394,7 +394,7 @@ const Ses3Act1: React.FC<Ses3Act1Props> = ({
 
       {/* Modal para clasificar emoción */}
       <Dialog open={showModal} onOpenChange={setShowModal}>
-        <DialogContent className="w-[min(28rem,96vw)] sm:w-[32rem] max-w-[96vw] bg-white/95 backdrop-blur-lg p-6 sm:p-8 pb-8 sm:pb-10">
+        <DialogContent className="w-[min(28rem,96vw)] sm:w-lg max-w-[96vw] bg-white/95 backdrop-blur-lg p-6 sm:p-8 pb-8 sm:pb-10">
           <DialogHeader className="pr-8 sm:pr-0">
             <DialogTitle className="text-xl font-bold text-gray-800">
               Clasificar emoción
@@ -408,7 +408,7 @@ const Ses3Act1: React.FC<Ses3Act1Props> = ({
               {/* Imagen y nombre de la emoción */}
               <div className="flex flex-col items-center">
                 {emocionSeleccionada.imagen ? (
-                  <div className="w-28 h-28 sm:w-32 sm:h-32 mb-3 rounded-xl overflow-hidden bg-white border border-gray-100 shadow-sm flex-shrink-0">
+                  <div className="w-28 h-28 sm:w-32 sm:h-32 mb-3 rounded-xl overflow-hidden bg-white border border-gray-100 shadow-xs shrink-0">
                     <img
                       src={emocionSeleccionada.imagen}
                       alt={emocionSeleccionada.nombre}
@@ -424,7 +424,7 @@ const Ses3Act1: React.FC<Ses3Act1Props> = ({
                     <div className="absolute inset-0 hidden items-center justify-center bg-gray-100 text-gray-500 text-4xl font-bold" style={{ display: 'none' }} aria-hidden>{emocionSeleccionada.nombre.charAt(0)}</div>
                   </div>
                 ) : (
-                  <div className="w-28 h-28 sm:w-32 sm:h-32 mb-3 bg-gray-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <div className="w-28 h-28 sm:w-32 sm:h-32 mb-3 bg-gray-100 rounded-xl flex items-center justify-center shrink-0">
                     <span className="text-4xl">{emocionSeleccionada.nombre.charAt(0)}</span>
                   </div>
                 )}
@@ -439,14 +439,14 @@ const Ses3Act1: React.FC<Ses3Act1Props> = ({
                   onClick={() => handleClasificar('meGusta')}
                   className="w-full bg-braini-green hover:bg-braini-green-dark text-white font-semibold py-3 px-4 text-sm sm:text-base min-h-[44px]"
                 >
-                  <Heart className="w-5 h-5 mr-2 flex-shrink-0 fill-current" />
+                  <Heart className="w-5 h-5 mr-2 shrink-0 fill-current" />
                   Bien
                 </Button>
                 <Button
                   onClick={() => handleClasificar('noMeGusta')}
                   className="w-full bg-braini-pink hover:bg-braini-pink-dark text-white font-semibold py-3 px-4 text-sm sm:text-base min-h-[44px]"
                 >
-                  <HeartOff className="w-5 h-5 mr-2 flex-shrink-0" />
+                  <HeartOff className="w-5 h-5 mr-2 shrink-0" />
                   Regular
                 </Button>
               </div>

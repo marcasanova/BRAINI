@@ -174,7 +174,7 @@ const Ses7Act2: React.FC<Ses7Act2Props> = ({
                   Es de noche... ¡Métete en tu caparazón!
                 </h3>
                 <div className="space-y-4 text-left max-w-2xl mx-auto mt-6">
-                  <div className="bg-gradient-to-r from-braini-turquoise/10 to-braini-turquoise/5 p-5 rounded-xl border border-braini-turquoise/20">
+                  <div className="bg-linear-to-r from-braini-turquoise/10 to-braini-turquoise/5 p-5 rounded-xl border border-braini-turquoise/20">
                     <p className="text-lg text-gray-700 font-medium leading-relaxed mb-4">
                       <strong className={getMainTitleTextClasses(activityType)}>Encoge</strong>, dobla tus piernas poco a poco, hasta que tus rodillas lleguen a tu cabeza.
                     </p>
@@ -185,7 +185,7 @@ const Ses7Act2: React.FC<Ses7Act2Props> = ({
                       <strong className={getMainTitleTextClasses(activityType)}>Cierra los ojos</strong>.
                     </p>
                   </div>
-                  <div className="bg-gradient-to-r from-braini-turquoise/20 to-braini-turquoise/10 p-5 rounded-xl border-2 border-braini-turquoise/30 text-center">
+                  <div className="bg-linear-to-r from-braini-turquoise/20 to-braini-turquoise/10 p-5 rounded-xl border-2 border-braini-turquoise/30 text-center">
                     <p className="text-xl font-bold text-gray-800">
                       ¡Ya estás dentro de tu caparazón! 🐌
                     </p>
@@ -216,7 +216,7 @@ const Ses7Act2: React.FC<Ses7Act2Props> = ({
                   <h3 className={`text-2xl font-bold ${getMainTitleTextClasses(activityType)} mb-3`}>
                     Respira dentro de tu caparazón
                   </h3>
-                  <div className="bg-gradient-to-r from-braini-turquoise/10 to-braini-turquoise/5 p-6 rounded-xl border border-braini-turquoise/20">
+                  <div className="bg-linear-to-r from-braini-turquoise/10 to-braini-turquoise/5 p-6 rounded-xl border border-braini-turquoise/20">
                     <p className="text-base text-gray-700 font-medium leading-relaxed mb-3">
                       Mientras duermes dentro de tu caparazón:
                     </p>
@@ -256,7 +256,7 @@ const Ses7Act2: React.FC<Ses7Act2Props> = ({
                   ¡Ya sale el sol!
                 </h3>
                 <div className="space-y-4 text-left max-w-2xl mx-auto mt-6">
-                  <div className="bg-gradient-to-r from-yellow-50 to-yellow-100 p-5 rounded-xl border border-yellow-300">
+                  <div className="bg-linear-to-r from-yellow-50 to-yellow-100 p-5 rounded-xl border border-yellow-300">
                     <p className="text-lg text-gray-700 font-medium leading-relaxed mb-3">
                       <strong className={getMainTitleTextClasses(activityType)}>Baja las rodillas</strong> lentamente.
                     </p>
@@ -267,7 +267,7 @@ const Ses7Act2: React.FC<Ses7Act2Props> = ({
                       <strong className={getMainTitleTextClasses(activityType)}>Abre los ojos</strong> lentamente.
                     </p>
                   </div>
-                  <div className="bg-gradient-to-r from-yellow-100 to-yellow-200 p-6 rounded-xl border-2 border-yellow-400 text-center">
+                  <div className="bg-linear-to-r from-yellow-100 to-yellow-200 p-6 rounded-xl border-2 border-yellow-400 text-center">
                     <p className="text-xl font-bold text-gray-800 italic">
                       "¡Relax, todo está bien!"
                     </p>

@@ -113,7 +113,7 @@ const Navbar: React.FC = () => {
     return (
       <>
         {/* Bottom bar para navegación rápida en móvil */}
-        <nav className="fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-sm border-t border-gray-200 flex justify-around items-center h-20 shadow-lg md:hidden px-5 gap-2">
+        <nav className="fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-xs border-t border-gray-200 flex justify-around items-center h-20 shadow-lg md:hidden px-5 gap-2">
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
@@ -123,7 +123,7 @@ const Navbar: React.FC = () => {
               <button
                 key={item.path}
                 onClick={() => navigate(item.path)}
-                className={`flex flex-col items-center text-xs focus:outline-none transition-all duration-200 py-1 px-2 ${
+                className={`flex flex-col items-center text-xs focus:outline-hidden transition-all duration-200 py-1 px-2 ${
                   isActive ? colorClasses.textActive : 'text-gray-400'
                 }`}
               >

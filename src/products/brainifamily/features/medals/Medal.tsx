@@ -35,7 +35,7 @@ const Medal: React.FC<MedalProps> = ({ missionNumber, isEarned, earnedAt, onClic
             className={`
               w-12 h-12 md:w-14 md:h-14 rounded-lg flex items-center justify-center transition-all duration-300 transform hover:scale-110 overflow-hidden
               ${isEarned 
-                ? 'bg-white shadow-sm hover:shadow-md cursor-pointer border border-gray-200' 
+                ? 'bg-white shadow-xs hover:shadow-md cursor-pointer border border-gray-200' 
                 : 'border border-dashed border-gray-300 bg-gray-50 hover:border-gray-400 hover:bg-gray-100 cursor-pointer'
               }
             `}

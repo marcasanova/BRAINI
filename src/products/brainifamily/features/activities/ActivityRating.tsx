@@ -104,7 +104,7 @@ const ActivityRating: React.FC<ActivityRatingProps> = ({
         <button
           key={starValue}
           onClick={() => handleStarClick(starValue)}
-          className="focus:outline-none transition-transform hover:scale-110"
+          className="focus:outline-hidden transition-transform hover:scale-110"
           aria-label={`${starValue} estrella${starValue > 1 ? 's' : ''}`}
         >
           {isFilled ? (

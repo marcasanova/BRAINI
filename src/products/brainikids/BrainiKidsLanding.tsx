@@ -191,7 +191,7 @@ const BrainiKidsLanding = () => {
           }`}>
             {/* Característica 1 */}
             <div className="flex items-start p-4 sm:p-6 bg-white rounded-xl shadow-md">
-              <div className="flex-shrink-0 mr-3 sm:mr-4">
+              <div className="shrink-0 mr-3 sm:mr-4">
                 <Check className="w-6 h-6 sm:w-7 sm:h-7" style={{ color: BRAINI_RED }} />
               </div>
               <p className="text-base sm:text-lg text-gray-700 font-medium" style={{ fontWeight: 500 }}>
@@ -201,7 +201,7 @@ const BrainiKidsLanding = () => {
 
             {/* Característica 2 */}
             <div className="flex items-start p-4 sm:p-6 bg-white rounded-xl shadow-md">
-              <div className="flex-shrink-0 mr-3 sm:mr-4">
+              <div className="shrink-0 mr-3 sm:mr-4">
                 <Check className="w-6 h-6 sm:w-7 sm:h-7" style={{ color: BRAINI_RED }} />
               </div>
               <p className="text-base sm:text-lg text-gray-700 font-medium" style={{ fontWeight: 500 }}>
@@ -211,7 +211,7 @@ const BrainiKidsLanding = () => {
 
             {/* Característica 3 */}
             <div className="flex items-start p-4 sm:p-6 bg-white rounded-xl shadow-md">
-              <div className="flex-shrink-0 mr-3 sm:mr-4">
+              <div className="shrink-0 mr-3 sm:mr-4">
                 <Check className="w-6 h-6 sm:w-7 sm:h-7" style={{ color: BRAINI_RED }} />
               </div>
               <p className="text-base sm:text-lg text-gray-700 font-medium" style={{ fontWeight: 500 }}>
@@ -221,7 +221,7 @@ const BrainiKidsLanding = () => {
 
             {/* Característica 4 */}
             <div className="flex items-start p-4 sm:p-6 bg-white rounded-xl shadow-md">
-              <div className="flex-shrink-0 mr-3 sm:mr-4">
+              <div className="shrink-0 mr-3 sm:mr-4">
                 <Check className="w-6 h-6 sm:w-7 sm:h-7" style={{ color: BRAINI_RED }} />
               </div>
               <p className="text-base sm:text-lg text-gray-700 font-medium" style={{ fontWeight: 500 }}>
@@ -268,7 +268,7 @@ const BrainiKidsLanding = () => {
                   value={formData.name}
                   onChange={handleInputChange}
                   placeholder="Tu nombre"
-                  className="w-full px-4 py-3 sm:py-4 text-base border-2 border-gray-200 rounded-lg focus:outline-none focus:border-gray-400 transition-colors"
+                  className="w-full px-4 py-3 sm:py-4 text-base border-2 border-gray-200 rounded-lg focus:outline-hidden focus:border-gray-400 transition-colors"
                   required
                 />
               </div>
@@ -285,7 +285,7 @@ const BrainiKidsLanding = () => {
                   value={formData.center}
                   onChange={handleInputChange}
                   placeholder="Nombre del centro educativo"
-                  className="w-full px-4 py-3 sm:py-4 text-base border-2 border-gray-200 rounded-lg focus:outline-none focus:border-gray-400 transition-colors"
+                  className="w-full px-4 py-3 sm:py-4 text-base border-2 border-gray-200 rounded-lg focus:outline-hidden focus:border-gray-400 transition-colors"
                   required
                 />
               </div>
@@ -296,7 +296,7 @@ const BrainiKidsLanding = () => {
                   Curso: (desplegable 3, 4 5 años)
                 </Label>
                 <Select value={formData.course} onValueChange={handleSelectChange} required>
-                  <SelectTrigger className="w-full px-4 py-3 sm:py-4 text-base border-2 border-gray-200 rounded-lg focus:outline-none focus:border-gray-400 transition-colors">
+                  <SelectTrigger className="w-full px-4 py-3 sm:py-4 text-base border-2 border-gray-200 rounded-lg focus:outline-hidden focus:border-gray-400 transition-colors">
                     <SelectValue placeholder="Selecciona un curso" />
                   </SelectTrigger>
                   <SelectContent>
@@ -319,7 +319,7 @@ const BrainiKidsLanding = () => {
                   value={formData.email}
                   onChange={handleInputChange}
                   placeholder="tu@email.com"
-                  className="w-full px-4 py-3 sm:py-4 text-base border-2 border-gray-200 rounded-lg focus:outline-none focus:border-gray-400 transition-colors"
+                  className="w-full px-4 py-3 sm:py-4 text-base border-2 border-gray-200 rounded-lg focus:outline-hidden focus:border-gray-400 transition-colors"
                   required
                 />
               </div>

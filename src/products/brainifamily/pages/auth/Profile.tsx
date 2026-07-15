@@ -209,7 +209,7 @@ const Profile = () => {
         <div className="container mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-6 flex-1 flex flex-col min-h-0">
           <div className="max-w-4xl mx-auto w-full flex flex-col min-h-0">
             {/* Header Section - Fijo en la parte superior */}
-            <div className="mb-4 sm:mb-5 md:mb-6 animate-fade-in flex-shrink-0">
+            <div className="mb-4 sm:mb-5 md:mb-6 animate-fade-in shrink-0">
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-1 sm:mb-2" style={{ fontWeight: 900 }}>
                 Mi Familia
               </h1>
@@ -236,7 +236,7 @@ const Profile = () => {
                 <CardHeader className="pb-3 sm:pb-4">
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
                     <div className="flex items-center gap-2 sm:gap-3">
-                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-braini-pink rounded-lg flex items-center justify-center flex-shrink-0">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-braini-pink rounded-lg flex items-center justify-center shrink-0">
                         <User className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                       </div>
                       <div className="min-w-0">
@@ -512,49 +512,49 @@ const Profile = () => {
                               </h4>
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3">
                                 <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
-                                  <User className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink flex-shrink-0" />
+                                  <User className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink shrink-0" />
                                   <div className="min-w-0 flex-1">
                                     <p className="text-[10px] sm:text-xs text-gray-500 font-medium">Nombre</p>
                                     <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">{parent?.nombre || 'No especificado'}</p>
                                   </div>
                                 </div>
                                 <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
-                                  <User className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink flex-shrink-0" />
+                                  <User className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink shrink-0" />
                                   <div className="min-w-0 flex-1">
                                     <p className="text-[10px] sm:text-xs text-gray-500 font-medium">Apellidos</p>
                                     <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">{parent?.apellidos || 'No especificado'}</p>
                                   </div>
                                 </div>
                                 <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
-                                  <CreditCard className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink flex-shrink-0" />
+                                  <CreditCard className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink shrink-0" />
                                   <div className="min-w-0 flex-1">
                                     <p className="text-[10px] sm:text-xs text-gray-500 font-medium">DNI</p>
                                     <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">{parent?.dni || 'No especificado'}</p>
                                   </div>
                                 </div>
                                 <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
-                                  <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink flex-shrink-0" />
+                                  <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink shrink-0" />
                                   <div className="min-w-0 flex-1">
                                     <p className="text-[10px] sm:text-xs text-gray-500 font-medium">Fecha de nacimiento</p>
                                     <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">{parent?.fecha_nacimiento || 'No especificado'}</p>
                                   </div>
                                 </div>
                                 <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
-                                  <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink flex-shrink-0" />
+                                  <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink shrink-0" />
                                   <div className="min-w-0 flex-1">
                                     <p className="text-[10px] sm:text-xs text-gray-500 font-medium">Género</p>
                                     <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">{parent?.genero || 'No especificado'}</p>
                                   </div>
                                 </div>
                                 <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
-                                  <Phone className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink flex-shrink-0" />
+                                  <Phone className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink shrink-0" />
                                   <div className="min-w-0 flex-1">
                                     <p className="text-[10px] sm:text-xs text-gray-500 font-medium">Teléfono</p>
                                     <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">{parent?.telefono_contacto || 'No especificado'}</p>
                                   </div>
                                 </div>
                                 <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
-                                  <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink flex-shrink-0" />
+                                  <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink shrink-0" />
                                   <div className="min-w-0 flex-1">
                                     <p className="text-[10px] sm:text-xs text-gray-500 font-medium">Relación con el menor</p>
                                     <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">{parent?.relacion_con_menor || 'No especificado'}</p>
@@ -570,21 +570,21 @@ const Profile = () => {
                               </h4>
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3">
                                 <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
-                                  <Flag className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink flex-shrink-0" />
+                                  <Flag className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink shrink-0" />
                                   <div className="min-w-0 flex-1">
                                     <p className="text-[10px] sm:text-xs text-gray-500 font-medium">País de origen</p>
                                     <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">{parent?.pais_origen || 'No especificado'}</p>
                                   </div>
                                 </div>
                                 <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
-                                  <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink flex-shrink-0" />
+                                  <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink shrink-0" />
                                   <div className="min-w-0 flex-1">
                                     <p className="text-[10px] sm:text-xs text-gray-500 font-medium">Ciudad de origen</p>
                                     <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">{parent?.ciudad_origen || 'No especificado'}</p>
                                   </div>
                                 </div>
                                 <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
-                                  <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink flex-shrink-0" />
+                                  <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink shrink-0" />
                                   <div className="min-w-0 flex-1">
                                     <p className="text-[10px] sm:text-xs text-gray-500 font-medium">Código postal</p>
                                     <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">{parent?.codigo_postal || 'No especificado'}</p>
@@ -600,21 +600,21 @@ const Profile = () => {
                               </h4>
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3">
                                 <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
-                                  <GraduationCap className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink flex-shrink-0" />
+                                  <GraduationCap className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink shrink-0" />
                                   <div className="min-w-0 flex-1">
                                     <p className="text-[10px] sm:text-xs text-gray-500 font-medium">Nivel educativo</p>
                                     <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">{parent?.nivel_educativo || 'No especificado'}</p>
                                   </div>
                                 </div>
                                 <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
-                                  <Languages className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink flex-shrink-0" />
+                                  <Languages className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink shrink-0" />
                                   <div className="min-w-0 flex-1">
                                     <p className="text-[10px] sm:text-xs text-gray-500 font-medium">Idioma que se habla en casa</p>
                                     <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">{parent?.idioma_casa || 'No especificado'}</p>
                                   </div>
                                 </div>
                                 <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
-                                  <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink flex-shrink-0" />
+                                  <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink shrink-0" />
                                   <div className="min-w-0 flex-1">
                                     <p className="text-[10px] sm:text-xs text-gray-500 font-medium">Estilo de crianza percibido</p>
                                     <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">{parent?.estilo_crianza || 'No especificado'}</p>
@@ -632,7 +632,7 @@ const Profile = () => {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-1.5 sm:gap-2">
                                   {parent.expectativas_programa.map((expectativa: string, index: number) => (
                                     <div key={index} className="flex items-center gap-1.5 sm:gap-2 p-1.5 bg-white rounded-lg">
-                                      <Heart className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-braini-pink flex-shrink-0" />
+                                      <Heart className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-braini-pink shrink-0" />
                                       <span className="text-[10px] sm:text-xs font-medium text-gray-700">
                                         {getExpectativaLabel(expectativa)}
                                       </span>
@@ -672,7 +672,7 @@ const Profile = () => {
                 <CardHeader className="pb-3 sm:pb-4">
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
                     <div className="flex items-center gap-2 sm:gap-3">
-                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-braini-pink rounded-lg flex items-center justify-center flex-shrink-0">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-braini-pink rounded-lg flex items-center justify-center shrink-0">
                         <Baby className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                       </div>
                       <div className="min-w-0">
@@ -868,35 +868,35 @@ const Profile = () => {
                                 <h4 className="font-semibold text-gray-800 text-sm sm:text-base">Información Personal</h4>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3">
                                   <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
-                                    <Baby className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink flex-shrink-0" />
+                                    <Baby className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink shrink-0" />
                                     <div className="min-w-0 flex-1">
                                       <p className="text-[10px] sm:text-xs text-gray-500 font-medium">Nombre</p>
                                       <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">{c?.nombre || 'No especificado'}</p>
                                     </div>
                                   </div>
                                   <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
-                                    <Baby className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink flex-shrink-0" />
+                                    <Baby className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink shrink-0" />
                                     <div className="min-w-0 flex-1">
                                       <p className="text-[10px] sm:text-xs text-gray-500 font-medium">Apellidos</p>
                                       <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">{c?.apellidos || 'No especificado'}</p>
                                     </div>
                                   </div>
                                   <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
-                                    <CreditCard className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink flex-shrink-0" />
+                                    <CreditCard className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink shrink-0" />
                                     <div className="min-w-0 flex-1">
                                       <p className="text-[10px] sm:text-xs text-gray-500 font-medium">DNI</p>
                                       <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">{c?.dni || 'No especificado'}</p>
                                     </div>
                                   </div>
                                   <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
-                                    <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink flex-shrink-0" />
+                                    <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink shrink-0" />
                                     <div className="min-w-0 flex-1">
                                       <p className="text-[10px] sm:text-xs text-gray-500 font-medium">Género</p>
                                       <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">{c?.genero || 'No especificado'}</p>
                                     </div>
                                   </div>
                                   <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
-                                    <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink flex-shrink-0" />
+                                    <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink shrink-0" />
                                     <div className="min-w-0 flex-1">
                                       <p className="text-[10px] sm:text-xs text-gray-500 font-medium">Fecha de nacimiento</p>
                                       <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">{c?.fecha_nacimiento || 'No especificado'}</p>
@@ -908,14 +908,14 @@ const Profile = () => {
                                 <h4 className="font-semibold text-gray-800 text-sm sm:text-base">Información Educativa</h4>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3">
                                   <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
-                                    <School className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink flex-shrink-0" />
+                                    <School className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink shrink-0" />
                                     <div className="min-w-0 flex-1">
                                       <p className="text-[10px] sm:text-xs text-gray-500 font-medium">Centro escolar</p>
                                       <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">{c?.school_name || 'No especificado'}</p>
                                     </div>
                                   </div>
                                   <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
-                                    <GraduationCap className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink flex-shrink-0" />
+                                    <GraduationCap className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink shrink-0" />
                                     <div className="min-w-0 flex-1">
                                       <p className="text-[10px] sm:text-xs text-gray-500 font-medium">Nivel educativo</p>
                                       <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">{c?.nivel_educativo || 'No especificado'}</p>
@@ -929,19 +929,19 @@ const Profile = () => {
                                   <div className="space-y-2 sm:space-y-3">
                                     {c?.fortalezas && (
                                       <div className="flex items-start gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
-                                        <Brain className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink mt-0.5 flex-shrink-0" />
+                                        <Brain className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink mt-0.5 shrink-0" />
                                         <div className="min-w-0 flex-1">
                                           <p className="text-[10px] sm:text-xs text-gray-500 font-medium">Fortalezas</p>
-                                          <p className="font-semibold text-gray-800 text-xs sm:text-sm break-words">{c.fortalezas}</p>
+                                          <p className="font-semibold text-gray-800 text-xs sm:text-sm wrap-break-word">{c.fortalezas}</p>
                                         </div>
                                       </div>
                                     )}
                                     {c?.debilidades && (
                                       <div className="flex items-start gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
-                                        <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink mt-0.5 flex-shrink-0" />
+                                        <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink mt-0.5 shrink-0" />
                                         <div className="min-w-0 flex-1">
                                           <p className="text-[10px] sm:text-xs text-gray-500 font-medium">Debilidades</p>
-                                          <p className="font-semibold text-gray-800 text-xs sm:text-sm break-words">{c.debilidades}</p>
+                                          <p className="font-semibold text-gray-800 text-xs sm:text-sm wrap-break-word">{c.debilidades}</p>
                                         </div>
                                       </div>
                                     )}
@@ -963,7 +963,7 @@ const Profile = () => {
               <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0">
                 <CardHeader className="pb-3 sm:pb-4">
                   <CardTitle className="flex items-center gap-2 sm:gap-3 text-base sm:text-lg md:text-xl text-gray-800">
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-braini-pink rounded-lg flex items-center justify-center flex-shrink-0">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-braini-pink rounded-lg flex items-center justify-center shrink-0">
                       <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                     </div>
                     Resultados de Tests

@@ -20,7 +20,7 @@ const ActivityNavigation: React.FC<ActivityNavigationProps> = ({
       {/* Fila principal: Navegación y progreso - Siempre en fila */}
       <div className="flex flex-row items-center justify-between gap-1.5 sm:gap-2 md:gap-4">
         {/* Lado izquierdo: Botón Home + Botón Anterior */}
-        <div className="flex items-center gap-1.5 sm:gap-2 md:gap-2 flex-shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-2 md:gap-2 shrink-0">
           <Button
             variant="ghost"
             onClick={onBackToMission}
@@ -57,18 +57,18 @@ const ActivityNavigation: React.FC<ActivityNavigationProps> = ({
             </div>
             <div className="w-full bg-white/20 rounded-full h-1.5 sm:h-2 md:h-2.5 overflow-hidden">
               <div 
-                className="bg-white h-1.5 sm:h-2 md:h-2.5 rounded-full transition-all duration-500 ease-out shadow-sm"
+                className="bg-white h-1.5 sm:h-2 md:h-2.5 rounded-full transition-all duration-500 ease-out shadow-xs"
                 style={{ width: `${((currentIndex + 1) / totalActivities) * 100}%` }}
               ></div>
             </div>
           </div>
-          <div className="text-xs sm:text-[10px] md:text-sm text-white font-semibold whitespace-nowrap flex-shrink-0">
+          <div className="text-xs sm:text-[10px] md:text-sm text-white font-semibold whitespace-nowrap shrink-0">
             {Math.round(((currentIndex + 1) / totalActivities) * 100)}%
           </div>
         </div>
 
         {/* Lado derecho: Botón Siguiente */}
-        <div className="flex items-center flex-shrink-0">
+        <div className="flex items-center shrink-0">
           <Button
             variant="ghost"
             onClick={() => nextActivity && onNavigate(nextActivity.id)}

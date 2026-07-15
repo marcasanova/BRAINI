@@ -27,7 +27,7 @@ const InteligenciaEmocional = () => {
         <div className="container mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-6 flex-1 flex flex-col min-h-0">
           <div className="max-w-6xl mx-auto w-full flex flex-col min-h-0">
             {/* Header Principal - Fijo en la parte superior */}
-            <div className="mb-4 sm:mb-5 md:mb-6 animate-fade-in flex-shrink-0">
+            <div className="mb-4 sm:mb-5 md:mb-6 animate-fade-in shrink-0">
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-1 sm:mb-2" style={{ fontWeight: 900 }}>
                 Inteligencia Emocional
               </h1>
@@ -52,8 +52,8 @@ const InteligenciaEmocional = () => {
 
                   {/* Logos de las universidades */}
                   <div className="flex flex-row items-center justify-center md:justify-start gap-4 sm:gap-5 md:gap-6 lg:gap-8">
-                    <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 flex-shrink-0">
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-white rounded-lg p-1 sm:p-1.5 md:p-2 shadow-sm flex items-center justify-center flex-shrink-0">
+                    <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 shrink-0">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-white rounded-lg p-1 sm:p-1.5 md:p-2 shadow-xs flex items-center justify-center shrink-0">
                         <img 
                           src="/unis/logo_cadiz.png" 
                           alt="Universidad de Cádiz" 
@@ -67,8 +67,8 @@ const InteligenciaEmocional = () => {
                       <span className="text-[9px] sm:text-[10px] md:text-xs text-gray-600 whitespace-nowrap">Universidad de Cádiz</span>
                     </div>
 
-                    <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 flex-shrink-0">
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-white rounded-lg p-1 sm:p-1.5 md:p-2 shadow-sm flex items-center justify-center flex-shrink-0">
+                    <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 shrink-0">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-white rounded-lg p-1 sm:p-1.5 md:p-2 shadow-xs flex items-center justify-center shrink-0">
                         <img 
                           src="/unis/logo_alicante.png" 
                           alt="Universidad de Alicante" 

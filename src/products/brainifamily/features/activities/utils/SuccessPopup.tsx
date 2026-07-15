@@ -47,7 +47,7 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({ onClose, activityType }) =>
   return (
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="w-[90%] max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl p-4 sm:p-4 md:p-6 max-h-[85vh] sm:max-h-[90vh] rounded-xl flex flex-col [&>button]:hidden">
-        <DialogHeader className="text-center pb-1 sm:pb-2 flex-shrink-0">
+        <DialogHeader className="text-center pb-1 sm:pb-2 shrink-0">
           <DialogTitle className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black ${getMainTitleTextClasses(activityType)} text-center`}>
             {randomMessage}
           </DialogTitle>
@@ -74,7 +74,7 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({ onClose, activityType }) =>
           </div>
         </div>
 
-        <div className="mt-4 sm:mt-6 flex justify-center flex-shrink-0">
+        <div className="mt-4 sm:mt-6 flex justify-center shrink-0">
           <Button
             onClick={handleClose}
             className={`w-full sm:w-auto px-4 sm:px-6 md:px-8 py-2 sm:py-2.5 md:py-3 text-xs sm:text-sm md:text-base font-medium ${getPrimaryButtonClasses(activityType)}`}

@@ -234,7 +234,7 @@ const Ses6Act1: React.FC<Ses6Act1Props> = ({
               <div className="relative mx-auto max-w-4xl">
               {/* Bol */}
               <div 
-                className="relative mx-auto border-4 border-amber-800 bg-gradient-to-b from-amber-50 via-amber-100 to-amber-200 shadow-2xl overflow-hidden"
+                className="relative mx-auto border-4 border-amber-800 bg-linear-to-b from-amber-50 via-amber-100 to-amber-200 shadow-2xl overflow-hidden"
                 style={{
                   width: '100%',
                   maxWidth: '700px',

@@ -219,7 +219,7 @@ const Ses9Act2: React.FC<Ses9Act2Props> = ({
                 <h3 className={`text-2xl font-bold ${getMainTitleTextClasses(activityType)} mb-3`}>
                   {currentStep.nombre}
                 </h3>
-                <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-200 max-w-2xl mx-auto">
+                <div className="bg-linear-to-r from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-200 max-w-2xl mx-auto">
                   <div className="text-lg text-gray-700 font-medium leading-relaxed">
                     {formatearTexto(currentStep.contenido)}
                   </div>
@@ -257,7 +257,7 @@ const Ses9Act2: React.FC<Ses9Act2Props> = ({
                   Recuerda
                 </h3>
                 <div className="space-y-4 text-left max-w-2xl mx-auto mt-6">
-                  <div className="bg-gradient-to-r from-purple-100 to-pink-100 p-6 rounded-xl border-2 border-purple-300">
+                  <div className="bg-linear-to-r from-purple-100 to-pink-100 p-6 rounded-xl border-2 border-purple-300">
                     <p className="text-lg text-gray-700 font-medium leading-relaxed">
                       Como ves, si algún día estás <strong className={getMainTitleTextClasses(activityType)}>triste</strong>, sientes <strong className={getMainTitleTextClasses(activityType)}>miedo</strong>, o te <strong className={getMainTitleTextClasses(activityType)}>enfadas</strong>, puedes entrar en la burbuja mágica para sentirte mejor.
                     </p>

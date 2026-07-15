@@ -68,7 +68,7 @@ const Home = () => {
         <div className="container mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-6 flex-1 flex flex-col min-h-0">
           <div className="max-w-5xl mx-auto w-full flex flex-col min-h-0">
             {/* Header con título y selector de hijo (solo si hay más de uno) */}
-            <div className="mb-4 md:mb-6 animate-fade-in flex-shrink-0 flex flex-col sm:flex-row sm:items-center gap-3">
+            <div className="mb-4 md:mb-6 animate-fade-in shrink-0 flex flex-col sm:flex-row sm:items-center gap-3">
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white" style={{ fontWeight: 900 }}>
                 {child?.nombre ? `${child.nombre} ¡Empieza la aventura!` : '¡Empieza la aventura!'}
               </h1>
@@ -178,8 +178,8 @@ const Home = () => {
                             </p>
                             <div className="flex flex-col gap-3 md:gap-4">
                               {/* 1. Inteligencia Emocional */}
-                              <div className="p-4 rounded-xl bg-gradient-to-br from-braini-blue/5 to-braini-blue/10 border-2 border-braini-blue/30 flex items-start gap-3">
-                                <div className="w-12 h-12 rounded-lg bg-braini-blue/20 flex items-center justify-center flex-shrink-0">
+                              <div className="p-4 rounded-xl bg-linear-to-br from-braini-blue/5 to-braini-blue/10 border-2 border-braini-blue/30 flex items-start gap-3">
+                                <div className="w-12 h-12 rounded-lg bg-braini-blue/20 flex items-center justify-center shrink-0">
                                   <span className="text-xl font-black text-braini-blue-dark">1</span>
                                 </div>
                                 <div className="flex-1">
@@ -196,8 +196,8 @@ const Home = () => {
                               </div>
 
                               {/* 2. Regulación Emocional */}
-                              <div className="p-4 rounded-xl bg-gradient-to-br from-braini-turquoise/5 to-braini-turquoise/10 border-2 border-braini-turquoise/30 flex items-start gap-3">
-                                <div className="w-12 h-12 rounded-lg bg-braini-turquoise/20 flex items-center justify-center flex-shrink-0">
+                              <div className="p-4 rounded-xl bg-linear-to-br from-braini-turquoise/5 to-braini-turquoise/10 border-2 border-braini-turquoise/30 flex items-start gap-3">
+                                <div className="w-12 h-12 rounded-lg bg-braini-turquoise/20 flex items-center justify-center shrink-0">
                                   <span className="text-xl font-black text-braini-turquoise-dark">2</span>
                                 </div>
                                 <div className="flex-1">
@@ -214,8 +214,8 @@ const Home = () => {
                               </div>
 
                               {/* 3. Vínculo Afectivo */}
-                              <div className="p-4 rounded-xl bg-gradient-to-br from-braini-pink/5 to-braini-pink/10 border-2 border-braini-pink/30 flex items-start gap-3">
-                                <div className="w-12 h-12 rounded-lg bg-braini-pink/20 flex items-center justify-center flex-shrink-0">
+                              <div className="p-4 rounded-xl bg-linear-to-br from-braini-pink/5 to-braini-pink/10 border-2 border-braini-pink/30 flex items-start gap-3">
+                                <div className="w-12 h-12 rounded-lg bg-braini-pink/20 flex items-center justify-center shrink-0">
                                   <span className="text-xl font-black text-braini-pink-dark">3</span>
                                 </div>
                                 <div className="flex-1">
@@ -232,8 +232,8 @@ const Home = () => {
                               </div>
 
                               {/* 4. Acompañamiento Emocional */}
-                              <div className="p-4 rounded-xl bg-gradient-to-br from-braini-yellow/5 to-braini-yellow/10 border-2 border-braini-yellow/30 flex items-start gap-3">
-                                <div className="w-12 h-12 rounded-lg bg-braini-yellow/20 flex items-center justify-center flex-shrink-0">
+                              <div className="p-4 rounded-xl bg-linear-to-br from-braini-yellow/5 to-braini-yellow/10 border-2 border-braini-yellow/30 flex items-start gap-3">
+                                <div className="w-12 h-12 rounded-lg bg-braini-yellow/20 flex items-center justify-center shrink-0">
                                   <span className="text-xl font-black text-braini-yellow-dark">4</span>
                                 </div>
                                 <div className="flex-1">
