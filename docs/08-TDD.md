@@ -237,6 +237,18 @@ Buckets públicos para:
 
 ---
 
+## 14. Pirámide de testing
+
+| Capa | Herramienta | Alcance |
+|------|-------------|---------|
+| Unit / integración | Vitest + RTL + MSW | Lógica, hooks, queries y componentes aislados (`src/**/*.test.ts(x)`) |
+| E2E smoke | Playwright | Rutas públicas, redirects legacy (`/login`, `/home`), matriz de rutas clave y guards sin auth (`tests/e2e/smoke/`) |
+| E2E autenticado | Playwright (opcional) | Flujos con `.env.test` y usuario de staging |
+
+Tras cada fase: `npm run test:run && npm run build && npm run test:e2e:smoke`.
+
+---
+
 ## 13. Referencias
 
 | Tema | Archivo |

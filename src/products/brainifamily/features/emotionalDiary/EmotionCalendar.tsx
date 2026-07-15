@@ -106,7 +106,7 @@ const EmotionCalendar: React.FC<EmotionCalendarProps> = ({
     const daysInMonth = getDaysInMonth(year, month);
     const firstDayOfMonth = getFirstDayOfMonth(year, month);
     
-    const days = [];
+    const days: React.ReactNode[] = [];
     
     // Días vacíos del mes anterior
     for (let i = 0; i < firstDayOfMonth; i++) {

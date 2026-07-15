@@ -116,7 +116,7 @@ const Ses1Act2: React.FC<Ses1Act2Props> = ({
   };
 
   // Función para resaltar palabras clave en el texto de instrucción (soporta saltos de línea)
-  const formatInstruction = (text: string): JSX.Element => {
+  const formatInstruction = (text: string): React.ReactElement => {
     const lines = text.split('\n').filter((l) => l.trim() !== '');
     return (
       <>

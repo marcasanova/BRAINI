@@ -6,7 +6,7 @@ import { useToast } from '@/shared/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router';
 import { CheckCircle } from 'lucide-react';
-import { useCurrentChildContext } from '@/products/brainifamily/contexts/CurrentChildContext';
+import { useCurrentChild } from '@/products/brainifamily/hooks/useCurrentChild';
 
 // Rutas de assets públicos
 const logoBraini = '/logo/logoBraini.png';
@@ -42,7 +42,7 @@ const ChildProfile = () => {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { refetch: refetchChildren } = useCurrentChildContext();
+  const { refetch: refetchChildren } = useCurrentChild();
 
   const [childrenList, setChildrenList] = useState<Array<{ id: string; nombre: string; apellidos: string | null; genero: string | null; fecha_nacimiento: string | null; nivel_educativo: string | null; profile_completed: boolean }>>([]);
   const [editingChildId, setEditingChildId] = useState<string | null>(null);

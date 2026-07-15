@@ -60,18 +60,16 @@ describe('emotional-diary queries', () => {
   it('hace upsert de entrada emocional', async () => {
     server.use(
       http.post('*/rest/v1/emotional_diary*', () =>
-        HttpResponse.json([
-          {
-            id: 3,
-            user_id: 'u1',
-            child_id: 'c1',
-            emotion_names: ['Miedo'],
-            observations: null,
-            entry_date: '2026-07-16',
-            created_at: '2026-07-16',
-            updated_at: '2026-07-16',
-          },
-        ]),
+        HttpResponse.json({
+          id: 3,
+          user_id: 'u1',
+          child_id: 'c1',
+          emotion_names: ['Miedo'],
+          observations: null,
+          entry_date: '2026-07-16',
+          created_at: '2026-07-16',
+          updated_at: '2026-07-16',
+        }),
       ),
     );
 

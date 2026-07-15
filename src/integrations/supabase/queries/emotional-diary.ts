@@ -51,11 +51,12 @@ export async function upsertEmotionEntry(
     .from('emotional_diary')
     .upsert(payload, {
       onConflict: 'user_id,child_id,entry_date',
-      returning: 'representation',
-    });
+    })
+    .select()
+    .single();
 
   if (error) throw error;
-  return Array.isArray(data) ? (data[0] ?? null) : data;
+  return data;
 }
 
 export async function fetchMonthEmotionEntries(

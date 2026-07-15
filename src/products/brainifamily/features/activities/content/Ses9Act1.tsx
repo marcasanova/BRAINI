@@ -149,7 +149,7 @@ const Ses9Act1: React.FC<Ses9Act1Props> = ({
   // Función para formatear el texto del cuento (destacar frases clave)
   const formatearTextoCuento = (texto: string) => {
     const lineas = texto.split('\n');
-    const resultado: JSX.Element[] = [];
+    const resultado: React.ReactElement[] = [];
 
     lineas.forEach((linea, lineaIndex) => {
       if (linea.trim() === '') {
@@ -197,7 +197,7 @@ const Ses9Act1: React.FC<Ses9Act1Props> = ({
       });
 
       // Construir los elementos JSX
-      const elementos: JSX.Element[] = [];
+      const elementos: React.ReactElement[] = [];
       let indiceActual = 0;
 
       matchesFinales.forEach((match, matchIndex) => {

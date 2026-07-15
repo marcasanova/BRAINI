@@ -179,7 +179,7 @@ const Ses5Act1: React.FC<Ses5Act1Props> = ({
   const isFirstPage = currentPage === 0;
 
   // Función para formatear el texto del cuento
-  const formatearTextoCuento = (texto: string): JSX.Element[] => {
+  const formatearTextoCuento = (texto: string): React.ReactElement[] => {
     // Lista de todas las emociones (correctas e incorrectas) para buscar en el texto
     const todasLasEmociones = [
       ...EMOCIONES_CORRECTAS.map(e => e.nombre),
@@ -188,7 +188,7 @@ const Ses5Act1: React.FC<Ses5Act1Props> = ({
 
     // Dividir el texto por líneas
     const lineas = texto.split('\n');
-    const resultado: JSX.Element[] = [];
+    const resultado: React.ReactElement[] = [];
 
     lineas.forEach((linea, lineaIndex) => {
       if (linea.trim() === '') {
@@ -250,7 +250,7 @@ const Ses5Act1: React.FC<Ses5Act1Props> = ({
       });
 
       // Construir los elementos JSX
-      const elementosJSX: JSX.Element[] = [];
+      const elementosJSX: React.ReactElement[] = [];
       let indiceActual = 0;
 
       matchesFinales.forEach((match, matchIndex) => {

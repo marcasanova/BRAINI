@@ -1,3 +1,4 @@
+import Backgrounds from '@/shared/components/Backgrounds';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useCurrentChild } from '@/products/brainifamily/hooks/useCurrentChild';

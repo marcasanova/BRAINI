@@ -8,7 +8,7 @@ type TeacherContextValue = {
   isTeacher: boolean;
   loading: boolean;
   error: string | null;
-  refetch: () => Promise<void>;
+  refetch: () => Promise<unknown>;
 };
 
 const TeacherContext = createContext<TeacherContextValue | null>(null);

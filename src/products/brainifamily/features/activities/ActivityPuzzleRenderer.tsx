@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { Suspense, type ComponentType } from "react";
 import { getLazyActivityPuzzle } from "@/products/brainifamily/features/activities/content/registry";
 import type { UserActivity } from "@/products/brainifamily/hooks/useUserActivities";
 
@@ -25,7 +25,7 @@ const ActivityPuzzleRenderer: React.FC<ActivityPuzzleRendererProps> = ({
   activityDbId,
   ...props
 }) => {
-  const LazyPuzzle = getLazyActivityPuzzle(activityDbId);
+  const LazyPuzzle = getLazyActivityPuzzle(activityDbId) as ComponentType<ActivityPuzzleProps> | null;
 
   if (!LazyPuzzle) {
     return null;

@@ -35,6 +35,7 @@ VITE_SUPABASE_ANON_KEY=tu_clave_anon
 | `npm run test:coverage` | Cobertura de tests |
 | `npm run test:e2e` | Playwright E2E completo |
 | `npm run test:e2e:smoke` | Playwright smoke (rápido, post-fase) |
+| `npm run analyze` | Build + informe visual de bundles (`stats.html`) |
 | `npm run verify` | `lint` + `test:run` + `build` |
 
 ## Testing
@@ -49,8 +50,9 @@ tests/e2e/              # Playwright smoke y flows
 ```
 
 - **Unit / integración:** Vitest + React Testing Library + MSW (sin tocar Supabase remoto).
-- **E2E smoke:** Playwright contra rutas públicas y redirects.
+- **E2E smoke:** Playwright — rutas públicas, redirects legacy (`/login`, `/home`), matriz de rutas y guards sin auth.
 - **E2E autenticado (opcional):** copia `.env.test.example` → `.env.test` con usuario de staging.
+- **Bundle analyzer:** `npm run analyze` genera `stats.html` (ignorado en git).
 
 Artefactos generados (`coverage/`, `playwright-report/`, etc.) están en `.gitignore`.
 
