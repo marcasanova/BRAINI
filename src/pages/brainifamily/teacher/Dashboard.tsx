@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTeacher, normalizeCourseName } from '@/hooks/useTeacher';
+import { useTeacherContext } from '@/contexts/TeacherContext';
+import { normalizeCourseName } from '@/hooks/useTeacher';
 import { useTeacherChildren } from '@/hooks/useTeacherChildren';
 import {
   Select,
@@ -106,7 +107,7 @@ function readStoredClassId(): string | null {
 const TeacherDashboard: React.FC = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { teacher, refetch: refetchTeacher } = useTeacher();
+  const { teacher, refetch: refetchTeacher } = useTeacherContext();
   const [selectedClassId, setSelectedClassId] = useState<string | null>(null);
 
   const [courses, setCourses] = useState<CourseRow[]>([]);

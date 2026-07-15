@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Backgrounds from '@/components/Backgrounds';
-import { supabase } from '@/lib/supabaseClient';
 import { useCurrentChild } from '@/hooks/useCurrentChild';
 import { useMissions } from '@/hooks/useMissions';
 import { useUserMedals } from '@/hooks/useUserMedals';
@@ -26,43 +24,19 @@ const Home = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { child, childId, children: childrenList, setCurrentChildId, loading: childLoading } = useCurrentChild();
-  const [userMedalsMap, setUserMedalsMap] = useState<Map<number, string>>(new Map());
-  const [medalsLoading, setMedalsLoading] = useState(true);
   const [medalHighlight, setMedalHighlight] = useState<MedalHighlightState>({});
   const { toast } = useToast();
 
-  useEffect(() => {
-    if (!childId) {
-      setMedalsLoading(false);
-      return;
-    }
-    const loadMedalsMap = async () => {
-      try {
-        const { data: medalsData, error: medalsError } = await supabase
-          .from('child_medals')
-          .select('medal_id, fecha_obtencion')
-          .eq('child_id', childId);
-
-        if (medalsError) {
-          console.error('Error al obtener medallas:', medalsError);
-        } else {
-          const medalsMap = new Map<number, string>();
-          medalsData?.forEach((medal) => {
-            medalsMap.set(medal.medal_id, medal.fecha_obtencion);
-          });
-          setUserMedalsMap(medalsMap);
-        }
-      } catch (error) {
-        console.error('Error cargando medallas:', error);
-      } finally {
-        setMedalsLoading(false);
-      }
-    };
-    loadMedalsMap();
-  }, [childId]);
-
   const { missions, loading, error } = useMissions(childId);
-  const { userMedals, totalMedals, loading: medalsShelfLoading } = useUserMedals(childId);
+  const { userMedals, totalMedals, loading: medalsLoading } = useUserMedals(childId);
+
+  const userMedalsMap = useMemo(() => {
+    const map = new Map<number, string>();
+    userMedals.forEach((medal) => {
+      map.set(medal.medal_id, medal.fecha_obtencion);
+    });
+    return map;
+  }, [userMedals]);
 
   // Al llegar desde "Guardar medalla", mostrar highlights en la lista de misiones y limpiar location.state
   useEffect(() => {
@@ -127,7 +101,7 @@ const Home = () => {
                     <MedalShelf 
                       userMedals={userMedals} 
                       totalMedals={totalMedals}
-                      isLoading={medalsShelfLoading}
+                      isLoading={medalsLoading}
                       childNivelEducativo={child?.nivel_educativo ?? undefined}
                     />
                   </div>

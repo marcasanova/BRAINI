@@ -1,13 +1,13 @@
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
-import { useTeacher } from '@/hooks/useTeacher';
+import { useTeacherContext } from '@/contexts/TeacherContext';
 
 /**
  * Protege las rutas de maestro. Solo permite acceso si el usuario está en la tabla teachers.
  * Si está autenticado pero no es maestro, redirige al home de padre.
  */
 const TeacherRoute: React.FC = () => {
-  const { user, isTeacher, loading, teacher } = useTeacher();
+  const { user, isTeacher, loading, teacher } = useTeacherContext();
 
   if (loading) {
     return (

@@ -4,13 +4,18 @@
 **Rama:** develop  
 **Node:** 22.17.0
 
-## Bundle (pre-optimización)
+## Bundle (post Fase 1 — lazy routes + registry)
 
 | Asset | Tamaño aprox. |
 |-------|----------------|
-| `dist/assets/index-*.js` | ~1.1 MB |
+| `dist/assets/index-*.js` | ~107 KB |
+| `dist/assets/vendor-react-*.js` | ~143 KB |
+| `dist/assets/vendor-supabase-*.js` | ~173 KB |
+| `dist/assets/vendor-radix-*.js` | ~142 KB |
+| `dist/assets/activities-puzzles-*.js` | ~211 KB (lazy) |
 | `dist/assets/index-*.css` | ~120 KB |
-| `dist/` total | ~9.3 MB |
+
+**Baseline Fase 0:** index JS ~1.1 MB monolítico.
 
 ## Objetivos del plan
 

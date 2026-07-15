@@ -3,11 +3,11 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { LayoutDashboard, LogOut } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
-import { useTeacher } from '@/hooks/useTeacher';
+import { useTeacherContext } from '@/contexts/TeacherContext';
 
 const TeacherLayout: React.FC = () => {
   const navigate = useNavigate();
-  const { teacher } = useTeacher();
+  const { teacher } = useTeacherContext();
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
