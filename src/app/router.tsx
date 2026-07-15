@@ -36,7 +36,7 @@ const TestTMMSPadres = lazy(() => import("@/pages/brainifamily/intelligence/test
 const TestEmocionalNinos = lazy(() => import("@/pages/brainifamily/intelligence/tests/TestEmocionalNinos"));
 const ActivityDetail = lazy(() => import("@/pages/brainifamily/core/ActivityDetail"));
 const TeacherLayout = lazy(() => import("@/pages/brainifamily/teacher/TeacherLayout"));
-const TeacherDashboard = lazy(() => import("@/pages/brainifamily/teacher/TeacherDashboard"));
+const TeacherDashboard = lazy(() => import("@/pages/brainifamily/teacher/Dashboard"));
 const TeacherChildView = lazy(() => import("@/pages/brainifamily/teacher/ChildView"));
 const AdminDashboard = lazy(() => import("@/pages/brainifamily/admin/AdminDashboard"));
 const DirectorDashboard = lazy(() => import("@/pages/brainifamily/director/DirectorDashboard"));
