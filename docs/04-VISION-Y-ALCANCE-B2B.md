@@ -1,6 +1,6 @@
 # Visión y alcance B2B — BRAINI BrainiFamily
 
-**Versión:** 2.0  
+**Versión:** 3.0  
 **Modelo:** B2B invite-only
 
 ---
@@ -25,8 +25,8 @@ Las landings **Braini Kids** y **Braini Juniors** son líneas informativas sin l
 
 ### 2.1 Acceso solo por invitación
 
-- **No hay autoregistro público.** Nadie se da de alta de forma autónoma ni gratuita.
-- Todo usuario entra al sistema mediante un **enlace de invitación** generado por quien ya tiene acceso.
+- **No hay autoregistro público.** Nadie se da de alta de forma autónoma.
+- Todo usuario entra mediante un **enlace de invitación** generado por quien ya tiene acceso.
 - Tras la primera activación (contraseña + onboarding), el acceso posterior es por **login** (`/brainifamily/login`).
 
 ### 2.2 Dos pasos de acceso para el padre
@@ -37,8 +37,6 @@ Las landings **Braini Kids** y **Braini Juniors** son líneas informativas sin l
 ### 2.3 Un centro, una jerarquía
 
 Un **centro** (`schools`) es el contenedor: directores, teachers, clases y alumnado pertenecen a ese contexto.
-
-**Jerarquía operativa:**
 
 ```
 super_admin → crea centros e invita directores
@@ -52,7 +50,7 @@ parent      → consume el programa y gestiona el perfil del menor
 - Cada `auth.users` tiene **un único rol** (`parent`, `teacher` o `director`).
 - El rol se almacena en `user_roles`.
 - Un mismo email **no puede** acumular roles distintos.
-- Al generar cualquier invitación, el sistema **debe detectar** si el email ya existe como usuario en la plataforma.
+- Al generar cualquier invitación, el sistema **debe detectar** si el email ya existe como usuario en la plataforma (RPC `email_platform_status`).
 
 ### 2.5 Separación padre / teacher en el menor
 
@@ -67,7 +65,7 @@ El menor **no tiene cuenta propia**; el progreso gamificado se consume a través
 
 ### 2.6 Contenido pedagógico inmutable en producción
 
-Las tablas `missions`, `activities` y `medals` son **catálogo gestionado por desarrollo**. Ningún rol de la plataforma (admin, director, teacher, padre) puede crear, editar ni eliminar misiones o actividades.
+Las tablas `missions`, `activities` y `medals` son **catálogo gestionado por desarrollo**. Ningún rol de la plataforma puede crear, editar ni eliminar misiones o actividades (RLS: solo SELECT para autenticados).
 
 ### 2.7 Multi-centro y multi-hijo
 
@@ -83,10 +81,10 @@ Las tablas `missions`, `activities` y `medals` son **catálogo gestionado por de
 |-----|--------|----------------------|
 | `super_admin` | Plataforma global | CRUD completo sobre centros, usuarios, invitaciones y datos |
 | `director` | Su centro (`school_id`) | CRUD completo dentro del ecosistema de su colegio |
-| `teacher` | Sus clases (`teacher_id`) | CRUD de sus clases y alumnos; invitar padres; ver progreso de sus alumnos (solo lectura) |
+| `teacher` | Sus clases (`teacher_id`) | CRUD de sus clases y alumnos; invitar padres; ver progreso (solo lectura) |
 | `parent` | Sus hijos vinculados | Modificar perfiles; consumir programa; diario y tests |
 
-Detalle en [04-ROLES-Y-PERMISOS.md](./04-ROLES-Y-PERMISOS.md).
+Detalle en [05-ROLES-Y-PERMISOS](05-ROLES-Y-PERMISOS.md).
 
 ---
 
@@ -94,7 +92,7 @@ Detalle en [04-ROLES-Y-PERMISOS.md](./04-ROLES-Y-PERMISOS.md).
 
 | Elemento | Estado |
 |----------|--------|
-| Registro público `/brainifamily/signup` | Eliminado del producto |
+| Registro público `/brainifamily/signup` | Eliminado |
 | Waitlist | Eliminado |
 | Test Genius (`/test-genius`) | Eliminado |
 | Conferencia (`/conferencia`) | Eliminado |
@@ -107,7 +105,7 @@ Detalle en [04-ROLES-Y-PERMISOS.md](./04-ROLES-Y-PERMISOS.md).
 
 ## 5. Cumplimiento y datos personales
 
-El hecho de que el **centro/teacher** introduzca datos de menores implica responsabilidad en **protección de datos** (RGPD / LOPDGDD). Debe reflejarse en:
+El hecho de que el **centro/teacher** introduzca datos de menores implica responsabilidad en **protección de datos** (RGPD / LOPDGDD):
 
 - Acuerdos con el centro educativo.
 - Aviso de privacidad (enlace desde flujos de invitación).
@@ -117,19 +115,19 @@ El hecho de que el **centro/teacher** introduzca datos de menores implica respon
 
 ## 6. Criterios de éxito (producto)
 
-- Un centro completo el ciclo: admin crea colegio → director → teacher → padre → actividad completada con persistencia.
+- Un centro completa el ciclo: admin → director → teacher → padre → actividad completada con persistencia.
 - Un padre con dos hijos (mismo o distinto centro) gestiona ambos desde una cuenta.
 - Un teacher visualiza el progreso de todos sus alumnos sin poder modificarlo.
 - Un login sin cuenta previa devuelve error claro.
 - Ningún usuario puede autoregistrarse fuera del flujo de invitación.
 
-Casos detallados en [09-CRITERIOS-ACEPTACION.md](./09-CRITERIOS-ACEPTACION.md).
+Casos verificables en [12-CRITERIOS-DE-ACEPTACION](12-CRITERIOS-DE-ACEPTACION.md).
 
 ---
 
 ## 7. Documentación relacionada
 
-- Flujos: [01-ONBOARDING-POR-ROL.md](./01-ONBOARDING-POR-ROL.md)
-- Permisos: [04-ROLES-Y-PERMISOS.md](./04-ROLES-Y-PERMISOS.md)
-- Datos: [05-MODELO-DATOS.md](./05-MODELO-DATOS.md) · [06-ERD.md](./06-ERD.md)
-- Requisitos: [07-SRS.md](./07-SRS.md) · [08-TDD.md](./08-TDD.md)
+- Flujos: [06-FLUJOS-ONBOARDING-E-INVITACIONES](06-FLUJOS-ONBOARDING-E-INVITACIONES.md)
+- Permisos: [05-ROLES-Y-PERMISOS](05-ROLES-Y-PERMISOS.md)
+- Datos: [07-MODELO-DE-DATOS](07-MODELO-DE-DATOS.md) · [08-ERD](08-ERD.md)
+- Requisitos: [02-REQUISITOS](02-REQUISITOS.md) · [10-BACKEND-SUPABASE](10-BACKEND-SUPABASE.md)

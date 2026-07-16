@@ -1,6 +1,6 @@
 # Criterios de aceptación — BRAINI v2.0
 
-**Versión:** 2.0
+**Versión:** 3.0
 
 Casos de prueba de negocio para validar el sistema tras cada fase de implementación.
 
@@ -256,3 +256,20 @@ Las rutas `/test-genius`, `/conferencia`, waitlist y signup público **no existe
 | Backend | CA-INV-*, CA-PERM-05, CA-PIPE-02, CA-PERM-09 |
 | Frontend | CA-AUTH-*, CA-ONB-*, CA-MULTI-*, CA-OUT-01 |
 | Integración | CA-PIPE-01 (end-to-end completo) |
+
+---
+
+## 11. Trazabilidad a requisitos
+
+| CA | FR relacionados |
+|----|-----------------|
+| CA-AUTH-* | FR-AUTH-* |
+| CA-INV-* | FR-INV-*, FR-AUTH-06/07/08 |
+| CA-ONB-* | FR-PAR-02/03 |
+| CA-MULTI-* | FR-PAR-05/06 |
+| CA-PERM-* | FR-DIR-*, FR-TCH-*, FR-PAR-07 |
+| CA-PROG-* | FR-PROG-* |
+| CA-DIARY-* | FR-DIARY-* |
+| CA-OUT-01 | FR-OUT-* |
+
+Ver [02-REQUISITOS](02-REQUISITOS.md).

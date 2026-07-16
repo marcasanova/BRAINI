@@ -58,7 +58,7 @@ Artefactos generados (`coverage/`, `playwright-report/`, etc.) están en `.gitig
 
 ## Documentación técnica
 
-Ver [docs/README.md](docs/README.md) — fuente de verdad B2B v2.0 (onboarding, roles, modelo de datos, TDD).
+Ver [docs/00-INDICE.md](docs/00-INDICE.md) — fuente de verdad B2B (problema → requisitos → arquitectura → dominio → estado actual).
 
 ## Despliegue
 
@@ -66,7 +66,7 @@ Hosting estático en **Vercel** (`vercel.json` rewrites SPA). Variables de entor
 
 ## Stack
 
-- React 18 + TypeScript + Vite
-- Tailwind CSS + shadcn/ui
+- React 19 + TypeScript + Vite 8
+- Tailwind CSS 4 + shadcn/ui (Radix)
 - Supabase (Auth, PostgreSQL, Storage, Edge Functions)
-- React Router, TanStack Query
+- React Router 7, TanStack Query 5
