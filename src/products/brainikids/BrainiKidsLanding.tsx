@@ -14,6 +14,7 @@ import NavbarLandings from '@/shared/components/navigation/NavbarLandings';
 
 // Color rojo corporativo
 const BRAINI_RED = '#f5827b';
+const logoBrainiKids = '/logo/LogoBrainiKids.png';
 
 const BrainiKidsLanding = () => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -87,18 +88,18 @@ const BrainiKidsLanding = () => {
   };
 
   return (
-    <div 
-      className="min-h-screen font-montserrat relative"
+    <main
+      className="min-h-screen font-montserrat relative overflow-x-hidden"
       role="main"
       aria-label="Landing page de BrainiKids"
       style={{ background: BRAINI_RED }}
     >
       {/* Header con Navegación */}
-      <NavbarLandings currentPage="kids" />
+      <NavbarLandings />
 
       {/* Hero Section */}
       <section 
-        className="relative px-4 sm:px-6 md:px-8 pt-20 sm:pt-24 md:pt-28 pb-12 sm:pb-16 md:pb-20 border-b border-white/20 overflow-hidden"
+        className="relative px-4 sm:px-6 md:px-8 pt-16 sm:pt-[4.5rem] pb-12 sm:pb-16 md:pb-20 border-b border-white/20 overflow-hidden"
         aria-label="Información principal de BrainiKids"
       >
         {/* Figuras Geométricas Circulares */}
@@ -111,6 +112,13 @@ const BrainiKidsLanding = () => {
           <div className={`text-center mb-8 sm:mb-12 transition-all duration-1000 ease-out ${
             isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}>
+            <div className="mx-auto mb-1 sm:mb-1.5 flex items-center justify-center px-2">
+              <img
+                src={logoBrainiKids}
+                alt="Braini Kids"
+                className="w-[min(100%,18rem)] sm:w-[22rem] md:w-[26rem] lg:w-[30rem] h-auto object-contain"
+              />
+            </div>
             {/* Título principal en dos líneas */}
             <h2 className="text-center mb-4 sm:mb-6 px-2">
               <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-1" style={{ fontWeight: 700 }}>
@@ -349,7 +357,7 @@ const BrainiKidsLanding = () => {
           </p>
         </div>
       </footer>
-    </div>
+    </main>
   );
 };
 

@@ -352,6 +352,14 @@
   html {
     @apply bg-gray-50;
     overflow-x: hidden;
+    scrollbar-gutter: stable;
+    scroll-padding-top: 4rem;
+  }
+
+  @media (min-width: 640px) {
+    html {
+      scroll-padding-top: 4.5rem;
+    }
   }
 
   body {

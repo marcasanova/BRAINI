@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/shared/ui/button';
 import { ArrowRight, Users, GraduationCap, Heart } from 'lucide-react';
 import { CONTACT_EMAIL, CTA_REUNION_MAILTO } from '@/shared/lib/constants/contact';
+import NavbarLandings from '@/shared/components/navigation/NavbarLandings';
 
 // Rutas de assets públicos
-const logoBraini = '/logo/logoBraini.png';
+const logoBraini = '/logo/LogoNuevo.png';
 const logoInstagram = '/LogoInstagram.svg';
 
 const LandingPage = () => {
@@ -51,40 +52,34 @@ const LandingPage = () => {
       role="main"
       aria-label="Landing Braini Emotions - Neurobienestar emocional para centros educativos"
     >
+      <NavbarLandings />
+
       {/* ——— 1. HERO ——— */}
       <section
-        className="relative overflow-hidden bg-white pt-0 pb-10 sm:pb-14 lg:min-h-[min(100dvh,56rem)] lg:pb-0 lg:flex lg:flex-col"
+        className="relative overflow-hidden bg-white pt-16 sm:pt-[4.5rem] pb-10 sm:pb-14 lg:min-h-[min(100dvh,56rem)] lg:pb-0 lg:flex lg:flex-col"
         aria-label="Hero - Convierta su centro en referente"
       >
         <div className="w-full flex-1 min-h-0 min-w-0 max-w-[1920px] mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(280px,520px)] gap-0 lg:gap-0 lg:min-h-[min(100dvh,56rem)] lg:items-stretch">
             <div
-              className={`min-w-0 flex flex-col justify-start lg:justify-center transition-all duration-600 ease-out ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-0'} pt-8 sm:pt-10 px-4 sm:px-8 lg:pl-12 xl:pl-16 lg:pr-8 lg:py-10`}
+              className={`min-w-0 flex flex-col justify-start lg:justify-center transition-all duration-600 ease-out ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-0'} pt-2 sm:pt-3 px-4 sm:px-8 lg:pl-12 xl:pl-16 lg:pr-8 lg:pt-4 lg:pb-10`}
             >
-              <div className="flex items-center gap-3 mb-3 self-start">
-                <img
-                  src={logoBraini}
-                  alt="Braini Emotions"
-                  className="w-10 h-10 object-contain"
-                />
-                <div className="flex flex-col">
-                  <span className="text-gray-900 font-black leading-none text-2xl" style={{ fontWeight: 800 }}>
-                    Braini Emotions
-                  </span>
-                </div>
-              </div>
+              <img
+                src={logoBraini}
+                alt="Braini Emotions"
+                className="block h-24 w-auto sm:h-28 lg:h-32 xl:h-36 object-contain m-0 p-0 self-start"
+              />
+              <h1
+                className="mt-1 sm:mt-1.5 text-2xl min-[380px]:text-3xl sm:text-4xl lg:text-[2.35rem] xl:text-5xl font-black text-gray-900 leading-tight"
+                style={{ fontWeight: 900 }}
+              >
+                Convierta su centro como
+                <br />
+                referente en Neurobienestar Emocional Educativo.
+              </h1>
 
-              <div className="flex-1 flex flex-col justify-center">
-                <h1
-                  className="text-2xl min-[380px]:text-3xl sm:text-4xl lg:text-[2.35rem] xl:text-5xl font-black text-gray-900 leading-tight"
-                  style={{ fontWeight: 900 }}
-                >
-                  Convierta su centro como
-                  <br />
-                  referente en Neurobienestar Emocional Educativo.
-                </h1>
-
-                <p className="text-gray-800 text-base sm:text-lg leading-relaxed mt-5" style={{ fontWeight: 600 }}>
+              <div className="mt-5 sm:mt-6">
+                <p className="text-gray-800 text-base sm:text-lg leading-relaxed" style={{ fontWeight: 600 }}>
                   El modelo estructurado que los centros educativos están adoptando para afrontar los nuevos retos emocionales en el aula.
                 </p>
 
@@ -692,7 +687,11 @@ const LandingPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start min-w-0">
             <div>
               <div className="flex items-center mb-3">
-                <img src={logoBraini} alt="Braini Emotions" className="w-9 h-9 object-contain" />
+                <img
+                  src={logoBraini}
+                  alt="Braini Emotions"
+                  className="h-11 w-auto sm:h-12 md:h-14 object-contain m-0 p-0"
+                />
                 <h3 className="text-lg sm:text-xl font-bold text-white ml-3" style={{ fontWeight: 800 }}>
                   Braini Emotions
                 </h3>

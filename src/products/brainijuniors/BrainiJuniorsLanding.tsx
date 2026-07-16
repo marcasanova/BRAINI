@@ -3,7 +3,7 @@ import { Button } from '@/shared/ui/button';
 import NavbarLandings from '@/shared/components/navigation/NavbarLandings';
 
 // Rutas de assets públicos
-const logoBraini = '/logo/logoBraini.png';
+const logoBrainiJunior = '/logo/LogoBrainiJunior.png';
 
 const BrainiJuniorsLanding = () => {
   const handleAccessMoodle = () => {
@@ -13,16 +13,16 @@ const BrainiJuniorsLanding = () => {
 
   return (
     <div 
-      className="min-h-screen bg-white font-montserrat relative overflow-hidden"
+      className="min-h-screen bg-white font-montserrat relative overflow-x-hidden"
       role="main"
       aria-label="Landing page de Braini Juniors"
     >
       {/* Header con Navegación */}
-      <NavbarLandings currentPage="juniors" />
+      <NavbarLandings />
       
       {/* Hero Section */}
       <section 
-        className="relative min-h-screen flex items-center justify-center px-3 sm:px-4 pt-20 sm:pt-24 md:pt-28 py-6 sm:py-8"
+        className="relative min-h-screen flex items-center justify-center px-3 sm:px-4 pt-16 sm:pt-[4.5rem] py-6 sm:py-8"
         style={{
           background: '#35bdb1'
         }}
@@ -36,14 +36,14 @@ const BrainiJuniorsLanding = () => {
         <div className="w-full max-w-7xl mx-auto relative z-10">
           {/* Contenido Principal */}
           <div className="text-center mb-6 sm:mb-8 md:mb-12">
-            <div className="w-14 h-14 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 mx-auto mb-3 sm:mb-4 md:mb-6 flex items-center justify-center">
-              <img 
-                src={logoBraini}
-                alt="Braini Emotions Logo" 
-                className="w-14 h-14 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 object-contain"
+            <div className="mx-auto mb-1 sm:mb-1.5 flex items-center justify-center px-2">
+              <img
+                src={logoBrainiJunior}
+                alt="Braini Juniors"
+                className="w-[min(100%,18rem)] sm:w-[22rem] md:w-[26rem] lg:w-[30rem] h-auto object-contain"
               />
             </div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-white mb-2 sm:mb-3 md:mb-4 px-2" style={{ fontWeight: 900 }}>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-white mb-2 sm:mb-3 px-2" style={{ fontWeight: 900 }}>
               Braini Juniors
             </h1>
             <h2 className="text-white text-xl sm:text-2xl md:text-3xl lg:text-4xl mb-2 sm:mb-3 px-3 sm:px-4" style={{ fontWeight: 700 }}>

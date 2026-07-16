@@ -6,7 +6,7 @@ import { EMOTIONS_INFANTIL_URL } from '@/shared/lib/constants/emotionsStorage';
 import { CONTACT_EMAIL } from '@/shared/lib/constants/contact';
 
 // Rutas de assets públicos (archivos en public/)
-const logoBraini = '/logo/logoBraini.png';
+const logoBrainiFamily = '/logo/LogoBrainiFamilyBlanco.png';
 const logoBrainiEnfadado = '/logo/LogoBrainiEnfadado.png';
 
 // Avatares
@@ -118,16 +118,16 @@ const BrainiFamilyLanding = () => {
 
   return (
     <main 
-      className="min-h-screen bg-white font-montserrat relative overflow-hidden transition-colors duration-300"
+      className="min-h-screen bg-white font-montserrat relative overflow-x-hidden transition-colors duration-300"
       role="main"
       aria-label="Landing page de Braini Family"
     >
       {/* Header con Navegación */}
-      <NavbarLandings currentPage="family" />
+      <NavbarLandings />
 
       {/* Hero Section */}
       <section 
-        className="relative min-h-screen flex items-center justify-center px-3 sm:px-4 pt-20 sm:pt-24 md:pt-28 py-6 sm:py-8"
+        className="relative min-h-screen flex items-center justify-center px-3 sm:px-4 pt-16 sm:pt-[4.5rem] py-6 sm:py-8"
         style={{
           background: '#7ea4df'
         }}
@@ -144,15 +144,15 @@ const BrainiFamilyLanding = () => {
         }`}>
           
           {/* Header Principal */}
-          <header className="text-center mb-6 sm:mb-8 md:mb-10 relative z-10">
-            <div className="w-14 h-14 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 mx-auto mb-3 sm:mb-4 md:mb-6 flex items-center justify-center">
+          <header className="text-center mb-5 sm:mb-7 md:mb-9 relative z-10">
+            <div className="mx-auto mb-1 sm:mb-1.5 flex items-center justify-center px-2">
               <img 
-                src={logoBraini}
-                alt="Braini Emotions Logo" 
-                className="w-14 h-14 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 object-contain"
+                src={logoBrainiFamily}
+                alt="Braini Family" 
+                className="w-[min(100%,18rem)] sm:w-[22rem] md:w-[26rem] lg:w-[30rem] h-auto object-contain"
               />
             </div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-white mb-2 sm:mb-3 md:mb-4 px-2" style={{ fontWeight: 900 }}>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-white mb-2 sm:mb-3 px-2" style={{ fontWeight: 900 }}>
               Braini Emotions Family
             </h1>
             <h2 className="text-white text-xl sm:text-2xl md:text-3xl lg:text-4xl mb-2 sm:mb-3 px-3 sm:px-4" style={{ fontWeight: 700 }}>
@@ -450,11 +450,11 @@ const BrainiFamilyLanding = () => {
               transitionDelay: benefitsVisible ? '0ms' : '0ms'
             }}>
               <div className="flex flex-col sm:flex-row items-center sm:items-start mb-4 sm:mb-6 md:mb-8">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 mb-2 sm:mb-0 sm:mr-3 md:mr-4 flex items-center justify-center">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 mb-2 sm:mb-0 sm:mr-3 md:mr-4 flex items-center justify-center">
                   <img 
-                    src={logoBraini}
+                    src={logoBrainiFamily}
                     alt="Braini Emotions Logo" 
-                    className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 object-contain"
+                    className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 object-contain"
                   />
                 </div>
                 <div className="text-center sm:text-left">
@@ -584,9 +584,9 @@ const BrainiFamilyLanding = () => {
             <div>
               <div className="flex items-center mb-3 sm:mb-4">
                 <img 
-                  src={logoBraini}
+                  src={logoBrainiFamily}
                   alt="Braini Emotions Logo" 
-                  className="w-7 h-7 sm:w-8 sm:h-8 object-contain mr-2 sm:mr-3"
+                  className="w-14 h-14 sm:w-16 sm:h-16 object-contain mr-2 sm:mr-3"
                 />
                 <h3 className="text-base sm:text-lg font-bold text-white" style={{ fontWeight: 700 }}>
                   Braini Emotions
