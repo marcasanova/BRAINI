@@ -26,8 +26,8 @@ BRAINI es una **plataforma multi-producto** de neurobienestar e inteligencia emo
 | Producto | Ruta | Función |
 |----------|------|---------|
 | **Hub** | `/` | Punto de entrada; presenta las líneas de producto |
-| **Braini Kids** | `/brainikids` | Landing informativa (línea infantil) |
-| **Braini Juniors** | `/brainijuniors` | Landing informativa (línea junior) |
+| **Braini Kids** | `/brainikids` | Placeholder «en desarrollo» (línea infantil) |
+| **Braini Juniors** | `/brainijuniors` | Placeholder «en desarrollo» (línea junior) |
 | **BrainiFamily** | `/brainifamily/*` | App B2B operativa — núcleo del sistema |
 
 El **núcleo transaccional** es BrainiFamily:

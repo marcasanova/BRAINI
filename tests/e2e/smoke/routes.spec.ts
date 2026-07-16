@@ -14,11 +14,13 @@ test.describe("Smoke — rutas públicas", () => {
   test("landing Braini Kids carga", async ({ page }) => {
     await page.goto("/brainikids");
     await expect(page.locator("body")).toBeVisible();
+    await expect(page.locator("body")).toContainText(/en desarrollo|próximamente/i);
   });
 
   test("landing Braini Juniors carga", async ({ page }) => {
     await page.goto("/brainijuniors");
     await expect(page.locator("body")).toBeVisible();
+    await expect(page.locator("body")).toContainText(/en desarrollo|próximamente/i);
   });
 
   test("ruta desconocida muestra 404", async ({ page }) => {

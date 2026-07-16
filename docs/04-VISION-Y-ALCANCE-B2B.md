@@ -17,7 +17,7 @@ El núcleo operativo es **BrainiFamily** (`/brainifamily/*`):
 - Paneles de **super admin**, **director** y **teacher** para gestión del centro.
 - Experiencia de **padre/tutor** para consumo del programa y seguimiento del progreso del menor.
 
-Las landings **Braini Kids** y **Braini Juniors** son líneas informativas sin lógica transaccional.
+Las landings **Braini Kids** y **Braini Juniors** son placeholders «en desarrollo» (sin lógica transaccional; redirigen al hub principal).
 
 ---
 
