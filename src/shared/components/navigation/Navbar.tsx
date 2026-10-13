@@ -1,7 +1,9 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useIsMobile } from '@/shared/hooks/use-mobile';
-import { Home, BookOpen, User, Award } from 'lucide-react';
+import { Home, BookOpen, User, Award, LogOut } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { Button } from '@/shared/ui/button';
 
 const NAV_ITEMS = [
   { label: 'Panel de Juego', mobileLabel: 'Sesiones', icon: Home, path: '/brainifamily/home' },
@@ -14,6 +16,11 @@ const Navbar: React.FC = () => {
   const isMobile = useIsMobile();
   const location = useLocation();
   const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/brainifamily/login');
+  };
 
   // Función para obtener el color sólido según la ruta activa
   const getActiveColor = (path: string) => {
@@ -145,7 +152,7 @@ const Navbar: React.FC = () => {
 
   // Renderiza la sidebar izquierda para desktop/tablet
   return (
-    <aside className="hidden md:flex absolute left-0 top-0 bottom-0 w-72 bg-white border-r border-gray-200 z-50" style={{ backgroundColor: 'white' }}>
+    <aside className="hidden md:flex fixed left-0 top-0 h-screen w-72 bg-white border-r border-gray-200 z-50">
       <div className="flex flex-col w-full h-full bg-white">
         {/* Header de la sidebar */}
         <div className="flex items-center justify-center p-6 border-b border-gray-200">
@@ -190,6 +197,18 @@ const Navbar: React.FC = () => {
             );
           })}
         </nav>
+
+        <div className="p-4 border-t border-gray-200">
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full justify-center border-braini-blue/30 text-gray-700 hover:bg-braini-blue/10"
+            onClick={() => void handleLogout()}
+          >
+            <LogOut className="w-4 h-4 mr-2" />
+            Cerrar sesión
+          </Button>
+        </div>
       </div>
     </aside>
   );

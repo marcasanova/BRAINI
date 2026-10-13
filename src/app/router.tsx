@@ -10,7 +10,7 @@ import {
   useNavigate,
 } from "react-router";
 import { useEffect } from "react";
-import RouteLoading from "./RouteLoading";
+import RouteLoading, { RouteChunkErrorBoundary } from "./RouteLoading";
 import { CurrentChildProvider } from "@/products/brainifamily/contexts/CurrentChildContext";
 import { TeacherProvider } from "@/products/brainifamily/contexts/TeacherContext";
 import ProtectedRoute from "@/shared/components/navigation/ProtectedRoute";
@@ -45,7 +45,9 @@ const CompleteParentInvite = lazy(() => import("@/products/brainifamily/pages/in
 const CompleteDirectorInvite = lazy(() => import("@/products/brainifamily/pages/invite/CompleteDirectorInvite"));
 
 const withSuspense = (element: React.ReactNode) => (
-  <Suspense fallback={<RouteLoading />}>{element}</Suspense>
+  <RouteChunkErrorBoundary>
+    <Suspense fallback={<RouteLoading />}>{element}</Suspense>
+  </RouteChunkErrorBoundary>
 );
 
 const MissionRedirect = () => {

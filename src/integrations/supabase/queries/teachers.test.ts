@@ -13,6 +13,7 @@ describe('teachers queries', () => {
           nombre: 'Ana',
           school_id: 'school-1',
           active: true,
+          avatar_id: 'oliva',
           created_at: '2026-01-01',
           updated_at: '2026-01-01',
         }),
@@ -29,14 +30,20 @@ describe('teachers queries', () => {
         ]),
       ),
       http.get('*/rest/v1/children*', () =>
-        HttpResponse.json([{ class_id: 'class-1' }, { class_id: 'class-1' }]),
+        HttpResponse.json([
+          { class_id: 'class-1', parent_id: 'parent-1' },
+          { class_id: 'class-1', parent_id: null },
+        ]),
       ),
     );
 
     const teacher = await fetchTeacherByUserId('teacher-1');
     expect(teacher?.nombre).toBe('Ana');
+    expect(teacher?.avatar_id).toBe('oliva');
     expect(teacher?.classList).toHaveLength(1);
     expect(teacher?.classStudentCounts['class-1']).toBe(2);
+    expect(teacher?.familiesTotal).toBe(1);
+    expect(teacher?.childrenWithoutFamily).toBe(1);
   });
 
   it('devuelve null si no hay fila de maestro', async () => {

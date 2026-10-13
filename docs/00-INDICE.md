@@ -10,7 +10,9 @@
 
 Esta carpeta es la **fuente de verdad** para entender BRAINI: el problema que resuelve, qué debe hacer el software, cómo está montado técnicamente y en qué estado se encuentra hoy. Está pensada para que un desarrollador nuevo pueda leer los documentos **en orden** y llegar a contribuir con contexto completo.
 
-El único `README.md` del repositorio está en la [raíz del proyecto](../README.md) (GitHub). Este archivo es la puerta de entrada a `docs/`.
+El único `README.md` del repositorio está en la [raíz del proyecto](../README.md) (GitHub). Cubre los requisitos de documentación del TFM (descripción, stack, instalación, estructura, funcionalidades y credenciales de prueba) y enlaza a esta carpeta para el detalle técnico. Este archivo es la puerta de entrada a `docs/`.
+
+Para agentes de código (Cursor y compatibles): ver [`AGENTS.md`](../AGENTS.md) en la raíz del repo (constitución, comandos, gotchas). Rules y skills viven en `.cursor/`.
 
 ---
 

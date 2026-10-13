@@ -1,0 +1,31 @@
+---
+description: Convenciones de BrainiFamily (rutas, guards, paneles y app padre)
+globs: src/products/brainifamily/**,src/app/router.tsx,src/shared/components/navigation/**
+alwaysApply: false
+---
+
+# BrainiFamily app
+
+## Rutas
+
+- Login único: `/brainifamily/login`.
+- Paneles: `/brainifamily/admin` · `/brainifamily/director` · `/brainifamily/teacher` · `/brainifamily/home` (padre).
+- Invites: `/brainifamily/invite/{director,teacher,parent}`.
+- Redirects legacy (`/login`, `/home`, `/signup`, …) → `/brainifamily/*` en `@src/app/router.tsx`.
+
+## Guards
+
+- `@src/shared/components/navigation/AdminRoute.tsx`
+- `@src/shared/components/navigation/DirectorRoute.tsx`
+- `@src/shared/components/navigation/TeacherRoute.tsx`
+- `@src/shared/components/navigation/ProtectedRoute.tsx` (padre / app autenticada)
+
+Tras login, enrutar por rol (`get_my_role()`): super_admin → admin; director → director; teacher → teacher; parent → onboarding o home.
+
+## Dominio UI
+
+- Invite-only: no formularios de signup ni waitlist.
+- El menor no tiene cuenta; progreso vía padre (`CurrentChildProvider`).
+- Catálogo pedagógico (`missions` / `activities` / `medals`): solo lectura en la app.
+- Teacher/director: progreso en solo lectura; escritura de progreso = padre.
+- Landings Kids/Juniors son placeholders; no construir producto ahí sin petición explícita.

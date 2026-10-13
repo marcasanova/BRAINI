@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router';
 import NavbarLandings from '@/shared/components/navigation/NavbarLandings';
 import { EMOTIONS_INFANTIL_URL } from '@/shared/lib/constants/emotionsStorage';
 import { CONTACT_EMAIL } from '@/shared/lib/constants/contact';
+import { PrivacyPolicyLink } from '@/shared/components/PrivacyPolicyLink';
 
 // Rutas de assets públicos (archivos en public/)
 const logoBrainiFamily = '/logo/LogoBrainiFamilyBlanco.png';
@@ -665,10 +666,12 @@ const BrainiFamilyLanding = () => {
             </div>
           </div>
 
-          {/* Línea separadora y Copyright */}
-          <div className="border-t border-white/20 pt-4 sm:pt-6">
+          <div className="border-t border-white/20 pt-4 sm:pt-6 space-y-2">
+            <p className="text-white/90 text-[10px] sm:text-xs text-center">
+              <PrivacyPolicyLink className="underline hover:text-white" />
+            </p>
             <p className="text-white/80 text-[10px] sm:text-xs text-center">
-              © 2025 Braini Emotions. Todos los derechos reservados.
+              © 2025–{new Date().getFullYear()} Braini Emotions. Todos los derechos reservados.
             </p>
           </div>
         </div>

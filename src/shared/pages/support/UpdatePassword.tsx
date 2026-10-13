@@ -40,7 +40,7 @@ const UpdatePassword = () => {
     const type = hashParams.get('type');
     
     // Función para procesar la sesión
-    const processSession = async (session: any) => {
+    const processSession = async (session: Session | null) => {
       if (!mounted || sessionProcessed) return;
       
       if (session) {

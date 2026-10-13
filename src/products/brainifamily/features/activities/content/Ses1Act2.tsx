@@ -141,10 +141,14 @@ const Ses1Act2: React.FC<Ses1Act2Props> = ({
   // Función para completar paso (para el video al terminar el tiempo)
   const handleStepComplete = useCallback(() => {
     if (currentStep === 'alternate') {
-      videoGiganteRef.current?.pause();
-      videoGiganteRef.current && (videoGiganteRef.current.currentTime = 0);
-      videoRatonRef.current?.pause();
-      videoRatonRef.current && (videoRatonRef.current.currentTime = 0);
+      if (videoGiganteRef.current) {
+        videoGiganteRef.current.pause();
+        videoGiganteRef.current.currentTime = 0;
+      }
+      if (videoRatonRef.current) {
+        videoRatonRef.current.pause();
+        videoRatonRef.current.currentTime = 0;
+      }
     } else {
       const video = videoRef.current;
       if (video) {

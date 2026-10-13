@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/shared/ui/button';
 import { ArrowRight, Users, GraduationCap, Heart } from 'lucide-react';
-import { CONTACT_EMAIL, CTA_REUNION_MAILTO } from '@/shared/lib/constants/contact';
 import NavbarLandings from '@/shared/components/navigation/NavbarLandings';
+import { CONTACT_EMAIL, CTA_REUNION_MAILTO } from '@/shared/lib/constants/contact';
+import { PrivacyPolicyLink } from '@/shared/components/PrivacyPolicyLink';
 
 // Rutas de assets públicos
 const logoBraini = '/logo/LogoNuevo.png';
@@ -744,9 +745,12 @@ const LandingPage = () => {
             </div>
           </div>
 
-          <div className="border-t border-white/20 pt-6 mt-10">
+          <div className="border-t border-white/20 pt-6 mt-10 space-y-2">
+            <p className="text-white/90 text-xs text-center">
+              <PrivacyPolicyLink className="underline hover:text-white" />
+            </p>
             <p className="text-white/80 text-xs text-center">
-              © 2025 Braini Emotions. Todos los derechos reservados.
+              © 2025–{new Date().getFullYear()} Braini Emotions. Todos los derechos reservados.
             </p>
           </div>
         </div>

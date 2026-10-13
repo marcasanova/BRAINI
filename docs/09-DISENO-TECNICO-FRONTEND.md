@@ -116,7 +116,6 @@ Post-login: `integrations/supabase/rpc/roles.ts` → `getMyRole()` → redirecci
 ```
 integrations/supabase/
 ├── client.ts              # createClient(VITE_*)
-├── types/database.types.ts
 ├── queries/               # Lecturas PostgREST + React Query
 │   ├── children.ts
 │   ├── missions.ts

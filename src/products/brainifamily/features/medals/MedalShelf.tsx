@@ -28,9 +28,9 @@ const MedalShelf: React.FC<MedalShelfProps> = ({ userMedals, totalMedals, isLoad
         {/* Sección izquierda - Icono y número */}
         <div className="flex items-center gap-2">
           <div className="w-12 h-12 md:w-14 md:h-14 bg-white rounded-lg flex items-center justify-center shadow-xs overflow-hidden border border-gray-200">
-            <img 
-              src={medalImage} 
-              alt="Medalla Braini" 
+            <img
+              src={medalImage}
+              alt="Medalla Braini"
               className="w-full h-full object-cover"
             />
           </div>
@@ -57,7 +57,7 @@ const MedalShelf: React.FC<MedalShelfProps> = ({ userMedals, totalMedals, isLoad
       {/* Barra de progreso compacta */}
       <div className="mt-2">
         <div className="flex-1 h-1.5 bg-gray-200 rounded-full overflow-hidden">
-          <div 
+          <div
             className="h-full bg-braini-blue rounded-full transition-all duration-500 ease-out"
             style={{ width: `${progressPercentage}%` }}
           />

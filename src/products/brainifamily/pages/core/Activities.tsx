@@ -161,13 +161,9 @@ const Activities: React.FC = () => {
   return (
     <Backgrounds 
       wrapWithCard={true} 
-      enableInternalScroll={true}
       customColor="#7ea4df"
       showCircles={true}
     >
-      <div className="h-full flex flex-col relative z-10">
-        <div className="container mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-6 flex-1 flex flex-col min-h-0">
-          <div className="max-w-5xl mx-auto w-full flex flex-col min-h-0">
             {/* Header fijo - No hace scroll */}
             <div className="mb-4 md:mb-6 animate-fade-in shrink-0 space-y-4">
               {/* Navegación entre sesiones - Arriba del todo */}
@@ -208,7 +204,7 @@ const Activities: React.FC = () => {
             </div>
 
             {/* Área de contenido con scroll */}
-            <div className="flex-1 overflow-y-auto min-h-0">
+            <div>
               {loading || missionsLoading || activitiesLoading ? (
                 <div className="text-center text-white/90 py-8 font-medium">Cargando misión...</div>
               ) : error || activitiesError ? (
@@ -235,9 +231,6 @@ const Activities: React.FC = () => {
                 </div>
               )}
             </div>
-          </div>
-        </div>
-      </div>
 
       {/* Animación de medalla */}
       {earnedMedal && (

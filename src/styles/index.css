@@ -352,7 +352,6 @@
   html {
     @apply bg-gray-50;
     overflow-x: hidden;
-    scrollbar-gutter: stable;
     scroll-padding-top: 4rem;
   }
 
@@ -365,6 +364,35 @@
   body {
     @apply bg-gray-50 text-foreground;
     overflow-x: hidden;
+  }
+
+  a[href],
+  button:not(:disabled):not([aria-disabled='true']),
+  [role='button']:not([aria-disabled='true']),
+  [role='link'],
+  [role='tab']:not([aria-disabled='true']),
+  [role='menuitem'],
+  [role='option'],
+  [role='checkbox']:not([aria-disabled='true']),
+  [role='radio']:not([aria-disabled='true']),
+  [role='switch']:not([aria-disabled='true']),
+  [role='combobox']:not([aria-disabled='true']),
+  summary,
+  label[for],
+  select:not(:disabled),
+  input[type='button']:not(:disabled),
+  input[type='submit']:not(:disabled),
+  input[type='reset']:not(:disabled),
+  input[type='checkbox']:not(:disabled),
+  input[type='radio']:not(:disabled),
+  input[type='file']:not(:disabled),
+  ::file-selector-button {
+    cursor: pointer;
+  }
+
+  :disabled,
+  [aria-disabled='true'] {
+    cursor: not-allowed;
   }
 
   #root {

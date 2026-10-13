@@ -59,7 +59,8 @@ const ChildProfile = () => {
           .from('children')
           .select('id, nombre, apellidos, genero, fecha_nacimiento, nivel_educativo, profile_completed')
           .eq('parent_id', user.id)
-          .order('created_at', { ascending: true });
+          .order('nombre', { ascending: true })
+          .order('apellidos', { ascending: true });
         
         if (childrenError) throw childrenError;
         const list = (childrenData ?? []) as typeof childrenList;
@@ -95,8 +96,8 @@ const ChildProfile = () => {
           setEditingChildId(null);
           setForm({ nombre: '', apellidos: '', genero: '', fecha_nacimiento: '', nivel_educativo: '' });
         }
-      } catch (err: any) {
-        setError(err.message || 'Error al comprobar los datos.');
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : 'Error al comprobar los datos.');
       } finally {
         setLoading(false);
       }
@@ -233,7 +234,8 @@ const ChildProfile = () => {
           .from('children')
           .select('id, nombre, apellidos, genero, fecha_nacimiento, nivel_educativo, profile_completed')
           .eq('parent_id', user.id)
-          .order('created_at', { ascending: true });
+          .order('nombre', { ascending: true })
+          .order('apellidos', { ascending: true });
         setChildrenList((newList ?? []) as typeof childrenList);
         const nextIncomplete = (newList ?? []).find((c: { profile_completed: boolean }) => !c.profile_completed);
         if (nextIncomplete) {
@@ -247,7 +249,7 @@ const ChildProfile = () => {
           });
         }
       }
-    } catch (err: any) {
+    } catch {
       // Error ya manejado arriba
     } finally {
       setIsSubmitting(false);

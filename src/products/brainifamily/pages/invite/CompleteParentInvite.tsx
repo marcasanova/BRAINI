@@ -19,6 +19,7 @@ import { useToast } from '@/shared/hooks/use-toast';
 import { inviteErrorDescription, inviteErrorTitle } from '@/integrations/supabase/lib/inviteErrors';
 import { navigateParentAfterLogin } from '@/products/brainifamily/lib/parentPostLogin';
 import { Eye, EyeOff, Heart, Info, LogOut, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { PrivacyPolicyConsent } from '@/shared/components/PrivacyPolicyLink';
 
 type ParentPreview = {
   email: string;
@@ -39,6 +40,7 @@ const CompleteParentInvite: React.FC = () => {
   const [nombre, setNombre] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [previewLoading, setPreviewLoading] = useState(false);
   const [inviteInfo, setInviteInfo] = useState<ParentPreview | null>(null);
@@ -244,6 +246,15 @@ const CompleteParentInvite: React.FC = () => {
         title: 'Correo distinto al de la invitación',
         description:
           'Estás conectado/a con otro correo. Cierra sesión abajo o usa el navegador en modo privado con el correo de la invitación.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (!acceptedPrivacy) {
+      toast({
+        title: 'Política de privacidad',
+        description: 'Debes leer y aceptar la Política de privacidad para continuar.',
         variant: 'destructive',
       });
       return;
@@ -589,10 +600,15 @@ const CompleteParentInvite: React.FC = () => {
                   </Dialog>
                 </div>
               </div>
+              <PrivacyPolicyConsent
+                id="parent-privacy-consent"
+                checked={acceptedPrivacy}
+                onCheckedChange={setAcceptedPrivacy}
+              />
               <Button
                 type="submit"
                 className="w-full bg-braini-pink hover:bg-braini-pink-dark text-white"
-                disabled={submitting || sessionConflictsInvite}
+                disabled={submitting || sessionConflictsInvite || !acceptedPrivacy}
               >
                 {submitting ? 'Procesando…' : isExistingParent ? 'Añadir hijo/a' : 'Completar invitación'}
               </Button>

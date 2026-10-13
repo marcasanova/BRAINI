@@ -1,0 +1,29 @@
+# NOTICE — Braini Emotions
+
+## Titular
+
+- **Organización:** Genius Minds School  
+- **Producto:** Braini Emotions / BrainiFamily  
+- **Contacto:** info@brainiemotions.com  
+
+## Propiedad intelectual
+
+El código de este repositorio se publica en modo *source-available* para la
+evaluación académica del Trabajo de Fin de Máster (TFM). Todos los derechos
+están reservados. Ver el fichero [LICENSE](LICENSE).
+
+## Protección de datos
+
+La Política de Privacidad y Protección de Datos aplicable a las familias
+usuarias de Braini Emotions Family está publicada como PDF en el almacenamiento
+de la plataforma:
+
+https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/documentos/POLITICA%20DE%20PRIVACIDAD%20Y%20PROTECCION%20DE%20DATOS.pdf
+
+## Secretos y claves
+
+- Las variables `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY` son claves de
+  cliente (públicas por diseño en una SPA). La autorización real se aplica con
+  RLS, RPC y Edge Functions en Supabase.
+- La clave `service_role` **nunca** debe estar en este repositorio ni en el
+  frontend. Solo se configura en el dashboard de Supabase para Edge Functions.

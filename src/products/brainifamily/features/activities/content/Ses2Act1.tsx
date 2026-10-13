@@ -343,7 +343,7 @@ const Ses2Act1: React.FC<Ses2Act1Props> = ({
                       const answered = isAnswered();
 
                       // Usar los mismos colores que Ses1Act1 para consistencia
-                      let buttonClass = `
+                      const buttonClass = `
                         relative p-4 rounded-xl border-2 transition-all duration-200 text-lg font-semibold
                         ${answered
                           ? correct

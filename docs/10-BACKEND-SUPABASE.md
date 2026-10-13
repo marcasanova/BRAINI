@@ -37,7 +37,7 @@ Ubicación: `src/integrations/supabase/client.ts`
 createClient(VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY)
 ```
 
-Tipos generados en `types/database.types.ts`. Queries encapsuladas en `queries/`, RPC en `rpc/`, llamadas Edge en `edge/invites.ts`.
+Queries encapsuladas en `queries/`, RPC en `rpc/`, llamadas Edge en `edge/invites.ts`. El esquema no se tipa con un dump generado: la verdad de tablas/RLS/RPC es el remoto (MCP).
 
 ---
 
@@ -66,7 +66,7 @@ Tipos generados en `types/database.types.ts`. Queries encapsuladas en `queries/`
 | `complete-teacher-invite` | v2 | `false` | ACTIVE |
 | `complete-parent-invite` | v5 | `false` | ACTIVE |
 
-Código fuente en `supabase/functions/<nombre>/index.ts`.
+Código fuente en `supabase/functions/<nombre>/index.ts`. El remoto ejecuta la última versión **desplegada**. Tras editar el repo, hay que publicar de nuevo la función en el dashboard de Supabase (pegar el `index.ts` o desplegar). No se usa la CLI de Supabase en el flujo diario.
 
 ### Flujo común (director / teacher)
 
@@ -176,7 +176,7 @@ Acceso desde cliente con anon key; políticas de Storage en Supabase dashboard.
 
 | Gap | Detalle | Doc |
 |-----|---------|-----|
-| Migraciones en repo | No hay `supabase/migrations/` versionadas | [13-ESTADO-ACTUAL](13-ESTADO-ACTUAL.md) |
+| Esquema en git | Decisión: no hay `supabase/migrations/`; SQL en dashboard + MCP | [13-ESTADO-ACTUAL](13-ESTADO-ACTUAL.md) |
 | `GRANT EXECUTE` amplio | Advisors sugieren restringir RPC sensibles | Este doc §7 |
 | Emails automáticos | Fuera de alcance v2.0; enlace manual | [04-VISION](04-VISION-Y-ALCANCE-B2B.md) |
 

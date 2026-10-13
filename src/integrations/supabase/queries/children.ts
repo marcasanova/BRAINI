@@ -1,5 +1,6 @@
 import { supabase } from '@/integrations/supabase/client';
 import { unwrapRelation } from './lib';
+import { sortChildrenByName } from '@/products/brainifamily/lib/sortChildrenByName';
 
 export const childrenKeys = {
   all: ['children'] as const,
@@ -66,10 +67,11 @@ export async function fetchChildrenByParentId(parentId: string): Promise<ChildRe
     .from('children')
     .select(CHILD_SELECT)
     .eq('parent_id', parentId)
-    .order('created_at', { ascending: true });
+    .order('nombre', { ascending: true })
+    .order('apellidos', { ascending: true });
 
   if (error) throw error;
-  return ((data ?? []) as ChildRow[]).map(mapChildRow);
+  return sortChildrenByName(((data ?? []) as ChildRow[]).map(mapChildRow));
 }
 
 export async function fetchFirstChildByParentId(parentId: string): Promise<ChildRecord | null> {
@@ -77,7 +79,8 @@ export async function fetchFirstChildByParentId(parentId: string): Promise<Child
     .from('children')
     .select(CHILD_SELECT)
     .eq('parent_id', parentId)
-    .order('created_at', { ascending: true })
+    .order('nombre', { ascending: true })
+    .order('apellidos', { ascending: true })
     .limit(1)
     .maybeSingle();
 

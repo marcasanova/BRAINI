@@ -69,6 +69,7 @@ Equipo directivo; **varios registros por centro** permitidos.
 | `school_id` | uuid FK NOT NULL | |
 | `email`, `nombre` | text | `nombre` NOT NULL |
 | `active` | boolean | |
+| `avatar_id` | text nullable | Personaje de perfil del docente. CHECK: `oliva`, `bruno`, `nara`, `teo`, `ines`, `sam`, `lina`, `omar`. El teacher puede cambiarlo en el panel. PNG en `/avatars/teachers/{id}.png`. |
 
 ### `classes`
 
@@ -117,6 +118,7 @@ Clases creadas por teachers; nombre único por teacher.
 | `fecha_nacimiento` | date | Padre obligatorio en onboarding |
 | `profile_completed` | boolean | default `false` |
 | `active` | boolean | |
+| `avatar_id` | text nullable | Personaje de perfil. CHECK: `zorro`, `buho`, `panda`, `gato`, `perro`, `conejo`, `oso`, `leon`, `pinguino`, `koala`. El teacher lo asigna al azar al alta; el padre puede cambiarlo. PNG en `/avatars/children/{id}.png`. |
 
 **Sin** columna `centro_escolar` texto; el centro se muestra vía `school_id` → `schools.name`.
 
@@ -269,6 +271,6 @@ Detalle de invocación en [10-BACKEND-SUPABASE](10-BACKEND-SUPABASE.md).
 
 ---
 
-## 13. Gap documentado
+## 13. Dónde vive el esquema
 
-Las **migraciones SQL** no están versionadas en el repositorio (`supabase/migrations/` vacío o ausente). El esquema descrito refleja el **remoto**; ver [13-ESTADO-ACTUAL](13-ESTADO-ACTUAL.md).
+El esquema **no** se versiona en git (decisión: sin `supabase/migrations/`). Se consulta en vivo vía MCP y se modifica en el dashboard de Supabase. Este documento es un snapshot; si hay duda, **gana el remoto**. Ver [13-ESTADO-ACTUAL](13-ESTADO-ACTUAL.md).

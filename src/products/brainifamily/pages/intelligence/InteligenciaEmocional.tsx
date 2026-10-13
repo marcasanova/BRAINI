@@ -19,13 +19,9 @@ const InteligenciaEmocional = () => {
   return (
     <Backgrounds 
       wrapWithCard={true}
-      enableInternalScroll={true}
       customColor="#f8cd50"
       showCircles={true}
     >
-      <div className="h-full flex flex-col relative z-10">
-        <div className="container mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-6 flex-1 flex flex-col min-h-0">
-          <div className="max-w-6xl mx-auto w-full flex flex-col min-h-0">
             {/* Header Principal - Fijo en la parte superior */}
             <div className="mb-4 sm:mb-5 md:mb-6 animate-fade-in shrink-0">
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-1 sm:mb-2" style={{ fontWeight: 900 }}>
@@ -37,7 +33,7 @@ const InteligenciaEmocional = () => {
             </div>
 
           {/* Área de contenido con scroll */}
-          <div className="flex-1 overflow-y-auto min-h-0">
+          <div>
             {/* Sección de Credibilidad - Primero */}
             <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0 animate-fade-in mb-6 sm:mb-8" style={{ animationDelay: '0.1s' }}>
               <CardContent className="p-4 sm:p-5 md:p-6">
@@ -153,9 +149,6 @@ const InteligenciaEmocional = () => {
             </Card>
             </div>
           </div>
-        </div>
-      </div>
-      </div>
     </Backgrounds>
   );
 };

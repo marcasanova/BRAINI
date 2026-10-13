@@ -12,8 +12,6 @@ import {
 } from '@/shared/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Badge } from '@/shared/ui/badge';
-import { ScrollArea } from '@/shared/ui/scroll-area';
-import { Separator } from '@/shared/ui/separator';
 import { Alert, AlertDescription, AlertTitle } from '@/shared/ui/alert';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
@@ -30,17 +28,19 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/shared/hooks/use-toast';
 import { copyToClipboard } from '@/shared/lib/clipboard';
 import { createParentInviteLink } from '@/products/brainifamily/lib/teacherParentInvite';
+import { pickRandomChildAvatarId } from '@/products/brainifamily/lib/childAvatars';
 import type { TeacherChild } from '@/products/brainifamily/hooks/useTeacherChildren';
 import {
-  Users,
+  Baby,
   BookOpen,
-  GraduationCap,
-  Sparkles,
   AlertCircle,
   Plus,
   Link2,
   Mail,
 } from 'lucide-react';
+import TeacherKpiRow from './TeacherKpiRow';
+import TeacherClassCharts from './TeacherClassCharts';
+import { ADMIN_CHART_COLORS } from '../admin/adminChartPalette';
 
 type CourseRow = { id: number; nombre: string };
 type NivelEducativoValue =
@@ -205,6 +205,28 @@ const TeacherDashboard: React.FC = () => {
     ? (teacher?.classStudentCounts[selectedClassId] ?? 0)
     : 0;
 
+  const familiesTotal = teacher?.familiesTotal ?? 0;
+  const childrenWithoutFamily = teacher?.childrenWithoutFamily ?? 0;
+  const childrenWithFamily = Math.max(0, totalStudentsAllClasses - childrenWithoutFamily);
+
+  const childrenByClassShare = useMemo(
+    () =>
+      (teacher?.classList ?? [])
+        .map((cl) => ({ name: cl.name, count: teacher?.classStudentCounts[cl.id] ?? 0 }))
+        .sort((a, b) => b.count - a.count),
+    [teacher],
+  );
+
+  const volume = useMemo(
+    () => [
+      { label: 'Clases', count: totalClasses, color: ADMIN_CHART_COLORS.blue },
+      { label: 'Alumnos', count: totalStudentsAllClasses, color: ADMIN_CHART_COLORS.turquoise },
+      { label: 'Familias', count: familiesTotal, color: ADMIN_CHART_COLORS.pink },
+      { label: 'Sin familia', count: childrenWithoutFamily, color: ADMIN_CHART_COLORS.yellow },
+    ],
+    [totalClasses, totalStudentsAllClasses, familiesTotal, childrenWithoutFamily],
+  );
+
   const hasChildren = !loading && !error && children.length > 0;
 
   const handleCreateClass = async (e: React.FormEvent) => {
@@ -347,6 +369,7 @@ const TeacherDashboard: React.FC = () => {
         class_id: selectedClassId,
         parent_id: null,
         profile_completed: false,
+        avatar_id: pickRandomChildAvatarId(),
       })
       .select('id')
       .single();
@@ -460,126 +483,40 @@ const TeacherDashboard: React.FC = () => {
   if (!teacher) return null;
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-braini-blue/10 via-white to-braini-turquoise/10 p-6">
-      <div className="space-y-8 max-w-6xl mx-auto">
-        <section className="grid gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(0,1.2fr)] items-start">
-          <Card className="relative overflow-hidden border-none bg-linear-to-r from-braini-blue to-braini-turquoise text-white shadow-lg">
-            <CardHeader className="pb-4">
-              <CardTitle className="flex items-center gap-3 text-2xl">
-                <GraduationCap className="h-7 w-7" />
-                <span>
-                  Bienvenido/a,{' '}
-                  <span className="font-semibold">
-                    {teacher.nombre || 'profesor/a'}
-                  </span>
-                </span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="flex flex-col gap-4">
-              <p className="text-sm md:text-base text-blue-50/90">
-                Crea clases, registra alumnos y envía invitaciones a las familias desde este panel.
-              </p>
-              <div className="flex flex-wrap gap-3 text-xs md:text-sm">
-                <Badge
-                  variant="secondary"
-                  className="bg-white/15 text-white border-white/30 backdrop-blur-sm"
-                >
-                  {totalClasses}{' '}
-                  {totalClasses === 1 ? 'clase' : 'clases'}
-                </Badge>
-                <Badge
-                  variant="secondary"
-                  className="bg-white/15 text-white border-white/30 backdrop-blur-sm"
-                >
-                  {totalStudentsAllClasses}{' '}
-                  {totalStudentsAllClasses === 1
-                    ? 'alumno en total'
-                    : 'alumnos en total'}
-                </Badge>
-                {selectedClass && (
-                  <Badge
-                    variant="secondary"
-                    className="bg-white/15 text-white border-white/30 backdrop-blur-sm"
-                  >
-                    {studentsInSelectedClass}{' '}
-                    {studentsInSelectedClass === 1 ? 'alumno en' : 'alumnos en'}{' '}
-                    {selectedClass.name}
-                  </Badge>
-                )}
-              </div>
-            </CardContent>
-            <div className="pointer-events-none absolute inset-y-0 right-[-40px] opacity-30">
-              <div className="h-full w-40 bg-linear-to-b from-white/40 to-transparent blur-3xl" />
-            </div>
-          </Card>
+    <>
+      <div className="space-y-6">
+        <TeacherKpiRow
+          classesTotal={totalClasses}
+          selectedClassName={selectedClass?.name ?? null}
+          childrenTotal={totalStudentsAllClasses}
+          studentsInSelectedClass={studentsInSelectedClass}
+          familiesTotal={familiesTotal}
+          childrenWithoutFamily={childrenWithoutFamily}
+        />
 
-          <div className="grid w-full gap-4 sm:grid-cols-2 lg:grid-cols-1">
-            <Card className="border border-braini-blue/20 bg-white/80 backdrop-blur-sm">
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-base">
-                  <Sparkles className="h-4 w-4 text-braini-yellow" />
-                  Resumen rápido
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3 text-sm text-gray-700">
-                <p>
-                  Estás viendo{' '}
-                  <span className="font-semibold">
-                    {selectedClass?.name || 'tus clases'}
-                  </span>
-                  . Usa «Nueva clase» o «Nuevo alumno» para dar de alta datos.
-                </p>
-                <Separator className="my-2" />
-                <div className="grid grid-cols-2 gap-3 text-xs md:text-sm">
-                  <div>
-                    <p className="text-gray-500">Clases activas</p>
-                    <p className="text-lg font-semibold text-gray-900">
-                      {totalClasses || '—'}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-gray-500">Alumnos en la clase</p>
-                    <p className="text-lg font-semibold text-gray-900">
-                      {studentsInSelectedClass || '—'}
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            {error && (
-              <Alert variant="destructive">
-                <AlertCircle className="h-4 w-4" />
-                <AlertTitle>Error al cargar alumnos</AlertTitle>
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
-          </div>
-        </section>
+        {error && (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Error al cargar alumnos</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
 
-        <section className="grid gap-6 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,2fr)] items-start">
-          <Card className="bg-white/90 backdrop-blur-xs border-braini-blue/20">
-            <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-3">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <BookOpen className="w-5 h-5 text-braini-blue" />
+        <section className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
+          <Card className="bg-white/95 border-braini-blue/20 rounded-2xl shadow-sm lg:col-span-5 h-full">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-base font-bold">
+                <BookOpen className="w-5 h-5 text-braini-blue-dark" />
                 Tus clases
               </CardTitle>
-              <Button
-                type="button"
-                size="sm"
-                className="gap-1 bg-braini-blue hover:bg-braini-blue-dark text-white"
-                onClick={() => setDialogClassOpen(true)}
-              >
-                <Plus className="h-4 w-4" />
-                Nueva clase
-              </Button>
             </CardHeader>
             <CardContent className="space-y-4">
               {totalClasses === 0 ? (
-                <div className="rounded-lg border border-dashed border-gray-200 bg-gray-50/70 px-4 py-6 text-sm text-gray-700">
+                <div className="rounded-xl border border-dashed border-gray-200 bg-gray-50/70 px-4 py-6 text-sm text-gray-700">
                   <p className="font-medium text-gray-900 mb-2">Aún no tienes clases</p>
                   <p className="mb-3">
-                    Crea una clase indicando su nombre y el curso escolar. Después podrás añadir alumnos y
-                    enviar invitaciones a las familias.
+                    Crea una clase indicando su nombre y el curso escolar. Después podrás añadir alumnos e
+                    invitar a las familias.
                   </p>
                   <Button
                     type="button"
@@ -593,16 +530,8 @@ const TeacherDashboard: React.FC = () => {
                 </div>
               ) : (
                 <>
-                  <div className="space-y-1">
-                    <p className="text-sm text-gray-600">
-                      Elige una clase para ver el listado de alumnos y su seguimiento.
-                    </p>
-                  </div>
-                  <Select
-                    value={selectedClassId ?? ''}
-                    onValueChange={(v) => setSelectedClassId(v)}
-                  >
-                    <SelectTrigger className="w-full max-w-sm">
+                  <Select value={selectedClassId ?? ''} onValueChange={(v) => setSelectedClassId(v)}>
+                    <SelectTrigger className="w-full">
                       <SelectValue placeholder="Selecciona una clase" />
                     </SelectTrigger>
                     <SelectContent>
@@ -618,10 +547,8 @@ const TeacherDashboard: React.FC = () => {
                     </SelectContent>
                   </Select>
                   {selectedClass && (
-                    <div className="mt-2 rounded-lg border border-dashed border-gray-200 bg-gray-50/70 px-4 py-3 text-sm text-gray-700">
-                      <p className="font-medium text-gray-800">
-                        Clase seleccionada: {selectedClass.name}
-                      </p>
+                    <div className="rounded-xl border border-gray-100 bg-gray-50/70 px-4 py-3 text-sm text-gray-700">
+                      <p className="font-medium text-gray-800">{selectedClass.name}</p>
                       {normalizeCourseName(selectedClass.courses) && (
                         <p className="text-xs text-gray-600 mt-1">
                           Curso: {normalizeCourseName(selectedClass.courses)}
@@ -632,33 +559,22 @@ const TeacherDashboard: React.FC = () => {
                       </p>
                       <p className="text-xs text-gray-600 mt-1">
                         {studentsInSelectedClass}{' '}
-                        {studentsInSelectedClass === 1
-                          ? 'alumno asignado'
-                          : 'alumnos asignados'}{' '}
-                        a este grupo.
+                        {studentsInSelectedClass === 1 ? 'alumno asignado' : 'alumnos asignados'}
                       </p>
                     </div>
                   )}
                 </>
               )}
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white/90 backdrop-blur-xs border-braini-blue/20">
-            <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-3">
-              <div>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Users className="w-5 h-5 text-braini-blue" />
-                  Alumnado de {selectedClass?.name ?? 'la clase'}
-                </CardTitle>
-              </div>
-              <div className="flex items-center gap-2">
-                {hasChildren && (
-                  <Badge variant="outline" className="text-xs">
-                    {children.length}{' '}
-                    {children.length === 1 ? 'alumno' : 'alumnos'} en la lista
-                  </Badge>
-                )}
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  className="gap-1 bg-braini-blue hover:bg-braini-blue-dark text-white"
+                  onClick={() => setDialogClassOpen(true)}
+                >
+                  <Plus className="h-4 w-4" />
+                  Nueva clase
+                </Button>
                 <Button
                   type="button"
                   size="sm"
@@ -671,10 +587,80 @@ const TeacherDashboard: React.FC = () => {
                   Nuevo alumno
                 </Button>
               </div>
+            </CardContent>
+          </Card>
+
+          <TeacherClassCharts
+            volume={volume}
+            childrenWithFamily={childrenWithFamily}
+            childrenTotal={totalStudentsAllClasses}
+            childrenByClass={childrenByClassShare}
+          />
+        </section>
+
+        <section className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <Card className="bg-white/95 border-braini-blue/20 rounded-2xl shadow-sm">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-base font-bold">
+                <BookOpen className="w-5 h-5 text-braini-blue-dark" />
+                Clases
+              </CardTitle>
             </CardHeader>
-            <CardContent className="pt-0">
+            <CardContent>
+              {totalClasses === 0 ? (
+                <p className="text-gray-500 text-sm">Aún no hay clases registradas.</p>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="text-left text-xs uppercase tracking-wide text-gray-500 border-b border-gray-100">
+                        <th className="py-2 pr-3 font-medium">Nombre</th>
+                        <th className="py-2 pr-3 font-medium">Curso</th>
+                        <th className="py-2 pr-3 font-medium">Nivel</th>
+                        <th className="py-2 font-medium">Alumnos</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {teacher.classList.map((cls) => {
+                        const selected = cls.id === selectedClassId;
+                        return (
+                          <tr
+                            key={cls.id}
+                            className={`border-b border-gray-50 last:border-0 cursor-pointer ${
+                              selected ? 'bg-braini-blue/10' : 'hover:bg-gray-50'
+                            }`}
+                            onClick={() => setSelectedClassId(cls.id)}
+                          >
+                            <td className="py-2.5 pr-3 font-medium text-gray-900">{cls.name}</td>
+                            <td className="py-2.5 pr-3 text-xs text-gray-600">
+                              {normalizeCourseName(cls.courses) ?? '—'}
+                            </td>
+                            <td className="py-2.5 pr-3 text-xs text-gray-600">
+                              {nivelLabel(cls.nivel_educativo)}
+                            </td>
+                            <td className="py-2.5 text-xs text-gray-700">
+                              {teacher.classStudentCounts[cls.id] ?? 0}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white/95 border-braini-blue/20 rounded-2xl shadow-sm">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-base font-bold">
+                <Baby className="w-5 h-5 text-braini-turquoise-dark" />
+                Alumnado de {selectedClass?.name ?? 'la clase'}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
               {!selectedClassId && (
-                <Alert className="mb-4">
+                <Alert>
                   <AlertCircle className="h-4 w-4" />
                   <AlertTitle>Crea o selecciona una clase</AlertTitle>
                   <AlertDescription>
@@ -682,13 +668,9 @@ const TeacherDashboard: React.FC = () => {
                   </AlertDescription>
                 </Alert>
               )}
-              {loading && (
-                <div className="py-8 text-center text-gray-500">
-                  Cargando alumnos...
-                </div>
-              )}
+              {loading && <p className="text-sm text-gray-500">Cargando alumnos...</p>}
               {!loading && !error && selectedClassId && children.length === 0 && (
-                <div className="py-8 text-center text-gray-600 space-y-3">
+                <div className="py-4 text-sm text-gray-600 space-y-3">
                   <p>No hay alumnos en esta clase todavía.</p>
                   <Button
                     type="button"
@@ -702,76 +684,99 @@ const TeacherDashboard: React.FC = () => {
                 </div>
               )}
               {hasChildren && (
-                <ScrollArea className="h-[360px] pr-2">
-                  <ul className="space-y-3 py-4">
-                    {children.map((child) => {
-                      const linked = Boolean(child.parent_id);
-                      const hasPendingInvite = Boolean(child.pending_invite_token);
-                      return (
-                        <li key={child.id}>
-                          <div className="flex flex-col gap-2 rounded-xl border border-gray-200 bg-white/80 p-2 shadow-xs transition hover:border-braini-blue/40 sm:flex-row sm:items-center sm:gap-3">
-                            <button
-                              type="button"
-                              onClick={() =>
-                                navigate(`/brainifamily/teacher/nino/${child.id}`)
-                              }
-                              className="group flex min-w-0 flex-1 items-center justify-between gap-3 rounded-lg px-3 py-2 text-left transition hover:bg-gray-50"
-                            >
-                              <div className="flex min-w-0 flex-col">
-                                <span className="font-medium text-gray-900">
-                                  {child.nombre} {child.apellidos ?? ''}
-                                </span>
-                                <span className="text-xs text-gray-500">
-                                  Pulsa para ver el progreso emocional y las misiones.
-                                </span>
-                              </div>
-                              <span className="shrink-0 text-xs font-medium text-braini-blue group-hover:underline">
-                                Ver progreso
-                              </span>
-                            </button>
-                            <div className="flex shrink-0 items-center justify-end gap-2 border-t border-gray-100 pt-2 sm:border-t-0 sm:pt-0">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="text-left text-xs uppercase tracking-wide text-gray-500 border-b border-gray-100">
+                        <th className="py-2 pr-3 font-medium">Nombre</th>
+                        <th className="py-2 pr-3 font-medium">Familia</th>
+                        <th className="py-2 font-medium">Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {children.map((child) => {
+                        const linked = Boolean(child.parent_id);
+                        const hasPendingInvite = Boolean(child.pending_invite_token);
+                        return (
+                          <tr key={child.id} className="border-b border-gray-50 last:border-0">
+                            <td className="py-2.5 pr-3 font-medium text-gray-900">
+                              {child.nombre} {child.apellidos ?? ''}
+                            </td>
+                            <td className="py-2.5 pr-3">
                               {linked ? (
-                                <Badge variant="secondary" className="text-[10px] font-normal">
-                                  Familia vinculada
+                                <Badge
+                                  variant="secondary"
+                                  className="text-[10px] font-semibold bg-braini-turquoise/20 text-braini-turquoise-dark"
+                                >
+                                  Vinculada
                                 </Badge>
                               ) : hasPendingInvite ? (
-                                <Button
-                                  type="button"
-                                  variant="outline"
-                                  size="sm"
-                                  className="gap-1 border-braini-blue/40 text-braini-blue hover:bg-braini-blue/10"
-                                  title="Copiar enlace ya generado para la familia"
-                                  onClick={() => {
-                                    void handleCopyInviteLink(child);
-                                  }}
+                                <Badge
+                                  variant="secondary"
+                                  className="text-[10px] font-semibold bg-braini-yellow/20 text-braini-yellow-dark"
                                 >
-                                  <Link2 className="h-4 w-4" />
-                                  <span className="hidden sm:inline">Copiar link</span>
-                                </Button>
+                                  Pendiente
+                                </Badge>
                               ) : (
+                                <Badge
+                                  variant="secondary"
+                                  className="text-[10px] font-semibold bg-braini-pink/15 text-braini-pink-dark"
+                                >
+                                  Sin invitar
+                                </Badge>
+                              )}
+                            </td>
+                            <td className="py-2.5">
+                              <div className="flex flex-wrap items-center gap-1.5">
                                 <Button
                                   type="button"
                                   variant="outline"
                                   size="sm"
-                                  className="gap-1 border-braini-pink/40 text-braini-pink-dark hover:bg-braini-pink/10"
-                                  title="Generar enlace de invitación para la familia"
-                                  onClick={() => {
-                                    setInviteTargetChild(child);
-                                    setInviteEmailLater('');
-                                    setDialogInviteOpen(true);
-                                  }}
+                                  className="h-8 border-braini-blue/30 text-gray-700 hover:bg-braini-blue/10"
+                                  onClick={() => navigate(`/brainifamily/teacher/nino/${child.id}`)}
                                 >
-                                  <Mail className="h-4 w-4" />
-                                  <span className="hidden sm:inline">Invitar familia</span>
+                                  Ver progreso
                                 </Button>
-                              )}
-                            </div>
-                          </div>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </ScrollArea>
+                                {!linked && hasPendingInvite && (
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    className="h-8 gap-1 border-braini-blue/40 text-braini-blue hover:bg-braini-blue/10"
+                                    title="Copiar enlace ya generado para la familia"
+                                    onClick={() => {
+                                      void handleCopyInviteLink(child);
+                                    }}
+                                  >
+                                    <Link2 className="h-4 w-4" />
+                                    Copiar
+                                  </Button>
+                                )}
+                                {!linked && !hasPendingInvite && (
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    className="h-8 gap-1 border-braini-pink/40 text-braini-pink-dark hover:bg-braini-pink/10"
+                                    title="Generar enlace de invitación para la familia"
+                                    onClick={() => {
+                                      setInviteTargetChild(child);
+                                      setInviteEmailLater('');
+                                      setDialogInviteOpen(true);
+                                    }}
+                                  >
+                                    <Mail className="h-4 w-4" />
+                                    Invitar
+                                  </Button>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
               )}
             </CardContent>
           </Card>
@@ -1030,7 +1035,7 @@ const TeacherDashboard: React.FC = () => {
           </form>
         </DialogContent>
       </Dialog>
-    </div>
+    </>
   );
 };
 

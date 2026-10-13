@@ -1,5 +1,6 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { sortChildrenByName } from "@/products/brainifamily/lib/sortChildrenByName";
 
 const STORAGE_KEY = "brainifamily_selected_child_id";
 
@@ -87,7 +88,8 @@ export function CurrentChildProvider({ children }: { children: React.ReactNode }
           "id, parent_id, nombre, apellidos, nivel_educativo, course_id, profile_completed, school_id, schools ( name )",
         )
         .eq("parent_id", user.id)
-        .order("created_at", { ascending: true });
+        .order("nombre", { ascending: true })
+        .order("apellidos", { ascending: true });
 
       if (fetchError) throw fetchError;
       const list: Child[] = ((data ?? []) as ChildRow[]).map((row) => {
@@ -104,7 +106,7 @@ export function CurrentChildProvider({ children }: { children: React.ReactNode }
           school_name: school?.name ?? null,
         };
       });
-      setChildrenList(list);
+      setChildrenList(sortChildrenByName(list));
 
       const stored = getStoredChildId();
       const validStored = list.some((c) => c.id === stored);
