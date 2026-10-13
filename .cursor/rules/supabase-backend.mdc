@@ -1,0 +1,29 @@
+---
+description: Convenciones de la capa Supabase (cliente, queries, RPC, Edge Functions)
+globs: supabase/functions/**,src/integrations/supabase/**
+alwaysApply: false
+---
+
+# Supabase backend
+
+## Capas
+
+- Cliente SPA: `@src/integrations/supabase/client.ts` — solo `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY`.
+- Lecturas/escrituras: `src/integrations/supabase/queries/`.
+- RPC: `src/integrations/supabase/rpc/` (`roles.ts`, `invites.ts`).
+- Edge desde el cliente: `@src/integrations/supabase/edge/invites.ts`.
+- Esquema: no versionar SQL en el repo. Consultar MCP; no crear `supabase/migrations/`.
+
+## Edge Functions
+
+- Código en `supabase/functions/complete-{director,teacher,parent}-invite/`.
+- Flujo típico: `action: 'preview'` → luego `complete` con `auth.admin.createUser` + RPC `complete_*_invite`.
+- `SUPABASE_SERVICE_ROLE_KEY` solo aquí; nunca en la SPA.
+- `verify_jwt` está en `false` en las tres funciones (contrato actual; no «arreglarlo» sin petición explícita).
+
+## Reglas
+
+- No crear usuarios con `signUp` en el frontend.
+- Tablas de invitación: `*_invited`, no `*_invites`.
+- Antes de inventar tablas/RPC/RLS: consultar MCP Supabase (`read_only`). El humano aplica SQL en el dashboard.
+- Detalle de invitaciones: skill `invite-onboarding` o `docs/06` / `docs/10`.

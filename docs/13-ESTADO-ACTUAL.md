@@ -1,7 +1,7 @@
 # Estado actual — BRAINI
 
-**Versión:** 3.0  
-**Rama:** `develop` · **Fecha:** julio 2026
+**Versión:** 3.1  
+**Rama:** `develop` · **Fecha:** septiembre 2026
 
 ---
 
@@ -15,15 +15,15 @@ BRAINI en `develop` es una SPA moderna (React 19, Vite 8, Tailwind 4, RR7) con d
 
 | Dependencia | Versión |
 |-------------|---------|
-| React / React DOM | 19.2.7 |
-| Vite | 8.1.4 |
-| Tailwind CSS | 4.3.2 |
-| React Router | 7.18.1 |
-| TanStack React Query | 5.87.1 |
-| @supabase/supabase-js | 2.49.8 |
-| Vitest | 4.1.10 |
-| Playwright | 1.61.1 |
-| TypeScript | 5.5.3 |
+| React / React DOM | 19.3.0 |
+| Vite | 8.3.0 |
+| Tailwind CSS | 4.3.3 |
+| React Router | 7.18.4 |
+| TanStack React Query | 5.103.2 |
+| @supabase/supabase-js | 2.117.1 |
+| Vitest | 4.1.11 |
+| Playwright | 1.63.0 |
+| TypeScript | 5.9.3 |
 
 **Node:** 20.19+ o 22.12+ (recomendado 22.x).
 
@@ -87,19 +87,19 @@ BRAINI en `develop` es una SPA moderna (React 19, Vite 8, Tailwind 4, RR7) con d
 
 | Suite | Cantidad ref. | Comando |
 |-------|---------------|---------|
-| Unit/integración | ~28 | `npm run test:run` |
-| E2E smoke | ~26 | `npm run test:e2e:smoke` |
-| Gate | lint + test + build | `npm run verify` |
+| Unit/integración | 28 | `npm run test:run` |
+| E2E smoke | 26 | `npm run test:e2e:smoke` |
+| Gate | lint + test + build | `npm run verify` (verde; el lint deja avisos de hooks y fast refresh, sin errores) |
 
-### Bundle (post-Fase 1)
+### Bundle (septiembre 2026, `npm run build`)
 
-| Asset | ~Tamaño |
-|-------|---------|
-| index JS | 107 KB |
-| vendor-react | 143 KB |
-| vendor-supabase | 173 KB |
-| vendor-radix | 142 KB |
-| activities-puzzles (lazy) | 211 KB |
+| Asset | Tamaño | gzip |
+|-------|--------|------|
+| index JS | 85 KB | 27 KB |
+| vendor-react | 207 KB | 65 KB |
+| vendor-supabase | 214 KB | 55 KB |
+| vendor-radix | 88 KB | 28 KB |
+| activities-puzzles (lazy) | 282 KB | 67 KB |
 
 Baseline pre-optimización: index ~1.1 MB. Detalle en [11-TESTING-Y-CALIDAD](11-TESTING-Y-CALIDAD.md).
 
@@ -109,9 +109,8 @@ Baseline pre-optimización: index ~1.1 MB. Detalle en [11-TESTING-Y-CALIDAD](11-
 
 | Prioridad | Gap | Impacto | Acción sugerida |
 |-----------|-----|---------|-----------------|
-| Alta | **Migraciones SQL no en repo** | Drift esquema remoto ↔ git; onboarding backend difícil | Exportar a `supabase/migrations/` |
-| Media | **ESLint `no-explicit-any`** (~25 avisos) | `npm run verify` falla en lint | Tipar o relajar regla gradualmente |
-| Media | **Advisors Supabase** | `setup_child` ejecutable por anon; OTP largo; leaked passwords off | Endurecer GRANT EXECUTE; ajustar Auth dashboard |
+| — | **Esquema solo en remoto** | Decisión de producto: SQL en dashboard, consulta MCP | No crear `supabase/migrations/` |
+| Media | **Advisors Supabase** | `setup_child` ejecutable por anon; OTP largo; leaked passwords off | Checklist en la sección 12; aplicar en el dashboard |
 | Baja | **Emails invitación automáticos** | Enlace manual | Fase futura |
 | Baja | **Postgres patches** | Versión 17.4.1.064 con parches | Planificar upgrade Supabase |
 | Baja | **E2E autenticado** | Solo smoke sin sesión por defecto | `.env.test` en staging |
@@ -126,8 +125,8 @@ Baseline pre-optimización: index ~1.1 MB. Detalle en [11-TESTING-Y-CALIDAD](11-
 | `src/products/` | ✓ hub + 3 productos |
 | `src/shared/` | ✓ |
 | `src/integrations/supabase/` | ✓ |
-| `supabase/functions/` | ✓ 3 Edge Functions |
-| `supabase/migrations/` | ✗ ausente |
+| `supabase/functions/` | ✓ 3 Edge Functions (fuente a desplegar) |
+| `supabase/migrations/` | No aplica (esquema en dashboard) |
 | `docs/00–13` | ✓ narrativa nueva |
 | `docs/README.md` | ✗ eliminado (solo README raíz) |
 
@@ -135,7 +134,7 @@ Baseline pre-optimización: index ~1.1 MB. Detalle en [11-TESTING-Y-CALIDAD](11-
 
 ## 9. Despliegue
 
-- **Frontend:** Vercel (SPA, `vercel.json`).
+- **Frontend:** Vercel (SPA, `vercel.json`) — [https://www.brainiemotions.com/](https://www.brainiemotions.com/).
 - **Backend:** Supabase Cloud (sin cambios desde este doc).
 - **Rama develop:** 11+ commits por delante de `origin/develop` (push bajo petición explícita).
 
@@ -143,11 +142,9 @@ Baseline pre-optimización: index ~1.1 MB. Detalle en [11-TESTING-Y-CALIDAD](11-
 
 ## 10. Próximos pasos sugeridos
 
-1. Versionar migraciones SQL desde el remoto.
-2. Resolver deuda ESLint para `verify` limpio.
-3. Endurecer permisos RPC según advisors.
-4. E2E autenticado en staging para CA-PIPE-01 automatizado.
-5. Emails transaccionales de invitación (fuera v2.0).
+1. Endurecer permisos RPC y Auth según la checklist de la sección 12.
+2. E2E autenticado en staging para CA-PIPE-01 automatizado.
+3. Emails transaccionales de invitación (fuera v2.0).
 
 ---
 
@@ -156,3 +153,22 @@ Baseline pre-optimización: index ~1.1 MB. Detalle en [11-TESTING-Y-CALIDAD](11-
 La documentación v3.0 en `docs/00-INDICE.md` … `docs/13-ESTADO-ACTUAL.md` sustituye la numeración antigua (`00-VISION` … `09-CA`, `08-TDD`, `BASELINE`, `docs/README.md`).
 
 Validación Supabase: MCP solo lectura en docs 05, 07, 08, 10 y este documento.
+
+---
+
+## 12. Checklist de seguridad (dashboard, manual)
+
+**Obligatorio revisar en el Supabase Dashboard antes de cambiar el repo de GitHub a público.** El agente no aplica estos cambios: el esquema se edita en el dashboard y el MCP del repo es de solo lectura.
+
+| Ítem | Dónde | Qué comprobar | Revisado |
+|------|--------|----------------|----------|
+| `GRANT EXECUTE` de `setup_child` | Database → Functions / SQL | El rol `anon` no debería poder ejecutar `setup_child`. Si el advisor lo marca, revocar ese grant. | |
+| OTP y contraseñas filtradas | Authentication → Providers / Password | Longitud del OTP y protección de contraseñas filtradas (leaked password protection) según el advisor de Auth. | |
+| Edge Functions | Edge Functions | `complete-director-invite`, `complete-teacher-invite` y `complete-parent-invite` en estado ACTIVE y alineadas con `supabase/functions/*/index.ts`. Si el dashboard y el repo divergen, republicar el código del repo. | |
+| Secretos en git | Repo | `.env` no trackeado; sin `service_role` en el código; ver [SECURITY.md](../SECURITY.md) y [LICENSE](../LICENSE). | Repo preparado (sept 2026) |
+| Privacidad en UI | App | PDF enlazado desde landings/login; checkbox de aceptación en invites. | Hecho en código (sept 2026) |
+
+Fecha de revisión dashboard Auth/RPC: _pendiente (humano)_.
+
+Tras completar las filas Auth/RPC/Edge: push → GitHub Settings → Change visibility → Public.
+

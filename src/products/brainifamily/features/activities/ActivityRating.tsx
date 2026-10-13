@@ -135,9 +135,9 @@ const ActivityRating: React.FC<ActivityRatingProps> = ({
     setIsSubmitting(true);
     
     try {
-      const updateData: any = { 
+      const updateData = {
         puntuacion: rating,
-        opinion: comment.trim() || null
+        opinion: comment.trim() || null,
       };
 
       const { error } = await supabase

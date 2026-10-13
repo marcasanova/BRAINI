@@ -9,7 +9,10 @@ import { fetchMyRole } from '@/integrations/supabase/rpc/roles';
 import { useToast } from '@/shared/hooks/use-toast';
 import { copyToClipboard } from '@/shared/lib/clipboard';
 import { staffInviteRpcMessage } from '@/products/brainifamily/lib/teacherInviteRpcMessages';
-import { BookOpen, Building2, Copy, GraduationCap, LogOut, MailPlus, Users } from 'lucide-react';
+import { Baby, BookOpen, Copy, GraduationCap, LogOut, Mail, UserPlus } from 'lucide-react';
+import { ADMIN_CHART_COLORS, INVITE_STATUS_LABELS } from '../admin/adminChartPalette';
+import DirectorKpiRow from './DirectorKpiRow';
+import DirectorSchoolCharts from './DirectorSchoolCharts';
 
 interface TeacherRow {
   id: string;
@@ -29,6 +32,7 @@ interface ChildRow {
   nombre: string;
   apellidos: string | null;
   class_id: string | null;
+  parent_id: string | null;
 }
 
 type InviteStatus = 'pending' | 'completed' | 'expired' | 'revoked';
@@ -45,6 +49,13 @@ interface TeacherInviteRow {
   created_at: string;
 }
 
+const STATUS_BADGE: Record<string, string> = {
+  pending: 'bg-braini-yellow/20 text-braini-yellow-dark',
+  completed: 'bg-braini-turquoise/20 text-braini-turquoise-dark',
+  expired: 'bg-braini-pink/20 text-braini-pink-dark',
+  revoked: 'bg-gray-200 text-gray-600',
+};
+
 const DirectorDashboard: React.FC = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -52,9 +63,10 @@ const DirectorDashboard: React.FC = () => {
   const [schoolName, setSchoolName] = useState<string | null>(null);
   const [teachers, setTeachers] = useState<TeacherRow[]>([]);
   const [classes, setClasses] = useState<ClassRow[]>([]);
-  const [childrenByClass, setChildrenByClass] = useState<Record<string, ChildRow[]>>({});
+  const [children, setChildren] = useState<ChildRow[]>([]);
   const [teacherInvites, setTeacherInvites] = useState<TeacherInviteRow[]>([]);
   const [inviteEmail, setInviteEmail] = useState('');
+  const [lastInviteLink, setLastInviteLink] = useState('');
   const [loadingInvite, setLoadingInvite] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -66,6 +78,19 @@ const DirectorDashboard: React.FC = () => {
   const teacherLink = (token: string) =>
     `${window.location.origin}/brainifamily/invite/teacher?token=${encodeURIComponent(token)}`;
 
+  const copyLink = async (link: string, description: string) => {
+    const copied = await copyToClipboard(link);
+    toast(
+      copied
+        ? { title: 'Enlace copiado', description }
+        : {
+            title: 'No se pudo copiar',
+            description: 'Copia el enlace manualmente desde el campo.',
+            variant: 'destructive',
+          },
+    );
+  };
+
   const loadData = useCallback(async () => {
     setLoading(true);
     const role = await fetchMyRole();
@@ -75,7 +100,7 @@ const DirectorDashboard: React.FC = () => {
       setSchoolName(null);
       setTeachers([]);
       setClasses([]);
-      setChildrenByClass({});
+      setChildren([]);
       setTeacherInvites([]);
       setLoading(false);
       return;
@@ -101,6 +126,7 @@ const DirectorDashboard: React.FC = () => {
       { data: trows, error: tErr },
       { data: crows, error: cErr },
       { data: invRows, error: invErr },
+      { data: chRows, error: chErr },
     ] = await Promise.all([
       supabase.from('teachers').select('id, email, nombre').eq('school_id', sid).order('nombre', { ascending: true }),
       supabase.from('classes').select('id, name, teacher_id, academic_year').eq('school_id', sid),
@@ -109,6 +135,7 @@ const DirectorDashboard: React.FC = () => {
         .select('id, email, school_id, token, expires_at, status, teacher_id, completed_at, created_at')
         .eq('school_id', sid)
         .order('created_at', { ascending: false }),
+      supabase.from('children').select('id, nombre, apellidos, class_id, parent_id').eq('school_id', sid),
     ]);
 
     if (tErr) {
@@ -144,32 +171,15 @@ const DirectorDashboard: React.FC = () => {
       setTeacherInvites((invRows ?? []) as TeacherInviteRow[]);
     }
 
-    const classIds = (crows ?? []).map((c: { id: string }) => c.id).filter(Boolean);
-    if (classIds.length > 0) {
-      const { data: chRows, error: chErr } = await supabase
-        .from('children')
-        .select('id, nombre, apellidos, class_id')
-        .in('class_id', classIds);
-
-      if (chErr) {
-        toast({
-          title: 'Error al cargar alumnos',
-          description: chErr.message,
-          variant: 'destructive',
-        });
-        setChildrenByClass({});
-      } else {
-        const map: Record<string, ChildRow[]> = {};
-        for (const ch of (chRows ?? []) as ChildRow[]) {
-          const cid = ch.class_id;
-          if (!cid) continue;
-          if (!map[cid]) map[cid] = [];
-          map[cid].push(ch);
-        }
-        setChildrenByClass(map);
-      }
+    if (chErr) {
+      toast({
+        title: 'Error al cargar alumnos',
+        description: chErr.message,
+        variant: 'destructive',
+      });
+      setChildren([]);
     } else {
-      setChildrenByClass({});
+      setChildren((chRows ?? []) as ChildRow[]);
     }
 
     setLoading(false);
@@ -178,6 +188,17 @@ const DirectorDashboard: React.FC = () => {
   useEffect(() => {
     loadData();
   }, [loadData]);
+
+  const childrenByClass = useMemo(() => {
+    const map: Record<string, ChildRow[]> = {};
+    for (const ch of children) {
+      const cid = ch.class_id;
+      if (!cid) continue;
+      if (!map[cid]) map[cid] = [];
+      map[cid].push(ch);
+    }
+    return map;
+  }, [children]);
 
   const classesByTeacher = useMemo(() => {
     const m: Record<string, ClassRow[]> = {};
@@ -190,6 +211,48 @@ const DirectorDashboard: React.FC = () => {
     }
     return m;
   }, [classes]);
+
+  const familiesTotal = useMemo(() => {
+    const ids = new Set<string>();
+    for (const ch of children) {
+      if (ch.parent_id) ids.add(ch.parent_id);
+    }
+    return ids.size;
+  }, [children]);
+
+  const childrenWithoutFamily = children.filter((ch) => !ch.parent_id).length;
+  const childrenWithoutClass = children.filter((ch) => !ch.class_id).length;
+  const childrenWithFamily = children.length - childrenWithoutFamily;
+
+  const teachersWithoutClass = teachers.filter((t) => (classesByTeacher[t.id] ?? []).length === 0).length;
+
+  const teacherStats = useMemo(
+    () =>
+      teachers.map((t) => {
+        const tClasses = classesByTeacher[t.id] ?? [];
+        const studentCount = tClasses.reduce((sum, cl) => sum + (childrenByClass[cl.id]?.length ?? 0), 0);
+        return { ...t, classCount: tClasses.length, studentCount };
+      }),
+    [teachers, classesByTeacher, childrenByClass],
+  );
+
+  const childrenByClassShare = useMemo(
+    () =>
+      [...classes]
+        .map((cl) => ({ name: cl.name, count: childrenByClass[cl.id]?.length ?? 0 }))
+        .sort((a, b) => b.count - a.count),
+    [classes, childrenByClass],
+  );
+
+  const volume = useMemo(
+    () => [
+      { label: 'Docentes', count: teachers.length, color: ADMIN_CHART_COLORS.yellow },
+      { label: 'Clases', count: classes.length, color: ADMIN_CHART_COLORS.blue },
+      { label: 'Alumnos', count: children.length, color: ADMIN_CHART_COLORS.turquoise },
+      { label: 'Familias', count: familiesTotal, color: ADMIN_CHART_COLORS.pink },
+    ],
+    [teachers.length, classes.length, children.length, familiesTotal],
+  );
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -237,30 +300,30 @@ const DirectorDashboard: React.FC = () => {
       return;
     }
 
+    const link = teacherLink(token);
+    setLastInviteLink(link);
     setInviteEmail('');
     await loadData();
     toast({
       title: 'Invitación creada',
-      description: 'Enlace generado. Cópialo con el botón en la lista inferior.',
+      description: 'Enlace generado. Cópialo para compartirlo con el docente.',
     });
   };
 
-  const pendingInvites = teacherInvites.filter((i) => String(i.status) === 'pending').length;
-
   return (
-    <div className="min-h-screen bg-linear-to-br from-braini-blue/10 via-white to-braini-turquoise/10 p-6">
-      <div className="max-w-4xl mx-auto space-y-8">
+    <div className="min-h-screen font-montserrat bg-linear-to-br from-braini-blue/10 via-white to-braini-turquoise/10 p-4 sm:p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto space-y-6">
         <header className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <Building2 className="w-10 h-10 text-braini-blue" />
+            <img src="/logo/logoBraini.png" alt="BRAINI" className="h-12 w-auto object-contain" />
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Panel de dirección</h1>
-              <p className="text-gray-600 text-sm">
-                Invita docentes, revisa invitaciones y consulta clases y alumnos (solo lectura).
-              </p>
+              <h1 className="text-2xl md:text-3xl font-black text-gray-900" style={{ fontWeight: 900 }}>
+                Panel de dirección
+              </h1>
+              <p className="text-gray-600 text-sm">{schoolName ?? 'Tu centro escolar'}</p>
             </div>
           </div>
-          <Button variant="outline" onClick={handleLogout}>
+          <Button variant="outline" onClick={handleLogout} className="border-braini-blue/30">
             <LogOut className="w-4 h-4 mr-2" />
             Cerrar sesión
           </Button>
@@ -275,108 +338,184 @@ const DirectorDashboard: React.FC = () => {
           </p>
         ) : (
           <>
-            <div className="flex flex-wrap gap-4 text-sm text-gray-700">
-              <p>
-                Centro: <strong>{schoolName ?? schoolId}</strong>
-              </p>
-              <p>
-                Docentes: <strong>{teachers.length}</strong>
-              </p>
-              <p>
-                Invitaciones pendientes: <strong>{pendingInvites}</strong>
-              </p>
-            </div>
+            <DirectorKpiRow
+              teachersTotal={teachers.length}
+              teachersWithoutClass={teachersWithoutClass}
+              classesTotal={classes.length}
+              childrenTotal={children.length}
+              childrenWithoutClass={childrenWithoutClass}
+              familiesTotal={familiesTotal}
+              childrenWithoutFamily={childrenWithoutFamily}
+            />
 
-            <Card className="bg-white/90 border-braini-blue/20">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <MailPlus className="w-5 h-5" />
-                  Invitar docente (enlace manual)
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleCreateTeacherInvite} className="flex flex-col sm:flex-row gap-3 max-w-xl">
-                  <div className="flex-1 space-y-1">
-                    <Label htmlFor="teacher-invite-email">Email del docente</Label>
-                    <Input
-                      id="teacher-invite-email"
-                      type="email"
-                      value={inviteEmail}
-                      onChange={(e) => setInviteEmail(e.target.value)}
-                      placeholder="profesor@colegio.es"
-                      autoComplete="email"
-                    />
-                  </div>
-                  <div className="flex items-end">
-                    <Button type="submit" disabled={loadingInvite} className="bg-braini-blue hover:bg-braini-blue-dark text-white">
-                      {loadingInvite ? 'Generando…' : 'Generar invitación'}
+            <section className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
+              <Card className="bg-white/95 border-braini-blue/20 rounded-2xl shadow-sm lg:col-span-5 h-full">
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-base font-bold">
+                    <UserPlus className="w-5 h-5 text-braini-blue-dark" />
+                    Invitar docente
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={handleCreateTeacherInvite} className="space-y-3">
+                    <div>
+                      <Label htmlFor="teacher-invite-email">Email del docente</Label>
+                      <Input
+                        id="teacher-invite-email"
+                        type="email"
+                        value={inviteEmail}
+                        onChange={(e) => setInviteEmail(e.target.value)}
+                        placeholder="profesor@colegio.es"
+                        autoComplete="email"
+                        className="mt-1 bg-white"
+                      />
+                    </div>
+                    <Button
+                      type="submit"
+                      disabled={loadingInvite}
+                      className="bg-braini-blue hover:bg-braini-blue-dark text-white"
+                    >
+                      {loadingInvite ? 'Generando…' : 'Generar enlace'}
                     </Button>
-                  </div>
-                </form>
-              </CardContent>
-            </Card>
+                  </form>
 
-            <Card className="bg-white/90 border-braini-blue/20">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <GraduationCap className="w-5 h-5" />
-                  Invitaciones a docentes
+                  {lastInviteLink && (
+                    <div className="mt-4 space-y-2">
+                      <Label>Último enlace generado</Label>
+                      <div className="flex gap-2">
+                        <Input value={lastInviteLink} readOnly className="bg-white text-xs" />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="border-braini-blue/30 text-gray-700 hover:bg-braini-blue/10"
+                          onClick={() => copyLink(lastInviteLink, 'Comparte este enlace con el docente.')}
+                        >
+                          <Copy className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              <DirectorSchoolCharts
+                volume={volume}
+                childrenWithFamily={childrenWithFamily}
+                childrenTotal={children.length}
+                childrenByClass={childrenByClassShare}
+              />
+            </section>
+
+            <section className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <Card className="bg-white/95 border-braini-blue/20 rounded-2xl shadow-sm">
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-base font-bold">
+                    <GraduationCap className="w-5 h-5 text-braini-yellow-dark" />
+                    Docentes
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {teachers.length === 0 ? (
+                    <p className="text-gray-500 text-sm">
+                      No hay docentes dados de alta todavía. Cuando acepten la invitación aparecerán aquí.
+                    </p>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="text-left text-xs uppercase tracking-wide text-gray-500 border-b border-gray-100">
+                            <th className="py-2 pr-3 font-medium">Nombre</th>
+                            <th className="py-2 pr-3 font-medium">Email</th>
+                            <th className="py-2 pr-3 font-medium">Clases</th>
+                            <th className="py-2 font-medium">Alumnos</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {teacherStats.map((t) => (
+                            <tr key={t.id} className="border-b border-gray-50 last:border-0">
+                              <td className="py-2.5 pr-3 font-medium text-gray-900">{t.nombre}</td>
+                              <td className="py-2.5 pr-3 text-xs text-gray-600">{t.email ?? '—'}</td>
+                              <td className="py-2.5 pr-3 text-xs text-gray-700">{t.classCount}</td>
+                              <td className="py-2.5 text-xs text-gray-700">{t.studentCount}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              <Card className="bg-white/95 border-braini-blue/20 rounded-2xl shadow-sm">
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-base font-bold">
+                    <Mail className="w-5 h-5 text-braini-blue-dark" />
+                    Invitaciones
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {teacherInvites.length === 0 ? (
+                    <p className="text-gray-500 text-sm">Aún no hay invitaciones registradas para este centro.</p>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="text-left text-xs uppercase tracking-wide text-gray-500 border-b border-gray-100">
+                            <th className="py-2 pr-3 font-medium">Email</th>
+                            <th className="py-2 pr-3 font-medium">Estado</th>
+                            <th className="py-2 pr-3 font-medium">Caduca</th>
+                            <th className="py-2 font-medium">Enlace</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {teacherInvites.map((inv) => {
+                            const link = teacherLink(inv.token);
+                            return (
+                              <tr key={inv.id} className="border-b border-gray-50 last:border-0">
+                                <td className="py-2.5 pr-3 font-medium text-gray-900">{inv.email}</td>
+                                <td className="py-2.5 pr-3">
+                                  <span
+                                    className={`inline-flex px-2 py-0.5 rounded-full text-xs font-semibold ${STATUS_BADGE[String(inv.status)] ?? 'bg-gray-200 text-gray-600'}`}
+                                  >
+                                    {INVITE_STATUS_LABELS[String(inv.status)] ?? inv.status}
+                                  </span>
+                                </td>
+                                <td className="py-2.5 pr-3 text-xs text-gray-600 whitespace-nowrap">
+                                  {formatDate(inv.expires_at)}
+                                </td>
+                                <td className="py-2.5">
+                                  <div className="flex items-center gap-2 min-w-[180px]">
+                                    <Input value={link} readOnly className="bg-white text-xs h-8" />
+                                    <Button
+                                      type="button"
+                                      variant="outline"
+                                      size="sm"
+                                      className="border-braini-blue/30 text-gray-700 hover:bg-braini-blue/10 shrink-0"
+                                      onClick={() => copyLink(link, 'Comparte este enlace con el docente.')}
+                                    >
+                                      <Copy className="w-4 h-4" />
+                                    </Button>
+                                  </div>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </section>
+
+            <Card className="bg-white/95 border-braini-blue/20 rounded-2xl shadow-sm">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-base font-bold">
+                  <Baby className="w-5 h-5 text-braini-turquoise-dark" />
+                  Clases y alumnos
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                {teacherInvites.length === 0 ? (
-                  <p className="text-gray-500 text-sm">Aún no hay invitaciones registradas para este centro.</p>
-                ) : (
-                  <ul className="space-y-3">
-                    {teacherInvites.map((inv) => {
-                      const link = teacherLink(inv.token);
-                      return (
-                        <li key={inv.id} className="rounded-md border bg-white p-3 text-sm">
-                          <p className="font-medium">{inv.email}</p>
-                          <p className="text-gray-600">
-                            Estado: <span className="font-medium">{inv.status}</span> · Caduca:{' '}
-                            {formatDate(inv.expires_at)}
-                          </p>
-                          <p className="text-xs text-gray-500">Creada: {formatDate(inv.created_at)}</p>
-                          <div className="mt-2 flex flex-wrap items-center gap-2">
-                            <Input value={link} readOnly className="text-xs font-mono flex-1 min-w-[200px]" />
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={async () => {
-                                const copied = await copyToClipboard(link);
-                                toast(
-                                  copied
-                                    ? { title: 'Enlace copiado', description: 'Comparte este enlace con el docente.' }
-                                    : {
-                                        title: 'No se pudo copiar',
-                                        description: 'Copia el enlace manualmente desde el campo.',
-                                        variant: 'destructive',
-                                      },
-                                );
-                              }}
-                            >
-                              <Copy className="w-4 h-4 mr-1" />
-                              Copiar
-                            </Button>
-                          </div>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                )}
-              </CardContent>
-            </Card>
-
-            <Card className="bg-white/90 border-braini-blue/20">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <Users className="w-5 h-5" />
-                  Docentes, clases y alumnos
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
+              <CardContent className="space-y-4">
                 {teachers.length === 0 ? (
                   <p className="text-gray-500 text-sm">
                     No hay docentes dados de alta todavía. Cuando acepten la invitación aparecerán aquí.
@@ -385,42 +524,54 @@ const DirectorDashboard: React.FC = () => {
                   teachers.map((t) => {
                     const tClasses = classesByTeacher[t.id] ?? [];
                     return (
-                      <div key={t.id} className="border rounded-lg p-4 bg-white/80">
+                      <div key={t.id} className="rounded-xl border border-gray-100 bg-white/80 p-4">
                         <p className="font-semibold text-gray-900">{t.nombre}</p>
-                        <p className="text-sm text-gray-600 mb-3">{t.email ?? '—'}</p>
+                        <p className="text-xs text-gray-500 mb-3">{t.email ?? '—'}</p>
                         {tClasses.length === 0 ? (
                           <p className="text-sm text-gray-500">Sin clases creadas aún.</p>
                         ) : (
-                          <ul className="space-y-3">
-                            {tClasses.map((cl) => {
-                              const kids = childrenByClass[cl.id] ?? [];
-                              return (
-                                <li key={cl.id} className="border-l-2 border-indigo-200 pl-3">
-                                  <p className="flex flex-wrap items-center gap-2 text-sm font-medium text-gray-800">
-                                    <BookOpen className="w-4 h-4 text-indigo-600 shrink-0" />
-                                    {cl.name}
-                                    {cl.academic_year ? (
-                                      <span className="text-xs font-normal text-gray-500">
-                                        ({cl.academic_year})
-                                      </span>
-                                    ) : null}
-                                  </p>
-                                  {kids.length === 0 ? (
-                                    <p className="text-xs text-gray-500 mt-1">Sin alumnos asignados a esta clase.</p>
-                                  ) : (
-                                    <ul className="mt-1 ml-6 list-disc text-sm text-gray-700">
-                                      {kids.map((ch) => (
-                                        <li key={ch.id}>
-                                          {ch.nombre}
-                                          {ch.apellidos ? ` ${ch.apellidos}` : ''}
-                                        </li>
-                                      ))}
-                                    </ul>
-                                  )}
-                                </li>
-                              );
-                            })}
-                          </ul>
+                          <div className="overflow-x-auto">
+                            <table className="w-full text-sm">
+                              <thead>
+                                <tr className="text-left text-xs uppercase tracking-wide text-gray-500 border-b border-gray-100">
+                                  <th className="py-2 pr-3 font-medium">Clase</th>
+                                  <th className="py-2 font-medium">Alumnos</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {tClasses.map((cl) => {
+                                  const kids = childrenByClass[cl.id] ?? [];
+                                  return (
+                                    <tr key={cl.id} className="border-b border-gray-50 last:border-0 align-top">
+                                      <td className="py-2.5 pr-3">
+                                        <span className="inline-flex items-center gap-2 font-medium text-gray-800">
+                                          <BookOpen className="w-4 h-4 text-braini-blue-dark shrink-0" />
+                                          {cl.name}
+                                        </span>
+                                        {cl.academic_year ? (
+                                          <p className="text-xs text-gray-500 ml-6">{cl.academic_year}</p>
+                                        ) : null}
+                                      </td>
+                                      <td className="py-2.5 text-gray-700">
+                                        {kids.length === 0 ? (
+                                          <span className="text-xs text-gray-500">Sin alumnos asignados</span>
+                                        ) : (
+                                          <ul className="text-sm space-y-0.5">
+                                            {kids.map((ch) => (
+                                              <li key={ch.id}>
+                                                {ch.nombre}
+                                                {ch.apellidos ? ` ${ch.apellidos}` : ''}
+                                              </li>
+                                            ))}
+                                          </ul>
+                                        )}
+                                      </td>
+                                    </tr>
+                                  );
+                                })}
+                              </tbody>
+                            </table>
+                          </div>
                         )}
                       </div>
                     );

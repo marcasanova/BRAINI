@@ -4,6 +4,7 @@ import EmotionSelector from '@/products/brainifamily/features/emotionalDiary/Emo
 import EmotionEntry from '@/products/brainifamily/features/emotionalDiary/EmotionEntry';
 import EmotionCalendar from '@/products/brainifamily/features/emotionalDiary/EmotionCalendar';
 import { useEmotionalDiary } from '@/products/brainifamily/hooks/useEmotionalDiary';
+import type { EmotionalEntry } from '@/integrations/supabase/queries/emotional-diary';
 import { useCurrentChild } from '@/products/brainifamily/hooks/useCurrentChild';
 import { useToast } from '@/shared/hooks/use-toast';
 
@@ -23,7 +24,7 @@ const DiarioEmocional = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedEmotions, setSelectedEmotions] = useState<{ id: number; name: string; imageUrl: string; color: string; description: string }[]>([]);
   const [observations, setObservations] = useState('');
-  const [monthEntries, setMonthEntries] = useState<any[]>([]);
+  const [monthEntries, setMonthEntries] = useState<EmotionalEntry[]>([]);
   const [currentMonth, setCurrentMonth] = useState({
     year: new Date().getFullYear(),
     month: new Date().getMonth() + 1
@@ -166,13 +167,9 @@ const DiarioEmocional = () => {
   return (
     <Backgrounds 
       wrapWithCard={true}
-      enableInternalScroll={true}
       customColor="#35bdb1"
       showCircles={true}
     >
-      <div className="h-full flex flex-col relative z-10">
-        <div className="container mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-6 flex-1 flex flex-col min-h-0">
-          <div className="max-w-7xl mx-auto w-full flex flex-col min-h-0">
             {/* Header con título - Fijo en la parte superior */}
             <div className="mb-6 md:mb-8 animate-fade-in shrink-0">
               <div className="flex flex-col gap-4 mb-4">
@@ -197,7 +194,7 @@ const DiarioEmocional = () => {
             </div>
 
           {/* Área de contenido con scroll */}
-          <div className="flex-1 overflow-y-auto min-h-0">
+          <div>
             {/* Grid simétrico de dos columnas */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8 pb-20 md:pb-4">
             {/* Columna izquierda: Selector de emociones y observaciones */}
@@ -262,10 +259,7 @@ const DiarioEmocional = () => {
               </div>
             </div>
           </div>
-            </div>
           </div>
-        </div>
-      </div>
     </Backgrounds>
   );
 };

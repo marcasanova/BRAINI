@@ -71,8 +71,8 @@ const ParentsProfile = () => {
         } else {
           throw new Error('No se encontró el perfil del usuario.');
         }
-      } catch (err: any) {
-        setError(err.message || 'Error al cargar los datos.');
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : 'Error al cargar los datos.');
       } finally {
         setLoading(false);
       }
@@ -166,7 +166,7 @@ const ParentsProfile = () => {
       });
       
       setTimeout(() => navigate('/brainifamily/child-profile'), 1200);
-    } catch (err: any) {
+    } catch {
       // Error ya manejado arriba
     } finally {
       setIsSubmitting(false);

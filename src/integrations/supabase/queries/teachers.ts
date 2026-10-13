@@ -23,14 +23,17 @@ export interface Teacher {
   active: boolean;
   created_at: string;
   updated_at: string;
+  avatar_id: string | null;
   classList: TeacherClassRecord[];
   classStudentCounts: Record<string, number>;
+  familiesTotal: number;
+  childrenWithoutFamily: number;
 }
 
 export async function fetchTeacherByUserId(userId: string): Promise<Teacher | null> {
   const { data: row, error: teacherErr } = await supabase
     .from('teachers')
-    .select('id, email, nombre, school_id, active, created_at, updated_at')
+    .select('id, email, nombre, school_id, active, created_at, updated_at, avatar_id')
     .eq('id', userId)
     .maybeSingle();
 
@@ -48,12 +51,14 @@ export async function fetchTeacherByUserId(userId: string): Promise<Teacher | nu
 
   const classList = (classRows ?? []) as TeacherClassRecord[];
   const classStudentCounts: Record<string, number> = {};
+  const familyIds = new Set<string>();
+  let childrenWithoutFamily = 0;
 
   if (classList.length > 0) {
     const ids = classList.map((c) => c.id);
     const { data: childRows, error: chErr } = await supabase
       .from('children')
-      .select('class_id')
+      .select('class_id, parent_id')
       .in('class_id', ids)
       .eq('active', true);
 
@@ -62,6 +67,11 @@ export async function fetchTeacherByUserId(userId: string): Promise<Teacher | nu
       if (r.class_id) {
         classStudentCounts[r.class_id] = (classStudentCounts[r.class_id] ?? 0) + 1;
       }
+      if (r.parent_id) {
+        familyIds.add(r.parent_id);
+      } else {
+        childrenWithoutFamily += 1;
+      }
     }
   }
 
@@ -69,6 +79,8 @@ export async function fetchTeacherByUserId(userId: string): Promise<Teacher | nu
     ...row,
     classList,
     classStudentCounts,
+    familiesTotal: familyIds.size,
+    childrenWithoutFamily,
   };
 }
 

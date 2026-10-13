@@ -1,6 +1,7 @@
 import { Link } from 'react-router';
 import { Button } from '@/shared/ui/button';
 import NavbarLandings from '@/shared/components/navigation/NavbarLandings';
+import { PrivacyPolicyLink } from '@/shared/components/PrivacyPolicyLink';
 
 type UnderDevelopmentLandingProps = {
   productName: string;
@@ -85,7 +86,10 @@ const UnderDevelopmentLanding = ({
         </div>
       </section>
 
-      <footer className="relative z-10 px-4 py-6 border-t border-white/20">
+      <footer className="relative z-10 px-4 py-6 border-t border-white/20 space-y-2">
+        <p className="text-center text-sm text-white/90">
+          <PrivacyPolicyLink className="underline hover:text-white" />
+        </p>
         <p className="text-center text-sm text-white/80">
           © {new Date().getFullYear()} Braini Emotions. Todos los derechos reservados.
         </p>

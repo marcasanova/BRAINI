@@ -24,8 +24,14 @@ dist-ssr
 *.sw?
 
 .env
-.env.local
-.env.test
+.env.*
+!.env.example
+!.env.test.example
+*.pem
+*.p12
+*.key
+credentials.json
+service-account*.json
 
 # Testing artifacts
 coverage/
@@ -37,5 +43,3 @@ stats.html
 
 # Supabase CLI temp
 supabase/.temp/
-
-.cursor/

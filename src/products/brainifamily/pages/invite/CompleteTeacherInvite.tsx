@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/shared/hooks/use-toast';
 import { Eye, EyeOff, GraduationCap } from 'lucide-react';
 import { inviteErrorDescription, inviteErrorTitle } from '@/integrations/supabase/lib/inviteErrors';
+import { PrivacyPolicyConsent } from '@/shared/components/PrivacyPolicyLink';
 
 const CompleteTeacherInvite: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -15,6 +16,7 @@ const CompleteTeacherInvite: React.FC = () => {
   const [nombre, setNombre] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [loadingInvite, setLoadingInvite] = useState(false);
   const [inviteInfo, setInviteInfo] = useState<{
@@ -97,6 +99,14 @@ const CompleteTeacherInvite: React.FC = () => {
         title: 'Contraseña demasiado corta',
         description:
           'La contraseña debe tener 6 o más caracteres. Te recomendamos usar letras y números para mayor seguridad.',
+        variant: 'destructive',
+      });
+      return;
+    }
+    if (!acceptedPrivacy) {
+      toast({
+        title: 'Política de privacidad',
+        description: 'Debes leer y aceptar la Política de privacidad para continuar.',
         variant: 'destructive',
       });
       return;
@@ -223,7 +233,12 @@ const CompleteTeacherInvite: React.FC = () => {
                 </button>
               </div>
             </div>
-            <Button type="submit" className="w-full bg-braini-turquoise hover:bg-braini-turquoise-dark text-white" disabled={submitting || !token}>
+            <PrivacyPolicyConsent
+              id="teacher-privacy-consent"
+              checked={acceptedPrivacy}
+              onCheckedChange={setAcceptedPrivacy}
+            />
+            <Button type="submit" className="w-full bg-braini-turquoise hover:bg-braini-turquoise-dark text-white" disabled={submitting || !token || !acceptedPrivacy}>
               {submitting ? 'Activando…' : 'Activar cuenta'}
             </Button>
           </form>

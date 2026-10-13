@@ -1,38 +1,77 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import Navbar from './navigation/Navbar';
-import { useIsMobile } from '@/shared/hooks/use-mobile';
 
 interface BackgroundsProps {
   className?: string;
   children?: React.ReactNode;
-  wrapWithCard?: boolean; // Si true, envuelve en card con Navbar
-  enableInternalScroll?: boolean; // Si true, habilita scroll interno en el área de contenido
-  customColor?: string; // Color sólido personalizado para la card (opcional)
-  showCircles?: boolean; // Si true, muestra los círculos decorativos (opcional, default: false)
+  wrapWithCard?: boolean;
+  customColor?: string;
+  showCircles?: boolean;
 }
 
-const Backgrounds: React.FC<BackgroundsProps> = ({ 
+type CircleSpec = {
+  size: number;
+  left: number;
+  top: number;
+};
+
+function shuffle<T>(items: T[]): T[] {
+  const next = [...items];
+  for (let i = next.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [next[i], next[j]] = [next[j], next[i]];
+  }
+  return next;
+}
+
+function createCircles(count: number): CircleSpec[] {
+  const cols = 3;
+  const rows = 3;
+  const vw = typeof window === 'undefined' ? 1200 : window.innerWidth;
+  const vh = typeof window === 'undefined' ? 800 : window.innerHeight;
+  const cellW = vw / cols;
+  const cellH = vh / rows;
+  const minSide = Math.min(cellW, cellH);
+
+  const cells = shuffle(
+    Array.from({ length: cols * rows }, (_, index) => ({
+      col: index % cols,
+      row: Math.floor(index / cols),
+    })),
+  );
+
+  return cells.slice(0, count).map(({ col, row }) => {
+    const size = minSide * (0.4 + Math.random() * 0.3);
+    const maxJitterX = Math.max(0, (cellW - size) / 2);
+    const maxJitterY = Math.max(0, (cellH - size) / 2);
+    const cx = col * cellW + cellW / 2 + (Math.random() * 2 - 1) * maxJitterX;
+    const cy = row * cellH + cellH / 2 + (Math.random() * 2 - 1) * maxJitterY;
+    return {
+      size,
+      left: cx - size / 2,
+      top: cy - size / 2,
+    };
+  });
+}
+
+const Backgrounds: React.FC<BackgroundsProps> = ({
   className = '',
   children,
   wrapWithCard = false,
-  enableInternalScroll = false,
   customColor = '#7ea4df',
-  showCircles = false
+  showCircles = false,
 }) => {
-  const isMobile = useIsMobile();
-  
-  // Renderizar el fondo único (igual que la primera sección de LandingPage)
+  const circles = useMemo(() => (showCircles ? createCircles(7) : []), [showCircles]);
+
   const renderBackground = () => {
     return (
       <>
-        {/* Gradiente principal - igual que LandingPage */}
-        <div 
+        <div
           className="absolute inset-0"
           style={{
-            background: 'linear-gradient(135deg, #7ea4df 0%, #35bdb1 100%)'
+            background: 'linear-gradient(135deg, #7ea4df 0%, #35bdb1 100%)',
           }}
         />
-        {/* Círculos decorativos - igual que LandingPage */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute -top-20 sm:-top-40 -left-5 sm:-left-10 w-40 h-40 sm:w-80 sm:h-80 bg-white/15 rounded-full" />
           <div className="absolute -bottom-40 sm:-bottom-80 -right-30 sm:-right-60 w-[300px] h-[300px] sm:w-[700px] sm:h-[700px] bg-white/15 rounded-full" />
@@ -41,103 +80,40 @@ const Backgrounds: React.FC<BackgroundsProps> = ({
     );
   };
 
-  // Renderizar círculos decorativos
-  const renderCircles = () => {
-    if (!showCircles) return null;
-    
-    return (
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-20 sm:-top-40 -left-5 sm:-left-10 w-60 h-60 sm:w-96 sm:h-96 md:w-[500px] md:h-[500px] lg:w-[600px] lg:h-[600px] bg-white/15 rounded-full" />
-        <div className="absolute -bottom-40 sm:-bottom-80 -right-30 sm:-right-60 w-[300px] h-[300px] sm:w-[700px] sm:h-[700px] bg-white/15 rounded-full" />
-      </div>
-    );
-  };
-
-  // Si wrapWithCard es true, envuelve todo en la estructura de card con Navbar
   if (wrapWithCard) {
-    // En móvil: fondo directo sin card
-    if (isMobile) {
-      return (
-        <div 
-          className={`${enableInternalScroll ? 'h-screen overflow-hidden' : 'min-h-screen'} font-montserrat relative ${className}`}
-          style={{
-            background: customColor
-          }}
-        >
-          {/* Navbar */}
-          <div className="relative z-50">
-            <Navbar />
-          </div>
-          
-          {/* Área de contenido principal - fondo directo en móvil */}
-          <div 
-            className={`${
-              enableInternalScroll
-                ? 'absolute top-0 right-0 bottom-0 left-0 overflow-y-auto'
-                : 'relative min-h-[calc(100vh-80px)]'
-            }`}
-          >
-            {/* Círculos decorativos dentro del área de contenido */}
-            {renderCircles()}
-            
-            {/* Contenido de la página */}
-            <div className="relative z-10 min-h-full">
-              {children}
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    // En desktop/tablet: estructura con card (mantener como está)
     return (
-      // Estructura completa: fondo gris + card con fondo blanco
-      <div className={`${enableInternalScroll ? 'h-screen overflow-hidden' : 'min-h-screen'} font-montserrat relative bg-gray-50 ${className}`}>
-        {/* Fondo gris aplicado a toda la pantalla */}
-        <div className="fixed inset-0 bg-gray-200 overflow-hidden pointer-events-none" />
-        
-        {/* Card principal que envuelve toda la aplicación - con fondo blanco */}
-        <div 
-          className={`max-w-[1920px] mx-auto rounded-xl md:rounded-2xl lg:rounded-3xl overflow-hidden relative m-4 md:m-6 lg:m-8 bg-white ${
-            enableInternalScroll 
-              ? 'h-[calc(100vh-2rem)] md:h-[calc(100vh-3rem)] lg:h-[calc(100vh-4rem)]' 
-              : 'min-h-[calc(100vh-2rem)] md:min-h-[calc(100vh-3rem)] lg:min-h-[calc(100vh-4rem)]'
-          }`}
-          style={{ 
-            boxShadow: '0 35px 60px -12px rgba(0, 0, 0, 0.35), 0 10px 20px -5px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.08)',
-            border: 'none'
-          }}
-        >
-          {/* Navbar dentro del card - con fondo blanco sólido */}
-          <div className="relative z-50">
-            <Navbar />
+      <div
+        className={`min-h-screen font-montserrat relative ${className}`}
+        style={{ background: customColor }}
+      >
+        <Navbar />
+
+        {showCircles && (
+          <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+            {circles.map((circle, index) => (
+              <div
+                key={index}
+                className="absolute rounded-full bg-white/15"
+                style={{
+                  width: circle.size,
+                  height: circle.size,
+                  left: circle.left,
+                  top: circle.top,
+                }}
+              />
+            ))}
           </div>
-          
-          {/* Área de contenido principal - CON COLOR SÓLIDO aquí */}
-          <div 
-            className={`${
-              enableInternalScroll
-                ? 'absolute top-0 right-0 bottom-0 left-0 md:left-72 overflow-y-auto'
-                : 'relative md:ml-72 min-h-[calc(100vh-200px)] md:min-h-[calc(100vh-100px)]'
-            }`}
-            style={{
-              background: customColor
-            }}
-          >
-            {/* Círculos decorativos dentro del área de contenido */}
-            {renderCircles()}
-            
-            {/* Contenido de la página */}
-            <div className="relative z-10 min-h-full pb-20 md:pb-0">
-              {children}
-            </div>
+        )}
+
+        <div className="relative z-10 min-h-screen md:pl-72">
+          <div className="w-full px-6 md:px-8 lg:px-10 pt-6 md:pt-8 pb-20 md:pb-8">
+            {children}
           </div>
         </div>
       </div>
     );
   }
 
-  // Si solo es un background (uso normal)
   return (
     <div className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`}>
       {renderBackground()}

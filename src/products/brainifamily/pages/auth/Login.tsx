@@ -17,6 +17,7 @@ import {
   DialogTrigger,
 } from "@/shared/ui/dialog";
 import { Eye, EyeOff } from 'lucide-react';
+import { PrivacyPolicyLink } from '@/shared/components/PrivacyPolicyLink';
 
 // Rutas de assets públicos
 const logoBraini = '/logo/logoBraini.png';
@@ -119,7 +120,7 @@ const Login = () => {
     
     if (!email.trim() || !password.trim()) {
       // Determinar qué campo específico está vacío
-      let errorMessage = "Por favor, completa los siguientes campos:";
+      const errorMessage = "Por favor, completa los siguientes campos:";
       const missingFields: string[] = [];
       
       if (!email.trim()) {
@@ -474,9 +475,12 @@ const Login = () => {
               <div className="mt-4 sm:mt-6 border-t border-gray-200"></div>
 
               {/* Acceso por invitación */}
-              <div className="mt-4 sm:mt-6 text-center">
+              <div className="mt-4 sm:mt-6 text-center space-y-2">
                 <p className="text-gray-600 text-xs sm:text-sm md:text-base">
                   El acceso se realiza mediante invitación de tu centro o del equipo BRAINI.
+                </p>
+                <p className="text-xs sm:text-sm text-gray-500">
+                  <PrivacyPolicyLink className="text-braini-blue underline hover:opacity-90" />
                 </p>
               </div>
             </form>

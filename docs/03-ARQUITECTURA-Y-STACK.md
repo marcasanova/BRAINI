@@ -56,17 +56,17 @@ Next.js aportaría valor si hubiera rendering server-side masivo, rutas API prop
 
 | Capa | Tecnología | Versión (package.json) |
 |------|------------|------------------------|
-| UI | React | 19.2.7 |
-| Bundler | Vite | 8.1.4 |
-| Estilos | Tailwind CSS | 4.3.2 (`@tailwindcss/vite`) |
-| Routing | React Router | 7.18.1 |
-| Datos | TanStack React Query | 5.87.1 |
+| UI | React | 19.3.0 |
+| Bundler | Vite | 8.3.0 |
+| Estilos | Tailwind CSS | 4.3.3 (`@tailwindcss/vite`) |
+| Routing | React Router | 7.18.4 |
+| Datos | TanStack React Query | 5.103.2 |
 | Componentes | Radix UI + shadcn pattern | — |
-| Notificaciones | Sonner | 1.5.0 |
-| Backend | Supabase JS | 2.49.8 |
-| Tests unit | Vitest + RTL + MSW | 4.1.10 |
-| Tests E2E | Playwright | 1.61.1 |
-| Lenguaje | TypeScript | 5.5.3 |
+| Notificaciones | Sonner | 1.7.4 |
+| Backend | Supabase JS | 2.117.1 |
+| Tests unit | Vitest + RTL + MSW | 4.1.11 |
+| Tests E2E | Playwright | 1.63.0 |
+| Lenguaje | TypeScript | 5.9.3 |
 | Runtime dev | Node | 20.19+ / 22.12+ |
 
 ---
@@ -110,7 +110,7 @@ BRAINI/
 
 1. Página monta hook con React Query.
 2. Hook llama a `integrations/supabase/queries/*`.
-3. Query usa cliente tipado (`database.types.ts`).
+3. Query usa el cliente Supabase (`client.ts`) contra PostgREST.
 4. RLS filtra por `auth.uid()` en el servidor.
 5. UI renderiza; mutaciones invalidan caché.
 
@@ -153,8 +153,8 @@ Implementado en Fase 1 (ver [13-ESTADO-ACTUAL](13-ESTADO-ACTUAL.md)):
 ## 9. Despliegue
 
 - **Frontend:** Vercel — build `npm run build`, output `dist/`, rewrites SPA.
-- **Backend:** Supabase Cloud — proyecto `igwoavsazbycqmdweger` (eu-west-2).
-- **Edge Functions:** desplegadas en Supabase; código fuente en `supabase/functions/`.
+- **Backend:** Supabase Cloud — proyecto `igwoavsazbycqmdweger` (eu-west-2). Esquema (tablas, RLS, RPC) se gestiona en el dashboard; no hay `supabase/migrations/` en git.
+- **Edge Functions:** código en `supabase/functions/`; se redespliegan en el dashboard cuando cambia el fuente.
 
 ---
 

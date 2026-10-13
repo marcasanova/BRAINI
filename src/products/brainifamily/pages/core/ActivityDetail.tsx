@@ -87,13 +87,9 @@ const ActivityDetail: React.FC = () => {
   return (
     <Backgrounds 
       wrapWithCard={true} 
-      enableInternalScroll={true}
       customColor={activityColor}
       showCircles={true}
     >
-      <div className="h-full flex flex-col relative z-10">
-        <div className="container mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-6 flex-1 flex flex-col min-h-0">
-          <div className="max-w-5xl mx-auto w-full flex flex-col min-h-0">
             <div className="mb-4 md:mb-6 animate-fade-in shrink-0 space-y-4">
               {!loading && !activitiesLoading && currentActivity && (
                 <div className="mb-4">
@@ -124,7 +120,7 @@ const ActivityDetail: React.FC = () => {
               )}
             </div>
 
-            <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0">
+            <div className="overflow-x-hidden">
               {loading || activitiesLoading ? (
                 <div className="text-center text-white/90 py-8 font-medium">Cargando actividad...</div>
               ) : !currentActivity ? (
@@ -184,9 +180,6 @@ const ActivityDetail: React.FC = () => {
                 </div>
               )}
             </div>
-          </div>
-        </div>
-      </div>
     </Backgrounds>
   );
 };
