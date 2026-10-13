@@ -237,18 +237,26 @@ El seed deja el programa pedagógico en su estado inicial (misión actual, resto
 
 
 
-## Presentación y materiales de entrega (TFM)
+## 7. Materiales de entrega (TFM)
 
-- **Slides (Canva, acceso público):** https://canva.link/hnjd5s1evfs60h0
-- **Slides (archivo en el repo):** [docs/presentacion/TFM_Presentacion_BrainiFamily.pdf](docs/presentacion/TFM_Presentacion_BrainiFamily.pdf)
-- **Despliegue:** https://www.brainiemotions.com/
-- **Vídeo de explicación:** _pendiente — se añadirá la URL pública cuando esté publicado_
+Enlaces para la corrección, en el mismo orden que el formulario de entrega del máster.
+
+| Entregable | URL |
+| ---------- | --- |
+| Repositorio | https://github.com/marcasanova/BRAINI |
+| Despliegue | https://www.brainiemotions.com/ |
+| Slides (Canva, acceso público) | https://canva.link/hnjd5s1evfs60h0 |
+| Vídeo de explicación | https://youtu.be/iT1LDEqcht8 |
+
+Copia del PDF de las slides en el repositorio: [docs/presentacion/TFM_Presentacion_BrainiFamily.pdf](docs/presentacion/TFM_Presentacion_BrainiFamily.pdf).
+
+Las cuentas de prueba están en la [sección 6](#6-cuentas-de-evaluación-colegio-tfm). La contraseña se indica solo en el formulario de entrega; no se publica aquí.
 
 ---
 
 
 
-## 7. Licencia y propiedad intelectual
+## 8. Licencia y propiedad intelectual
 
 El código se publica en modo *source-available* para evaluación académica del TFM. **Todos los derechos reservados** (Genius Minds School / Braini Emotions): sin permiso de uso comercial, redistribución ni obras derivadas sin autorización escrita.
 
@@ -260,7 +268,7 @@ El código se publica en modo *source-available* para evaluación académica del
 
 
 
-## 8. Privacidad
+## 9. Privacidad
 
 La [Política de Privacidad y Protección de Datos](https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/documentos/POLITICA%20DE%20PRIVACIDAD%20Y%20PROTECCION%20DE%20DATOS.pdf) (PDF) está alojada en Supabase Storage y enlazada desde la aplicación (landings, login y aceptación obligatoria en los flujos de invitación).
 
