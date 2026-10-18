@@ -12,6 +12,7 @@ export function useMissions(childId: string | undefined) {
   const {
     data: missions = [],
     isLoading,
+    isFetching,
     error,
     refetch,
   } = useQuery({
@@ -36,6 +37,7 @@ export function useMissions(childId: string | undefined) {
   return {
     missions,
     loading: isLoading,
+    fetching: isFetching,
     error: error instanceof Error ? error.message : error ? String(error) : null,
     getAdjacentMissions,
     refreshMissions,

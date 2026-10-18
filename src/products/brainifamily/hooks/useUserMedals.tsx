@@ -11,6 +11,7 @@ export const useUserMedals = (childId: string | undefined) => {
   const {
     data,
     isLoading,
+    isFetching,
     error,
     refetch,
   } = useQuery({
@@ -23,6 +24,7 @@ export const useUserMedals = (childId: string | undefined) => {
     userMedals: data?.userMedals ?? [],
     totalMedals: data?.totalMedals ?? 0,
     loading: isLoading,
+    fetching: isFetching,
     error: error instanceof Error ? error.message : error ? String(error) : null,
     refetch,
   };

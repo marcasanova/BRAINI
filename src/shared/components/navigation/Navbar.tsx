@@ -4,6 +4,7 @@ import { useIsMobile } from '@/shared/hooks/use-mobile';
 import { Home, BookOpen, User, Award, LogOut } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/shared/ui/button';
+import { playSound } from '@/shared/lib/sound';
 
 const NAV_ITEMS = [
   { label: 'Panel de Juego', mobileLabel: 'Sesiones', icon: Home, path: '/brainifamily/home' },
@@ -129,7 +130,7 @@ const Navbar: React.FC = () => {
             return (
               <button
                 key={item.path}
-                onClick={() => navigate(item.path)}
+                onClick={() => { playSound('tap'); navigate(item.path); }}
                 className={`flex flex-col items-center text-xs focus:outline-hidden transition-all duration-200 py-1 px-2 ${
                   isActive ? colorClasses.textActive : 'text-gray-400'
                 }`}
@@ -174,7 +175,7 @@ const Navbar: React.FC = () => {
             return (
               <button
                 key={item.path}
-                onClick={() => navigate(item.path)}
+                onClick={() => { playSound('tap'); navigate(item.path); }}
                 className={`group w-full flex items-center gap-4 p-4 rounded-xl text-left transition-all duration-200 ${
                   isActive 
                     ? `${activeColor} text-white shadow-lg` 

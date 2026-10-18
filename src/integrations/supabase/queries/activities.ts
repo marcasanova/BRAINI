@@ -6,6 +6,7 @@ export const activityKeys = {
   byChild: (childId: string) => ['activities', childId] as const,
   byChildAndMission: (childId: string, missionId: number) =>
     ['activities', childId, missionId] as const,
+  missionsWithContent: ['activities', 'missions-with-content'] as const,
 };
 
 export interface Activity {
@@ -122,4 +123,12 @@ export async function fetchChildActivitiesByMission(
 
   if (error) throw error;
   return mapUserActivities((data ?? []) as UserActivityRow[]);
+}
+
+/** Ids de misión que tienen al menos una actividad en el catálogo (el resto están «en desarrollo»). */
+export async function fetchMissionIdsWithActivities(): Promise<Set<number>> {
+  const { data, error } = await supabase.from('activities').select('mission_id');
+
+  if (error) throw error;
+  return new Set((data ?? []).map((row) => row.mission_id as number));
 }

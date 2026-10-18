@@ -1,5 +1,8 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate, useLocation } from "react-router";
+import { useQueryClient } from "@tanstack/react-query";
+import { medalKeys } from "@/integrations/supabase/queries/medals";
+import { missionKeys } from "@/integrations/supabase/queries/missions";
 import { supabase } from "@/integrations/supabase/client";
 import { MissionWithProgress } from "@/products/brainifamily/hooks/useMissions";
 import { useCurrentChild } from "@/products/brainifamily/hooks/useCurrentChild";
@@ -25,6 +28,7 @@ const Activities: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
+  const queryClient = useQueryClient();
   const { child, childId } = useCurrentChild();
   const [currentMission, setCurrentMission] = useState<MissionWithProgress | null>(null);
   const [loading, setLoading] = useState(true);
@@ -148,6 +152,11 @@ const Activities: React.FC = () => {
     const missionIdCompleted = parseInt(id!, 10);
     const missionIdNextUnlocked = nextMission?.missions?.id ?? undefined;
     setEarnedMedal(null);
+    // Forzar datos frescos en Home para animar el progreso desde N-1 hasta N
+    if (childId) {
+      void queryClient.invalidateQueries({ queryKey: medalKeys.byChild(childId) });
+      void queryClient.invalidateQueries({ queryKey: missionKeys.byChild(childId) });
+    }
     navigate('/brainifamily/home', {
       state: {
         playMedalAnimation: true,

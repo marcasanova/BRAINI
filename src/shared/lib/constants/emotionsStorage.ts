@@ -1,11 +1,14 @@
 /**
  * URLs base de los buckets de Supabase para imágenes de emociones.
  *
- * - EMOTIONS_INFANTIL_URL: usado en actividades, diario y medallas.
+ * - EMOTIONS_INFANTIL_URL: usado en actividades y diario.
  *   Formato general emociones: "{numero}.%20{Nombre}.png"
  *
  * - EMOTIONS_PRIMARIA_STORAGE_URL: usado en LandingPage y landings (BrainiFamilyLanding).
  *   Formato general emociones: "{numero}.%20{Nombre}.jpg"
+ *
+ * La medalla de logro es un asset de producto en `public/logo/medalla-braini.png`
+ * (misma imagen para todos los niveles educativos).
  */
 export const EMOTIONS_INFANTIL_URL =
   'https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emociones_infantil';
@@ -13,33 +16,12 @@ export const EMOTIONS_INFANTIL_URL =
 export const EMOTIONS_PRIMARIA_STORAGE_URL =
   'https://igwoavsazbycqmdweger.supabase.co/storage/v1/object/public/emociones_primaria';
 
-// URLs específicas para medallas (infantil)
-export const MEDAL_INFANTIL_3_URL = `${EMOTIONS_INFANTIL_URL}/Medalla3anos.png`;
-export const MEDAL_INFANTIL_4_URL = `${EMOTIONS_INFANTIL_URL}/Medalla4anos.png`;
-export const MEDAL_INFANTIL_5_URL = `${EMOTIONS_INFANTIL_URL}/Medalla5anos.png`;
-
-// Imagen por defecto de medalla (orgullo) cuando no es infantil
-export const MEDAL_ORGULLO_URL = `${EMOTIONS_INFANTIL_URL}/23.%20Orgullo.png`;
+export const MEDAL_IMAGE_URL = '/logo/medalla-braini.png';
 
 /**
- * Devuelve la URL de la imagen de medalla en función del nivel educativo del niño.
- *
- * - infantil_3 -> Medalla3anos
- * - infantil_4 -> Medalla4anos
- * - infantil_5 -> Medalla5anos
- * - cualquier otro valor o undefined -> medalla de Orgullo actual
+ * Imagen de medalla de misión. Una sola pieza de marca; el argumento se
+ * conserva por compatibilidad con los consumidores existentes.
  */
 export const getMedalImageForNivelEducativo = (
-  nivelEducativo?: string | null
-): string => {
-  switch (nivelEducativo) {
-    case 'infantil_3':
-      return MEDAL_INFANTIL_3_URL;
-    case 'infantil_4':
-      return MEDAL_INFANTIL_4_URL;
-    case 'infantil_5':
-      return MEDAL_INFANTIL_5_URL;
-    default:
-      return MEDAL_ORGULLO_URL;
-  }
-};
+  _nivelEducativo?: string | null
+): string => MEDAL_IMAGE_URL;

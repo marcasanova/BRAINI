@@ -1,13 +1,24 @@
 import Backgrounds from '@/shared/components/Backgrounds';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useCurrentChild } from '@/products/brainifamily/hooks/useCurrentChild';
 import { useMissions } from '@/products/brainifamily/hooks/useMissions';
 import { useUserMedals } from '@/products/brainifamily/hooks/useUserMedals';
-import MissionList from '@/products/brainifamily/features/missions/MissionList';
+import MissionMap from '@/products/brainifamily/features/missionMap/MissionMap';
+import MissionDetailPanel from '@/products/brainifamily/features/missionMap/MissionDetailPanel';
+import {
+  buildMapSquares,
+  defaultSelectedMission,
+  isPlayable,
+} from '@/products/brainifamily/features/missionMap/missionMapLayout';
+import { useMissionsWithContent } from '@/products/brainifamily/hooks/useMissionsWithContent';
 import MedalShelf from '@/products/brainifamily/features/medals/MedalShelf';
+import {
+  MEDAL_SHELF_ANIMATION_DELAY_MS,
+  MEDAL_SHELF_ANIMATION_DURATION_MS,
+  prefersReducedMotion,
+} from '@/products/brainifamily/features/medals/celebration';
 import MapDownload from '@/shared/components/MapDownload';
-import { useToast } from '@/shared/hooks/use-toast';
 import {
   Select,
   SelectContent,
@@ -15,48 +26,128 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/shared/ui/select';
+import { playSound } from '@/shared/lib/sound';
 
-interface MedalHighlightState {
-  missionIdCompleted?: number;
+interface MedalCelebration {
+  missionIdCompleted: number;
   missionIdNextUnlocked?: number;
+}
+
+/** Fases de la celebración al volver de «Guardar medalla» */
+type CelebrationPhase = 'waiting' | 'medals' | 'scroll' | 'highlight';
+
+/** Pausa tras subir el progreso antes de bajar a la misión */
+const PAUSE_AFTER_MEDALS_MS = 500;
+/** Tiempo aproximado del scroll suave hasta la misión */
+const SCROLL_DURATION_MS = 800;
+/** Cuánto dura el resaltado de la misión desbloqueada */
+const HIGHLIGHT_DURATION_MS = 4500;
+
+function readCelebrationFromState(state: unknown): MedalCelebration | null {
+  const s = state as { playMedalAnimation?: boolean; missionIdCompleted?: number; missionIdNextUnlocked?: number } | null;
+  if (!s?.playMedalAnimation || s.missionIdCompleted == null) return null;
+  return { missionIdCompleted: s.missionIdCompleted, missionIdNextUnlocked: s.missionIdNextUnlocked };
 }
 
 const Home = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { child, childId, children: childrenList, setCurrentChildId, loading: childLoading } = useCurrentChild();
-  const [medalHighlight, setMedalHighlight] = useState<MedalHighlightState>({});
-  const { toast } = useToast();
+  // Se lee en el primer render para que MedalShelf monte ya en el estado «antes» (N-1)
+  const [celebration, setCelebration] = useState<MedalCelebration | null>(() =>
+    readCelebrationFromState(location.state),
+  );
+  const [phase, setPhase] = useState<CelebrationPhase>('waiting');
 
-  const { missions, loading, error } = useMissions(childId);
-  const { userMedals, totalMedals, loading: medalsLoading } = useUserMedals(childId);
+  const { missions, loading, fetching: missionsFetching, error } = useMissions(childId);
+  const { userMedals, totalMedals, loading: medalsLoading, fetching: medalsFetching } = useUserMedals(childId);
 
-  const userMedalsMap = useMemo(() => {
-    const map = new Map<number, string>();
-    userMedals.forEach((medal) => {
-      map.set(medal.medal_id, medal.fecha_obtencion);
-    });
-    return map;
-  }, [userMedals]);
+  const { missionIdsWithContent, loading: contentLoading } = useMissionsWithContent();
 
-  // Al llegar desde "Guardar medalla", mostrar highlights en la lista de misiones y limpiar location.state
+  const squares = useMemo(() => {
+    const medalDates = new Map(userMedals.map((m) => [m.medal_id, m.fecha_obtencion]));
+    return buildMapSquares(missions, missionIdsWithContent, medalDates);
+  }, [missions, missionIdsWithContent, userMedals]);
+
+  const [selectedMission, setSelectedMission] = useState<number | null>(null);
+  const effectiveSelected = selectedMission ?? defaultSelectedMission(squares);
+  const selectedSquare = squares.find((s) => s.mission === effectiveSelected) ?? squares[0];
+  const detailPanelRef = useRef<HTMLDivElement>(null);
+
+  const handleSelectMission = (mission: number) => {
+    const square = squares.find((s) => s.mission === mission);
+    playSound(square && isPlayable(square) ? 'select' : 'locked');
+    setSelectedMission(mission);
+    // En móvil/tablet el panel está debajo del mapa: acercarlo para que se vea
+    if (!window.matchMedia('(min-width: 1024px)').matches) {
+      requestAnimationFrame(() => detailPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }));
+    }
+  };
+
+  // Limpiar location.state para que la celebración no se repita al recargar
   useEffect(() => {
-    const state = location.state as { playMedalAnimation?: boolean; missionIdCompleted?: number; missionIdNextUnlocked?: number } | null;
-    if (state?.playMedalAnimation && state.missionIdCompleted != null) {
-      setMedalHighlight({
-        missionIdCompleted: state.missionIdCompleted,
-        missionIdNextUnlocked: state.missionIdNextUnlocked,
-      });
+    if (readCelebrationFromState(location.state)) {
+      setCelebration(readCelebrationFromState(location.state));
+      setPhase('waiting');
       navigate(location.pathname, { replace: true, state: {} });
     }
   }, [location.state, location.pathname, navigate]);
 
-  // Quitar highlights tras 2.5s
+  // Hasta tener medallas y misiones frescas no arrancamos (evita animar con datos en caché)
+  const waitingForFreshData = celebration != null && phase === 'waiting' && (medalsFetching || missionsFetching);
+
+  /** Se baja a la misión desbloqueada si es jugable; si está en desarrollo, a la recién completada */
+  const celebrationTarget = useCallback(
+    (c: MedalCelebration): number => {
+      const unlocked = squares.find((s) => s.mission === c.missionIdNextUnlocked);
+      return unlocked && isPlayable(unlocked) ? unlocked.mission : c.missionIdCompleted;
+    },
+    [squares],
+  );
+
+  const celebrationTimersRef = useRef<number[]>([]);
+  useEffect(() => () => celebrationTimersRef.current.forEach((t) => window.clearTimeout(t)), []);
+
+  // Secuencia: subir progreso de medallas → bajar a la misión desbloqueada → iluminarla
   useEffect(() => {
-    if (medalHighlight.missionIdCompleted == null) return;
-    const t = setTimeout(() => setMedalHighlight({}), 2500);
-    return () => clearTimeout(t);
-  }, [medalHighlight.missionIdCompleted]);
+    if (!celebration || phase !== 'waiting') return;
+    if (childLoading || loading || medalsLoading || contentLoading || waitingForFreshData) return;
+
+    const reduced = prefersReducedMotion();
+    const timers: number[] = [];
+    const after = (ms: number, fn: () => void) => timers.push(window.setTimeout(fn, ms));
+
+    setPhase('medals');
+    window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
+
+    const medalsMs = reduced ? 0 : MEDAL_SHELF_ANIMATION_DELAY_MS + MEDAL_SHELF_ANIMATION_DURATION_MS + PAUSE_AFTER_MEDALS_MS;
+    after(medalsMs, () => {
+      setPhase('scroll');
+      const targetId = celebrationTarget(celebration);
+      setSelectedMission(targetId);
+      document
+        .getElementById(`mission-${targetId}`)
+        ?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' });
+    });
+    after(medalsMs + (reduced ? 0 : SCROLL_DURATION_MS), () => {
+      if (celebration.missionIdNextUnlocked != null) playSound('unlock');
+      setPhase('highlight');
+    });
+    after(medalsMs + (reduced ? 0 : SCROLL_DURATION_MS) + HIGHLIGHT_DURATION_MS, () => {
+      setCelebration(null);
+      setPhase('waiting');
+    });
+    // Los timers se limpian solo al desmontar: el cambio de fase no debe cancelar la secuencia
+    celebrationTimersRef.current = timers;
+  }, [celebration, celebrationTarget, phase, childLoading, loading, medalsLoading, contentLoading, waitingForFreshData]);
+
+  const medalsAnimateFrom = celebration ? Math.max(0, userMedals.length - 1) : undefined;
+  const highlightActive = celebration != null && phase === 'highlight';
+  const highlightMissionUnlocked =
+    highlightActive && celebrationTarget(celebration) === celebration.missionIdNextUnlocked
+      ? celebration.missionIdNextUnlocked
+      : undefined;
+  const highlightMissionCompleted = highlightActive ? celebration.missionIdCompleted : undefined;
 
   return (
     <Backgrounds
@@ -87,7 +178,7 @@ const Home = () => {
 
       {/* Área de contenido con scroll */}
       <div>
-        {childLoading || loading || medalsLoading ? (
+        {childLoading || loading || medalsLoading || contentLoading || waitingForFreshData ? (
           <div className="text-center text-white/90 py-8 font-medium">Cargando misiones...</div>
         ) : error ? (
           <div className="text-center text-red-200 py-8 font-medium">{error}</div>
@@ -100,6 +191,7 @@ const Home = () => {
                 totalMedals={totalMedals}
                 isLoading={medalsLoading}
                 childNivelEducativo={child?.nivel_educativo ?? undefined}
+                animateFrom={medalsAnimateFrom}
               />
             </div>
 
@@ -152,32 +244,15 @@ const Home = () => {
                     </div>
                   </div>
 
-                  {/* Dos columnas: mapa a la izquierda, tipos de actividades a la derecha */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-                    {/* Columna izquierda: mapa y botón de descarga (en escritorio se ajusta al alto de la columna derecha) */}
-                    <div className="md:relative">
-                      <div className="flex flex-col md:absolute md:inset-0">
-                        <h3 className="text-lg md:text-xl font-bold text-gray-800 mb-3 flex items-center gap-2 shrink-0">
-                          Mapa de misiones
-                        </h3>
-                        <MapDownload
-                          showImage
-                          fillHeight
-                          className="md:flex-1 md:min-h-0"
-                          buttonText="¡Descarga el mapa para vivir la aventura!"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Columna derecha: tipos de actividades */}
-                    <div className="flex flex-col">
+                  {/* Tipos de actividades */}
+                  <div>
                       <h3 className="text-lg md:text-xl font-bold text-gray-800 mb-3 flex items-center gap-2">
                         Así son nuestras misiones de BRAINI:
                       </h3>
                       <p className="text-sm md:text-base text-gray-600 mb-4 font-medium">
                         Cada misión contiene <span className="font-bold">4 actividades</span> diferentes, cada una con su propio color para que las identifiques fácilmente:
                       </p>
-                      <div className="flex flex-col gap-3 md:gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                         {/* 1. Inteligencia Emocional */}
                         <div className="p-4 rounded-xl bg-linear-to-br from-braini-blue/5 to-braini-blue/10 border-2 border-braini-blue/30 flex items-start gap-3">
                           <div className="w-12 h-12 rounded-lg bg-braini-blue/20 flex items-center justify-center shrink-0">
@@ -251,23 +326,42 @@ const Home = () => {
                         </div>
                       </div>
                     </div>
-                  </div>
                 </li>
               </ul>
             </div>
 
-            {/* Resto de misiones */}
-            <div className="bg-white/95 backdrop-blur-lg p-4 md:p-6 rounded-xl md:rounded-2xl shadow-xl border-0 animate-fade-in">
-              <ul className="space-y-3 md:space-y-4">
-                <MissionList
-                  missions={missions}
-                  userMedals={userMedalsMap}
-                  childNivelEducativo={child?.nivel_educativo ?? undefined}
-                  highlightMissionCompleted={medalHighlight.missionIdCompleted}
-                  highlightMissionUnlocked={medalHighlight.missionIdNextUnlocked}
+            {/* Mapa de la aventura: tablero interactivo de misiones */}
+            <section
+              aria-labelledby="mapa-aventura-title"
+              className="bg-white/95 backdrop-blur-lg p-4 md:p-6 rounded-xl md:rounded-2xl shadow-xl border-0 animate-fade-in"
+            >
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4">
+                <h2 id="mapa-aventura-title" className="text-braini-blue font-bold text-2xl md:text-3xl" style={{ fontWeight: 700 }}>
+                  Mapa de la aventura
+                </h2>
+                <MapDownload buttonText="¡Descarga el mapa para vivir la aventura!" />
+              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-[auto_minmax(0,1fr)] gap-4 md:gap-6 items-start">
+                <MissionMap
+                  squares={squares}
+                  selectedMission={effectiveSelected}
+                  onSelect={handleSelectMission}
+                  highlightUnlocked={highlightMissionUnlocked}
+                  highlightCompleted={highlightMissionCompleted}
+                  className="lg:w-[min(64vh,38rem)]"
                 />
-              </ul>
-            </div>
+                {selectedSquare && (
+                  <div className="lg:sticky lg:top-6">
+                    <MissionDetailPanel
+                      ref={detailPanelRef}
+                      square={selectedSquare}
+                      childNivelEducativo={child?.nivel_educativo ?? undefined}
+                      highlighted={highlightMissionUnlocked != null && selectedSquare.mission === highlightMissionUnlocked}
+                    />
+                  </div>
+                )}
+              </div>
+            </section>
           </div>
         )}
       </div>

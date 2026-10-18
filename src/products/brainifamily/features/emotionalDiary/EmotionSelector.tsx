@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, CardContent } from '@/shared/ui/card';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/shared/ui/tooltip';
+import { playSound } from '@/shared/lib/sound';
 
 interface EmotionConfig {
   id: number;
@@ -49,7 +50,7 @@ const EmotionSelector: React.FC<EmotionSelectorProps> = ({
                 <Tooltip key={emotion.id}>
                   <TooltipTrigger asChild>
                     <button
-                      onClick={() => !disabled && onEmotionSelect(emotion)}
+                      onClick={() => { if (disabled) return; playSound('select'); onEmotionSelect(emotion); }}
                       disabled={disabled}
                       className={`
                         relative group flex flex-col items-center p-2 sm:p-3 rounded-xl transition-all duration-300 transform

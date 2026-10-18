@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useCurrentChild } from '@/products/brainifamily/hooks/useCurrentChild';
 import { useUserActivitiesByMission } from '@/products/brainifamily/hooks/useUserActivities';
@@ -13,6 +13,9 @@ import {
   getMainTitleTextClasses
 } from '@/products/brainifamily/features/activities/utils/ActivityColors';
 
+/** Pausa tras valorar para que se vea el aviso antes de pasar a la siguiente actividad */
+const AUTO_ADVANCE_DELAY_MS = 600;
+
 const ActivityDetail: React.FC = () => {
   const { missionId: missionIdParam, activityId } = useParams<{ missionId: string; activityId: string }>();
   const navigate = useNavigate();
@@ -25,6 +28,21 @@ const ActivityDetail: React.FC = () => {
   useEffect(() => {
     if (childId) setLoading(false);
   }, [childId]);
+
+  const autoAdvanceTimeoutRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (autoAdvanceTimeoutRef.current != null) {
+        window.clearTimeout(autoAdvanceTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  // Al pasar a otra actividad, empezar desde arriba
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, [activityId]);
 
   const handleBackToMission = () => {
     navigate(`/brainifamily/sesion/${missionIdParam}`);
@@ -164,11 +182,23 @@ const ActivityDetail: React.FC = () => {
 
                     {childId && (
                       <ActivityRating 
+                        key={activityId}
                         activityId={parseInt(activityId!, 10)}
                         childId={childId}
                         missionId={missionId}
                         activityType={currentActivity?.activities.tipo_actividad}
-                        onRatingSubmitted={() => {}}
+                        onRatingSubmitted={({ isFirstRating, missionCompleted }) => {
+                          // Solo una valoración nueva avanza; al actualizar una existente nos quedamos
+                          if (!isFirstRating || missionCompleted) return;
+                          const nextId = nextActivity?.id;
+                          autoAdvanceTimeoutRef.current = window.setTimeout(() => {
+                            if (nextId != null) {
+                              handleActivityNavigate(nextId);
+                            } else {
+                              handleBackToMission();
+                            }
+                          }, AUTO_ADVANCE_DELAY_MS);
+                        }}
                         onMedalEarned={() => {
                           setTimeout(() => {
                             navigate(`/brainifamily/sesion/${missionIdParam}?medalEarned=true`);
