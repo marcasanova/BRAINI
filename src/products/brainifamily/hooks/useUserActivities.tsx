@@ -32,20 +32,28 @@ export interface ActivityNavigationProps {
   onBackToMission: () => void;
 }
 
+export interface EarnedMedal {
+  id: number;
+  mission_id: number;
+  nombre: string;
+  descripcion: string | null;
+  icono: string;
+  color: string;
+}
+
+export interface RatingSubmittedInfo {
+  /** true si la actividad no tenía valoración previa */
+  isFirstRating: boolean;
+  missionCompleted: boolean;
+}
+
 export interface ActivityRatingProps {
   activityId: number;
   childId: string;
   missionId?: number;
   activityType?: string;
-  onRatingSubmitted?: () => void;
-  onMedalEarned?: (medal: {
-    id: number;
-    mission_id: number;
-    nombre: string;
-    descripcion: string | null;
-    icono: string;
-    color: string;
-  }) => void;
+  onRatingSubmitted?: (info: RatingSubmittedInfo) => void;
+  onMedalEarned?: (medal: EarnedMedal) => void;
 }
 
 export interface ActivityListProps {

@@ -20,6 +20,8 @@ import {
   isChildAvatarId,
 } from '@/products/brainifamily/lib/childAvatars';
 import { sortChildrenByName } from '@/products/brainifamily/lib/sortChildrenByName';
+import { playSound } from '@/shared/lib/sound';
+import { useSoundMuted } from '@/shared/hooks/use-sound-muted';
 import {
   fetchFamilyChildProgress,
   type ChildProgressStats,
@@ -34,6 +36,8 @@ import {
   Phone,
   Heart,
   Brain,
+  Volume2,
+  VolumeX,
   Users,
   School,
   GraduationCap,
@@ -170,6 +174,7 @@ const Profile = () => {
   const [parentForm, setParentForm] = useState<Partial<ParentProfile>>({});
   const [childForm, setChildForm] = useState<Partial<ChildProfileRow>>({});
   const [accordionValue, setAccordionValue] = useState<string>('');
+  const [soundMuted, setSoundMuted] = useSoundMuted();
   const [avatarPickerOpen, setAvatarPickerOpen] = useState(false);
   const [savingChild, setSavingChild] = useState(false);
   const [progressByChild, setProgressByChild] = useState<Record<string, ChildProgressStats>>({});
@@ -871,6 +876,41 @@ const Profile = () => {
                           Los resultados de tus tests aparecerán aquí
                         </p>
                       </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0">
+                    <CardHeader className="pb-3 sm:pb-4">
+                      <CardTitle className="flex items-center gap-2 sm:gap-3 text-base sm:text-lg md:text-xl text-gray-800">
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 bg-braini-blue rounded-lg flex items-center justify-center shrink-0">
+                          {soundMuted ? <VolumeX className="w-4 h-4 sm:w-5 sm:h-5 text-white" /> : <Volume2 className="w-4 h-4 sm:w-5 sm:h-5 text-white" />}
+                        </div>
+                        Sonidos
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <button
+                        type="button"
+                        role="switch"
+                        aria-checked={!soundMuted}
+                        onClick={() => {
+                          setSoundMuted(!soundMuted);
+                          if (soundMuted) playSound('tap');
+                        }}
+                        className="w-full flex items-center justify-between gap-4 rounded-xl border border-gray-200 p-3 sm:p-4 text-left hover:border-braini-blue/40 transition-colors"
+                      >
+                        <span className="text-sm sm:text-base font-medium text-gray-700">
+                          {soundMuted ? 'Sonidos silenciados' : 'Sonidos activados'}
+                        </span>
+                        <span
+                          aria-hidden="true"
+                          className={`relative inline-flex h-6 w-11 shrink-0 rounded-full transition-colors ${soundMuted ? 'bg-gray-300' : 'bg-braini-blue'}`}
+                        >
+                          <span
+                            className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${soundMuted ? '' : 'translate-x-5'}`}
+                          />
+                        </span>
+                      </button>
                     </CardContent>
                   </Card>
                 </div>

@@ -3,8 +3,11 @@ import { Button } from '@/shared/ui/button';
 import { Textarea } from '@/shared/ui/textarea';
 import { Star } from 'lucide-react';
 import { useToast } from '@/shared/hooks/use-toast';
+import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { ActivityRatingProps } from '@/products/brainifamily/hooks/useUserActivities';
+import { activityKeys } from '@/integrations/supabase/queries/activities';
+import { ActivityRatingProps, type EarnedMedal } from '@/products/brainifamily/hooks/useUserActivities';
+import { playSound } from '@/shared/lib/sound';
 
 const ActivityRating: React.FC<ActivityRatingProps> = ({ 
   activityId, 
@@ -20,6 +23,7 @@ const ActivityRating: React.FC<ActivityRatingProps> = ({
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const buttonRef = React.useRef<HTMLButtonElement>(null);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   // Función para obtener las clases del botón según el tipo de actividad
   const getButtonClasses = () => {
@@ -61,16 +65,15 @@ const ActivityRating: React.FC<ActivityRatingProps> = ({
   }, [childId, activityId]);
 
   const handleStarClick = (starValue: number) => {
+    playSound('select');
     setRating(starValue);
   };
 
-  // Solo mostrar popup de medalla cuando la misión acaba de completarse (4ª actividad valorada).
-  // No comprobamos child_medals: el trigger en BD ya inserta la medalla; mostramos el popup si la misión está completada tras esta valoración.
-  const checkMissionCompletion = async (currentMissionId: number) => {
-    if (!onMedalEarned || !childId) return;
+  // Solo se comprueba tras la primera valoración: el trigger en BD completa la misión e inserta la
+  // medalla al valorar la 4ª actividad. Al actualizar una valoración no se vuelve a mostrar la medalla.
+  const fetchMedalIfMissionCompleted = async (currentMissionId: number): Promise<EarnedMedal | null> => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 400));
-
+      // El trigger corre en la misma transacción del update: al volver, la misión ya está actualizada
       const { data: missionData, error: missionError } = await supabase
         .from('child_missions')
         .select('status, completed_at')
@@ -78,8 +81,8 @@ const ActivityRating: React.FC<ActivityRatingProps> = ({
         .eq('mission_id', currentMissionId)
         .single();
 
-      if (missionError || !missionData) return;
-      if (missionData.status !== 'completed' || !missionData.completed_at) return;
+      if (missionError || !missionData) return null;
+      if (missionData.status !== 'completed' || !missionData.completed_at) return null;
 
       const { data: medalData, error: medalError } = await supabase
         .from('medals')
@@ -87,11 +90,10 @@ const ActivityRating: React.FC<ActivityRatingProps> = ({
         .eq('mission_id', currentMissionId)
         .single();
 
-      if (!medalError && medalData) {
-        onMedalEarned(medalData);
-      }
+      return !medalError && medalData ? medalData : null;
     } catch (error) {
       console.error('Error al verificar completado de la misión:', error);
+      return null;
     }
   };
 
@@ -148,6 +150,7 @@ const ActivityRating: React.FC<ActivityRatingProps> = ({
 
       if (error) throw error;
 
+      const isFirstRating = !hasRated;
       setHasRated(true);
       
       // Resetear el estado de submitting antes de mostrar el toast
@@ -164,11 +167,20 @@ const ActivityRating: React.FC<ActivityRatingProps> = ({
       });
 
       if (missionId != null) {
-        checkMissionCompletion(missionId).catch(() => {});
+        void queryClient.invalidateQueries({
+          queryKey: activityKeys.byChildAndMission(childId, missionId),
+        });
       }
 
-      if (onRatingSubmitted) {
-        onRatingSubmitted();
+      const medal =
+        isFirstRating && missionId != null && onMedalEarned
+          ? await fetchMedalIfMissionCompleted(missionId)
+          : null;
+
+      if (medal) {
+        onMedalEarned?.(medal);
+      } else {
+        onRatingSubmitted?.({ isFirstRating, missionCompleted: false });
       }
 
     } catch (error) {

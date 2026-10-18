@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button } from '@/shared/ui/button';
 import { Sparkles, Star } from 'lucide-react';
 import { getMedalImageForNivelEducativo } from '@/shared/lib/constants/emotionsStorage';
+import { playSound } from '@/shared/lib/sound';
 
 interface Medal {
   id: number;
@@ -85,6 +86,7 @@ const MedalAnimation: React.FC<MedalAnimationProps> = ({
   useEffect(() => {
     // Secuencia de animación
     setIsVisible(true);
+    playSound('medal');
     
     setTimeout(() => {
       setShowContent(true);
@@ -151,7 +153,7 @@ const MedalAnimation: React.FC<MedalAnimationProps> = ({
               <img 
                 src={medalImage} 
                 alt="Medalla Braini" 
-                className="w-28 h-28 md:w-32 md:h-32 rounded-full object-cover mx-auto mb-4 animate-bounce shadow-lg border-2 border-gray-200"
+                className="w-28 h-28 md:w-32 md:h-32 object-contain mx-auto mb-4 animate-bounce"
               />
             </div>
           </div>
@@ -210,13 +212,16 @@ const MedalAnimation: React.FC<MedalAnimationProps> = ({
             }`}
           >
             <Button
-              onClick={onClose}
+              onClick={() => {
+                playSound('confirm');
+                onClose();
+              }}
               className="bg-linear-to-r from-braini-blue to-braini-blue-light hover:from-braini-blue-dark hover:to-braini-blue text-white font-semibold py-3 px-8 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 text-lg min-w-[200px] animate-fade-in-up"
             >
               <img 
                 src={medalImage} 
                 alt="Medalla Braini" 
-                className="w-6 h-6 rounded-full object-cover mr-2"
+                className="w-6 h-6 object-contain mr-2"
               />
               Guardar medalla
             </Button>

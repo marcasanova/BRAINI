@@ -30,7 +30,7 @@ src/
 │   ├── brainijuniors/      # Landing /brainijuniors
 │   └── brainifamily/       # App B2B completa
 │       ├── pages/          # Pantallas por ruta
-│       ├── features/       # Módulos UI (activities, medals, teacher…)
+│       ├── features/       # Módulos UI (activities, medals, missionMap, teacher…)
 │       ├── hooks/          # Hooks de dominio
 │       ├── contexts/       # CurrentChild, Teacher
 │       └── lib/            # Utilidades de invitaciones teacher
@@ -144,6 +144,8 @@ Las actividades pedagógicas tienen componente React propio en `features/activit
 
 Esto evita incluir todo el contenido pedagógico en el bundle inicial.
 
+**Tablero de misiones (Home).** Las misiones se eligen sobre el mapa de la aventura (`features/missionMap/`). La base es `public/map/tablero-base.webp` (camino en blanco, sin números) y encima un SVG dibuja las 25 casillas con su forma exacta (`missionMapBoard.ts`: contorno, centroide y color original de cada una; casilla N = misión N): superadas y actual a color (la actual con halo, destello y número animado), bloqueadas en blanco y negro (tablones en gris) y «en desarrollo» lavadas con rayado. Una casilla está «en desarrollo» si la misión no tiene fila en `child_missions` o no tiene actividades; al añadir contenido pasa a jugable sin tocar código. Las formas dependen al píxel de la imagen base: si cambia, hay que regenerarlas (`/brainifamily/home?mapDebug=1` en desarrollo muestra los contornos). El mapa descargable sigue siendo el original a color del bucket.
+
 ---
 
 ## 7. Contextos de dominio
@@ -164,6 +166,8 @@ Esto evita incluir todo el contenido pedagógico en el bundle inicial.
 - **Navegación app:** `Navbar` (contexto autenticado).
 
 ---
+
+- **Sonidos (solo BrainiFamily):** `shared/lib/sound.ts` sintetiza tonos con la Web Audio API (sin ficheros). `toast()` en `shared/hooks/use-toast.ts` es el punto único: `destructive` suena como error y el resto como éxito. El silencio se guarda en `localStorage` (`braini_sound_muted`) y se cambia desde la tarjeta «Sonidos» de Perfil (`useSoundMuted`). Es una preferencia del dispositivo, no va a Supabase.
 
 ## 9. Code splitting
 

@@ -5,6 +5,7 @@ import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Progress } from '@/shared/ui/progress';
 import { Brain, Heart, TrendingUp, CheckCircle, AlertCircle, Info, ArrowLeft, Award } from 'lucide-react';
+import { playSound } from '@/shared/lib/sound';
 
 interface TMMSQuestion {
   id: number;
@@ -67,6 +68,7 @@ const TestTMMSPadres = () => {
 
   // Manejar respuesta del usuario
   const handleAnswer = (value: number) => {
+    playSound('select');
     const newAnswers = [...answers];
     newAnswers[currentQuestion] = value;
     setAnswers(newAnswers);
