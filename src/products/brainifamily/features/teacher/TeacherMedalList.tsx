@@ -89,7 +89,7 @@ const TeacherMedalList: React.FC<TeacherMedalListProps> = ({ childId }) => {
                     <img
                       src={medalImage}
                       alt={medal.nombre}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain"
                     />
                   ) : (
                     <div className="w-6 h-6 rounded-full border-2 border-dashed border-gray-300" />

@@ -44,7 +44,7 @@ const Medal: React.FC<MedalProps> = ({ missionNumber, isEarned, earnedAt, onClic
               <img 
                 src={medalImage} 
                 alt="Medalla Braini" 
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
               />
             ) : (
               <Circle className="w-5 h-5 text-gray-400" />
