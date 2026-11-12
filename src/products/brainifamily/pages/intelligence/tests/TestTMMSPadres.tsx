@@ -302,9 +302,9 @@ const TestTMMSPadres = () => {
               </Button>
               <Button
                 onClick={goBackToTests}
-                className="bg-braini-yellow hover:bg-braini-yellow-dark text-white font-bold py-3 px-8 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 text-lg"
+                className="bg-braini-yellow hover:bg-braini-yellow-light text-ink font-bold py-3 px-8 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 text-lg"
               >
-                Volver a Tests
+                Volver a Evaluar y crecer
               </Button>
             </div>
       </Backgrounds>
@@ -327,7 +327,7 @@ const TestTMMSPadres = () => {
               className="border-2 border-gray-300 text-gray-700 hover:border-braini-yellow hover:text-braini-yellow hover:bg-white/50 font-semibold py-2 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Volver a Inteligencia Emocional
+              Volver a Evaluar y crecer
             </Button>
           </div>
 
@@ -405,7 +405,7 @@ const TestTMMSPadres = () => {
                       className={`
                         h-16 border-2 font-semibold text-lg transition-all duration-200
                         ${answers[currentQuestion] === value
-                          ? 'border-braini-yellow bg-braini-yellow text-white shadow-lg'
+                          ? 'border-braini-yellow bg-braini-yellow text-ink shadow-lg'
                           : 'border-gray-300 text-gray-700 hover:border-braini-yellow hover:text-braini-yellow'
                         }
                       `}

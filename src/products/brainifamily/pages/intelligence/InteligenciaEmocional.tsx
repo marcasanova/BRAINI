@@ -1,21 +1,20 @@
 import React from 'react';
-import { useNavigate } from 'react-router';
+import { Link } from 'react-router';
+import { Clock } from 'lucide-react';
 import Backgrounds from '@/shared/components/Backgrounds';
-import { Button } from '@/shared/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
-import { ArrowRight, Award } from 'lucide-react';
+
+const TMMS_FACTS = [
+  { label: 'Duración', value: '15–20 minutos' },
+  { label: 'Preguntas', value: '24, con una escala del 1 al 5' },
+  { label: 'Resultado', value: 'Tu perfil y recomendaciones para el día a día' },
+];
+
+const UNIVERSITIES = [
+  { name: 'Universidad de Cádiz', logo: '/unis/logo_cadiz.png' },
+  { name: 'Universidad de Alicante', logo: '/unis/logo_alicante.png' },
+];
 
 const InteligenciaEmocional = () => {
-  const navigate = useNavigate();
-
-  const handleTestPadres = () => {
-    navigate('/brainifamily/test-tmms-padres');
-  };
-
-  const handleTestNinos = () => {
-    navigate('/brainifamily/test-emocional-ninos');
-  };
-
   return (
     <Backgrounds
       wrapWithCard
@@ -23,124 +22,69 @@ const InteligenciaEmocional = () => {
       title="Evaluar y crecer"
       subtitle="Tests para conocer mejor tu inteligencia emocional y la de tu hijo o hija."
     >
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] gap-6 items-start">
+        {/* Protagonista: el test disponible */}
+        <section aria-labelledby="tmms-title" className="bg-white rounded-2xl shadow-surface p-5 sm:p-7">
+          <h2 id="tmms-title" className="font-display text-2xl sm:text-3xl font-semibold text-ink">
+            Test TMMS-24 para padres
+          </h2>
+          <p className="mt-2 text-base text-ink/80 max-w-prose">
+            24 preguntas sobre cómo percibes, comprendes y regulas tus emociones. Al terminar verás tu perfil en
+            cada una de las tres áreas.
+          </p>
 
-          {/* Área de contenido con scroll */}
-          <div>
-            {/* Sección de Credibilidad - Primero */}
-            <Card className="bg-white border-0 rounded-2xl shadow-surface mb-6 sm:mb-8">
-              <CardContent className="p-4 sm:p-5 md:p-6">
-                <div>
-                  <h3 className="text-base sm:text-lg md:text-xl font-semibold text-gray-800 mb-3 sm:mb-4 text-left">
-                    Tests Validados Científicamente
-                  </h3>
-                  
-                  <p className="text-gray-600 text-xs sm:text-sm md:text-base mb-4 sm:mb-5 leading-relaxed text-left">
-                    Nuestros tests han sido <strong>creados y evaluados</strong> por investigadores de la <strong>Universidad de Cádiz</strong> y la <strong>Universidad de Alicante</strong>, garantizando resultados <strong>100% fiables</strong> y basados en evidencia científica.
-                  </p>
+          <dl className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {TMMS_FACTS.map((fact) => (
+              <div key={fact.label} className="rounded-xl bg-braini-yellow-tint px-4 py-3">
+                <dt className="text-sm text-ink/70">{fact.label}</dt>
+                <dd className="mt-0.5 font-semibold text-ink">{fact.value}</dd>
+              </div>
+            ))}
+          </dl>
 
-                  {/* Logos de las universidades */}
-                  <div className="flex flex-row items-center justify-center md:justify-start gap-4 sm:gap-5 md:gap-6 lg:gap-8">
-                    <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 shrink-0">
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-white rounded-lg p-1 sm:p-1.5 md:p-2 shadow-xs flex items-center justify-center shrink-0">
-                        <img 
-                          src="/unis/logo_cadiz.png" 
-                          alt="Universidad de Cádiz" 
-                          className="max-w-full max-h-full object-contain"
-                          onError={(e) => {
-                            // Fallback si la imagen no existe aún
-                            e.currentTarget.style.display = 'none';
-                          }}
-                        />
-                      </div>
-                      <span className="text-[9px] sm:text-[10px] md:text-xs text-gray-600 whitespace-nowrap">Universidad de Cádiz</span>
-                    </div>
+          <Link
+            to="/brainifamily/test-tmms-padres"
+            className="mt-7 inline-flex w-full sm:w-auto items-center justify-center rounded-xl bg-braini-yellow px-8 py-3 text-base font-semibold text-ink transition-colors hover:bg-braini-yellow-light focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+          >
+            Empezar el test
+          </Link>
+        </section>
 
-                    <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 shrink-0">
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-white rounded-lg p-1 sm:p-1.5 md:p-2 shadow-xs flex items-center justify-center shrink-0">
-                        <img 
-                          src="/unis/logo_alicante.png" 
-                          alt="Universidad de Alicante" 
-                          className="max-w-full max-h-full object-contain"
-                          onError={(e) => {
-                            // Fallback si la imagen no existe aún
-                            e.currentTarget.style.display = 'none';
-                          }}
-                        />
-                      </div>
-                      <span className="text-[9px] sm:text-[10px] md:text-xs text-gray-600 whitespace-nowrap">Universidad de Alicante</span>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+        <div className="space-y-6">
+          {/* El test infantil aún no está disponible: se anuncia, no se enlaza */}
+          <section aria-labelledby="ninos-title" className="bg-white rounded-2xl shadow-surface p-5 sm:p-6">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-ink/5 px-3 py-1 text-sm font-medium text-ink">
+              <Clock className="w-4 h-4" aria-hidden="true" />
+              Próximamente
+            </span>
+            <h2 id="ninos-title" className="mt-3 font-display text-xl font-semibold text-ink">
+              Test emocional para niños
+            </h2>
+            <p className="mt-1.5 text-base text-ink/80">
+              Una versión adaptada para niños y niñas de 3 a 7 años, para hacer juntos en 10–15 minutos.
+            </p>
+          </section>
 
-            {/* Opciones de Test */}
-            <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8 pb-20 md:pb-4">
-              {/* Test para Padres */}
-            <Card className="bg-white border-0 rounded-2xl shadow-surface">
-              <CardHeader className="text-center pb-3 sm:pb-4">
-                <div className="flex items-center justify-center gap-2 mb-2 sm:mb-3">
-                  <Award className="w-4 h-4 sm:w-5 sm:h-5 text-braini-yellow" />
-                  <CardTitle className="text-base sm:text-lg md:text-xl font-semibold text-gray-800">
-                    Test TMMS-24 para Padres
-                  </CardTitle>
-                </div>
-                <p className="text-gray-600 text-xs sm:text-sm md:text-base">
-                  Evaluación completa de tu inteligencia emocional
-                </p>
-              </CardHeader>
-              <CardContent className="space-y-4 sm:space-y-5 md:space-y-6">
-                <div className="bg-gray-100 p-3 sm:p-4 rounded-lg border border-gray-200">
-                  <p className="text-xs sm:text-sm md:text-base text-gray-600 leading-relaxed">
-                    <strong>Duración:</strong> 15-20 minutos<br/>
-                    <strong>Preguntas:</strong> 24 preguntas con escala de 1-5<br/>
-                    <strong>Resultados:</strong> Análisis detallado con recomendaciones
-                  </p>
-                </div>
-                
-                <Button
-                  onClick={handleTestPadres}
-                  className="w-full bg-braini-yellow hover:bg-braini-yellow-dark text-white font-bold py-3 sm:py-4 px-4 sm:px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 text-sm sm:text-base md:text-lg"
-                >
-                  Comenzar Test para Padres
-                  <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-1.5 sm:ml-2" />
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Test para Niños */}
-            <Card className="bg-white border-0 rounded-2xl shadow-surface">
-              <CardHeader className="text-center pb-3 sm:pb-4">
-                <div className="flex items-center justify-center gap-2 mb-2 sm:mb-3">
-                  <Award className="w-4 h-4 sm:w-5 sm:h-5 text-braini-yellow" />
-                  <CardTitle className="text-base sm:text-lg md:text-xl font-semibold text-gray-800">
-                    Test Emocional para Niños
-                  </CardTitle>
-                </div>
-                <p className="text-gray-600 text-xs sm:text-sm md:text-base">
-                  Evaluación adaptada para el desarrollo emocional infantil
-                </p>
-              </CardHeader>
-              <CardContent className="space-y-4 sm:space-y-5 md:space-y-6">
-                <div className="bg-gray-100 p-3 sm:p-4 rounded-lg border border-gray-200">
-                  <p className="text-xs sm:text-sm md:text-base text-gray-600 leading-relaxed">
-                    <strong>Edad recomendada:</strong> 4-12 años<br/>
-                    <strong>Duración:</strong> 10-15 minutos<br/>
-                    <strong>Formato:</strong> Adaptado y amigable para niños
-                  </p>
-                </div>
-                
-                <Button
-                  onClick={handleTestNinos}
-                  className="w-full bg-braini-yellow hover:bg-braini-yellow-dark text-white font-bold py-3 sm:py-4 px-4 sm:px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 text-sm sm:text-base md:text-lg"
-                >
-                  Comenzar Test para Niños
-                  <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-1.5 sm:ml-2" />
-                </Button>
-              </CardContent>
-            </Card>
-            </div>
-          </div>
+          <section aria-labelledby="aval-title" className="rounded-2xl bg-white/60 p-5 sm:p-6">
+            <h2 id="aval-title" className="font-display text-lg font-semibold text-ink">
+              Con el respaldo de la universidad
+            </h2>
+            <p className="mt-1.5 text-base text-ink/80">
+              Los tests se han elaborado y revisado con investigadores de dos universidades españolas.
+            </p>
+            <ul className="mt-4 space-y-3">
+              {UNIVERSITIES.map((uni) => (
+                <li key={uni.name} className="flex items-center gap-3">
+                  <span className="w-12 h-12 shrink-0 rounded-xl bg-white p-1.5 flex items-center justify-center">
+                    <img src={uni.logo} alt="" className="max-w-full max-h-full object-contain" />
+                  </span>
+                  <span className="text-base font-medium text-ink">{uni.name}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </div>
+      </div>
     </Backgrounds>
   );
 };

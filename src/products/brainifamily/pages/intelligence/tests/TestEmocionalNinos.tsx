@@ -26,7 +26,7 @@ const TestEmocionalNinos = () => {
                   className="border-2 border-gray-300 text-gray-700 hover:border-braini-yellow hover:text-braini-yellow hover:bg-white/50 font-semibold py-2 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
                 >
                   <ArrowLeft className="w-4 h-4 mr-2" />
-                  Volver a Inteligencia Emocional
+                  Volver a Evaluar y crecer
                 </Button>
               </div>
 
