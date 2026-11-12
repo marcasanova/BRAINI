@@ -28,7 +28,7 @@ const ActivityNavigation: React.FC<ActivityNavigationProps> = ({
             className="flex items-center justify-center text-ink hover:bg-white/80 transition-all duration-200 p-2 sm:p-2.5 md:px-3 md:py-2"
           >
             <Home className="w-5 h-5 sm:w-4 sm:h-4 md:w-4 md:h-4" />
-            <span className="hidden md:inline ml-1 text-sm font-medium">Volver</span>
+            <span className="hidden xl:inline ml-1 text-sm font-medium">Volver</span>
           </Button>
           
           <div className="h-5 sm:h-5 w-px bg-ink/15"></div>
@@ -45,7 +45,7 @@ const ActivityNavigation: React.FC<ActivityNavigationProps> = ({
             }`}
           >
             <ChevronLeft className="w-5 h-5 sm:w-4 sm:h-4 md:w-4 md:h-4" />
-            <span className="hidden md:inline ml-1 text-sm font-medium">Actividad anterior</span>
+            <span className="hidden xl:inline ml-1 text-sm font-medium">Actividad anterior</span>
           </Button>
         </div>
 
@@ -82,12 +82,12 @@ const ActivityNavigation: React.FC<ActivityNavigationProps> = ({
           >
             {isLastActivity ? (
               <>
-                <span className="hidden md:inline mr-1 text-sm font-medium">Completado</span>
+                <span className="hidden xl:inline mr-1 text-sm font-medium">Completado</span>
                 <Trophy className="w-5 h-5 sm:w-4 sm:h-4 md:w-4 md:h-4" />
               </>
             ) : (
               <>
-                <span className="hidden md:inline mr-1 text-sm font-medium">Siguiente actividad</span>
+                <span className="hidden xl:inline mr-1 text-sm font-medium">Siguiente actividad</span>
                 <ChevronRight className="w-5 h-5 sm:w-4 sm:h-4 md:w-4 md:h-4" />
               </>
             )}
