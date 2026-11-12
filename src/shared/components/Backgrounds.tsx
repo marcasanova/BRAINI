@@ -24,6 +24,8 @@ interface BackgroundsProps {
   actions?: React.ReactNode;
   /** Contenido de la banda por encima del título (p. ej. navegación entre misiones) */
   header?: React.ReactNode;
+  /** Contenido de la banda por debajo del título (p. ej. el progreso de medallas) */
+  headerExtra?: React.ReactNode;
 }
 
 const Backgrounds: React.FC<BackgroundsProps> = ({
@@ -35,6 +37,7 @@ const Backgrounds: React.FC<BackgroundsProps> = ({
   subtitle,
   actions,
   header,
+  headerExtra,
 }) => {
   if (wrapWithCard) {
     const toneClasses = TONE_CLASSES[tone];
@@ -58,6 +61,7 @@ const Backgrounds: React.FC<BackgroundsProps> = ({
                     {actions && <div className="shrink-0">{actions}</div>}
                   </div>
                 )}
+                {headerExtra && <div className="mt-5">{headerExtra}</div>}
               </header>
             )}
             {children}
