@@ -85,6 +85,22 @@
 
   --font-inter: Inter, sans-serif;
   --font-montserrat: Montserrat, sans-serif;
+  /* Títulos de la app de familias: redondeada, como los números del tablero */
+  --font-display: Fredoka, Montserrat, sans-serif;
+
+  /* Tinta: color de texto sobre los colores de marca y sus tintes (≥ 5:1 en todos) */
+  --color-ink: #24324a;
+  /* Variantes «strong»: fondo de botones con texto blanco (≥ 4,6:1) */
+  --color-braini-blue-strong: #5b76a1;
+  --color-braini-turquoise-strong: #248178;
+  --color-braini-pink-strong: #ae5c57;
+  /* Tintes de fondo de cada sección (~10 % del color) */
+  --color-braini-blue-tint: #f2f6fc;
+  --color-braini-turquoise-tint: #ebf8f7;
+  --color-braini-yellow-tint: #fefaee;
+  --color-braini-pink-tint: #fef2f2;
+  /* Sombra de las superficies de contenido de la app de familias: borde fino + sombra mínima */
+  --shadow-surface: 0 0 0 1px rgb(36 50 74 / 0.07), 0 1px 3px rgb(36 50 74 / 0.06);
 
   @keyframes accordion-down {
     from {

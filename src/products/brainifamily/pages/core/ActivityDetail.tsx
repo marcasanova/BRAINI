@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useCurrentChild } from '@/products/brainifamily/hooks/useCurrentChild';
 import { useUserActivitiesByMission } from '@/products/brainifamily/hooks/useUserActivities';
-import Backgrounds from '@/shared/components/Backgrounds';
+import Backgrounds, { type SectionTone } from '@/shared/components/Backgrounds';
 import ActivityNavigation from '@/products/brainifamily/features/activities/ActivityNavigation';
 import ActivityRating from '@/products/brainifamily/features/activities/ActivityRating';
 import ActivityPuzzleRenderer from '@/products/brainifamily/features/activities/ActivityPuzzleRenderer';
@@ -68,24 +68,20 @@ const ActivityDetail: React.FC = () => {
   const { currentIndex, previousActivity, nextActivity, totalActivities } = getNavigationInfo();
   const currentActivity = activities.find(a => a.activities.id === parseInt(activityId!));
 
-  const getActivityColor = (activityType?: string): string => {
+  const getActivityTone = (activityType?: string): SectionTone => {
     switch (activityType) {
-      case 'inteligencia_emocional':
-        return '#7ea4df';
       case 'regulacion_emocional':
-        return '#35bdb1';
+        return 'turquoise';
       case 'vinculo_afectivo':
-        return '#f5827b';
+        return 'coral';
       case 'acompañamiento_emocional':
-        return '#f8cd50';
+        return 'yellow';
       default:
-        return '#7ea4df';
+        return 'blue';
     }
   };
 
-  const activityColor = currentActivity 
-    ? getActivityColor(currentActivity.activities.tipo_actividad)
-    : '#7ea4df';
+  const activityTone = getActivityTone(currentActivity?.activities.tipo_actividad);
 
   const puzzleProps = currentActivity && childId ? {
     userProgress: currentActivity,
@@ -103,49 +99,38 @@ const ActivityDetail: React.FC = () => {
   } : null;
 
   return (
-    <Backgrounds 
-      wrapWithCard={true} 
-      customColor={activityColor}
-      showCircles={true}
+    <Backgrounds
+      wrapWithCard
+      tone={activityTone}
+      header={
+        !loading && !activitiesLoading && currentActivity ? (
+          <ActivityNavigation
+            currentActivityId={parseInt(activityId!)}
+            previousActivity={previousActivity}
+            nextActivity={nextActivity}
+            currentIndex={currentIndex}
+            totalActivities={totalActivities}
+            onNavigate={handleActivityNavigate}
+            onBackToMission={handleBackToMission}
+          />
+        ) : undefined
+      }
+      title={
+        loading || activitiesLoading
+          ? 'Cargando actividad...'
+          : !currentActivity
+            ? 'Actividad no encontrada'
+            : currentActivity.activities.titulo_actividad
+      }
     >
-            <div className="mb-4 md:mb-6 animate-fade-in shrink-0 space-y-4">
-              {!loading && !activitiesLoading && currentActivity && (
-                <div className="mb-4">
-                  <ActivityNavigation
-                    currentActivityId={parseInt(activityId!)}
-                    previousActivity={previousActivity}
-                    nextActivity={nextActivity}
-                    currentIndex={currentIndex}
-                    totalActivities={totalActivities}
-                    onNavigate={handleActivityNavigate}
-                    onBackToMission={handleBackToMission}
-                  />
-                </div>
-              )}
-
-              {loading || activitiesLoading ? (
-                <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white" style={{ fontWeight: 900 }}>
-                  Cargando actividad...
-                </h1>
-              ) : !currentActivity ? (
-                <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white" style={{ fontWeight: 900 }}>
-                  Actividad no encontrada
-                </h1>
-              ) : (
-                <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white" style={{ fontWeight: 900 }}>
-                  {currentActivity.activities.titulo_actividad}
-                </h1>
-              )}
-            </div>
-
             <div className="overflow-x-hidden">
               {loading || activitiesLoading ? (
-                <div className="text-center text-white/90 py-8 font-medium">Cargando actividad...</div>
+                <div className="text-center text-ink/70 py-8 font-medium">Cargando actividad...</div>
               ) : !currentActivity ? (
-                <div className="text-center text-red-200 py-8 font-medium">Actividad no encontrada</div>
+                <div className="text-center text-red-700 py-8 font-medium">Actividad no encontrada</div>
               ) : (
                 <div className="space-y-4 md:space-y-5 pb-20 md:pb-4 overflow-x-hidden">
-                  <div className="bg-white/95 backdrop-blur-lg p-4 md:p-6 rounded-xl md:rounded-2xl shadow-xl border-0 animate-fade-in overflow-x-hidden">
+                  <div className="bg-white p-4 md:p-6 rounded-2xl shadow-surface overflow-x-hidden">
                     <div className="mb-8">
                       {puzzleProps && hasRegisteredActivityPuzzle(currentActivity.activities.id) ? (
                         <ActivityPuzzleRenderer

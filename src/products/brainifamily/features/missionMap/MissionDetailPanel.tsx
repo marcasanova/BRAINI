@@ -21,7 +21,7 @@ interface MissionDetailPanelProps {
 
 const STATUS_BADGE_CLASS: Record<MapSquareStatus, string> = {
   completed: 'bg-braini-turquoise/20 text-braini-turquoise-dark',
-  current: 'bg-braini-blue/20 text-braini-blue-dark',
+  current: 'bg-braini-blue/25 text-ink',
   locked: 'bg-gray-300 text-gray-600',
   in_development: 'bg-braini-yellow/30 text-gray-800',
 };
@@ -54,7 +54,7 @@ const MissionDetailPanel = React.forwardRef<HTMLDivElement, MissionDetailPanelPr
             <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">
               Misión {square.mission} de {MAP_TILES.length}
             </p>
-            <h3 className="text-braini-blue font-bold text-xl md:text-2xl leading-tight" style={{ fontWeight: 700 }}>
+            <h3 className="font-display text-xl md:text-2xl font-semibold leading-tight text-ink">
               {square.titulo ?? 'Próximamente'}
             </h3>
           </div>
@@ -88,7 +88,7 @@ const MissionDetailPanel = React.forwardRef<HTMLDivElement, MissionDetailPanelPr
           {playable ? (
             <Link
               to={`/brainifamily/sesion/${square.mission}`}
-              className="w-full sm:w-auto text-center px-6 py-3 bg-braini-blue text-white font-semibold rounded-lg shadow-sm hover:bg-braini-blue-dark transition"
+              className="w-full sm:w-auto text-center px-6 py-3 bg-braini-blue-strong text-white font-semibold rounded-xl hover:bg-ink transition"
             >
               {square.status === 'completed' ? 'Volver a jugar' : 'Acceder'}
             </Link>

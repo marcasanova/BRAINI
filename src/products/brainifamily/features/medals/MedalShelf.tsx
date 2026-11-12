@@ -123,24 +123,18 @@ const MedalShelf: React.FC<MedalShelfProps> = ({
             )}
           </div>
           <div>
-            <div className="text-sm font-semibold text-gray-700" aria-live="polite">
-              {Math.round(animatedEarned)} / {totalMedals} misiones
+            <div className="text-base font-semibold text-ink" aria-live="polite">
+              {Math.round(animatedEarned)} de {totalMedals} medallas
             </div>
           </div>
         </div>
 
         {/* Sección derecha - Porcentaje */}
         <div className="flex items-center gap-2">
-          <div className="text-right">
-            <div className="text-xs text-gray-500 font-medium uppercase">
-              Misiones superadas
-            </div>
-            <div
-              className={`text-lg font-black text-braini-blue ${isCelebrating && reachedTarget ? 'animate-medal-pop' : ''}`}
-              style={{ fontWeight: 900 }}
-            >
-              {Math.round(progressPercentage)}%
-            </div>
+          <div
+            className={`font-display text-2xl font-semibold text-ink ${isCelebrating && reachedTarget ? 'animate-medal-pop' : ''}`}
+          >
+            {Math.round(progressPercentage)}%
           </div>
         </div>
       </div>
@@ -148,12 +142,12 @@ const MedalShelf: React.FC<MedalShelfProps> = ({
       {/* Barra de progreso compacta */}
       <div className="mt-2">
         <div
-          className={`flex-1 bg-gray-200 rounded-full overflow-hidden transition-all duration-500 ${
+          className={`flex-1 bg-ink/10 rounded-full overflow-hidden transition-all duration-500 ${
             isCelebrating ? 'h-2.5' : 'h-1.5'
           }`}
         >
           <div
-            className={`h-full rounded-full ${isCelebrating ? 'bg-linear-to-r from-braini-blue to-braini-turquoise' : 'bg-braini-blue transition-all duration-500 ease-out'}`}
+            className={`h-full rounded-full ${isCelebrating ? 'bg-linear-to-r from-braini-blue to-braini-turquoise' : 'bg-braini-blue-strong transition-all duration-500 ease-out'}`}
             style={{ width: `${progressPercentage}%` }}
           />
         </div>

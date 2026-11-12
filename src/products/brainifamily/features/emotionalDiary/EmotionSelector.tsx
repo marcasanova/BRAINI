@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent } from '@/shared/ui/card';
+import { Check } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/shared/ui/tooltip';
 import { playSound } from '@/shared/lib/sound';
 
@@ -19,133 +19,72 @@ interface EmotionSelectorProps {
   childName?: string;
 }
 
+/** Las emociones del día: el elemento principal de «Así me siento hoy». Se puede elegir más de una. */
 const EmotionSelector: React.FC<EmotionSelectorProps> = ({
   emotions,
   selectedEmotions,
   onEmotionSelect,
   disabled = false,
-  childName = ''
+  childName = '',
 }) => {
   return (
     <TooltipProvider>
-      <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0">
-        <CardContent className="p-4 sm:p-5 md:p-6">
-          <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-4 text-center px-2">
-            {childName 
-              ? (
-                <>
-                  ¿Cómo se siente <span className="font-black" style={{ fontWeight: 800 }}>{childName}</span> hoy?
-                </>
-              )
-              : '¿Cómo se siente hoy?'
-            }
-          </h3>
-          <p className="text-xs sm:text-sm text-gray-500 text-center mb-3">Puedes elegir todas las que quieras</p>
-          
-          <div className="grid grid-cols-5 gap-2 sm:gap-3 md:gap-4">
-            {emotions.map((emotion) => {
-              const isSelected = selectedEmotions.some(e => e.id === emotion.id);
-              
-              return (
-                <Tooltip key={emotion.id}>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={() => { if (disabled) return; playSound('select'); onEmotionSelect(emotion); }}
-                      disabled={disabled}
-                      className={`
-                        relative group flex flex-col items-center p-2 sm:p-3 rounded-xl transition-all duration-300 transform
-                        ${isSelected
-                          ? 'scale-105 shadow-lg'
-                          : 'hover:scale-105 hover:shadow-lg'
-                        }
-                        ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-                      `}
-                      style={isSelected ? { 
-                        outline: `4px solid ${emotion.color}`,
-                        outlineOffset: '0px'
-                      } : {}}
-                    >
-                      {/* Imagen de la emoción (~5px menos que el tamaño estándar) */}
-                      <div className={`
-                        w-[43px] h-[43px] sm:w-[59px] sm:h-[59px] md:w-[75px] md:h-[75px] rounded-lg overflow-hidden mb-2 transition-all duration-300
-                      `}>
-                        <img
-                          src={emotion.imageUrl}
-                          alt={emotion.name}
-                          className="w-full h-full object-cover"
-                          loading="lazy"
-                        />
-                      </div>
-                      
-                      {/* Nombre de la emoción */}
-                      <span className={`
-                        text-[10px] sm:text-xs md:text-sm font-medium text-center transition-colors duration-200
-                        ${isSelected ? '' : 'text-gray-700'}
-                      `}
-                      style={isSelected ? { color: emotion.color } : {}}
+      <fieldset>
+        <legend className="font-display text-xl sm:text-2xl font-semibold text-ink">
+          {childName ? `¿Cómo se ha sentido ${childName}?` : '¿Cómo se ha sentido?'}
+        </legend>
+        <p className="mt-1 text-sm text-ink/70">Puedes elegir más de una emoción.</p>
+
+        <div className="mt-5 grid grid-cols-3 sm:grid-cols-5 gap-3 sm:gap-4">
+          {emotions.map((emotion) => {
+            const isSelected = selectedEmotions.some((e) => e.id === emotion.id);
+            return (
+              <Tooltip key={emotion.id}>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    aria-pressed={isSelected}
+                    onClick={() => {
+                      if (disabled) return;
+                      playSound('select');
+                      onEmotionSelect(emotion);
+                    }}
+                    disabled={disabled}
+                    className={`relative flex flex-col items-center gap-2 rounded-2xl p-1.5 sm:p-2.5 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink ${
+                      disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-ink/5'
+                    }`}
+                    style={
+                      isSelected
+                        ? { boxShadow: `0 0 0 3px ${emotion.color}`, backgroundColor: `${emotion.color}1f` }
+                        : undefined
+                    }
+                  >
+                    {isSelected && (
+                      <span
+                        aria-hidden="true"
+                        className="absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center text-white shadow-sm"
+                        style={{ backgroundColor: emotion.color }}
                       >
-                        {emotion.name}
+                        <Check className="w-4 h-4" strokeWidth={3} />
                       </span>
-                      
-                      {/* Efecto de hover mejorado - solo borde sutil */}
-                      <div className={`
-                        absolute inset-0 rounded-xl transition-all duration-300 pointer-events-none
-                        ${isSelected 
-                          ? '' 
-                          : 'ring-0 group-hover:ring-2 group-hover:ring-gray-300/50'
-                        }
-                      `}
-                      style={isSelected ? { 
-                        boxShadow: `inset 0 0 0 2px ${emotion.color}30`
-                      } : {}}
-                      />
-                      
-                      {/* Efecto de brillo sutil en hover */}
-                      <div className={`
-                        absolute inset-0 rounded-xl transition-all duration-300 pointer-events-none
-                        ${isSelected 
-                          ? '' 
-                          : 'bg-transparent group-hover:bg-white/30'
-                        }
-                      `}
-                      style={isSelected ? { 
-                        backgroundColor: `${emotion.color}08`
-                      } : {}}
-                      />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom" className="bg-gray-800 text-white text-sm px-3 py-2">
-                    <p className="font-medium">{emotion.name}</p>
-                    <p className="text-xs text-gray-300">{emotion.description}</p>
-                  </TooltipContent>
-                </Tooltip>
-              );
-            })}
-          </div>
-          
-          {selectedEmotions.length > 0 && (
-            <div 
-              className="mt-3 sm:mt-4 p-2.5 sm:p-3 rounded-xl border border-gray-200 bg-gray-50"
-            >
-              <p className="text-center text-xs sm:text-sm text-gray-700">
-                {selectedEmotions.length === 1 ? (
-                  <>
-                    <span className="font-semibold" style={{ color: selectedEmotions[0].color }}>
-                      {selectedEmotions[0].name}
-                    </span>{' '}
-                    seleccionada
-                  </>
-                ) : (
-                  <>
-                    <span className="font-semibold">{selectedEmotions.length} emociones</span>
-                    {' '}seleccionadas: {selectedEmotions.map(e => e.name).join(', ')}
-                  </>
-                )}
-              </p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+                    )}
+                    <img
+                      src={emotion.imageUrl}
+                      alt=""
+                      className="w-20 h-20 md:w-24 md:h-24 rounded-xl object-cover"
+                      loading="lazy"
+                    />
+                    <span className="text-sm font-medium text-ink text-center">{emotion.name}</span>
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="bg-ink text-white text-sm px-3 py-2 max-w-56">
+                  {emotion.description}
+                </TooltipContent>
+              </Tooltip>
+            );
+          })}
+        </div>
+      </fieldset>
     </TooltipProvider>
   );
 };

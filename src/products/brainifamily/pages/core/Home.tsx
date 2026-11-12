@@ -19,13 +19,7 @@ import {
   prefersReducedMotion,
 } from '@/products/brainifamily/features/medals/celebration';
 import MapDownload from '@/shared/components/MapDownload';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/shared/ui/select';
+import ChildSwitcher from '@/products/brainifamily/features/children/ChildSwitcher';
 import { playSound } from '@/shared/lib/sound';
 
 interface MedalCelebration {
@@ -49,10 +43,18 @@ function readCelebrationFromState(state: unknown): MedalCelebration | null {
   return { missionIdCompleted: s.missionIdCompleted, missionIdNextUnlocked: s.missionIdNextUnlocked };
 }
 
+/** Los 4 tipos de actividad de cada misión; el color de cada uno se repite en toda la app. */
+const MISSION_ACTIVITY_TYPES = [
+  { name: 'Inteligencia emocional', color: 'bg-braini-blue', description: 'Reconocemos y ponemos nombre a lo que sentimos con juegos, historias y preguntas.' },
+  { name: 'Regulación emocional', color: 'bg-braini-turquoise', description: 'Ejercicios sencillos para respirar, relajarnos y volver a la calma.' },
+  { name: 'Vínculo afectivo', color: 'bg-braini-pink', description: 'Un gesto de cariño compartido para cerrar la sesión juntos.' },
+  { name: 'Acompañamiento emocional', color: 'bg-braini-yellow', description: 'Un espacio para los adultos: ideas para acompañar con calma en el día a día.' },
+];
+
 const Home = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { child, childId, children: childrenList, setCurrentChildId, loading: childLoading } = useCurrentChild();
+  const { child, childId, loading: childLoading } = useCurrentChild();
   // Se lee en el primer render para que MedalShelf monte ya en el estado «antes» (N-1)
   const [celebration, setCelebration] = useState<MedalCelebration | null>(() =>
     readCelebrationFromState(location.state),
@@ -149,194 +151,89 @@ const Home = () => {
       : undefined;
   const highlightMissionCompleted = highlightActive ? celebration.missionIdCompleted : undefined;
 
+  const isContentReady =
+    !(childLoading || loading || medalsLoading || contentLoading || waitingForFreshData) && !error;
+
   return (
     <Backgrounds
-      wrapWithCard={true}
-      customColor="#7ea4df"
-      showCircles={true}
+      wrapWithCard
+      tone="blue"
+      title="Panel de juego"
+      subtitle={child?.nombre ? `Sigue la aventura de ${child.nombre}, misión a misión.` : 'Sigue la aventura, misión a misión.'}
+      actions={<ChildSwitcher />}
+      headerExtra={
+        // Se monta junto al contenido: la celebración necesita que aparezca ya con datos frescos
+        isContentReady ? (
+          <div className="bg-white/70 rounded-2xl px-4 py-3">
+            <MedalShelf
+              userMedals={userMedals}
+              totalMedals={totalMedals}
+              isLoading={medalsLoading}
+              childNivelEducativo={child?.nivel_educativo ?? undefined}
+              animateFrom={medalsAnimateFrom}
+            />
+          </div>
+        ) : undefined
+      }
     >
-      {/* Header con título y selector de hijo (solo si hay más de uno) */}
-      <div className="mb-4 md:mb-6 animate-fade-in shrink-0 flex flex-col sm:flex-row sm:items-center gap-3">
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white" style={{ fontWeight: 900 }}>
-          {child?.nombre ? `${child.nombre} ¡Empieza la aventura!` : '¡Empieza la aventura!'}
-        </h1>
-        {childrenList.length > 1 && (
-          <Select value={child?.id ?? ''} onValueChange={setCurrentChildId}>
-            <SelectTrigger className="w-full sm:w-auto min-w-[180px] bg-white/95 border-white text-gray-800 font-medium shadow-md hover:bg-white">
-              <SelectValue placeholder="Elegir niño/a" />
-            </SelectTrigger>
-            <SelectContent>
-              {childrenList.map((c) => (
-                <SelectItem key={c.id} value={c.id}>
-                  {c.school_name ? `${c.nombre} · ${c.school_name}` : c.nombre}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        )}
-      </div>
-
       {/* Área de contenido con scroll */}
       <div>
         {childLoading || loading || medalsLoading || contentLoading || waitingForFreshData ? (
-          <div className="text-center text-white/90 py-8 font-medium">Cargando misiones...</div>
+          <div className="text-center text-ink/70 py-8 font-medium">Cargando misiones...</div>
         ) : error ? (
-          <div className="text-center text-red-200 py-8 font-medium">{error}</div>
+          <div className="text-center text-red-700 py-8 font-medium">{error}</div>
         ) : (
           <div className="space-y-4 md:space-y-5 pb-20 md:pb-4">
-            {/* Sección de Medallas - Primera */}
-            <div className="bg-white/95 backdrop-blur-lg p-4 md:p-6 rounded-xl md:rounded-2xl shadow-xl border-0 animate-fade-in">
-              <MedalShelf
-                userMedals={userMedals}
-                totalMedals={totalMedals}
-                isLoading={medalsLoading}
-                childNivelEducativo={child?.nivel_educativo ?? undefined}
-                animateFrom={medalsAnimateFrom}
-              />
-            </div>
+            {/* Misión 0: cómo funciona la aventura (antes del mapa) */}
+            <section aria-labelledby="mision-0-title" className="bg-white rounded-2xl shadow-surface p-5 md:p-7">
+              <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] gap-6 lg:gap-8 items-start">
+                <div>
+                  <h2 id="mision-0-title" className="font-display text-2xl md:text-3xl font-semibold text-ink">
+                    Misión 0. Empieza la aventura
+                  </h2>
+                  <p className="mt-2 text-base text-ink/80 max-w-prose">
+                    Mirad juntos el vídeo de bienvenida. Cada casilla del mapa es un pequeño paso de bienestar emocional
+                    en familia, y en el mapa veréis por dónde vais y todo lo que vais consiguiendo.
+                  </p>
 
-            {/* Misión 0 - ¡Comienza la aventura! - Hardcodeado */}
-            <div className="bg-white/95 backdrop-blur-lg p-4 md:p-6 rounded-xl md:rounded-2xl shadow-xl border-0 animate-fade-in">
-              <ul className="space-y-0">
-                <li>
-                  {/* Misión 0: Título + bullets a la izquierda, vídeo a la derecha */}
-                  <div className="mb-6 grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-6 items-start">
-                    {/* Columna izquierda: título + bullets */}
-                    <div>
-                      <div
-                        className="text-braini-blue font-bold text-2xl md:text-3xl flex items-center gap-2 mb-4"
-                        style={{ fontWeight: 700 }}
-                      >
-                        Misión 0.{' '}
-                        <span className="text-xl md:text-2xl" style={{ fontWeight: 700 }}>
-                          ¡Comienza la aventura!
+                  <h3 className="mt-6 font-display text-lg font-semibold text-ink">Cada misión tiene 4 actividades, en este orden</h3>
+                  <ol className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+                    {MISSION_ACTIVITY_TYPES.map((type, index) => (
+                      <li key={type.name} className="flex items-start gap-3">
+                        <span
+                          aria-hidden="true"
+                          className={`shrink-0 w-8 h-8 rounded-lg ${type.color} flex items-center justify-center font-display font-semibold text-ink`}
+                        >
+                          {index + 1}
                         </span>
-                      </div>
-                      <ul className="text-sm md:text-base text-gray-600 font-medium space-y-2">
-                        <li className="flex items-start">
-                          <span className="mr-3">•</span>
-                          <span>Esta misión es solo para entender el recorrido y empezar con calma.</span>
-                        </li>
-                        <li className="flex items-start">
-                          <span className="mr-3">•</span>
-                          <span>
-                            Cada casilla del mapa es un pequeño paso de neurobienestar emocional en familia.
-                          </span>
-                        </li>
-                        <li className="flex items-start">
-                          <span className="mr-3">•</span>
-                          <span>Con él veremos por dónde vamos y todo lo que vamos logrando juntos.</span>
-                        </li>
-                      </ul>
-                    </div>
-
-                    {/* Columna derecha: vídeo de presentación (YouTube), acotado para no dominar la fila */}
-                    <div className="w-full md:w-4/5 md:justify-self-end">
-                      <div className="relative w-full pt-[56.25%] rounded-xl overflow-hidden shadow-md">
-                        <iframe
-                          className="absolute inset-0 w-full h-full"
-                          src="https://www.youtube.com/embed/D91r2nVlInE"
-                          title="Misión 0 - Vídeo introducción"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                          allowFullScreen
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Tipos de actividades */}
-                  <div>
-                      <h3 className="text-lg md:text-xl font-bold text-gray-800 mb-3 flex items-center gap-2">
-                        Así son nuestras misiones de BRAINI:
-                      </h3>
-                      <p className="text-sm md:text-base text-gray-600 mb-4 font-medium">
-                        Cada misión contiene <span className="font-bold">4 actividades</span> diferentes, cada una con su propio color para que las identifiques fácilmente:
-                      </p>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-                        {/* 1. Inteligencia Emocional */}
-                        <div className="p-4 rounded-xl bg-linear-to-br from-braini-blue/5 to-braini-blue/10 border-2 border-braini-blue/30 flex items-start gap-3">
-                          <div className="w-12 h-12 rounded-lg bg-braini-blue/20 flex items-center justify-center shrink-0">
-                            <span className="text-xl font-black text-braini-blue-dark">1</span>
-                          </div>
-                          <div className="flex-1">
-                            <h4 className="font-bold text-braini-blue-dark text-base md:text-lg mb-1">
-                              Inteligencia Emocional
-                            </h4>
-                            <p className="text-sm font-semibold text-gray-800 mb-2">
-                              Aprendemos a reconocer cómo nos sentimos
-                            </p>
-                            <p className="text-sm text-gray-700 font-medium">
-                              Jugamos juntos para descubrir, nombrar y entender nuestras emociones a través de juegos, historias y preguntas.
-                            </p>
-                          </div>
+                        <div>
+                          <p className="font-semibold text-ink">{type.name}</p>
+                          <p className="text-sm text-ink/75">{type.description}</p>
                         </div>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
 
-                        {/* 2. Regulación Emocional */}
-                        <div className="p-4 rounded-xl bg-linear-to-br from-braini-turquoise/5 to-braini-turquoise/10 border-2 border-braini-turquoise/30 flex items-start gap-3">
-                          <div className="w-12 h-12 rounded-lg bg-braini-turquoise/20 flex items-center justify-center shrink-0">
-                            <span className="text-xl font-black text-braini-turquoise-dark">2</span>
-                          </div>
-                          <div className="flex-1">
-                            <h4 className="font-bold text-braini-turquoise-dark text-base md:text-lg mb-1">
-                              Regulación Emocional
-                            </h4>
-                            <p className="text-sm font-semibold text-gray-800 mb-2">
-                              Descubrimos cómo calmarnos y escuchar nuestro cuerpo
-                            </p>
-                            <p className="text-sm text-gray-700 font-medium">
-                              Aprendemos ejercicios sencillos para respirar, relajarnos y volver a la calma cuando lo necesitamos.
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* 3. Vínculo Afectivo */}
-                        <div className="p-4 rounded-xl bg-linear-to-br from-braini-pink/5 to-braini-pink/10 border-2 border-braini-pink/30 flex items-start gap-3">
-                          <div className="w-12 h-12 rounded-lg bg-braini-pink/20 flex items-center justify-center shrink-0">
-                            <span className="text-xl font-black text-braini-pink-dark">3</span>
-                          </div>
-                          <div className="flex-1">
-                            <h4 className="font-bold text-braini-pink-dark text-base md:text-lg mb-1">
-                              Vínculo Afectivo
-                            </h4>
-                            <p className="text-sm font-semibold text-gray-800 mb-2">
-                              Cerramos la sesión con un momento especial juntos
-                            </p>
-                            <p className="text-sm text-gray-700 font-medium">
-                              Compartimos un gesto de cariño (abrazo, mirada, palabras bonitas) para conectar y cerrar la aventura juntos.
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* 4. Acompañamiento Emocional */}
-                        <div className="p-4 rounded-xl bg-linear-to-br from-braini-yellow/5 to-braini-yellow/10 border-2 border-braini-yellow/30 flex items-start gap-3">
-                          <div className="w-12 h-12 rounded-lg bg-braini-yellow/20 flex items-center justify-center shrink-0">
-                            <span className="text-xl font-black text-braini-yellow-dark">4</span>
-                          </div>
-                          <div className="flex-1">
-                            <h4 className="font-bold text-braini-yellow-dark text-base md:text-lg mb-1">
-                              Acompañamiento Emocional
-                            </h4>
-                            <p className="text-sm font-semibold text-gray-800 mb-2">
-                              Un espacio solo para las personas adultas
-                            </p>
-                            <p className="text-sm text-gray-700 font-medium">
-                              Información y orientaciones para acompañar emocionalmente a tu hijo/a con calma en el día a día.
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                </li>
-              </ul>
-            </div>
+                <div className="relative w-full pt-[56.25%] rounded-xl overflow-hidden">
+                  <iframe
+                    className="absolute inset-0 w-full h-full"
+                    src="https://www.youtube.com/embed/D91r2nVlInE"
+                    title="Vídeo de bienvenida a la aventura"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                  />
+                </div>
+              </div>
+            </section>
 
             {/* Mapa de la aventura: tablero interactivo de misiones */}
             <section
               aria-labelledby="mapa-aventura-title"
-              className="bg-white/95 backdrop-blur-lg p-4 md:p-6 rounded-xl md:rounded-2xl shadow-xl border-0 animate-fade-in"
+              className="bg-white p-4 md:p-6 rounded-2xl shadow-surface"
             >
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4">
-                <h2 id="mapa-aventura-title" className="text-braini-blue font-bold text-2xl md:text-3xl" style={{ fontWeight: 700 }}>
+                <h2 id="mapa-aventura-title" className="font-display text-2xl md:text-3xl font-semibold text-ink">
                   Mapa de la aventura
                 </h2>
                 <MapDownload buttonText="¡Descarga el mapa para vivir la aventura!" />

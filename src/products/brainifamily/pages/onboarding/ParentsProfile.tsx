@@ -241,7 +241,7 @@ const ParentsProfile = () => {
             ) : (
               <>
                 {error && (
-                  <div className="text-red-600 text-center mb-4 p-3 bg-red-50 rounded-lg animate-fade-in" aria-live="polite">
+                  <div className="text-red-600 text-center mb-4 p-3 bg-red-50 rounded-lg" aria-live="polite">
                     {error}
                   </div>
                 )}

@@ -168,62 +168,48 @@ const Activities: React.FC = () => {
   const isLastMission = currentIndex === totalMissions - 1;
 
   return (
-    <Backgrounds 
-      wrapWithCard={true} 
-      customColor="#7ea4df"
-      showCircles={true}
+    <Backgrounds
+      wrapWithCard
+      tone="blue"
+      header={
+        !loading && !missionsLoading && !activitiesLoading && currentMission ? (
+          <MissionNavigation
+            currentMissionId={parseInt(id!)}
+            previousMission={previousMission}
+            nextMission={nextMission}
+            currentIndex={currentIndex}
+            totalMissions={totalMissions}
+            onNavigate={(missionId) => handleNavigate(missionId)}
+          />
+        ) : undefined
+      }
+      title={
+        loading || missionsLoading || activitiesLoading
+          ? 'Cargando misión...'
+          : error || activitiesError
+            ? error || activitiesError
+            : currentMission
+              ? `Misión ${currentMission.missions.id}. ${currentMission.missions.titulo}`
+              : undefined
+      }
+      subtitle={
+        currentMission && !loading && !missionsLoading && !activitiesLoading && !(error || activitiesError)
+          ? formatearDescripcionMision(currentMission.missions.descripcion ?? '')
+          : undefined
+      }
     >
-            {/* Header fijo - No hace scroll */}
-            <div className="mb-4 md:mb-6 animate-fade-in shrink-0 space-y-4">
-              {/* Navegación entre sesiones - Arriba del todo */}
-              {!loading && !missionsLoading && !activitiesLoading && currentMission && (
-                <div className="mb-4">
-                  <MissionNavigation
-                    currentMissionId={parseInt(id!)}
-                    previousMission={previousMission}
-                    nextMission={nextMission}
-                    currentIndex={currentIndex}
-                    totalMissions={totalMissions}
-                    onNavigate={(missionId) => handleNavigate(missionId)}
-                  />
-                </div>
-              )}
-
-              {/* Título y subtítulo de la sesión */}
-              {loading || missionsLoading || activitiesLoading ? (
-                <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white" style={{ fontWeight: 900 }}>
-                  Cargando misión...
-                </h1>
-              ) : error || activitiesError ? (
-                <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white" style={{ fontWeight: 900 }}>
-                  {error || activitiesError}
-                </h1>
-              ) : currentMission ? (
-                <>
-                  <div className="mb-2">
-                    <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-1" style={{ fontWeight: 900 }}>
-                      Misión {currentMission.missions.id}. <span className="text-xl sm:text-2xl md:text-3xl font-bold" style={{ fontWeight: 700 }}>{currentMission.missions.titulo}</span>
-                    </h1>
-                  </div>
-                  <div className="text-lg sm:text-xl md:text-2xl text-white/90 font-medium">
-                    {formatearDescripcionMision(currentMission.missions.descripcion ?? '')}
-                  </div>
-                </>
-              ) : null}
-            </div>
-
             {/* Área de contenido con scroll */}
             <div>
               {loading || missionsLoading || activitiesLoading ? (
-                <div className="text-center text-white/90 py-8 font-medium">Cargando misión...</div>
+                <div className="text-center text-ink/70 py-8 font-medium">Cargando misión...</div>
               ) : error || activitiesError ? (
-                <div className="text-center text-red-200 py-8 font-medium">{error || activitiesError}</div>
+                <div className="text-center text-red-700 py-8 font-medium">{error || activitiesError}</div>
               ) : !currentMission ? (
-                <div className="text-center text-white/90 py-8 font-medium">No se encontró la misión</div>
+                <div className="text-center text-ink/70 py-8 font-medium">No se encontró la misión</div>
               ) : (
                 <div className="space-y-4 md:space-y-5 pb-20 md:pb-4">
                   {/* Card principal con información de la sesión */}
-                  <div className="bg-white/95 backdrop-blur-lg p-4 md:p-6 rounded-xl md:rounded-2xl shadow-xl border-0 animate-fade-in">
+                  <div className="bg-white p-4 md:p-6 rounded-2xl shadow-surface">
                     {/* Título de actividades */}
                     <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 md:mb-6 text-gray-700 text-left" style={{ fontWeight: 700 }}>
                       <span className="md:hidden">Retos</span>

@@ -35,7 +35,6 @@ import {
   X,
   Phone,
   Heart,
-  Brain,
   Volume2,
   VolumeX,
   Users,
@@ -338,15 +337,12 @@ const Profile = () => {
   }, [editChild, child, childForm]);
 
   return (
-    <Backgrounds wrapWithCard={true} customColor="#f5827b" showCircles={true}>
-            <div className="mb-4 sm:mb-5 md:mb-6 animate-fade-in shrink-0">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-1 sm:mb-2" style={{ fontWeight: 900 }}>
-                Mi familia
-              </h1>
-              <p className="text-base sm:text-lg md:text-xl text-white/90 font-medium">
-                Tus datos y los de tus hijos e hijas.
-              </p>
-            </div>
+    <Backgrounds
+      wrapWithCard
+      tone="coral"
+      title="Mi familia"
+      subtitle="Tus datos y los de tus hijos e hijas."
+    >
 
             <div>
               {loading ? (
@@ -358,215 +354,12 @@ const Profile = () => {
                 </div>
               ) : (
                 <div className="space-y-4 sm:space-y-5 md:space-y-6 pb-20 md:pb-4">
-                  <section className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
-                    <Card className={`bg-white/95 backdrop-blur-lg shadow-xl border-0 ${children.length >= 2 ? 'lg:col-span-5' : 'lg:col-span-12'}`}>
-                      <CardHeader className="pb-3 sm:pb-4">
-                        <div className="flex flex-col gap-3">
-                          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-                            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-braini-pink rounded-lg flex items-center justify-center shrink-0">
-                              <User className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-                            </div>
-                            <div className="min-w-0">
-                              <CardTitle className="text-base sm:text-lg md:text-xl text-gray-800">
-                                Tu perfil
-                              </CardTitle>
-                              <p className="text-[10px] sm:text-xs text-gray-500 font-medium mt-0.5 truncate">
-                                {parentSubtitle(parent) || 'Completa tus datos'}
-                              </p>
-                              {editParent && (
-                                <p className="text-[10px] sm:text-xs text-braini-pink font-medium mt-0.5 flex items-center gap-1">
-                                  <Edit3 className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-                                  Modo edición
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                          {!editParent ? (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => {
-                                setEditParent(true);
-                                setParentForm(parent ?? {});
-                              }}
-                              className="border-braini-pink text-braini-pink hover:bg-braini-pink hover:text-white text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2 w-full"
-                            >
-                              <Edit3 className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                              Editar
-                            </Button>
-                          ) : (
-                            <div className="flex gap-1.5 sm:gap-2 w-full">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  setEditParent(false);
-                                  setParentForm(parent ?? {});
-                                }}
-                                className="border-gray-300 text-gray-700 hover:bg-gray-50 text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2 flex-1"
-                              >
-                                <X className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                                Cancelar
-                              </Button>
-                              <Button
-                                size="sm"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  void saveParent();
-                                }}
-                                disabled={!hasParentChanges || loading}
-                                className="bg-braini-pink hover:bg-braini-pink-dark text-white font-semibold text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2 flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
-                              >
-                                <Save className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                                Guardar
-                              </Button>
-                            </div>
-                          )}
-                        </div>
-                      </CardHeader>
-                      <CardContent className="pt-0">
-                        {editParent ? (
-                          <form
-                            className="space-y-3 sm:space-y-4"
-                            onSubmit={(e) => {
-                              e.preventDefault();
-                              void saveParent();
-                            }}
-                          >
-                            <div className="space-y-3 sm:space-y-4 bg-braini-pink/10 p-3 sm:p-4 rounded-lg border border-braini-pink/20">
-                              <h4 className="font-semibold text-gray-800 text-sm sm:text-base">Datos personales</h4>
-                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                                <div className="space-y-1.5 sm:space-y-2">
-                                  <Label htmlFor="nombre" className="text-xs sm:text-sm">
-                                    Nombre
-                                  </Label>
-                                  <Input
-                                    id="nombre"
-                                    name="nombre"
-                                    value={parentForm.nombre || ''}
-                                    onChange={handleParentChange}
-                                    className="border-2 border-gray-200 focus:border-braini-pink text-base sm:text-sm py-2 sm:py-2.5"
-                                  />
-                                </div>
-                                <div className="space-y-1.5 sm:space-y-2">
-                                  <Label htmlFor="apellidos" className="text-xs sm:text-sm">
-                                    Apellidos
-                                  </Label>
-                                  <Input
-                                    id="apellidos"
-                                    name="apellidos"
-                                    value={parentForm.apellidos || ''}
-                                    onChange={handleParentChange}
-                                    className="border-2 border-gray-200 focus:border-braini-pink text-base sm:text-sm py-2 sm:py-2.5"
-                                  />
-                                </div>
-                                <div className="space-y-1.5 sm:space-y-2">
-                                  <Label htmlFor="telefono_contacto" className="text-xs sm:text-sm">
-                                    Teléfono
-                                  </Label>
-                                  <Input
-                                    id="telefono_contacto"
-                                    name="telefono_contacto"
-                                    value={parentForm.telefono_contacto || ''}
-                                    onChange={handleParentChange}
-                                    className="border-2 border-gray-200 focus:border-braini-pink text-base sm:text-sm py-2 sm:py-2.5"
-                                  />
-                                </div>
-                                <div className="space-y-1.5 sm:space-y-2">
-                                  <Label htmlFor="relacion_con_menor" className="text-xs sm:text-sm">
-                                    Relación con el menor
-                                  </Label>
-                                  <select
-                                    id="relacion_con_menor"
-                                    name="relacion_con_menor"
-                                    value={parentForm.relacion_con_menor || ''}
-                                    onChange={handleParentChange}
-                                    className="w-full border-2 border-gray-200 rounded-md p-2 sm:p-2.5 text-base sm:text-sm focus:border-braini-pink"
-                                  >
-                                    <option value="">Selecciona una opción</option>
-                                    <option value="madre">Madre</option>
-                                    <option value="padre">Padre</option>
-                                    <option value="abuelo_a">Abuelo/a</option>
-                                    <option value="tutor_a">Tutor/a</option>
-                                    <option value="otro">Otro</option>
-                                  </select>
-                                </div>
-                              </div>
-                            </div>
-                          </form>
-                        ) : (
-                          <div className="space-y-2 sm:space-y-3 bg-braini-pink/10 p-3 sm:p-4 rounded-lg border border-braini-pink/20">
-                            <h4 className="font-semibold text-gray-800 text-sm sm:text-base">Datos personales</h4>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
-                              <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
-                                <User className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink shrink-0" />
-                                <div className="min-w-0 flex-1">
-                                  <p className="text-[10px] sm:text-xs text-gray-500 font-medium">Nombre</p>
-                                  <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">
-                                    {parent?.nombre || 'No especificado'}
-                                  </p>
-                                </div>
-                              </div>
-                              <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
-                                <User className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink shrink-0" />
-                                <div className="min-w-0 flex-1">
-                                  <p className="text-[10px] sm:text-xs text-gray-500 font-medium">Apellidos</p>
-                                  <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">
-                                    {parent?.apellidos || 'No especificado'}
-                                  </p>
-                                </div>
-                              </div>
-                              <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
-                                <Phone className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink shrink-0" />
-                                <div className="min-w-0 flex-1">
-                                  <p className="text-[10px] sm:text-xs text-gray-500 font-medium">Teléfono</p>
-                                  <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">
-                                    {parent?.telefono_contacto || 'No especificado'}
-                                  </p>
-                                </div>
-                              </div>
-                              <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
-                                <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink shrink-0" />
-                                <div className="min-w-0 flex-1">
-                                  <p className="text-[10px] sm:text-xs text-gray-500 font-medium">Relación con el menor</p>
-                                  <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">
-                                    {relacionLabel(parent?.relacion_con_menor)}
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </CardContent>
-                    </Card>
-
-                    {children.length >= 2 && (
-                      <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0 lg:col-span-7 h-full">
-                        <CardHeader className="pb-2 sm:pb-3">
-                          <CardTitle className="text-base sm:text-lg text-gray-800">
-                            Progreso del hogar
-                          </CardTitle>
-                          <p className="text-[10px] sm:text-xs text-gray-500 font-medium">
-                            Suma de misiones, actividades y diario de todos tus hijos
-                          </p>
-                        </CardHeader>
-                        <CardContent className="pt-0">
-                          <ProfileChildStats
-                            variant="household"
-                            stats={householdProgress}
-                            childrenCount={children.length}
-                          />
-                        </CardContent>
-                      </Card>
-                    )}
-                  </section>
-
                   <section className="space-y-3 sm:space-y-4">
-                      <h2 className="text-lg sm:text-xl font-bold text-white" style={{ fontWeight: 800 }}>
+                      <h2 className="font-display text-2xl font-semibold text-ink">
                         Hijos e hijas
                       </h2>
                       {children.length === 0 ? (
-                        <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0">
+                        <Card className="bg-white border-0 rounded-2xl shadow-surface">
                           <CardContent className="py-12">
                             <div className="text-center">
                               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -587,7 +380,7 @@ const Profile = () => {
                           const displayChild = isEditingThis ? { ...c, ...child, ...childForm } : c;
                           const shownAvatarId = displayChild?.avatar_id ?? c.avatar_id;
                           return (
-                            <Card key={c.id} className="bg-white/95 backdrop-blur-lg shadow-xl border-0">
+                            <Card key={c.id} className="bg-white border-0 rounded-2xl shadow-surface">
                               <CardHeader className="pb-3 sm:pb-4">
                                 <div className="flex flex-col gap-3">
                                   <div className="flex items-center gap-2 sm:gap-3 min-w-0">
@@ -596,14 +389,14 @@ const Profile = () => {
                                       alt={displayChild?.nombre ? `Personaje de ${displayChild.nombre}` : 'Personaje'}
                                     />
                                     <div className="min-w-0">
-                                      <CardTitle className="text-base sm:text-lg md:text-xl text-gray-800">
+                                      <CardTitle className="font-display text-xl font-semibold text-ink">
                                         Perfil de {displayChild?.nombre ? displayChild.nombre : 'hijo/a'}
                                       </CardTitle>
                                       <p className="text-[10px] sm:text-xs text-gray-500 font-medium mt-0.5 truncate">
                                         {childSubtitle(displayChild ?? c) || 'Colegio asignado por la clase'}
                                       </p>
                                       {isEditingThis && (
-                                        <p className="text-[10px] sm:text-xs text-braini-pink font-medium mt-0.5 flex items-center gap-1">
+                                        <p className="text-sm text-braini-pink-strong font-medium mt-0.5 flex items-center gap-1">
                                           <Edit3 className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                                           Modo edición
                                         </p>
@@ -617,7 +410,7 @@ const Profile = () => {
                                       variant="outline"
                                       size="sm"
                                       onClick={() => setAvatarPickerOpen(true)}
-                                      className="border-braini-pink text-braini-pink hover:bg-braini-pink hover:text-white text-xs sm:text-sm w-full"
+                                      className="border-braini-pink-strong text-braini-pink-strong hover:bg-braini-pink-tint text-xs sm:text-sm w-full"
                                     >
                                       Cambiar personaje
                                     </Button>
@@ -646,7 +439,7 @@ const Profile = () => {
                                           setEditChild(true);
                                           setAccordionValue(childAccordionValue);
                                         }}
-                                        className="border-braini-pink text-braini-pink hover:bg-braini-pink hover:text-white text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2 flex-1"
+                                        className="border-braini-pink-strong text-braini-pink-strong hover:bg-braini-pink-tint text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2 flex-1"
                                       >
                                         <Edit3 className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                                         Editar
@@ -676,7 +469,7 @@ const Profile = () => {
                                           void saveChild();
                                         }}
                                         disabled={!hasChildChanges || loading || savingChild}
-                                        className="bg-braini-pink hover:bg-braini-pink-dark text-white font-semibold text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2 flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="bg-braini-pink-strong hover:bg-ink text-white font-semibold text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2 flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
                                       >
                                         <Save className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                                         Guardar
@@ -857,31 +650,217 @@ const Profile = () => {
                       )}
                   </section>
 
-                  <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0">
-                    <CardHeader className="pb-3 sm:pb-4">
-                      <CardTitle className="flex items-center gap-2 sm:gap-3 text-base sm:text-lg md:text-xl text-gray-800">
-                        <div className="w-8 h-8 sm:w-10 sm:h-10 bg-braini-pink rounded-lg flex items-center justify-center shrink-0">
-                          <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                  <section aria-labelledby="perfil-adulto" className="space-y-3 sm:space-y-4">
+                    <h2 id="perfil-adulto" className="font-display text-2xl font-semibold text-ink">Tus datos</h2>
+                  <section className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
+                    <Card className={`bg-white border-0 rounded-2xl shadow-surface ${children.length >= 2 ? 'lg:col-span-5' : 'lg:col-span-12'}`}>
+                      <CardHeader className="pb-3 sm:pb-4">
+                        <div className="flex flex-col gap-3">
+                          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-braini-pink rounded-lg flex items-center justify-center shrink-0">
+                              <User className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                            </div>
+                            <div className="min-w-0">
+                              <CardTitle className="font-display text-xl font-semibold text-ink">
+                                Tu perfil
+                              </CardTitle>
+                              <p className="text-[10px] sm:text-xs text-gray-500 font-medium mt-0.5 truncate">
+                                {parentSubtitle(parent) || 'Completa tus datos'}
+                              </p>
+                              {editParent && (
+                                <p className="text-sm text-braini-pink-strong font-medium mt-0.5 flex items-center gap-1">
+                                  <Edit3 className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                                  Modo edición
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                          {!editParent ? (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                setEditParent(true);
+                                setParentForm(parent ?? {});
+                              }}
+                              className="border-braini-pink-strong text-braini-pink-strong hover:bg-braini-pink-tint text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2 w-full"
+                            >
+                              <Edit3 className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                              Editar
+                            </Button>
+                          ) : (
+                            <div className="flex gap-1.5 sm:gap-2 w-full">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  setEditParent(false);
+                                  setParentForm(parent ?? {});
+                                }}
+                                className="border-gray-300 text-gray-700 hover:bg-gray-50 text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2 flex-1"
+                              >
+                                <X className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                                Cancelar
+                              </Button>
+                              <Button
+                                size="sm"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  void saveParent();
+                                }}
+                                disabled={!hasParentChanges || loading}
+                                className="bg-braini-pink-strong hover:bg-ink text-white font-semibold text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2 flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                              >
+                                <Save className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                                Guardar
+                              </Button>
+                            </div>
+                          )}
                         </div>
-                        Resultados de Tests
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="pt-0">
-                      <div className="text-center py-8 sm:py-12">
-                        <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-                          <Brain className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" />
-                        </div>
-                        <p className="text-gray-500 font-medium text-sm sm:text-base">Próximamente</p>
-                        <p className="text-xs sm:text-sm text-gray-400 mt-1">
-                          Los resultados de tus tests aparecerán aquí
-                        </p>
-                      </div>
-                    </CardContent>
-                  </Card>
+                      </CardHeader>
+                      <CardContent className="pt-0">
+                        {editParent ? (
+                          <form
+                            className="space-y-3 sm:space-y-4"
+                            onSubmit={(e) => {
+                              e.preventDefault();
+                              void saveParent();
+                            }}
+                          >
+                            <div className="space-y-3 sm:space-y-4 bg-braini-pink/10 p-3 sm:p-4 rounded-lg border border-braini-pink/20">
+                              <h4 className="font-semibold text-gray-800 text-sm sm:text-base">Datos personales</h4>
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                                <div className="space-y-1.5 sm:space-y-2">
+                                  <Label htmlFor="nombre" className="text-xs sm:text-sm">
+                                    Nombre
+                                  </Label>
+                                  <Input
+                                    id="nombre"
+                                    name="nombre"
+                                    value={parentForm.nombre || ''}
+                                    onChange={handleParentChange}
+                                    className="border-2 border-gray-200 focus:border-braini-pink text-base sm:text-sm py-2 sm:py-2.5"
+                                  />
+                                </div>
+                                <div className="space-y-1.5 sm:space-y-2">
+                                  <Label htmlFor="apellidos" className="text-xs sm:text-sm">
+                                    Apellidos
+                                  </Label>
+                                  <Input
+                                    id="apellidos"
+                                    name="apellidos"
+                                    value={parentForm.apellidos || ''}
+                                    onChange={handleParentChange}
+                                    className="border-2 border-gray-200 focus:border-braini-pink text-base sm:text-sm py-2 sm:py-2.5"
+                                  />
+                                </div>
+                                <div className="space-y-1.5 sm:space-y-2">
+                                  <Label htmlFor="telefono_contacto" className="text-xs sm:text-sm">
+                                    Teléfono
+                                  </Label>
+                                  <Input
+                                    id="telefono_contacto"
+                                    name="telefono_contacto"
+                                    value={parentForm.telefono_contacto || ''}
+                                    onChange={handleParentChange}
+                                    className="border-2 border-gray-200 focus:border-braini-pink text-base sm:text-sm py-2 sm:py-2.5"
+                                  />
+                                </div>
+                                <div className="space-y-1.5 sm:space-y-2">
+                                  <Label htmlFor="relacion_con_menor" className="text-xs sm:text-sm">
+                                    Relación con el menor
+                                  </Label>
+                                  <select
+                                    id="relacion_con_menor"
+                                    name="relacion_con_menor"
+                                    value={parentForm.relacion_con_menor || ''}
+                                    onChange={handleParentChange}
+                                    className="w-full border-2 border-gray-200 rounded-md p-2 sm:p-2.5 text-base sm:text-sm focus:border-braini-pink"
+                                  >
+                                    <option value="">Selecciona una opción</option>
+                                    <option value="madre">Madre</option>
+                                    <option value="padre">Padre</option>
+                                    <option value="abuelo_a">Abuelo/a</option>
+                                    <option value="tutor_a">Tutor/a</option>
+                                    <option value="otro">Otro</option>
+                                  </select>
+                                </div>
+                              </div>
+                            </div>
+                          </form>
+                        ) : (
+                          <div className="space-y-2 sm:space-y-3 bg-braini-pink/10 p-3 sm:p-4 rounded-lg border border-braini-pink/20">
+                            <h4 className="font-semibold text-gray-800 text-sm sm:text-base">Datos personales</h4>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+                              <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
+                                <User className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink shrink-0" />
+                                <div className="min-w-0 flex-1">
+                                  <p className="text-[10px] sm:text-xs text-gray-500 font-medium">Nombre</p>
+                                  <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">
+                                    {parent?.nombre || 'No especificado'}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
+                                <User className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink shrink-0" />
+                                <div className="min-w-0 flex-1">
+                                  <p className="text-[10px] sm:text-xs text-gray-500 font-medium">Apellidos</p>
+                                  <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">
+                                    {parent?.apellidos || 'No especificado'}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
+                                <Phone className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink shrink-0" />
+                                <div className="min-w-0 flex-1">
+                                  <p className="text-[10px] sm:text-xs text-gray-500 font-medium">Teléfono</p>
+                                  <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">
+                                    {parent?.telefono_contacto || 'No especificado'}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg">
+                                <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-braini-pink shrink-0" />
+                                <div className="min-w-0 flex-1">
+                                  <p className="text-[10px] sm:text-xs text-gray-500 font-medium">Relación con el menor</p>
+                                  <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">
+                                    {relacionLabel(parent?.relacion_con_menor)}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
 
-                  <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0">
+                    {children.length >= 2 && (
+                      <Card className="bg-white border-0 rounded-2xl shadow-surface lg:col-span-7 h-full">
+                        <CardHeader className="pb-2 sm:pb-3">
+                          <CardTitle className="font-display text-xl font-semibold text-ink">
+                            Progreso del hogar
+                          </CardTitle>
+                          <p className="text-[10px] sm:text-xs text-gray-500 font-medium">
+                            Suma de misiones, actividades y diario de todos tus hijos
+                          </p>
+                        </CardHeader>
+                        <CardContent className="pt-0">
+                          <ProfileChildStats
+                            variant="household"
+                            stats={householdProgress}
+                            childrenCount={children.length}
+                          />
+                        </CardContent>
+                      </Card>
+                    )}
+                  </section>
+                  </section>
+
+                  <section aria-labelledby="ajustes" className="space-y-3 sm:space-y-4">
+                    <h2 id="ajustes" className="font-display text-2xl font-semibold text-ink">Ajustes</h2>
+                  <Card className="bg-white border-0 rounded-2xl shadow-surface">
                     <CardHeader className="pb-3 sm:pb-4">
-                      <CardTitle className="flex items-center gap-2 sm:gap-3 text-base sm:text-lg md:text-xl text-gray-800">
+                      <CardTitle className="flex items-center gap-2 sm:gap-3 font-display text-xl font-semibold text-ink">
                         <div className="w-8 h-8 sm:w-10 sm:h-10 bg-braini-blue rounded-lg flex items-center justify-center shrink-0">
                           {soundMuted ? <VolumeX className="w-4 h-4 sm:w-5 sm:h-5 text-white" /> : <Volume2 className="w-4 h-4 sm:w-5 sm:h-5 text-white" />}
                         </div>
@@ -904,7 +883,7 @@ const Profile = () => {
                         </span>
                         <span
                           aria-hidden="true"
-                          className={`relative inline-flex h-6 w-11 shrink-0 rounded-full transition-colors ${soundMuted ? 'bg-gray-300' : 'bg-braini-blue'}`}
+                          className={`relative inline-flex h-6 w-11 shrink-0 rounded-full transition-colors ${soundMuted ? 'bg-ink/20' : 'bg-braini-pink-strong'}`}
                         >
                           <span
                             className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${soundMuted ? '' : 'translate-x-5'}`}
@@ -913,6 +892,7 @@ const Profile = () => {
                       </button>
                     </CardContent>
                   </Card>
+                  </section>
                 </div>
               )}
             </div>

@@ -27,7 +27,7 @@ const MissionNavigation: React.FC<MissionNavigationProps> = ({
   const isNextMissionLocked = nextMission?.status === 'locked';
 
   return (
-    <div className="bg-white/10 backdrop-blur-md rounded-lg border border-white/20 p-2 sm:p-2.5 md:p-4 shadow-lg">
+    <div className="bg-white/60 rounded-2xl p-2 sm:p-2.5 md:p-3">
       {/* Fila principal: Navegación y progreso - Siempre en fila */}
       <div className="flex flex-row items-center justify-between gap-1.5 sm:gap-2 md:gap-4">
         {/* Lado izquierdo: Botón Home + Botón Anterior */}
@@ -36,13 +36,13 @@ const MissionNavigation: React.FC<MissionNavigationProps> = ({
             variant="ghost"
             onClick={() => navigate('/brainifamily/home')}
             size="sm"
-            className="flex items-center justify-center text-white hover:text-white hover:bg-white/20 transition-all duration-200 p-2 sm:p-2.5 md:px-3 md:py-2"
+            className="flex items-center justify-center text-ink hover:bg-white/80 transition-all duration-200 p-2 sm:p-2.5 md:px-3 md:py-2"
           >
             <Home className="w-5 h-5 sm:w-4 sm:h-4 md:w-4 md:h-4" />
-            <span className="hidden md:inline ml-1 text-sm font-medium">Volver</span>
+            <span className="hidden xl:inline ml-1 text-sm font-medium">Volver</span>
           </Button>
           
-          <div className="h-5 sm:h-5 w-px bg-white/30"></div>
+          <div className="h-5 sm:h-5 w-px bg-ink/15"></div>
           
           <Button
             variant="ghost"
@@ -51,29 +51,29 @@ const MissionNavigation: React.FC<MissionNavigationProps> = ({
             size="sm"
             className={`flex items-center justify-center transition-all duration-200 p-2 sm:p-2.5 md:px-3 md:py-2 ${
               isFirstMission 
-                ? 'opacity-40 cursor-not-allowed text-white/50' 
-                : 'text-white hover:text-white hover:bg-white/20'
+                ? 'opacity-40 cursor-not-allowed text-ink' 
+                : 'text-ink hover:bg-white/80'
             }`}
           >
             <ChevronLeft className="w-5 h-5 sm:w-4 sm:h-4 md:w-4 md:h-4" />
-            <span className="hidden md:inline ml-1 text-sm font-medium">Aventura anterior</span>
+            <span className="hidden xl:inline ml-1 text-sm font-medium">Aventura anterior</span>
           </Button>
         </div>
 
         {/* Centro: Indicador de progreso compacto */}
         <div className="flex-1 flex items-center gap-2 sm:gap-2 md:gap-3 min-w-0 mx-1.5 sm:mx-2">
           <div className="flex-1 min-w-0">
-            <div className="text-xs sm:text-[10px] md:text-sm font-bold text-white mb-1 sm:mb-1 md:mb-2 truncate">
+            <div className="text-sm font-bold text-ink mb-1 sm:mb-1 md:mb-2 truncate">
               Misión {currentMissionId} de {totalMissions}
             </div>
-            <div className="w-full bg-white/20 rounded-full h-1.5 sm:h-2 md:h-2.5 overflow-hidden">
+            <div className="w-full bg-ink/10 rounded-full h-1.5 sm:h-2 md:h-2.5 overflow-hidden">
               <div 
-                className="bg-white h-1.5 sm:h-2 md:h-2.5 rounded-full transition-all duration-500 ease-out shadow-xs"
+                className="bg-ink h-1.5 sm:h-2 md:h-2.5 rounded-full transition-all duration-500 ease-out shadow-xs"
                 style={{ width: `${((currentIndex + 1) / totalMissions) * 100}%` }}
               ></div>
             </div>
           </div>
-          <div className="text-xs sm:text-[10px] md:text-sm text-white font-semibold whitespace-nowrap shrink-0">
+          <div className="text-sm text-ink font-semibold whitespace-nowrap shrink-0">
             {Math.round(((currentIndex + 1) / totalMissions) * 100)}%
           </div>
         </div>
@@ -87,23 +87,23 @@ const MissionNavigation: React.FC<MissionNavigationProps> = ({
             size="sm"
             className={`flex items-center justify-center transition-all duration-200 p-2 sm:p-2.5 md:px-3 md:py-2 ${
               isNextMissionLocked || isLastMission
-                ? 'opacity-40 cursor-not-allowed text-white/50'
-                : 'text-white hover:text-white hover:bg-white/20'
+                ? 'opacity-40 cursor-not-allowed text-ink'
+                : 'text-ink hover:bg-white/80'
             }`}
           >
             {isLastMission ? (
               <>
-                <span className="hidden md:inline mr-1 text-sm font-medium">Completado</span>
+                <span className="hidden xl:inline mr-1 text-sm font-medium">Completado</span>
                 <Trophy className="w-5 h-5 sm:w-4 sm:h-4 md:w-4 md:h-4" />
               </>
             ) : isNextMissionLocked ? (
               <>
-                <span className="hidden md:inline mr-1 text-sm font-medium">Aventura bloqueada</span>
+                <span className="hidden xl:inline mr-1 text-sm font-medium">Aventura bloqueada</span>
                 <Lock className="w-5 h-5 sm:w-4 sm:h-4 md:w-4 md:h-4" />
               </>
             ) : (
               <>
-                <span className="hidden md:inline mr-1 text-sm font-medium">Siguiente aventura</span>
+                <span className="hidden xl:inline mr-1 text-sm font-medium">Siguiente aventura</span>
                 <ChevronRight className="w-5 h-5 sm:w-4 sm:h-4 md:w-4 md:h-4" />
               </>
             )}
