@@ -1,7 +1,5 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Textarea } from '@/shared/ui/textarea';
-import { Edit3 } from 'lucide-react';
 
 interface EmotionEntryProps {
   observations: string;
@@ -10,42 +8,37 @@ interface EmotionEntryProps {
   childName?: string;
 }
 
+const MAX_LENGTH = 500;
+
+/** Nota opcional del día, debajo de las emociones. */
 const EmotionEntry: React.FC<EmotionEntryProps> = ({
   observations,
   onObservationsChange,
   disabled = false,
-  childName = ''
+  childName = '',
 }) => {
   return (
-      <Card className="bg-white border-0 rounded-2xl shadow-surface">
-        <CardHeader className="pb-3 sm:pb-4">
-          <CardTitle className="flex items-center gap-2 text-base sm:text-lg text-gray-800">
-            <Edit3 className="w-4 h-4 sm:w-5 sm:h-5 text-braini-blue" />
-            Observaciones (Opcional)
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="pt-0">
-          <div className="space-y-2 sm:space-y-3">
-          <Textarea
-            value={observations}
-            onChange={(e) => onObservationsChange(e.target.value)}
-            placeholder={childName 
-              ? `Describe cómo se comportó ${childName} hoy, qué pasó, o cualquier observación que quieras recordar...`
-              : "Describe cómo se comportó hoy, qué pasó, o cualquier observación que quieras recordar..."
-            }
-            className="min-h-[100px] resize-none border-2 border-gray-200 focus:border-braini-blue focus:ring-0 text-base sm:text-sm"
-            maxLength={500}
-            disabled={disabled}
-          />
-          
-          <div className="flex justify-end">
-            <span className="text-xs text-gray-500">
-              {observations.length}/500 caracteres
-            </span>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+    <div>
+      <label htmlFor="diario-observaciones" className="font-display text-lg font-semibold text-ink">
+        ¿Quieres apuntar algo? <span className="font-sans text-sm font-normal text-ink/70">(opcional)</span>
+      </label>
+      <Textarea
+        id="diario-observaciones"
+        value={observations}
+        onChange={(e) => onObservationsChange(e.target.value)}
+        placeholder={
+          childName
+            ? `Qué ha pasado hoy, cómo ha reaccionado ${childName} o cualquier cosa que quieras recordar.`
+            : 'Qué ha pasado hoy o cualquier cosa que quieras recordar.'
+        }
+        className="mt-2 min-h-[96px] resize-none rounded-xl border-ink/15 text-base text-ink placeholder:text-ink/50 focus-visible:ring-braini-turquoise-strong"
+        maxLength={MAX_LENGTH}
+        disabled={disabled}
+      />
+      <p className="mt-1 text-right text-sm text-ink/60">
+        {observations.length}/{MAX_LENGTH}
+      </p>
+    </div>
   );
 };
 

@@ -9,6 +9,13 @@ import { useCurrentChild } from '@/products/brainifamily/hooks/useCurrentChild';
 import { useToast } from '@/shared/hooks/use-toast';
 import ChildSwitcher from '@/products/brainifamily/features/children/ChildSwitcher';
 
+/** «Hoy, jueves 12 de noviembre» o el día elegido en el calendario. */
+function formatDayLabel(date: Date): string {
+  const label = date.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+  const isToday = date.toDateString() === new Date().toDateString();
+  return isToday ? `Hoy, ${label}` : label.charAt(0).toUpperCase() + label.slice(1);
+}
+
 const DiarioEmocional = () => {
   const { toast } = useToast();
   const { child, childId } = useCurrentChild();
@@ -98,8 +105,8 @@ const DiarioEmocional = () => {
   const handleSave = async () => {
     if (selectedEmotions.length === 0) {
       toast({
-        title: "😊 Paramos un momento",
-        description: "Antes de guardar, elige al menos una emoción para este día.",
+        title: "Elige una emoción",
+        description: "Para guardar el día, elige al menos una emoción.",
         variant: "destructive"
       });
       return;
@@ -109,10 +116,16 @@ const DiarioEmocional = () => {
     const entryDateStr = formatEntryDate(selectedDate);
 
     // Actualización optimista: actualizar el calendario al instante con los datos que vamos a guardar
-    const optimisticEntry = {
+    const nowIso = new Date().toISOString();
+    const optimisticEntry: EmotionalEntry = {
+      id: -1,
+      user_id: '',
+      child_id: childId ?? '',
       entry_date: entryDateStr,
       emotion_names: emotionNames,
-      observations: observations || null
+      observations: observations || null,
+      created_at: nowIso,
+      updated_at: nowIso,
     };
     setMonthEntries((prev) => {
       const withoutDate = prev.filter((e) => e.entry_date !== entryDateStr);
@@ -126,10 +139,10 @@ const DiarioEmocional = () => {
 
       if (result) {
         toast({
-          title: "✨ Emociones registradas",
+          title: "Emociones guardadas",
           description: emotionNames.length === 1
-            ? "La emoción de hoy ha quedado registrada. Gracias por cuidar sus emociones."
-            : "Las emociones de hoy han quedado registradas. Gracias por cuidar sus emociones.",
+            ? "Puedes verla en el calendario del mes."
+            : "Puedes verlas en el calendario del mes.",
         });
         // Sustituir la entrada optimista por la respuesta del servidor (con id, etc.)
         setMonthEntries((prev) => {
@@ -144,8 +157,8 @@ const DiarioEmocional = () => {
       }
     } catch (err) {
       toast({
-        title: "🌱 No se ha guardado aún",
-        description: "No se ha podido guardar en este momento. ¿Lo intentamos de nuevo?",
+        title: "No se han guardado las emociones",
+        description: "Revisa la conexión y vuelve a pulsar «Guardar emociones».",
         variant: "destructive"
       });
       // Revertir: volver a cargar desde el servidor
@@ -157,8 +170,8 @@ const DiarioEmocional = () => {
   useEffect(() => {
     if (error) {
       toast({
-        title: "❌ Error en el diario emocional",
-        description: error || "Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo.",
+        title: "No se ha podido cargar el diario",
+        description: error || "Revisa la conexión y recarga la página.",
         variant: "destructive"
       });
       clearError();
@@ -179,73 +192,51 @@ const DiarioEmocional = () => {
       }
       actions={<ChildSwitcher />}
     >
-          {/* Área de contenido con scroll */}
-          <div>
-            {/* Grid simétrico de dos columnas */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8 pb-20 md:pb-4">
-            {/* Columna izquierda: Selector de emociones y observaciones */}
-            <div className="flex flex-col space-y-4 sm:space-y-5 md:space-y-6">
-              {/* Selector de emociones */}
-              <div className="shrink-0">
-                <EmotionSelector
-                  emotions={EMOTIONS_CONFIG}
-                  selectedEmotions={selectedEmotions}
-                  onEmotionSelect={handleEmotionSelect}
-                  disabled={loading || !childId}
-                  childName={child?.nombre ?? ''}
-                />
-              </div>
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] gap-6 items-start">
+        {/* Protagonista: el registro del día */}
+        <section aria-labelledby="diario-dia" className="bg-white rounded-2xl shadow-surface p-5 sm:p-7 space-y-7">
+          <p id="diario-dia" className="text-base font-semibold text-braini-turquoise-strong">
+            {formatDayLabel(selectedDate)}
+          </p>
 
-              {/* Formulario de observaciones */}
-              <div className="flex-1">
-                <EmotionEntry
-                  observations={observations}
-                  onObservationsChange={handleObservationsChange}
-                  disabled={selectedEmotions.length === 0}
-                  childName={child?.nombre ?? ''}
-                />
-              </div>
+          <EmotionSelector
+            emotions={EMOTIONS_CONFIG}
+            selectedEmotions={selectedEmotions}
+            onEmotionSelect={handleEmotionSelect}
+            disabled={loading || !childId}
+            childName={child?.nombre ?? ''}
+          />
 
-              {/* Botón de guardar */}
-              <div className="shrink-0 flex justify-center pt-2">
-                <button
-                  onClick={handleSave}
-                  disabled={selectedEmotions.length === 0 || loading || !childId}
-                  className={`
-                    w-full max-w-md px-4 sm:px-6 md:px-8 py-2.5 sm:py-3 rounded-xl font-semibold text-sm sm:text-base md:text-lg transition-all duration-300 transform
-                    ${selectedEmotions.length > 0 && !loading
-                      ? 'bg-white border-2 border-braini-turquoise text-braini-turquoise hover:bg-braini-turquoise hover:text-white shadow-lg hover:shadow-xl hover:scale-105'
-                      : 'bg-gray-300 text-gray-500 cursor-not-allowed border-2 border-gray-300'
-                    }
-                  `}
-                >
-                  {loading ? (
-                    <div className="flex items-center justify-center gap-2">
-                      <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      <span className="text-sm sm:text-base">Guardando...</span>
-                    </div>
-                  ) : (
-                    'Guardar emociones del día'
-                  )}
-                </button>
-              </div>
-            </div>
+          <EmotionEntry
+            observations={observations}
+            onObservationsChange={handleObservationsChange}
+            disabled={selectedEmotions.length === 0}
+            childName={child?.nombre ?? ''}
+          />
 
-            {/* Columna derecha: Calendario */}
-            <div className="flex flex-col">
-              <div className="h-full">
-                <EmotionCalendar
-                  currentDate={new Date(currentMonth.year, currentMonth.month - 1)}
-                  monthEntries={monthEntries}
-                  emotionsConfig={EMOTIONS_CONFIG}
-                  onDateSelect={handleDateSelect}
-                  onMonthChange={handleMonthChange}
-                  selectedDate={selectedDate}
-                />
-              </div>
-            </div>
-          </div>
-          </div>
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={selectedEmotions.length === 0 || loading || !childId}
+            className="w-full sm:w-auto px-8 py-3 rounded-xl font-semibold text-base transition-colors bg-braini-turquoise-strong text-white hover:bg-ink disabled:bg-ink/10 disabled:text-ink/50 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+          >
+            {loading ? 'Guardando…' : 'Guardar emociones'}
+          </button>
+          {selectedEmotions.length === 0 && !loading && (
+            <p className="-mt-4 text-sm text-ink/70">Elige al menos una emoción para guardar el día.</p>
+          )}
+        </section>
+
+        {/* Secundario: el mes */}
+        <EmotionCalendar
+          currentDate={new Date(currentMonth.year, currentMonth.month - 1)}
+          monthEntries={monthEntries}
+          emotionsConfig={EMOTIONS_CONFIG}
+          onDateSelect={handleDateSelect}
+          onMonthChange={handleMonthChange}
+          selectedDate={selectedDate}
+        />
+      </div>
     </Backgrounds>
   );
 };

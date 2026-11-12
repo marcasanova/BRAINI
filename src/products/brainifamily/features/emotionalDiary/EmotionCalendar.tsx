@@ -142,8 +142,8 @@ const EmotionCalendar: React.FC<EmotionCalendarProps> = ({
                 {/* Fila superior: número del día + icono observaciones */}
                 <div className="flex items-start justify-between shrink-0 min-h-0 px-0.5 pt-0.5 sm:pt-1">
                   <span className={`
-                    text-[10px] sm:text-xs leading-tight
-                    ${isToday(date) ? 'text-braini-blue' : 'text-gray-700'}
+                    text-xs sm:text-sm leading-tight
+                    ${isToday(date) ? 'font-bold text-braini-turquoise-strong' : 'text-ink'}
                   `}>
                     {day}
                   </span>
@@ -195,9 +195,9 @@ const EmotionCalendar: React.FC<EmotionCalendarProps> = ({
   return (
     <Card className="bg-white border-0 rounded-2xl shadow-surface">
       <CardHeader className="pb-3 sm:pb-4">
-        <CardTitle className="flex items-center gap-2 text-base sm:text-lg text-gray-800">
-          <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-braini-blue" />
-          Calendario Emocional
+        <CardTitle className="flex items-center gap-2 font-display text-xl font-semibold text-ink">
+          <Calendar className="w-5 h-5 text-braini-turquoise-strong" aria-hidden="true" />
+          Este mes
         </CardTitle>
       </CardHeader>
       <CardContent className="pt-0">
@@ -207,13 +207,13 @@ const EmotionCalendar: React.FC<EmotionCalendarProps> = ({
             onClick={() => navigateMonth('prev')}
             variant="outline"
             size="sm"
-            className="border-gray-300 text-gray-700 hover:border-braini-blue shrink-0 text-xs sm:text-sm px-2 sm:px-3"
+            className="border-ink/15 text-ink hover:bg-braini-turquoise-tint shrink-0 text-sm px-2 sm:px-3"
           >
             <ChevronLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-0.5 sm:mr-1" />
             <span className="hidden sm:inline">Anterior</span>
           </Button>
           
-          <h3 className="text-xs sm:text-sm md:text-lg font-semibold text-gray-800 text-center flex-1 min-w-0 px-1 sm:px-2">
+          <h3 className="text-base font-semibold text-ink text-center flex-1 min-w-0 px-1 sm:px-2">
             {getMonthName(currentDate)}
           </h3>
           
@@ -221,7 +221,7 @@ const EmotionCalendar: React.FC<EmotionCalendarProps> = ({
             onClick={() => navigateMonth('next')}
             variant="outline"
             size="sm"
-            className="border-gray-300 text-gray-700 hover:border-braini-blue shrink-0 text-xs sm:text-sm px-2 sm:px-3"
+            className="border-ink/15 text-ink hover:bg-braini-turquoise-tint shrink-0 text-sm px-2 sm:px-3"
           >
             <span className="hidden sm:inline">Siguiente</span>
             <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 ml-0.5 sm:ml-1" />
@@ -231,7 +231,7 @@ const EmotionCalendar: React.FC<EmotionCalendarProps> = ({
         {/* Días de la semana */}
         <div className="grid grid-cols-7 gap-0.5 sm:gap-1 mb-2">
           {['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].map((day) => (
-            <div key={day} className="h-8 flex items-center justify-center text-[10px] sm:text-xs font-medium text-gray-500">
+            <div key={day} className="h-8 flex items-center justify-center text-xs sm:text-sm font-medium text-ink/60">
               {day}
             </div>
           ))}
@@ -243,32 +243,32 @@ const EmotionCalendar: React.FC<EmotionCalendarProps> = ({
         </div>
         
         {/* Leyenda Simplificada - Solo Emociones */}
-        <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-linear-to-r from-gray-50 to-blue-50 rounded-lg border border-gray-200">
-          <h4 className="text-xs sm:text-sm font-semibold text-gray-800 mb-2 sm:mb-3">
-            Emociones del Calendario
+        <div className="mt-5 sm:mt-6 p-3 sm:p-4 bg-ink/[0.03] rounded-xl">
+          <h4 className="text-sm font-semibold text-ink mb-2 sm:mb-3">
+            Qué significa cada color
           </h4>
           
           {/* Grid: 5 emociones (Alegría, Contento, Tristeza, Miedo, Rabia) */}
           <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
             <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg border border-gray-100">
               <div className="h-2.5 sm:h-3 rounded-full shadow-xs shrink-0" style={{ width: '28px', backgroundColor: '#FFD93D' }} />
-              <span className="text-[10px] sm:text-xs text-gray-700 font-medium">Alegría</span>
+              <span className="text-xs sm:text-sm text-ink font-medium">Alegría</span>
             </div>
             <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg border border-gray-100">
               <div className="h-2.5 sm:h-3 rounded-full shadow-xs shrink-0" style={{ width: '28px', backgroundColor: '#66BB6A' }} />
-              <span className="text-[10px] sm:text-xs text-gray-700 font-medium">Contento</span>
+              <span className="text-xs sm:text-sm text-ink font-medium">Contento</span>
             </div>
             <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg border border-gray-100">
               <div className="h-2.5 sm:h-3 rounded-full shadow-xs shrink-0" style={{ width: '28px', backgroundColor: '#74B9FF' }} />
-              <span className="text-[10px] sm:text-xs text-gray-700 font-medium">Tristeza</span>
+              <span className="text-xs sm:text-sm text-ink font-medium">Tristeza</span>
             </div>
             <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg border border-gray-100">
               <div className="h-2.5 sm:h-3 rounded-full shadow-xs shrink-0" style={{ width: '28px', backgroundColor: '#5F8DCA' }} />
-              <span className="text-[10px] sm:text-xs text-gray-700 font-medium">Miedo</span>
+              <span className="text-xs sm:text-sm text-ink font-medium">Miedo</span>
             </div>
             <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 bg-white rounded-lg border border-gray-100">
               <div className="h-2.5 sm:h-3 rounded-full shadow-xs shrink-0" style={{ width: '28px', backgroundColor: '#FF6B6B' }} />
-              <span className="text-[10px] sm:text-xs text-gray-700 font-medium">Rabia</span>
+              <span className="text-xs sm:text-sm text-ink font-medium">Rabia</span>
             </div>
           </div>
           
@@ -276,7 +276,7 @@ const EmotionCalendar: React.FC<EmotionCalendarProps> = ({
           <div className="mt-3 sm:mt-4 pt-2 sm:pt-3 border-t border-gray-200">
             <div className="flex items-center gap-2 p-1.5 sm:p-2 bg-white rounded-lg border border-gray-100">
               <Edit3 className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-gray-600 shrink-0" strokeWidth={2.5} />
-              <span className="text-[10px] sm:text-xs text-gray-700 font-medium">Días con observaciones</span>
+              <span className="text-xs sm:text-sm text-ink font-medium">Días con observaciones</span>
             </div>
           </div>
         </div>
