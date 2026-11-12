@@ -7,6 +7,7 @@ import { useEmotionalDiary } from '@/products/brainifamily/hooks/useEmotionalDia
 import type { EmotionalEntry } from '@/integrations/supabase/queries/emotional-diary';
 import { useCurrentChild } from '@/products/brainifamily/hooks/useCurrentChild';
 import { useToast } from '@/shared/hooks/use-toast';
+import ChildSwitcher from '@/products/brainifamily/features/children/ChildSwitcher';
 
 const DiarioEmocional = () => {
   const { toast } = useToast();
@@ -165,34 +166,19 @@ const DiarioEmocional = () => {
   }, [error, toast, clearError]);
 
   return (
-    <Backgrounds 
-      wrapWithCard={true}
-      customColor="#35bdb1"
-      showCircles={true}
+    <Backgrounds
+      wrapWithCard
+      tone="turquoise"
+      title="Así me siento hoy"
+      subtitle={
+        child?.nombre
+          ? `Registra cómo se siente ${child.nombre} cada día y mira cómo cambia a lo largo del mes.`
+          : childId
+            ? 'Cargando...'
+            : 'Elige a tu hijo o hija para ver su diario.'
+      }
+      actions={<ChildSwitcher />}
     >
-            {/* Header con título - Fijo en la parte superior */}
-            <div className="mb-6 md:mb-8 animate-fade-in shrink-0">
-              <div className="flex flex-col gap-4 mb-4">
-                <div className="flex-1">
-                  <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-2" style={{ fontWeight: 900 }}>
-                    Diario Emocional
-                  </h1>
-                  <p className="text-lg sm:text-xl md:text-2xl text-white/90 font-medium">
-                    {child?.nombre 
-                      ? (
-                        <>
-                          Registra y observa las emociones de <span className="font-black" style={{ fontWeight: 800 }}>{child.nombre}</span> día a día
-                        </>
-                      )
-                      : childId
-                        ? 'Cargando...'
-                        : 'Selecciona un niño para ver su diario emocional'
-                    }
-                  </p>
-                </div>
-              </div>
-            </div>
-
           {/* Área de contenido con scroll */}
           <div>
             {/* Grid simétrico de dos columnas */}

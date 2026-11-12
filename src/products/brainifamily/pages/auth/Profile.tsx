@@ -338,15 +338,12 @@ const Profile = () => {
   }, [editChild, child, childForm]);
 
   return (
-    <Backgrounds wrapWithCard={true} customColor="#f5827b" showCircles={true}>
-            <div className="mb-4 sm:mb-5 md:mb-6 animate-fade-in shrink-0">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-1 sm:mb-2" style={{ fontWeight: 900 }}>
-                Mi familia
-              </h1>
-              <p className="text-base sm:text-lg md:text-xl text-white/90 font-medium">
-                Tus datos y los de tus hijos e hijas.
-              </p>
-            </div>
+    <Backgrounds
+      wrapWithCard
+      tone="coral"
+      title="Mi familia"
+      subtitle="Tus datos y los de tus hijos e hijas."
+    >
 
             <div>
               {loading ? (
@@ -359,7 +356,7 @@ const Profile = () => {
               ) : (
                 <div className="space-y-4 sm:space-y-5 md:space-y-6 pb-20 md:pb-4">
                   <section className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
-                    <Card className={`bg-white/95 backdrop-blur-lg shadow-xl border-0 ${children.length >= 2 ? 'lg:col-span-5' : 'lg:col-span-12'}`}>
+                    <Card className={`bg-white border-0 rounded-2xl shadow-surface ${children.length >= 2 ? 'lg:col-span-5' : 'lg:col-span-12'}`}>
                       <CardHeader className="pb-3 sm:pb-4">
                         <div className="flex flex-col gap-3">
                           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
@@ -541,7 +538,7 @@ const Profile = () => {
                     </Card>
 
                     {children.length >= 2 && (
-                      <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0 lg:col-span-7 h-full">
+                      <Card className="bg-white border-0 rounded-2xl shadow-surface lg:col-span-7 h-full">
                         <CardHeader className="pb-2 sm:pb-3">
                           <CardTitle className="text-base sm:text-lg text-gray-800">
                             Progreso del hogar
@@ -562,11 +559,11 @@ const Profile = () => {
                   </section>
 
                   <section className="space-y-3 sm:space-y-4">
-                      <h2 className="text-lg sm:text-xl font-bold text-white" style={{ fontWeight: 800 }}>
+                      <h2 className="font-display text-2xl font-semibold text-ink">
                         Hijos e hijas
                       </h2>
                       {children.length === 0 ? (
-                        <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0">
+                        <Card className="bg-white border-0 rounded-2xl shadow-surface">
                           <CardContent className="py-12">
                             <div className="text-center">
                               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -587,7 +584,7 @@ const Profile = () => {
                           const displayChild = isEditingThis ? { ...c, ...child, ...childForm } : c;
                           const shownAvatarId = displayChild?.avatar_id ?? c.avatar_id;
                           return (
-                            <Card key={c.id} className="bg-white/95 backdrop-blur-lg shadow-xl border-0">
+                            <Card key={c.id} className="bg-white border-0 rounded-2xl shadow-surface">
                               <CardHeader className="pb-3 sm:pb-4">
                                 <div className="flex flex-col gap-3">
                                   <div className="flex items-center gap-2 sm:gap-3 min-w-0">
@@ -857,7 +854,7 @@ const Profile = () => {
                       )}
                   </section>
 
-                  <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0">
+                  <Card className="bg-white border-0 rounded-2xl shadow-surface">
                     <CardHeader className="pb-3 sm:pb-4">
                       <CardTitle className="flex items-center gap-2 sm:gap-3 text-base sm:text-lg md:text-xl text-gray-800">
                         <div className="w-8 h-8 sm:w-10 sm:h-10 bg-braini-pink rounded-lg flex items-center justify-center shrink-0">
@@ -879,7 +876,7 @@ const Profile = () => {
                     </CardContent>
                   </Card>
 
-                  <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0">
+                  <Card className="bg-white border-0 rounded-2xl shadow-surface">
                     <CardHeader className="pb-3 sm:pb-4">
                       <CardTitle className="flex items-center gap-2 sm:gap-3 text-base sm:text-lg md:text-xl text-gray-800">
                         <div className="w-8 h-8 sm:w-10 sm:h-10 bg-braini-blue rounded-lg flex items-center justify-center shrink-0">

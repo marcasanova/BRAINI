@@ -9,25 +9,17 @@ const TestEmocionalNinos = () => {
   const navigate = useNavigate();
 
   return (
-    <Backgrounds 
-      wrapWithCard={true}
-      customColor="#f8cd50"
-      showCircles={true}
+    <Backgrounds
+      wrapWithCard
+      tone="yellow"
+      title="Test emocional para niños"
+      subtitle="Estamos preparando una versión adaptada para tu hijo o hija."
     >
-            {/* Header Principal */}
-            <div className="mb-4 md:mb-6 animate-fade-in shrink-0">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-2" style={{ fontWeight: 900 }}>
-                Test Emocional para Niños
-              </h1>
-              <p className="text-lg sm:text-xl md:text-2xl text-white/90 font-medium">
-                Evaluación adaptada para el desarrollo emocional infantil
-              </p>
-            </div>
 
             {/* Área de contenido con scroll */}
             <div>
               {/* Botón de regreso */}
-              <div className="mb-6 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+              <div className="mb-6">
                 <Button
                   onClick={() => navigate('/brainifamily/inteligencia-emocional')}
                   variant="outline"
@@ -39,7 +31,7 @@ const TestEmocionalNinos = () => {
               </div>
 
               {/* Mensaje de En Construcción */}
-              <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+              <Card className="bg-white border-0 rounded-2xl shadow-surface">
                 <CardHeader className="text-center pb-4">
                   <div className="flex items-center justify-center gap-2 mb-3">
                     <Award className="w-5 h-5 text-braini-yellow" />

@@ -28,7 +28,7 @@ const EmotionSelector: React.FC<EmotionSelectorProps> = ({
 }) => {
   return (
     <TooltipProvider>
-      <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0">
+      <Card className="bg-white border-0 rounded-2xl shadow-surface">
         <CardContent className="p-4 sm:p-5 md:p-6">
           <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-4 text-center px-2">
             {childName 

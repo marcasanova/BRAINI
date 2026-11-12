@@ -19,13 +19,7 @@ import {
   prefersReducedMotion,
 } from '@/products/brainifamily/features/medals/celebration';
 import MapDownload from '@/shared/components/MapDownload';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/shared/ui/select';
+import ChildSwitcher from '@/products/brainifamily/features/children/ChildSwitcher';
 import { playSound } from '@/shared/lib/sound';
 
 interface MedalCelebration {
@@ -52,7 +46,7 @@ function readCelebrationFromState(state: unknown): MedalCelebration | null {
 const Home = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { child, childId, children: childrenList, setCurrentChildId, loading: childLoading } = useCurrentChild();
+  const { child, childId, loading: childLoading } = useCurrentChild();
   // Se lee en el primer render para que MedalShelf monte ya en el estado «antes» (N-1)
   const [celebration, setCelebration] = useState<MedalCelebration | null>(() =>
     readCelebrationFromState(location.state),
@@ -151,41 +145,22 @@ const Home = () => {
 
   return (
     <Backgrounds
-      wrapWithCard={true}
-      customColor="#7ea4df"
-      showCircles={true}
+      wrapWithCard
+      tone="blue"
+      title="Panel de juego"
+      subtitle={child?.nombre ? `Sigue la aventura de ${child.nombre}, misión a misión.` : 'Sigue la aventura, misión a misión.'}
+      actions={<ChildSwitcher />}
     >
-      {/* Header con título y selector de hijo (solo si hay más de uno) */}
-      <div className="mb-4 md:mb-6 animate-fade-in shrink-0 flex flex-col sm:flex-row sm:items-center gap-3">
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white" style={{ fontWeight: 900 }}>
-          {child?.nombre ? `${child.nombre} ¡Empieza la aventura!` : '¡Empieza la aventura!'}
-        </h1>
-        {childrenList.length > 1 && (
-          <Select value={child?.id ?? ''} onValueChange={setCurrentChildId}>
-            <SelectTrigger className="w-full sm:w-auto min-w-[180px] bg-white/95 border-white text-gray-800 font-medium shadow-md hover:bg-white">
-              <SelectValue placeholder="Elegir niño/a" />
-            </SelectTrigger>
-            <SelectContent>
-              {childrenList.map((c) => (
-                <SelectItem key={c.id} value={c.id}>
-                  {c.school_name ? `${c.nombre} · ${c.school_name}` : c.nombre}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        )}
-      </div>
-
       {/* Área de contenido con scroll */}
       <div>
         {childLoading || loading || medalsLoading || contentLoading || waitingForFreshData ? (
-          <div className="text-center text-white/90 py-8 font-medium">Cargando misiones...</div>
+          <div className="text-center text-ink/70 py-8 font-medium">Cargando misiones...</div>
         ) : error ? (
-          <div className="text-center text-red-200 py-8 font-medium">{error}</div>
+          <div className="text-center text-red-700 py-8 font-medium">{error}</div>
         ) : (
           <div className="space-y-4 md:space-y-5 pb-20 md:pb-4">
             {/* Sección de Medallas - Primera */}
-            <div className="bg-white/95 backdrop-blur-lg p-4 md:p-6 rounded-xl md:rounded-2xl shadow-xl border-0 animate-fade-in">
+            <div className="bg-white p-4 md:p-6 rounded-2xl shadow-surface">
               <MedalShelf
                 userMedals={userMedals}
                 totalMedals={totalMedals}
@@ -196,7 +171,7 @@ const Home = () => {
             </div>
 
             {/* Misión 0 - ¡Comienza la aventura! - Hardcodeado */}
-            <div className="bg-white/95 backdrop-blur-lg p-4 md:p-6 rounded-xl md:rounded-2xl shadow-xl border-0 animate-fade-in">
+            <div className="bg-white p-4 md:p-6 rounded-2xl shadow-surface">
               <ul className="space-y-0">
                 <li>
                   {/* Misión 0: Título + bullets a la izquierda, vídeo a la derecha */}
@@ -333,7 +308,7 @@ const Home = () => {
             {/* Mapa de la aventura: tablero interactivo de misiones */}
             <section
               aria-labelledby="mapa-aventura-title"
-              className="bg-white/95 backdrop-blur-lg p-4 md:p-6 rounded-xl md:rounded-2xl shadow-xl border-0 animate-fade-in"
+              className="bg-white p-4 md:p-6 rounded-2xl shadow-surface"
             >
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4">
                 <h2 id="mapa-aventura-title" className="text-braini-blue font-bold text-2xl md:text-3xl" style={{ fontWeight: 700 }}>

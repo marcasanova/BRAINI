@@ -193,7 +193,7 @@ const EmotionCalendar: React.FC<EmotionCalendarProps> = ({
   };
 
   return (
-    <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0">
+    <Card className="bg-white border-0 rounded-2xl shadow-surface">
       <CardHeader className="pb-3 sm:pb-4">
         <CardTitle className="flex items-center gap-2 text-base sm:text-lg text-gray-800">
           <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-braini-blue" />

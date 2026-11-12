@@ -17,25 +17,17 @@ const InteligenciaEmocional = () => {
   };
 
   return (
-    <Backgrounds 
-      wrapWithCard={true}
-      customColor="#f8cd50"
-      showCircles={true}
+    <Backgrounds
+      wrapWithCard
+      tone="yellow"
+      title="Evaluar y crecer"
+      subtitle="Tests para conocer mejor tu inteligencia emocional y la de tu hijo o hija."
     >
-            {/* Header Principal - Fijo en la parte superior */}
-            <div className="mb-4 sm:mb-5 md:mb-6 animate-fade-in shrink-0">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-1 sm:mb-2" style={{ fontWeight: 900 }}>
-                Inteligencia Emocional
-              </h1>
-              <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/90 font-medium">
-                Evalúa tu inteligencia emocional y la de tu hijo o hija a través de nuestros tests especializados.
-              </p>
-            </div>
 
           {/* Área de contenido con scroll */}
           <div>
             {/* Sección de Credibilidad - Primero */}
-            <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0 animate-fade-in mb-6 sm:mb-8" style={{ animationDelay: '0.1s' }}>
+            <Card className="bg-white border-0 rounded-2xl shadow-surface mb-6 sm:mb-8">
               <CardContent className="p-4 sm:p-5 md:p-6">
                 <div>
                   <h3 className="text-base sm:text-lg md:text-xl font-semibold text-gray-800 mb-3 sm:mb-4 text-left">
@@ -85,7 +77,7 @@ const InteligenciaEmocional = () => {
             {/* Opciones de Test */}
             <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8 pb-20 md:pb-4">
               {/* Test para Padres */}
-            <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+            <Card className="bg-white border-0 rounded-2xl shadow-surface">
               <CardHeader className="text-center pb-3 sm:pb-4">
                 <div className="flex items-center justify-center gap-2 mb-2 sm:mb-3">
                   <Award className="w-4 h-4 sm:w-5 sm:h-5 text-braini-yellow" />
@@ -117,7 +109,7 @@ const InteligenciaEmocional = () => {
             </Card>
 
             {/* Test para Niños */}
-            <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0 animate-fade-in" style={{ animationDelay: '0.3s' }}>
+            <Card className="bg-white border-0 rounded-2xl shadow-surface">
               <CardHeader className="text-center pb-3 sm:pb-4">
                 <div className="flex items-center justify-center gap-2 mb-2 sm:mb-3">
                   <Award className="w-4 h-4 sm:w-5 sm:h-5 text-braini-yellow" />

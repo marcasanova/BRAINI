@@ -187,23 +187,15 @@ const TestTMMSPadres = () => {
 
   if (showResults && results) {
     return (
-      <Backgrounds 
-        wrapWithCard={true}
-        customColor="#f8cd50"
-        showCircles={true}
+      <Backgrounds
+        wrapWithCard
+        tone="yellow"
+        title="Resultados del test TMMS-24"
+        subtitle="Tu perfil de inteligencia emocional."
       >
-            {/* Header de resultados */}
-            <div className="mb-4 md:mb-6 animate-fade-in shrink-0">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-2" style={{ fontWeight: 900 }}>
-                Resultados del Test TMMS-24
-              </h1>
-              <p className="text-lg sm:text-xl md:text-2xl text-white/90 font-medium">
-                Tu perfil de Inteligencia Emocional
-              </p>
-            </div>
 
             {/* Resultados principales */}
-            <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0 mb-8 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+            <Card className="bg-white border-0 rounded-2xl shadow-surface mb-8">
               <CardHeader className="text-center pb-4">
                 <div className="flex items-center justify-center gap-2 mb-3">
                   <Award className="w-5 h-5 text-braini-yellow" />
@@ -261,7 +253,7 @@ const TestTMMSPadres = () => {
             </Card>
 
             {/* Interpretación */}
-            <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0 mb-8 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+            <Card className="bg-white border-0 rounded-2xl shadow-surface mb-8">
               <CardHeader className="text-center pb-4">
                 <div className="flex items-center justify-center gap-2 mb-3">
                   <Award className="w-5 h-5 text-braini-yellow" />
@@ -276,7 +268,7 @@ const TestTMMSPadres = () => {
             </Card>
 
             {/* Recomendaciones */}
-            <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0 mb-8 animate-fade-in" style={{ animationDelay: '0.3s' }}>
+            <Card className="bg-white border-0 rounded-2xl shadow-surface mb-8">
               <CardHeader className="text-center pb-4">
                 <div className="flex items-center justify-center gap-2 mb-3">
                   <Award className="w-5 h-5 text-braini-yellow" />
@@ -300,7 +292,7 @@ const TestTMMSPadres = () => {
             </Card>
 
             {/* Botones de acción */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in pb-20 md:pb-4" style={{ animationDelay: '0.4s' }}>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center pb-20 md:pb-4">
               <Button
                 onClick={restartTest}
                 variant="outline"
@@ -320,23 +312,15 @@ const TestTMMSPadres = () => {
   }
 
   return (
-    <Backgrounds 
-      wrapWithCard={true}
-      customColor="#f8cd50"
-      showCircles={true}
+    <Backgrounds
+      wrapWithCard
+      tone="yellow"
+      title="Test TMMS-24 para padres"
+      subtitle="24 preguntas sobre cómo percibes, comprendes y regulas tus emociones."
     >
-          {/* Header */}
-          <div className="mb-4 md:mb-6 animate-fade-in shrink-0">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-2" style={{ fontWeight: 900 }}>
-              Test TMMS-24 para Padres
-            </h1>
-            <p className="text-lg sm:text-xl md:text-2xl text-white/90 font-medium">
-              Evaluación completa de tu inteligencia emocional
-            </p>
-          </div>
 
           {/* Botón de regreso */}
-          <div className="mb-6 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+          <div className="mb-6">
             <Button
               onClick={() => navigate('/brainifamily/inteligencia-emocional')}
               variant="outline"
@@ -348,7 +332,7 @@ const TestTMMSPadres = () => {
           </div>
 
           {/* Información del test */}
-          <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0 mb-8 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+          <Card className="bg-white border-0 rounded-2xl shadow-surface mb-8">
             <CardHeader className="text-center pb-4">
               <div className="flex items-center justify-center gap-2 mb-3">
                 <Award className="w-5 h-5 text-braini-yellow" />
@@ -386,7 +370,7 @@ const TestTMMSPadres = () => {
           </Card>
 
           {/* Progreso */}
-          <div className="mb-8 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+          <div className="mb-8">
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm font-medium text-gray-600">
                 Pregunta {currentQuestion + 1} de 24
@@ -399,7 +383,7 @@ const TestTMMSPadres = () => {
           </div>
 
           {/* Pregunta actual */}
-          <Card className="bg-white/95 backdrop-blur-lg shadow-xl border-0 mb-8 animate-fade-in" style={{ animationDelay: '0.3s' }}>
+          <Card className="bg-white border-0 rounded-2xl shadow-surface mb-8">
             <CardHeader className="text-center pb-4">
               <CardTitle className="text-lg md:text-xl font-semibold text-gray-800">
                 {TMMS_QUESTIONS[currentQuestion].question}
@@ -441,7 +425,7 @@ const TestTMMSPadres = () => {
           </Card>
 
           {/* Navegación */}
-          <div className="flex justify-between items-center animate-fade-in pb-20 md:pb-4" style={{ animationDelay: '0.4s' }}>
+          <div className="flex justify-between items-center pb-20 md:pb-4">
             <Button
               onClick={() => setCurrentQuestion(Math.max(0, currentQuestion - 1))}
               disabled={currentQuestion === 0}
